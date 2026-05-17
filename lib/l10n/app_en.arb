@@ -1,0 +1,748 @@
+{
+  "@@locale": "en",
+
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "AppBar title for the Settings screen."
+  },
+
+  "settingsLanguageLabel": "Language",
+  "@settingsLanguageLabel": {
+    "description": "Settings row label that opens the language picker."
+  },
+
+  "languagePickerTitle": "Language",
+  "@languagePickerTitle": {
+    "description": "Title of the language picker modal sheet."
+  },
+  "languageOptionSystem": "System default",
+  "@languageOptionSystem": {
+    "description": "Language picker option that follows the device language. Always rendered in the active UI language."
+  },
+  "settingsThemeLabel": "Theme",
+  "@settingsThemeLabel": {
+    "description": "Settings row label that opens the theme picker."
+  },
+  "themeOptionSystem": "System default",
+  "@themeOptionSystem": {
+    "description": "Theme picker option that follows the device theme."
+  },
+  "themeOptionLight": "Light",
+  "@themeOptionLight": {
+    "description": "Theme picker option for the light theme."
+  },
+  "themeOptionDark": "Dark",
+  "@themeOptionDark": {
+    "description": "Theme picker option for the dark theme."
+  },
+  "settingsDarkStyleLabel": "Dark style",
+  "@settingsDarkStyleLabel": {
+    "description": "Section header on the Theme screen for the dark-variant choice (Black / Blue). Applies whenever the active theme renders dark."
+  },
+  "darkStyleOptionBlack": "Space Black",
+  "@darkStyleOptionBlack": {
+    "description": "Dark-variant option: the original pure-black dark theme."
+  },
+  "darkStyleOptionBlue": "Midnight Blue",
+  "@darkStyleOptionBlue": {
+    "description": "Dark-variant option: navy blue dark theme."
+  },
+  "settingsLightStyleLabel": "Light style",
+  "@settingsLightStyleLabel": {
+    "description": "Section header on the Theme screen for the light-variant choice (Cream / Pink). Applies whenever the active theme renders light."
+  },
+  "lightStyleOptionCream": "Paper Cream",
+  "@lightStyleOptionCream": {
+    "description": "Light-variant option: the original warm-cream light theme."
+  },
+  "lightStyleOptionPink": "Salmon Press",
+  "@lightStyleOptionPink": {
+    "description": "Light-variant option: the salmon-pink newsprint-finance light theme."
+  },
+
+  "chartErrorTitle": "Couldn't load data",
+  "@chartErrorTitle": {
+    "description": "Headline shown in the chart area when the price history fetch fails."
+  },
+
+  "chartErrorRetry": "Try again",
+  "@chartErrorRetry": {
+    "description": "Button under the chart error message that retries the price history fetch."
+  },
+
+  "rangePill1D": "1D",
+  "@rangePill1D": {"description": "Chart range pill: 1 day."},
+  "rangePill1W": "1W",
+  "@rangePill1W": {"description": "Chart range pill: 1 week."},
+  "rangePill1M": "1M",
+  "@rangePill1M": {"description": "Chart range pill: 1 month."},
+  "rangePill2M": "2M",
+  "@rangePill2M": {"description": "Chart range pill: 2 months."},
+  "rangePill3M": "3M",
+  "@rangePill3M": {"description": "Chart range pill: 3 months."},
+  "rangePill4M": "4M",
+  "@rangePill4M": {"description": "Chart range pill: 4 months."},
+  "rangePill5M": "5M",
+  "@rangePill5M": {"description": "Chart range pill: 5 months."},
+  "rangePill6M": "6M",
+  "@rangePill6M": {"description": "Chart range pill: 6 months."},
+  "rangePill7M": "7M",
+  "@rangePill7M": {"description": "Chart range pill: 7 months."},
+  "rangePill8M": "8M",
+  "@rangePill8M": {"description": "Chart range pill: 8 months."},
+  "rangePill9M": "9M",
+  "@rangePill9M": {"description": "Chart range pill: 9 months."},
+  "rangePill10M": "10M",
+  "@rangePill10M": {"description": "Chart range pill: 10 months."},
+  "rangePill11M": "11M",
+  "@rangePill11M": {"description": "Chart range pill: 11 months."},
+  "rangePill12M": "12M",
+  "@rangePill12M": {"description": "Chart range pill: 12 months."},
+  "rangePillYTD": "YTD",
+  "@rangePillYTD": {"description": "Chart range pill: year to date (since Jan 1 of current year)."},
+  "rangePill1Y": "1Y",
+  "@rangePill1Y": {"description": "Chart range pill: 1 year."},
+  "rangePill2Y": "2Y",
+  "@rangePill2Y": {"description": "Chart range pill: 2 years."},
+  "rangePill3Y": "3Y",
+  "@rangePill3Y": {"description": "Chart range pill: 3 years."},
+  "rangePill4Y": "4Y",
+  "@rangePill4Y": {"description": "Chart range pill: 4 years."},
+  "rangePill5Y": "5Y",
+  "@rangePill5Y": {"description": "Chart range pill: 5 years."},
+  "rangePill6Y": "6Y",
+  "@rangePill6Y": {"description": "Chart range pill: 6 years."},
+  "rangePill7Y": "7Y",
+  "@rangePill7Y": {"description": "Chart range pill: 7 years."},
+  "rangePill8Y": "8Y",
+  "@rangePill8Y": {"description": "Chart range pill: 8 years."},
+  "rangePill9Y": "9Y",
+  "@rangePill9Y": {"description": "Chart range pill: 9 years."},
+  "rangePill10Y": "10Y",
+  "@rangePill10Y": {"description": "Chart range pill: 10 years."},
+  "rangePill11Y": "11Y",
+  "@rangePill11Y": {"description": "Chart range pill: 11 years."},
+  "rangePill12Y": "12Y",
+  "@rangePill12Y": {"description": "Chart range pill: 12 years."},
+  "rangePill13Y": "13Y",
+  "@rangePill13Y": {"description": "Chart range pill: 13 years."},
+  "rangePill14Y": "14Y",
+  "@rangePill14Y": {"description": "Chart range pill: 14 years."},
+  "rangePill15Y": "15Y",
+  "@rangePill15Y": {"description": "Chart range pill: 15 years."},
+  "rangePillAll": "All",
+  "@rangePillAll": {"description": "Chart range pill: full available history."},
+
+
+  "snackAuthenticationFailed": "Authentication failed",
+  "@snackAuthenticationFailed": {
+    "description": "Snackbar shown when biometric/device authentication fails during stacks unlock."
+  },
+  "snackStacksCorrupted": "Your stacks data is corrupted. Open Settings → Remove stacks lock to recover.",
+  "@snackStacksCorrupted": {
+    "description": "Snackbar shown when the encrypted stacks blob fails its MAC check and cannot be decrypted."
+  },
+
+  "currencyPickerHint": "Swipe left or right on the price on the home screen to cycle through these currencies.",
+  "@currencyPickerHint": {
+    "description": "Hint shown at the top of the currency picker explaining the home-screen swipe gesture."
+  },
+  "settingsGroupPrivacy": "Stacks",
+  "@settingsGroupPrivacy": {
+    "description": "Settings group header for the stacks section (lock mode, re-lock timeout, change/remove PIN)."
+  },
+  "settingsAbout": "About",
+  "@settingsAbout": {
+    "description": "Settings row label that opens the About screen."
+  },
+
+  "aboutAppName": "Open Bitcoin Tracker",
+  "@aboutAppName": {
+    "description": "App name shown at the top of the About screen. Always rendered as the brand name regardless of UI language."
+  },
+  "aboutVersion": "Version {version}",
+  "@aboutVersion": {
+    "description": "Version line on the About screen.",
+    "placeholders": {
+      "version": {"type": "String", "example": "1.0.0"}
+    }
+  },
+  "aboutMadeBy": "By Max Hodler",
+  "@aboutMadeBy": {
+    "description": "Author credit line on the About screen. Always renders the author's name unchanged."
+  },
+  "aboutDedication": "For my grandma 🌼",
+  "@aboutDedication": {
+    "description": "Personal dedication shown below the author credit on the About screen. Translators should use a natural, affectionate term for grandmother and keep the flower emoji at the end."
+  },
+  "aboutSectionLinks": "Links",
+  "@aboutSectionLinks": {
+    "description": "Section header on the About screen above external links (GitHub, etc.)."
+  },
+  "aboutGitHub": "Repository",
+  "@aboutGitHub": {
+    "description": "Link label on the About screen that opens the project's GitHub repository in the browser."
+  },
+  "aboutPrivacyPolicy": "Privacy policy",
+  "@aboutPrivacyPolicy": {
+    "description": "Link label on the About screen that opens the app's public privacy policy page in the browser."
+  },
+  "aboutSectionDataSources": "Data sources",
+  "@aboutSectionDataSources": {
+    "description": "Section header on the About screen above the price/history data attribution lines."
+  },
+  "aboutDataSourceLive": "Current Prices",
+  "@aboutDataSourceLive": {
+    "description": "Label on the About screen for the price data source. The provider name (Kraken) is appended after the colon."
+  },
+  "aboutDataSourceHistory": "Historical Prices",
+  "@aboutDataSourceHistory": {
+    "description": "Label on the About screen for the bundled historical price source. The provider name (Coin Metrics) is appended after the colon."
+  },
+  "aboutDataSourceMempool": "Mempool and Hashrate",
+  "@aboutDataSourceMempool": {
+    "description": "Label on the About screen for the mempool fees / blocks / hashrate data source. The provider name (mempool.space) is appended after the colon."
+  },
+  "aboutLicenses": "Open source licenses",
+  "@aboutLicenses": {
+    "description": "About screen action that opens Flutter's built-in licenses page."
+  },
+
+  "settingsCurrencies": "Currencies",
+  "@settingsCurrencies": {
+    "description": "Settings row label and currency-picker app-bar title."
+  },
+  "settingsBtcPrice": "BTC price",
+  "@settingsBtcPrice": {
+    "description": "Settings toggle: show or hide the live BTC price block on home."
+  },
+  "settingsBtcPriceTitle": "BTC price",
+  "@settingsBtcPriceTitle": {
+    "description": "AppBar title of the BTC price settings sub-screen (groups the BTC price toggle, cadence picker, price-delta toggle, chart toggle, and scale segmented control)."
+  },
+  "settingsBtcPriceDisplay": "Display current price",
+  "@settingsBtcPriceDisplay": {
+    "description": "Toggle row inside the BTC price sub-screen that shows or hides the live BTC price block on home. Phrased as an action ('Display current price') so the row reads as a sub-action; 'current price' disambiguates it from the price-history chart toggle that lives in the same sub-screen."
+  },
+  "settingsReorderWidgets": "Reorder widgets",
+  "@settingsReorderWidgets": {
+    "description": "Display-group row label that opens the home-widget reorder sub-screen. Used as the AppBar title of that sub-screen as well."
+  },
+  "settingsReorderStacks": "Reorder stacks",
+  "@settingsReorderStacks": {
+    "description": "Row label inside the Stacks settings group that opens the stack-reorder sub-screen. Used as the AppBar title of that sub-screen as well. Disabled when the user has no stacks yet."
+  },
+  "reorderWidgetsHint": "Long-press and drag",
+  "@reorderWidgetsHint": {
+    "description": "Subtitle line shown below the AppBar title on the reorder-widgets and reorder-stacks screens, explaining how to reorder rows (long-press initiates drag via ReorderableDelayedDragStartListener)."
+  },
+  "settingsChart": "Display chart",
+  "@settingsChart": {
+    "description": "Settings toggle: show or hide the price-history chart on home."
+  },
+  "settingsScale": "Scale",
+  "@settingsScale": {
+    "description": "Settings row label for the linear/log scale segmented control."
+  },
+  "settingsScaleLinear": "Linear",
+  "@settingsScaleLinear": {
+    "description": "Linear (non-logarithmic) chart scale segment label."
+  },
+  "settingsScaleLog": "Log",
+  "@settingsScaleLog": {
+    "description": "Logarithmic chart scale segment label."
+  },
+  "settingsPortfolioTotal": "Display total",
+  "@settingsPortfolioTotal": {
+    "description": "Stacks settings toggle that shows or hides the portfolio total card on home (only visible with 2+ stacks). Phrased as an action ('Display total') to match the sibling 'Display current price' toggle in the BTC price sub-screen."
+  },
+  "settingsConverterButton": "Converter",
+  "@settingsConverterButton": {
+    "description": "Display-group toggle that shows or hides the Converter button widget on home."
+  },
+  "settingsMempoolWidget": "Mempool",
+  "@settingsMempoolWidget": {
+    "description": "Display-group toggle that shows or hides the Mempool fees widget on home."
+  },
+  "settingsHashrateWidget": "Hashrate",
+  "@settingsHashrateWidget": {
+    "description": "Display-group toggle that shows or hides the Network hashrate widget on home."
+  },
+  "settingsBitcoinDisplayMode": "Bitcoin unit",
+  "@settingsBitcoinDisplayMode": {
+    "description": "Settings row label for the segmented control that chooses how Bitcoin amounts are displayed across the app: as satoshi counts ('sats') or as BTC with up to 8 decimal places."
+  },
+  "bitcoinDisplayModeSats": "Sats",
+  "@bitcoinDisplayModeSats": {
+    "description": "Segment label for the satoshi display mode. Short ('sats') because it sits in a compact segmented control."
+  },
+  "bitcoinDisplayModeBtc": "BTC",
+  "@bitcoinDisplayModeBtc": {
+    "description": "Segment label for the BTC display mode. Renders amounts like 0.00339288 with the ₿ symbol."
+  },
+  "settingsLivePriceCadence": "Update cadence",
+  "@settingsLivePriceCadence": {
+    "description": "Settings row label that opens the cadence picker (Live / 5s / 15s / Off)."
+  },
+  "livePriceCadencePickerTitle": "Update cadence",
+  "@livePriceCadencePickerTitle": {
+    "description": "Title of the cadence picker dialog."
+  },
+  "livePriceCadenceLive": "Live",
+  "@livePriceCadenceLive": {
+    "description": "Cadence option: every accepted ticker tick (~1/sec on USD)."
+  },
+  "livePriceCadence5s": "Every 5 seconds",
+  "@livePriceCadence5s": {
+    "description": "Cadence option: throttle the price card to repaint at most every 5 seconds."
+  },
+  "livePriceCadence15s": "Every 15 seconds",
+  "@livePriceCadence15s": {
+    "description": "Cadence option: throttle the price card to repaint at most every 15 seconds."
+  },
+  "livePriceCadenceOffLabel": "No auto updates",
+  "@livePriceCadenceOffLabel": {
+    "description": "Cadence picker option: don't repaint the price card from live ticks. Cached value still shown. Phrased descriptively so users understand the consequence."
+  },
+  "settingsLockStacks": "Lock stacks",
+  "@settingsLockStacks": {
+    "description": "Settings row label that opens the auth-mode picker (Off / Device / PIN)."
+  },
+  "settingsAuthType": "Authentication type",
+  "@settingsAuthType": {
+    "description": "Lock stacks screen row label for the auth-mode picker (Off / Device / PIN), and the picker dialog title."
+  },
+  "settingsTurnOffLock": "Turn off lock",
+  "@settingsTurnOffLock": {
+    "description": "Lock stacks screen action that disables the lock (equivalent to picking Off in the auth-type picker). Only visible when the lock is on."
+  },
+  "settingsRelockAfter": "Re-lock after",
+  "@settingsRelockAfter": {
+    "description": "Settings row label for the auto-relock timeout picker (30s / 1m / 5m / Never)."
+  },
+  "settingsChangePin": "Change PIN",
+  "@settingsChangePin": {
+    "description": "Settings action that opens the change-PIN flow. Only visible in PIN mode."
+  },
+  "settingsResetStacksLock": "Forgot PIN? Reset stacks",
+  "@settingsResetStacksLock": {
+    "description": "Settings action that wipes the PIN and all encrypted stacks. Destructive; only visible in PIN mode."
+  },
+  "settingsResetAllOptions": "Reset all options",
+  "@settingsResetAllOptions": {
+    "description": "Settings action that resets display preferences but keeps the user's stacks and lock settings."
+  },
+
+  "authModeOff": "Off",
+  "@authModeOff": {
+    "description": "Auth mode option: stacks are not locked at all."
+  },
+  "authModeDevice": "Device authentication",
+  "@authModeDevice": {
+    "description": "Auth mode option: stacks are encrypted and unlocked via the device biometric."
+  },
+  "authModePin": "App PIN",
+  "@authModePin": {
+    "description": "Auth mode option: stacks are encrypted and unlocked via an app-specific PIN."
+  },
+
+  "lockTimeoutSeconds": "{seconds} seconds",
+  "@lockTimeoutSeconds": {
+    "description": "Auto-relock timeout label for sub-minute durations.",
+    "placeholders": {
+      "seconds": {"type": "int", "example": "30"}
+    }
+  },
+  "lockTimeoutMinutes": "{minutes, plural, =1{1 minute} other{{minutes} minutes}}",
+  "@lockTimeoutMinutes": {
+    "description": "Auto-relock timeout label for minute durations. Uses ICU plural to render '1 minute' vs '5 minutes'.",
+    "placeholders": {
+      "minutes": {"type": "int", "example": "5"}
+    }
+  },
+  "lockTimeoutNever": "Never",
+  "@lockTimeoutNever": {
+    "description": "Auto-relock timeout option meaning the lock never auto-engages while the user is logged in."
+  },
+
+  "dialogResetTitle": "Reset all options?",
+  "@dialogResetTitle": {
+    "description": "Title of the confirmation dialog for resetting display preferences."
+  },
+  "dialogResetBody": "Your stacks will be kept.",
+  "@dialogResetBody": {
+    "description": "Body text reassuring the user that resetting display preferences won't delete their stacks."
+  },
+  "dialogResetBodyWithLock": "Your stacks will be kept and will remain locked.",
+  "@dialogResetBodyWithLock": {
+    "description": "Body text shown when a stacks lock (PIN or device) is currently configured. Reassures the user that the lock stays in place after resetting display preferences."
+  },
+  "dialogResetConfirm": "Reset",
+  "@dialogResetConfirm": {
+    "description": "Confirm button on the reset-options dialog."
+  },
+  "buttonCancel": "Cancel",
+  "@buttonCancel": {
+    "description": "Generic cancel button used across multiple dialogs."
+  },
+  "buttonOk": "OK",
+  "@buttonOk": {
+    "description": "Generic OK / acknowledge button used in informational dialogs."
+  },
+  "buttonNext": "Next",
+  "@buttonNext": {
+    "description": "Confirm button label on the first step of a multi-step flow that advances to the next step (e.g. new-stack amount → name)."
+  },
+
+  "dialogNoBiometricTitle": "No biometric enrolled",
+  "@dialogNoBiometricTitle": {
+    "description": "Title shown when device-unlock mode is selected but no fingerprint or face is enrolled on the device."
+  },
+  "dialogNoBiometricBody": "Device unlock encrypts your stacks against a fingerprint or face. Set one up in your phone's Settings, then try again.",
+  "@dialogNoBiometricBody": {
+    "description": "Body text explaining why device-unlock requires an enrolled biometric, with the user-action they need to take."
+  },
+
+  "dialogDeviceUnavailableTitle": "Device authentication unavailable",
+  "@dialogDeviceUnavailableTitle": {
+    "description": "Title shown when device unlock is selected but the OS reports no device credentials are configured."
+  },
+  "dialogDeviceUnavailableBody": "Set up a screen lock in Android Settings, then try again.",
+  "@dialogDeviceUnavailableBody": {
+    "description": "Body text directing the user to enable a screen lock at the OS level. Mentions Android explicitly because this is an Android-only app."
+  },
+
+  "dialogForgetPinTitle": "Reset stacks?",
+  "@dialogForgetPinTitle": {
+    "description": "Title of the destructive reset-PIN dialog. Distinct from 'Reset all options' which is non-destructive."
+  },
+  "dialogForgetPinBody": "This will delete your current stacks permanently. You will not lose any bitcoin. Stacks are not connected to wallets.",
+  "@dialogForgetPinBody": {
+    "description": "Body text explaining that resetting the lock irreversibly deletes all stacks. Critical safety message; preserve the destructive framing in translation."
+  },
+  "dialogForgetPinConfirm": "Reset",
+  "@dialogForgetPinConfirm": {
+    "description": "Destructive confirm button on the reset-stacks-lock dialog. Wording mentions 'delete' explicitly so users know what they're agreeing to."
+  },
+
+  "snackCouldNotEnableDeviceUnlock": "Could not enable device unlock",
+  "@snackCouldNotEnableDeviceUnlock": {
+    "description": "Snackbar shown when transitioning from PIN to device unlock fails because the DEK couldn't be obtained from re-auth."
+  },
+  "snackCouldNotSwitchToPin": "Could not switch to PIN",
+  "@snackCouldNotSwitchToPin": {
+    "description": "Snackbar shown when transitioning from device to PIN fails because the DEK couldn't be obtained from re-auth."
+  },
+
+  "pinConfirmTitle": "Confirm PIN",
+  "@pinConfirmTitle": {
+    "description": "Title of the PIN-verify screen when re-authenticating before a sensitive operation (e.g. switching auth modes)."
+  },
+
+  "pinVerifyTitle": "Enter PIN",
+  "@pinVerifyTitle": {
+    "description": "Default title of the PIN entry screen in verify (unlock) mode."
+  },
+  "pinPromptSetupEnter": "Choose a {minLength}–{maxLength} digit PIN",
+  "@pinPromptSetupEnter": {
+    "description": "Status prompt shown on the first entry step of PIN setup, telling the user the allowed PIN length range.",
+    "placeholders": {
+      "minLength": {"type": "int", "example": "4"},
+      "maxLength": {"type": "int", "example": "6"}
+    }
+  },
+  "pinPromptSetupConfirm": "Re-enter the PIN to confirm",
+  "@pinPromptSetupConfirm": {
+    "description": "Status prompt shown on the confirmation step of PIN setup/change, asking the user to re-enter the PIN they just chose."
+  },
+  "pinPromptChangeEnter": "Enter your current PIN",
+  "@pinPromptChangeEnter": {
+    "description": "Status prompt shown at the start of the change-PIN flow, asking the user to enter their existing PIN before choosing a new one."
+  },
+  "pinPromptChangeNew": "Enter a new PIN",
+  "@pinPromptChangeNew": {
+    "description": "Status prompt shown in the change-PIN flow after the old PIN has been verified, asking the user to enter their new PIN."
+  },
+  "pinPromptChangeConfirm": "Re-enter the new PIN to confirm",
+  "@pinPromptChangeConfirm": {
+    "description": "Status prompt shown on the confirmation step of the change-PIN flow, asking the user to re-enter the new PIN."
+  },
+
+  "pinErrorMismatch": "Those didn't match. Try again.",
+  "@pinErrorMismatch": {
+    "description": "Error shown when the two PINs entered during setup or change don't match each other."
+  },
+  "pinErrorWrong": "Wrong PIN. Try again.",
+  "@pinErrorWrong": {
+    "description": "Error shown after a wrong PIN is entered and more than two attempts remain before cooldown."
+  },
+  "pinErrorWrongAttemptsRemaining": "Wrong PIN. {remaining, plural, =1{1 attempt} other{{remaining} attempts}} remaining.",
+  "@pinErrorWrongAttemptsRemaining": {
+    "description": "Error shown when the user enters a wrong PIN and only 1 or 2 attempts are left before cooldown. Uses ICU plural to render '1 attempt' vs '{n} attempts'.",
+    "placeholders": {
+      "remaining": {"type": "int", "example": "1"}
+    }
+  },
+  "pinCooldownSeconds": "Too many attempts. Try again in {seconds}s.",
+  "@pinCooldownSeconds": {
+    "description": "Cooldown error shown when the user is temporarily locked out and fewer than 60 seconds remain. {seconds} is the remaining whole seconds.",
+    "placeholders": {
+      "seconds": {"type": "int", "example": "30"}
+    }
+  },
+  "pinCooldownMinutes": "Too many attempts. Try again in {minutes}m {remainingSeconds}s.",
+  "@pinCooldownMinutes": {
+    "description": "Cooldown error shown when the user is temporarily locked out and 60 or more seconds remain. {minutes} is full minutes, {remainingSeconds} is the leftover seconds.",
+    "placeholders": {
+      "minutes": {"type": "int", "example": "4"},
+      "remainingSeconds": {"type": "int", "example": "15"}
+    }
+  },
+
+  "totalCardName": "Total",
+  "@totalCardName": {
+    "description": "Name shown on the portfolio total card and as the header of its options menu. Visible only when the user has 2+ stacks and the total card is enabled."
+  },
+
+  "homeAddStack": "Add stack",
+  "@homeAddStack": {
+    "description": "Label of the Add stack shortcut button on the home screen."
+  },
+  "homeConverter": "Converter",
+  "@homeConverter": {
+    "description": "Label of the Converter shortcut button on the home screen."
+  },
+  "homeUnlockStacks": "Unlock Stacks",
+  "@homeUnlockStacks": {
+    "description": "Label on the locked-stacks placeholder card shown when the user is locked. Tapping it triggers re-authentication."
+  },
+
+  "stackMenuUpdateAmount": "Update amount",
+  "@stackMenuUpdateAmount": {
+    "description": "Stack overflow menu action: edit the BTC/sats amount of the stack."
+  },
+  "stackMenuChangeName": "Change name",
+  "@stackMenuChangeName": {
+    "description": "Stack overflow menu action: rename the stack."
+  },
+  "rangePickerLongTitle": "Select range",
+  "@rangePickerLongTitle": {
+    "description": "Title of the dialog that lets the user pick which year range to mount on the overflow chip (1Y..15Y)."
+  },
+  "rangePickerLongHint": "Tip: swipe up or down on the chip to cycle ranges.",
+  "@rangePickerLongHint": {
+    "description": "Subtitle under the range picker dialog title teaching the swipe-to-cycle shortcut on the overflow chip."
+  },
+  "rangePickerYearsFull": "{count, plural, =1{1 Year} other{{count} Years}}",
+  "@rangePickerYearsFull": {
+    "description": "Long-form year range label used in the overflow picker (e.g. '1 Year', '5 Years').",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "rangePickerMonthsFull": "{count, plural, =1{1 Month} other{{count} Months}}",
+  "@rangePickerMonthsFull": {
+    "description": "Long-form month range label used in the overflow picker (e.g. '1 Month', '6 Months').",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "stackMenuDelete": "Delete stack",
+  "@stackMenuDelete": {
+    "description": "Stack overflow menu action: delete the stack. Destructive."
+  },
+
+  "totalMenuHide": "Hide",
+  "@totalMenuHide": {
+    "description": "Total card menu action: hide the portfolio total card from home."
+  },
+
+  "dialogDeleteStackTitle": "Delete stack?",
+  "@dialogDeleteStackTitle": {
+    "description": "Title of the destructive confirmation dialog shown before deleting a stack."
+  },
+  "dialogDeleteStackBody": "This can't be undone.",
+  "@dialogDeleteStackBody": {
+    "description": "Body text of the delete-stack confirmation dialog. Short and final."
+  },
+  "dialogDeleteStackConfirm": "Delete",
+  "@dialogDeleteStackConfirm": {
+    "description": "Destructive confirm button of the delete-stack dialog."
+  },
+
+  "satsInputLabel": "Bitcoin amount",
+  "@satsInputLabel": {
+    "description": "Label above the sats input pad on the new-stack and edit-amount screens."
+  },
+  "satsInputLeadingZeroWarning": "Don't enter any zeros on the left",
+  "@satsInputLeadingZeroWarning": {
+    "description": "Warning shown briefly when the user taps 0 with an empty input field. The pad blocks leading zeros."
+  },
+  "satsInputUnitHint": "Enter amount in sats",
+  "@satsInputUnitHint": {
+    "description": "Hint shown below the sats input on the new-stack and edit-amount screens, in the slot the fiat conversion will fill once the user starts typing. Tells the user the unit is sats, not BTC."
+  },
+  "satsInputUnitHintBtc": "Enter amount in BTC",
+  "@satsInputUnitHintBtc": {
+    "description": "BTC-mode counterpart of [satsInputUnitHint]. Shown in the new-stack and edit-amount screens' fiat-preview slot when the user has chosen BTC as the Bitcoin display unit."
+  },
+  "satsInputActionCopy": "Copy",
+  "@satsInputActionCopy": {
+    "description": "Long-press selection toolbar action on the sats input that copies the current digit string to the clipboard."
+  },
+  "satsInputActionPaste": "Paste",
+  "@satsInputActionPaste": {
+    "description": "Long-press selection toolbar action on the sats input that pastes a digit string from the clipboard, after sanitization."
+  },
+  "snackSatsCopied": "Copied",
+  "@snackSatsCopied": {
+    "description": "Floating snackbar shown briefly after the user copies the sats amount via the long-press toolbar."
+  },
+  "snackSatsPasteInvalid": "Clipboard doesn't contain a valid sats amount",
+  "@snackSatsPasteInvalid": {
+    "description": "Floating snackbar shown when the user pastes into the sats input and the clipboard contents can't be parsed as a valid sats amount (empty, zero, or above the supply cap)."
+  },
+
+  "stackNameLabel": "Name",
+  "@stackNameLabel": {
+    "description": "Label above the stack-name text field on new-stack step 2 and the edit-name screen."
+  },
+  "stackNameLimitReached": "24 character limit reached",
+  "@stackNameLimitReached": {
+    "description": "Warning shown under the stack-name field when the user hits the 24-character cap."
+  },
+  "stackUnnamedFallback": "Unnamed Stack",
+  "@stackUnnamedFallback": {
+    "description": "Fallback name used when the user submits an entirely-whitespace stack name. Should remain title-cased to feel like a placeholder name rather than instructional text."
+  },
+
+  "currencyLabelUsd": "US Dollar",
+  "@currencyLabelUsd": {
+    "description": "Display name for the US Dollar (USD) shown after the code in the currency picker, e.g. 'USD - US Dollar'."
+  },
+  "currencyLabelEur": "Euro",
+  "@currencyLabelEur": {
+    "description": "Display name for the Euro (EUR)."
+  },
+  "currencyLabelGbp": "British Pound",
+  "@currencyLabelGbp": {
+    "description": "Display name for the British Pound (GBP)."
+  },
+  "currencyLabelAud": "Australian Dollar",
+  "@currencyLabelAud": {
+    "description": "Display name for the Australian Dollar (AUD)."
+  },
+  "currencyLabelCad": "Canadian Dollar",
+  "@currencyLabelCad": {
+    "description": "Display name for the Canadian Dollar (CAD)."
+  },
+  "currencyLabelChf": "Swiss Franc",
+  "@currencyLabelChf": {
+    "description": "Display name for the Swiss Franc (CHF)."
+  },
+  "currencyLabelJpy": "Japanese Yen",
+  "@currencyLabelJpy": {
+    "description": "Display name for the Japanese Yen (JPY)."
+  },
+
+  "stacksWidgetTitle": "Stacks",
+  "@stacksWidgetTitle": {
+    "description": "Label for the stacks entry in the Settings → Reorder widgets list."
+  },
+  "mempoolWidgetTitle": "Mempool",
+  "@mempoolWidgetTitle": {
+    "description": "Label for the mempool entry in the Settings → Reorder widgets list."
+  },
+  "mempoolUnit": "₿/vB",
+  "@mempoolUnit": {
+    "description": "Unit suffix on each block's median fee value. Bitcoin transaction-fee unit (sats per virtual byte), shown with the ₿ glyph instead of 'sat'. Normally not translated."
+  },
+  "mempoolBlockEta": "~{minutes} min",
+  "@mempoolBlockEta": {
+    "description": "ETA line on each projected (unmined) block. Approximate time until that block is mined.",
+    "placeholders": {
+      "minutes": {"type": "int", "example": "10"}
+    }
+  },
+  "mempoolError": "Couldn't load network data",
+  "@mempoolError": {
+    "description": "Error state in the mempool widget when both endpoints fail."
+  },
+
+  "hashrateWidgetTitle": "Hashrate",
+  "@hashrateWidgetTitle": {
+    "description": "Title for the Network hashrate widget on home and label for its entry in the Settings → Reorder widgets list."
+  },
+  "hashrateUnit": "EH/s",
+  "@hashrateUnit": {
+    "description": "Unit suffix on the hashrate value. Exahashes per second (1 EH/s = 10^18 H/s). Normally not translated."
+  },
+  "hashrateError": "Couldn't load hashrate",
+  "@hashrateError": {
+    "description": "Error state in the hashrate widget when the mempool.space hashrate endpoint fails."
+  },
+
+  "mempoolSheetMinedTitle": "Block {height}",
+  "@mempoolSheetMinedTitle": {
+    "description": "Title of the mempool block detail sheet for a mined block. {height} is the block height (number).",
+    "placeholders": {
+      "height": {"type": "String", "example": "948,218"}
+    }
+  },
+  "mempoolSheetProjectedTitle": "Pending block",
+  "@mempoolSheetProjectedTitle": {
+    "description": "Title of the mempool block detail sheet for a projected (not-yet-mined) block."
+  },
+  "mempoolSheetMinedAgo": "{minutes, plural, =0{just now} =1{1 minute ago} other{{minutes} minutes ago}}",
+  "@mempoolSheetMinedAgo": {
+    "description": "Time-since-mined line for a mined block, shown under the title in the detail sheet. Uses ICU plural for 0/1/other.",
+    "placeholders": {
+      "minutes": {"type": "int", "example": "4"}
+    }
+  },
+  "mempoolSheetProjectedEta": "in ~{minutes} min",
+  "@mempoolSheetProjectedEta": {
+    "description": "Eta line for a projected block, shown under the title in the detail sheet.",
+    "placeholders": {
+      "minutes": {"type": "int", "example": "10"}
+    }
+  },
+  "mempoolSheetFee": "Median fee",
+  "@mempoolSheetFee": {
+    "description": "Label for the median-fee row in the block detail sheet."
+  },
+  "mempoolSheetFeeRange": "Fee range",
+  "@mempoolSheetFeeRange": {
+    "description": "Label for the min–max fee row in the block detail sheet."
+  },
+  "mempoolSheetFeeRangeValue": "{min} – {max} {unit}",
+  "@mempoolSheetFeeRangeValue": {
+    "description": "Value for the fee-range row, e.g. '2 – 100 sat/vB'.",
+    "placeholders": {
+      "min": {"type": "String", "example": "2"},
+      "max": {"type": "String", "example": "100"},
+      "unit": {"type": "String", "example": "sat/vB"}
+    }
+  },
+  "mempoolSheetTransactions": "Transactions",
+  "@mempoolSheetTransactions": {
+    "description": "Label for the transaction-count row in the block detail sheet."
+  },
+  "mempoolSheetTotalFees": "Total fees",
+  "@mempoolSheetTotalFees": {
+    "description": "Label for the total-fees row in the block detail sheet."
+  },
+  "mempoolSheetViewOnMempoolSpace": "View on mempool.space",
+  "@mempoolSheetViewOnMempoolSpace": {
+    "description": "Action label at the bottom of the block detail sheet that opens the block's page on mempool.space in the browser."
+  },
+
+  "converterModeBtcFiat": "Fiat - BTC",
+  "@converterModeBtcFiat": {
+    "description": "Label for the segmented toggle option that switches the converter into fiat ↔ Bitcoin mode."
+  },
+  "converterModeBtcSats": "Sats - BTC",
+  "@converterModeBtcSats": {
+    "description": "Label for the segmented toggle option that switches the converter into BTC ↔ sats unit-conversion mode."
+  }
+}
