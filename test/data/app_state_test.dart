@@ -1,0 +1,74 @@
+import 'package:open_bitcoin_tracker/data/data.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  group('AppState', () {
+    test('defaults match STORAGE.md', () {
+      const s = AppState();
+      expect(s.stacks, isEmpty);
+      expect(s.currency, Currency.usd);
+      expect(s.showPortfolio, true);
+
+      expect(s.theme, AppTheme.system);
+      expect(s.btcRange, BtcRange.y10);
+      expect(s.logScale, true);
+    });
+
+    test('empty json hydrates to defaults', () {
+      final s = AppState.fromJson(const {});
+      expect(s.currency, Currency.usd);
+      expect(s.btcRange, BtcRange.y10);
+      expect(s.logScale, true);
+    });
+
+    test('invalid btcRange falls back to default (10Y)', () {
+      final s = AppState.fromJson(const {'btcRange': 'bogus'});
+      expect(s.btcRange, BtcRange.y10);
+    });
+
+    test('round-trips through JSON', () {
+      final original = AppState(
+        stacks: const [
+          Stack(id: 'a', name: 'Cold', sats: 100000000),
+          Stack(id: 'b', name: 'Hot', sats: 50000, isHidden: true),
+        ],
+        currency: Currency.eur,
+        btcRange: BtcRange.y1,
+        logScale: false,
+      );
+      final roundTripped = AppState.fromJson(
+        Map<String, dynamic>.from(original.toJson()),
+      );
+      expect(roundTripped.stacks.length, 2);
+      expect(roundTripped.stacks[0].name, 'Cold');
+      expect(roundTripped.stacks[1].isHidden, true);
+      expect(roundTripped.currency, Currency.eur);
+      expect(roundTripped.btcRange, BtcRange.y1);
+      expect(roundTripped.logScale, false);
+    });
+
+    test('stack with missing fields is dropped', () {
+      final s = AppState.fromJson(const {
+        'stacks': [
+          {'id': 'ok', 'name': 'A', 'sats': 1},
+          {'id': 'bad'}, // missing name/sats
+          'not-a-map',
+        ],
+      });
+      expect(s.stacks.length, 1);
+      expect(s.stacks.first.id, 'ok');
+    });
+  });
+
+  group('Sats', () {
+    test('conversion is symmetric', () {
+      expect(Sats.toBtc(Sats.perBtc), 1.0);
+      expect(Sats.fromBtc(2.5), 250000000);
+    });
+
+    test('toFiat multiplies BTC value by rate', () {
+      expect(Sats.toFiat(Sats.perBtc, 50000), 50000);
+      expect(Sats.toFiat(Sats.perBtc ~/ 2, 50000), 25000);
+    });
+  });
+}

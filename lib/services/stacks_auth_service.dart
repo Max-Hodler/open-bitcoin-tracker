@@ -1,0 +1,157 @@
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:cryptography/cryptography.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:local_auth/local_auth.dart';
+
+import 'crypto_params.dart';
+
+class StacksAuthService {
+  StacksAuthService({
+    LocalAuthentication? localAuth,
+    FlutterSecureStorage? storage,
+  })  : _auth = localAuth ?? LocalAuthentication(),
+        _storage = storage ??
+            const FlutterSecureStorage(
+              aOptions:
+                  AndroidOptions(encryptedSharedPreferences: true),
+            );
+
+  static const _kPinHash = 'stacks_auth_pin_hash';
+  static const _kPinSalt = 'stacks_auth_pin_salt';
+  static const _kFailCount = 'stacks_auth_fail_count';
+  static const _kCooldownUntil = 'stacks_auth_cooldown_until';
+
+  static const int kFailuresBeforeCooldown = 5;
+
+  /// Returns the cooldown duration that should be applied when the user has
+  /// just hit [failureCount] total failures, or null if no cooldown applies.
+  static Duration? cooldownFor(int failureCount) {
+    if (failureCount < kFailuresBeforeCooldown) return null;
+    return switch (failureCount) {
+      5 => const Duration(seconds: 30),
+      6 => const Duration(minutes: 1),
+      7 => const Duration(minutes: 5),
+      8 => const Duration(minutes: 15),
+      _ => const Duration(hours: 1),
+    };
+  }
+
+  static final _argon2id = buildStacksArgon2id();
+
+  final LocalAuthentication _auth;
+  final FlutterSecureStorage _storage;
+  final Random _rng = Random.secure();
+
+  Future<bool> isDeviceAuthAvailable() async {
+    try {
+      return await _auth.isDeviceSupported();
+    } on PlatformException {
+      return false;
+    }
+  }
+
+  Future<bool> authenticateDevice({
+    String reason = 'Unlock your stacks',
+  }) async {
+    try {
+      return await _auth.authenticate(
+        localizedReason: reason,
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+          biometricOnly: false,
+        ),
+      );
+    } on PlatformException {
+      return false;
+    }
+  }
+
+  Future<void> setPin(String pin) async {
+    final salt = Uint8List(16);
+    for (var i = 0; i < salt.length; i++) {
+      salt[i] = _rng.nextInt(256);
+    }
+    final hashBytes = await _hash(pin, salt);
+    await _storage.write(key: _kPinHash, value: base64.encode(hashBytes));
+    await _storage.write(key: _kPinSalt, value: base64.encode(salt));
+    await resetFailures();
+  }
+
+  Future<bool> verifyPin(String pin) async {
+    final storedHashB64 = await _storage.read(key: _kPinHash);
+    final storedSaltB64 = await _storage.read(key: _kPinSalt);
+    if (storedHashB64 == null || storedSaltB64 == null) return false;
+    final storedHash = base64.decode(storedHashB64);
+    final salt = base64.decode(storedSaltB64);
+    final candidate = await _hash(pin, salt);
+    final ok = _constantTimeEquals(candidate, storedHash);
+    if (ok) await resetFailures();
+    return ok;
+  }
+
+  Future<void> clearPin() async {
+    await _storage.delete(key: _kPinHash);
+    await _storage.delete(key: _kPinSalt);
+    await resetFailures();
+  }
+
+  Future<int> getFailureCount() async {
+    final raw = await _storage.read(key: _kFailCount);
+    return int.tryParse(raw ?? '') ?? 0;
+  }
+
+  Future<DateTime?> getCooldownUntil() async {
+    final raw = await _storage.read(key: _kCooldownUntil);
+    if (raw == null) return null;
+    final parsed = DateTime.tryParse(raw);
+    if (parsed == null) return null;
+    return parsed.isUtc ? parsed : parsed.toUtc();
+  }
+
+  Future<Duration?> getRemainingCooldown() async {
+    final until = await getCooldownUntil();
+    if (until == null) return null;
+    final now = DateTime.now().toUtc();
+    if (!until.isAfter(now)) return null;
+    return until.difference(now);
+  }
+
+  Future<void> resetFailures() async {
+    await _storage.delete(key: _kFailCount);
+    await _storage.delete(key: _kCooldownUntil);
+  }
+
+  /// Increment the persisted failure count, persist a new cooldown deadline if
+  /// the new count crosses into the cooldown range, and return the new count.
+  Future<int> registerFailure() async {
+    final next = (await getFailureCount()) + 1;
+    await _storage.write(key: _kFailCount, value: next.toString());
+    final cooldown = cooldownFor(next);
+    if (cooldown != null) {
+      final until = DateTime.now().toUtc().add(cooldown);
+      await _storage.write(key: _kCooldownUntil, value: until.toIso8601String());
+    }
+    return next;
+  }
+
+  Future<List<int>> _hash(String pin, List<int> salt) async {
+    final secretKey = SecretKey(utf8.encode(pin));
+    final derived = await _argon2id.deriveKey(
+      secretKey: secretKey,
+      nonce: salt,
+    );
+    return derived.extractBytes();
+  }
+
+  bool _constantTimeEquals(List<int> a, List<int> b) {
+    if (a.length != b.length) return false;
+    var diff = 0;
+    for (var i = 0; i < a.length; i++) {
+      diff |= a[i] ^ b[i];
+    }
+    return diff == 0;
+  }
+}
