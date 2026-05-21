@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../api/api.dart';
 import '../../data/app_enums.dart';
+import '../../data/fx_history.dart';
 import '../../data/sats.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../services/app_haptics.dart';
@@ -83,11 +84,21 @@ class _HomeScreenState extends State<HomeScreen> {
   //                         long-range "camera zoom" chart and the range pills)
   //   - _slicer:            range-window cache around the binary search in
   //                         [ChartSlicer] (file: lib/screens/home/_chart_slice.dart)
+  // The fiat conversion now keys on (series identity, currency, FX-history
+  // identity) instead of a single scalar rate: each historical point is
+  // converted by its own day's FX rate, so the cache must invalidate whenever
+  // the currency changes or the bundled FX object first loads. When FX history
+  // hasn't loaded yet (`_memoFx == null`) the blocks fall back to the live
+  // `usdToCurrency` scalar — `_memoUsdToCurrency` guards that fallback path.
   List<HistoryPoint>? _memoSeries;
+  Currency? _memoCurrency;
+  FxHistory? _memoFx;
   double _memoUsdToCurrency = double.nan;
   List<PricePoint> _memoConverted = const [];
 
   List<HistoryPoint>? _memoAllHistorySeries;
+  Currency? _memoAllHistoryCurrency;
+  FxHistory? _memoAllHistoryFx;
   double _memoAllHistoryUsdToCurrency = double.nan;
   List<PricePoint> _memoAllHistoryConverted = const [];
 
@@ -221,6 +232,11 @@ class _HomeScreenState extends State<HomeScreen> {
     final allHistory = context.select<LivePriceController, List<HistoryPoint>>(
       (c) => c.allHistory,
     );
+    // Bundled daily FX history. Null until the asset finishes loading; while
+    // null the conversion blocks fall back to the live `usdToCurrency` scalar.
+    final fxHistory = context.select<LivePriceController, FxHistory?>(
+      (c) => c.fxHistory,
+    );
     final lastFetchedAt = context.select<LivePriceController, DateTime?>(
       (c) => c.lastFetchedAt,
     );
@@ -243,12 +259,26 @@ class _HomeScreenState extends State<HomeScreen> {
         ? _slicer.slice(allHistory, range)
         : (intradaySeries ?? const <HistoryPoint>[]);
 
-    if (!identical(_memoSeries, series) || _memoUsdToCurrency != usdToCurrency) {
+    // Convert each historical point by its own day's FX rate. While FX history
+    // hasn't loaded, fall back to the live `usdToCurrency` scalar. The memo
+    // invalidates on series identity, currency, the FX object first loading,
+    // and (fallback only) the scalar rate.
+    if (!identical(_memoSeries, series) ||
+        _memoCurrency != currency ||
+        !identical(_memoFx, fxHistory) ||
+        (fxHistory == null && _memoUsdToCurrency != usdToCurrency)) {
       _memoSeries = series;
+      _memoCurrency = currency;
+      _memoFx = fxHistory;
       _memoUsdToCurrency = usdToCurrency;
+      final fx = fxHistory;
       _memoConverted = [
         for (final p in series)
-          PricePoint(p.timeMs, p.priceUsd * usdToCurrency),
+          PricePoint(
+            p.timeMs,
+            p.priceUsd *
+                (fx != null ? fx.rateAt(currency, p.timeMs) : usdToCurrency),
+          ),
       ];
     }
 
@@ -263,12 +293,21 @@ class _HomeScreenState extends State<HomeScreen> {
     // between 3M–All animates the visible window as a camera zoom; cache the
     // fiat-converted series separately from the range-specific one.
     if (!identical(_memoAllHistorySeries, allHistory) ||
-        _memoAllHistoryUsdToCurrency != usdToCurrency) {
+        _memoAllHistoryCurrency != currency ||
+        !identical(_memoAllHistoryFx, fxHistory) ||
+        (fxHistory == null && _memoAllHistoryUsdToCurrency != usdToCurrency)) {
       _memoAllHistorySeries = allHistory;
+      _memoAllHistoryCurrency = currency;
+      _memoAllHistoryFx = fxHistory;
       _memoAllHistoryUsdToCurrency = usdToCurrency;
+      final fx = fxHistory;
       _memoAllHistoryConverted = [
         for (final p in allHistory)
-          PricePoint(p.timeMs, p.priceUsd * usdToCurrency),
+          PricePoint(
+            p.timeMs,
+            p.priceUsd *
+                (fx != null ? fx.rateAt(currency, p.timeMs) : usdToCurrency),
+          ),
         if (currentPrice > 0)
           PricePoint(DateTime.now().millisecondsSinceEpoch, currentPrice),
       ];

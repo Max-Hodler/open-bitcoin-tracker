@@ -72,6 +72,7 @@
   "aboutSectionDataSources": "データソース",
   "aboutDataSourceLive": "現在価格",
   "aboutDataSourceHistory": "過去価格",
+  "aboutDataSourceFx": "過去の為替レート",
   "aboutDataSourceMempool": "Mempool と Hashrate",
   "aboutLicenses": "オープンソースライセンス",
 

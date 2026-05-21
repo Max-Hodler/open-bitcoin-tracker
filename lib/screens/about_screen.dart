@@ -12,6 +12,8 @@ const String _kPrivacyPolicyUrl =
     'https://max-hodler.github.io/open-bitcoin-tracker/privacy/';
 const String _kKrakenUrl = 'https://www.kraken.com';
 const String _kCoinMetricsUrl = 'https://coinmetrics.io';
+const String _kEcbUrl =
+    'https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html';
 const String _kMempoolSpaceUrl = 'https://mempool.space';
 
 class AboutScreen extends StatelessWidget {
@@ -79,6 +81,12 @@ class AboutScreen extends StatelessWidget {
                   label: l10n.aboutDataSourceHistory,
                   value: 'Coin Metrics',
                   url: _kCoinMetricsUrl,
+                ),
+                _externalLinkTile(
+                  context,
+                  label: l10n.aboutDataSourceFx,
+                  value: 'European Central Bank',
+                  url: _kEcbUrl,
                 ),
                 _externalLinkTile(
                   context,

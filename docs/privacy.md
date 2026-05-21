@@ -39,13 +39,13 @@ To show you live and historical Bitcoin prices and current network conditions, t
 - **mempool.space** — for current network hashrate and mempool/block data.
   - REST: `https://mempool.space/api`
 
-In addition, long-range price charts use a **Coin Metrics** daily BTC/USD reference-rate dataset (`assets/btc_history.csv`) that is bundled inside the app at build time. This dataset is not fetched at runtime, and the app does not contact Coin Metrics' servers.
+In addition, long-range price charts use a **Coin Metrics** daily BTC/USD reference-rate dataset (`assets/btc_history.csv`) that is bundled inside the app at build time. To show those charts in currencies other than USD, the app also bundles a daily foreign-exchange reference-rate dataset (`assets/fx_history.csv`) derived from the **European Central Bank**'s published euro reference rates. Both datasets are not fetched at runtime, and the app does not contact Coin Metrics' or the ECB's servers.
 
 These requests contain only the information needed to ask for a price or a block (e.g. a trading pair like `BTC/USD`, or a hashrate window like `3d`). They do not include any account identifier, device identifier, advertising ID, name, email, or location. Kraken, mempool.space, and your network provider can see your device's IP address, as is true for any internet request — the app developer does not.
 
 ## Links that open in your browser
 
-A few places in the app — the block details sheet, and the links on the About screen (GitHub, Kraken, Coin Metrics, mempool.space, this privacy policy) — open URLs in your device's default browser. Once you tap one, your browser is the one making the request, and its own privacy behavior (and any privacy policy of the destination site) applies.
+A few places in the app — the block details sheet, and the links on the About screen (GitHub, Kraken, Coin Metrics, the European Central Bank, mempool.space, this privacy policy) — open URLs in your device's default browser. Once you tap one, your browser is the one making the request, and its own privacy behavior (and any privacy policy of the destination site) applies.
 
 ## Permissions the app requests
 

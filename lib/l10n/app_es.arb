@@ -72,6 +72,7 @@
   "aboutSectionDataSources": "Fuentes de datos",
   "aboutDataSourceLive": "Precios actuales",
   "aboutDataSourceHistory": "Precios históricos",
+  "aboutDataSourceFx": "Tipos de cambio históricos",
   "aboutDataSourceMempool": "Mempool y hashrate",
   "aboutLicenses": "Licencias de código abierto",
 

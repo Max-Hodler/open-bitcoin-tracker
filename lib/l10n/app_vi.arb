@@ -72,6 +72,7 @@
   "aboutSectionDataSources": "Nguồn dữ liệu",
   "aboutDataSourceLive": "Giá hiện tại",
   "aboutDataSourceHistory": "Giá lịch sử",
+  "aboutDataSourceFx": "Tỷ giá hối đoái lịch sử",
   "aboutDataSourceMempool": "Mempool và Hashrate",
   "aboutLicenses": "Giấy phép mã nguồn mở",
 

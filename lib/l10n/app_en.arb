@@ -199,6 +199,10 @@
   "@aboutDataSourceHistory": {
     "description": "Label on the About screen for the bundled historical price source. The provider name (Coin Metrics) is appended after the colon."
   },
+  "aboutDataSourceFx": "Historical FX rates",
+  "@aboutDataSourceFx": {
+    "description": "Label on the About screen for the bundled historical foreign-exchange rate dataset used to convert prices into non-USD currencies. The provider name (European Central Bank) is appended after the colon."
+  },
   "aboutDataSourceMempool": "Mempool and Hashrate",
   "@aboutDataSourceMempool": {
     "description": "Label on the About screen for the mempool fees / blocks / hashrate data source. The provider name (mempool.space) is appended after the colon."

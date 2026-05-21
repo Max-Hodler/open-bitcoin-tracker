@@ -72,6 +72,7 @@
   "aboutSectionDataSources": "Sources de données",
   "aboutDataSourceLive": "Prix actuels",
   "aboutDataSourceHistory": "Prix historiques",
+  "aboutDataSourceFx": "Taux de change historiques",
   "aboutDataSourceMempool": "Mempool et Hashrate",
   "aboutLicenses": "Licences open source",
 

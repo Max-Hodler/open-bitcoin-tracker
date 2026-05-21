@@ -8,6 +8,7 @@ import '../data/app_enums.dart';
 import '../data/btc_history.dart';
 import '../data/btc_history_cache.dart';
 import '../data/btc_rates_cache.dart';
+import '../data/fx_history.dart';
 import '_tick_throttler.dart';
 import 'kraken_ohlc_client.dart';
 import 'kraken_stream_service.dart';
@@ -39,6 +40,10 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
 
   BtcRates _rates;
   List<HistoryPoint> _allHistory = const [];
+  // Bundled daily USD->fiat rates, used to convert the USD-only history series
+  // per-day for non-USD charts. Null until the asset finishes loading; callers
+  // fall back to the live scalar rate while it is null.
+  FxHistory? _fxHistory;
   final Map<BtcRange, List<HistoryPoint>> _intraday = {};
   final Set<BtcRange> _intradayFailed = {};
   BtcRange? _intradayLoading;
@@ -74,6 +79,7 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
 
   BtcRates get rates => _rates;
   List<HistoryPoint> get allHistory => _allHistory;
+  FxHistory? get fxHistory => _fxHistory;
   DateTime? get lastFetchedAt => _lastFetchedAt;
   LivePriceCadence get cadence => _cadence;
 
@@ -105,6 +111,17 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
     _streamSub ??= _stream.ticks.listen(_applyTick);
     _stream.start();
     unawaited(refreshHistory());
+    unawaited(_loadFxHistory());
+  }
+
+  // Load the bundled FX-rate history once. Independent of the BTC history
+  // fetch — failure here just leaves `_fxHistory` null and the chart on the
+  // live-scalar fallback.
+  Future<void> _loadFxHistory() async {
+    final fx = await loadBundledFxHistory();
+    if (_disposed) return;
+    _fxHistory = fx;
+    notifyListeners();
   }
 
   Future<void> refreshHistory() => _fetchAllHistory();

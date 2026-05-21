@@ -50,6 +50,7 @@ flutter:
 
   assets:
     - assets/btc_history.csv
+    - assets/fx_history.csv
 
   fonts:
     - family: Inter
