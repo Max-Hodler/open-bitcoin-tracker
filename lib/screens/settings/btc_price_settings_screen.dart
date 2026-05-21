@@ -8,6 +8,7 @@ import '../../state/state.dart';
 import '../../theme/theme.dart';
 import '../../widgets/scroll_hairline.dart';
 import '_widgets.dart';
+import 'currency_picker_screen.dart';
 
 class BtcPriceSettingsScreen extends StatelessWidget {
   const BtcPriceSettingsScreen({super.key});
@@ -45,6 +46,17 @@ class BtcPriceSettingsScreen extends StatelessWidget {
           children: [
             SettingsGroup(
               children: [
+                SettingsPickerTile(
+                  label: l10n.settingsCurrencies,
+                  value: '',
+                  onTap: () => _openCurrencyPicker(context, app),
+                  trailingIcon: Icons.chevron_right,
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            SettingsGroup(
+              children: [
                 SettingsToggleTile(
                   label: l10n.settingsBtcPriceDisplay,
                   value: app.showBtcPrice,
@@ -58,6 +70,11 @@ class BtcPriceSettingsScreen extends StatelessWidget {
                   trailingIcon: Icons.unfold_more,
                   enabled: app.showBtcPrice,
                 ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            SettingsGroup(
+              children: [
                 SettingsToggleTile(
                   label: l10n.settingsChart,
                   value: app.showChart,
@@ -78,6 +95,18 @@ class BtcPriceSettingsScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> _openCurrencyPicker(
+  BuildContext context,
+  AppStateNotifier app,
+) async {
+  final picked = await Navigator.of(context).push<List<Currency>>(
+    MaterialPageRoute(
+      builder: (_) => CurrencyPickerScreen(initial: app.selectedCurrencies),
+    ),
+  );
+  if (picked != null) app.setSelectedCurrencies(picked);
 }
 
 String _livePriceCadenceLabel(AppLocalizations l10n, LivePriceCadence c) {

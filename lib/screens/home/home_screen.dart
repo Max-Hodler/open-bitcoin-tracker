@@ -360,7 +360,11 @@ class _HomeScreenState extends State<HomeScreen> {
       chartColor: chartColor,
       rangePct: rangePct,
       rollDirection: _rollDirection,
-      onPriceTap: () => app.setShowChart(!app.showChart),
+      onPriceTap: () => Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(
+          builder: (_) => const BtcPriceSettingsScreen(),
+        ),
+      ),
       onCurrencySwipe: (direction) async {
         final notifier = context.read<AppStateNotifier>();
         final ring = notifier.selectedCurrencies;

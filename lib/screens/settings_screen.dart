@@ -10,7 +10,6 @@ import '../widgets/scroll_hairline.dart';
 import 'about_screen.dart';
 import 'settings/_widgets.dart';
 import 'settings/btc_price_settings_screen.dart';
-import 'settings/currency_picker_screen.dart';
 import 'settings/reorder_home_widgets_screen.dart';
 import 'settings/stacks_settings_screen.dart';
 import 'settings/theme_settings_screen.dart';
@@ -81,12 +80,6 @@ class SettingsScreen extends StatelessWidget {
                   onChanged: (i) => app.setBitcoinDisplayMode(
                     i == 1 ? BtcDisplayMode.btc : BtcDisplayMode.sats,
                   ),
-                ),
-                SettingsPickerTile(
-                  label: l10n.settingsCurrencies,
-                  value: '',
-                  onTap: () => _openCurrencyPicker(context, app),
-                  trailingIcon: Icons.chevron_right,
                 ),
                 SettingsPickerTile(
                   label: l10n.settingsThemeLabel,
@@ -174,18 +167,6 @@ class SettingsScreen extends StatelessWidget {
     Navigator.of(context).push<void>(
       MaterialPageRoute<void>(builder: (_) => const ThemeSettingsScreen()),
     );
-  }
-
-  Future<void> _openCurrencyPicker(
-    BuildContext context,
-    AppStateNotifier app,
-  ) async {
-    final picked = await Navigator.of(context).push<List<Currency>>(
-      MaterialPageRoute(
-        builder: (_) => CurrencyPickerScreen(initial: app.selectedCurrencies),
-      ),
-    );
-    if (picked != null) app.setSelectedCurrencies(picked);
   }
 
   void _openBtcPriceSettings(BuildContext context) {
