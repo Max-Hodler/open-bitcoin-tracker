@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../l10n/generated/app_localizations.dart';
@@ -6,7 +7,6 @@ import '../theme/theme.dart';
 import '../widgets/scroll_hairline.dart';
 import 'settings/_widgets.dart';
 
-const String _kAppVersion = '1.0';
 const String _kGitHubUrl = 'https://github.com/Max-Hodler/open-bitcoin-tracker';
 const String _kPrivacyPolicyUrl =
     'https://max-hodler.github.io/open-bitcoin-tracker/privacy/';
@@ -16,8 +16,26 @@ const String _kEcbUrl =
     'https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html';
 const String _kMempoolSpaceUrl = 'https://mempool.space';
 
-class AboutScreen extends StatelessWidget {
+class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
+
+  @override
+  State<AboutScreen> createState() => _AboutScreenState();
+}
+
+class _AboutScreenState extends State<AboutScreen> {
+  // App version, read from the bundle so the About screen always matches
+  // pubspec.yaml. Empty until the async load completes (resolves near-
+  // instantly), so the version line just renders blank for one frame.
+  String _appVersion = '';
+
+  @override
+  void initState() {
+    super.initState();
+    PackageInfo.fromPlatform().then((info) {
+      if (mounted) setState(() => _appVersion = info.version);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,14 +124,14 @@ class AboutScreen extends StatelessWidget {
                   onTap: () => showLicensePage(
                     context: context,
                     applicationName: l10n.aboutAppName,
-                    applicationVersion: _kAppVersion,
+                    applicationVersion: _appVersion,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacing.xl),
             _Footer(
-              version: l10n.aboutVersion(_kAppVersion),
+              version: l10n.aboutVersion(_appVersion),
               madeBy: l10n.aboutMadeBy,
               dedication: l10n.aboutDedication,
             ),
