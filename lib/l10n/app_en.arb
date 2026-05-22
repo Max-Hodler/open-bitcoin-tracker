@@ -236,10 +236,6 @@
   "@settingsReorderStacks": {
     "description": "Row label inside the Stacks settings group that opens the stack-reorder sub-screen. Used as the AppBar title of that sub-screen as well. Disabled when the user has no stacks yet."
   },
-  "reorderWidgetsHint": "Long-press and drag",
-  "@reorderWidgetsHint": {
-    "description": "Subtitle line shown below the AppBar title on the reorder-widgets and reorder-stacks screens, explaining how to reorder rows (long-press initiates drag via ReorderableDelayedDragStartListener)."
-  },
   "settingsChart": "Display chart",
   "@settingsChart": {
     "description": "Settings toggle: show or hide the price-history chart on home."

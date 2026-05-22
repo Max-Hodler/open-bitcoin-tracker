@@ -12,11 +12,12 @@ import '../../../widgets/menu_action_tile.dart';
 import '../../../widgets/stack_card.dart' show StackCard, StackCardPosition;
 import '../../edit_stack_screens.dart';
 import '../../new_stack_screens.dart';
+import '../../settings/reorder_stacks_screen.dart';
 import '../header/area_chart.dart';
 import 'home_buttons.dart';
 import 'range_pills_row.dart';
 
-enum _StackMenuAction { edit, rename, add, delete }
+enum _StackMenuAction { edit, rename, add, reorder, delete }
 
 class HomeStackList extends StatelessWidget {
   const HomeStackList({
@@ -97,6 +98,8 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
       ),
       builder: (ctx) {
         final l10n = AppLocalizations.of(ctx);
+        final hasMultipleStacks =
+            ctx.read<AppStateNotifier>().stacks.length > 1;
         return SafeArea(
           top: false,
           child: Padding(
@@ -140,10 +143,22 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
                   ],
                 ),
                 const SizedBox(height: AppSpacing.md),
-                MenuActionTile(
-                  leading: const Icon(Icons.add),
-                  label: l10n.homeAddStack,
-                  onTap: () => Navigator.of(ctx).pop(_StackMenuAction.add),
+                MenuActionGroup(
+                  children: [
+                    MenuActionTile(
+                      leading: const Icon(Icons.add),
+                      label: l10n.homeAddStack,
+                      onTap: () =>
+                          Navigator.of(ctx).pop(_StackMenuAction.add),
+                    ),
+                    if (hasMultipleStacks)
+                      MenuActionTile(
+                        leading: const Icon(Icons.swap_vert),
+                        label: l10n.settingsReorderStacks,
+                        onTap: () =>
+                            Navigator.of(ctx).pop(_StackMenuAction.reorder),
+                      ),
+                  ],
                 ),
               ],
             ),
@@ -164,6 +179,10 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
       case _StackMenuAction.add:
         await Navigator.of(iconContext).push(MaterialPageRoute<void>(
           builder: (_) => const NewStackAmountScreen(),
+        ));
+      case _StackMenuAction.reorder:
+        await Navigator.of(iconContext).push(MaterialPageRoute<void>(
+          builder: (_) => const ReorderStacksScreen(),
         ));
       case _StackMenuAction.delete:
         final confirm = await _showDeleteDialog(iconContext);

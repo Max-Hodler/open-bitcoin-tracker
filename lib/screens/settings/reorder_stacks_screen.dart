@@ -35,19 +35,6 @@ class ReorderStacksScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md,
-              AppSpacing.sm,
-              AppSpacing.md,
-              AppSpacing.sm,
-            ),
-            child: Text(
-              l10n.reorderWidgetsHint,
-              textAlign: TextAlign.center,
-              style: AppTypography.body.copyWith(color: cs.onSurfaceVariant),
-            ),
-          ),
           Expanded(
             child: ScrollHairline(
               child: ReorderableListView.builder(
@@ -73,10 +60,7 @@ class ReorderStacksScreen extends StatelessWidget {
                     padding: EdgeInsets.only(
                       bottom: index == stacks.length - 1 ? 0 : AppSpacing.xs,
                     ),
-                    child: ReorderableDelayedDragStartListener(
-                      index: index,
-                      child: _ReorderRow(label: s.name),
-                    ),
+                    child: _ReorderRow(index: index, label: s.name),
                   );
                 },
               ),
@@ -89,8 +73,9 @@ class ReorderStacksScreen extends StatelessWidget {
 }
 
 class _ReorderRow extends StatelessWidget {
-  const _ReorderRow({required this.label});
+  const _ReorderRow({required this.index, required this.label});
 
+  final int index;
   final String label;
 
   @override
@@ -117,10 +102,19 @@ class _ReorderRow extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            Icon(
-              Icons.drag_handle,
-              size: 24,
-              color: cs.onSurfaceVariant,
+            ReorderableDragStartListener(
+              index: index,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs,
+                ),
+                child: Icon(
+                  Icons.drag_handle,
+                  size: 24,
+                  color: cs.onSurfaceVariant,
+                ),
+              ),
             ),
           ],
         ),
