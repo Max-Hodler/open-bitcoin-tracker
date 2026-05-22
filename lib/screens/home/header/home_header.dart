@@ -7,7 +7,6 @@ import '../../../data/data.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../state/state.dart';
 import '../../../theme/theme.dart';
-import '../../../widgets/expandable_card.dart';
 import '../widgets/home_buttons.dart';
 import '../widgets/retry_button.dart';
 import 'area_chart.dart';
@@ -145,22 +144,7 @@ class HomeHeader extends StatefulWidget {
   State<HomeHeader> createState() => _HomeHeaderState();
 }
 
-class _HomeHeaderState extends State<HomeHeader>
-    with SingleTickerProviderStateMixin, ExpandableCardStateMixin<HomeHeader> {
-  // The chart-and-pills section is the expandable subtree. Expansion is driven
-  // externally by widget.showChart (the user toggles it in Settings); the
-  // mixin owns the controller, curve, and the keep-mounted-during-collapse
-  // gate that lets the chart clip upward instead of popping out.
-  @override
-  bool get initiallyExpanded => widget.showChart;
-
-  @override
-  void didUpdateWidget(HomeHeader old) {
-    super.didUpdateWidget(old);
-    if (widget.showChart == old.showChart) return;
-    setExpanded(widget.showChart);
-  }
-
+class _HomeHeaderState extends State<HomeHeader> {
   @override
   Widget build(BuildContext context) {
     final logScale = context.select<AppStateNotifier, bool>((a) => a.logScale);
@@ -227,32 +211,18 @@ class _HomeHeaderState extends State<HomeHeader>
               child: buttonsRow,
             ),
           ),
-        if (widget.showBtcPrice && expansionMounted)
-          // Render the chart subtree throughout the open and close animations.
-          // SizeTransition shrinks this section's height between 0 and its
-          // intrinsic size, clipping the chart smoothly as the parent collapses
-          // — mirrors the hashrate card so the chart stays fully opaque while
-          // sliding up out of view, instead of fading and shrinking at once.
-          SizeTransition(
-            sizeFactor: expandCurve,
-            axisAlignment: -1,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(
-                  height: 120,
-                  child: _buildChartArea(context, logScale: logScale),
-                ),
-                RangeBar(
-                  range: widget.range,
-                  rangePct: widget.rangePct,
-                  chartColor: widget.chartColor,
-                  onRange: widget.onRange,
-                ),
-              ],
-            ),
+        if (widget.showBtcPrice && widget.showChart) ...[
+          SizedBox(
+            height: 120,
+            child: _buildChartArea(context, logScale: logScale),
           ),
+          RangeBar(
+            range: widget.range,
+            rangePct: widget.rangePct,
+            chartColor: widget.chartColor,
+            onRange: widget.onRange,
+          ),
+        ],
       ],
     );
   }
