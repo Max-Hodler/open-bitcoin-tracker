@@ -109,6 +109,7 @@ class HomeHeader extends StatefulWidget {
     required this.showConverterButton,
     this.onOpenSettings,
     this.onOpenConverter,
+    this.expandChart = false,
   });
 
   final bool failed;
@@ -139,6 +140,11 @@ class HomeHeader extends StatefulWidget {
   final bool showConverterButton;
   final VoidCallback? onOpenSettings;
   final VoidCallback? onOpenConverter;
+  /// When true, the chart grows via [Expanded] to fill the remaining vertical
+  /// space below the price row and above the range bar (used in the wide
+  /// landscape layout where the header is a fixed-height pane). When false
+  /// (portrait), the chart keeps its fixed 120dp height so cards sit below.
+  final bool expandChart;
 
   @override
   State<HomeHeader> createState() => _HomeHeaderState();
@@ -212,10 +218,17 @@ class _HomeHeaderState extends State<HomeHeader> {
             ),
           ),
         if (widget.showBtcPrice && widget.showChart) ...[
-          SizedBox(
-            height: 120,
-            child: _buildChartArea(context, logScale: logScale),
-          ),
+          // In wide mode the header column is height-bounded by its pane, so
+          // [Expanded] makes the chart soak up the leftover space between the
+          // price row and the range bar. In portrait the column is unbounded
+          // (lives in a scroll view), so we keep the fixed 120dp height.
+          if (widget.expandChart)
+            Expanded(child: _buildChartArea(context, logScale: logScale))
+          else
+            SizedBox(
+              height: 120,
+              child: _buildChartArea(context, logScale: logScale),
+            ),
           RangeBar(
             range: widget.range,
             rangePct: widget.rangePct,
