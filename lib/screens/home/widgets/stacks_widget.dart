@@ -27,6 +27,8 @@ class HomeStackList extends StatelessWidget {
     required this.btcRate,
     required this.bitcoinDisplayMode,
     required this.rangePillData,
+    this.totalCard,
+    this.totalSats,
   });
 
   final List<model.Stack> stacks;
@@ -34,9 +36,17 @@ class HomeStackList extends StatelessWidget {
   final double? btcRate;
   final BtcDisplayMode bitcoinDisplayMode;
   final List<PricePoint> rangePillData;
+  // When non-null, the portfolio total renders as the final row of the same
+  // group as the stack cards, sharing its divider and corner rounding so it
+  // reads as just another stack rather than a detached card. [totalSats]
+  // drives the row's range-pill price scaling.
+  final Widget? totalCard;
+  final int? totalSats;
 
   @override
   Widget build(BuildContext context) {
+    final hasTotal = totalCard != null;
+    final rowCount = stacks.length + (hasTotal ? 1 : 0);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -50,7 +60,18 @@ class HomeStackList extends StatelessWidget {
             rangePillData: rangePillData,
             priceScale: stacks[i].sats / Sats.perBtc,
             isFirst: i == 0,
-            isLast: i == stacks.length - 1,
+            isLast: i == rowCount - 1,
+          ),
+        if (hasTotal)
+          _GroupedCardRow(
+            card: totalCard!,
+            rangePillData: rangePillData,
+            priceScale: (totalSats ?? 0) / Sats.perBtc,
+            currency: currency,
+            // The total only renders alongside >= 2 stacks, so it is always
+            // the last row of a non-empty group, never a standalone card.
+            position: StackCardPosition.last,
+            isLast: true,
           ),
       ],
     );
@@ -264,7 +285,6 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     final card = Builder(
       builder: (cardContext) => StackCard(
         name: widget.stack.name,
@@ -280,17 +300,52 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
         },
       ),
     );
+    return _GroupedCardRow(
+      card: card,
+      rangePillData: widget.rangePillData,
+      priceScale: widget.priceScale,
+      currency: widget.currency,
+      position: _position,
+      isLast: widget.isLast,
+    );
+  }
+}
+
+/// One row of the stacks group: a [RangePillsRow] plus the hairline divider
+/// drawn below it (omitted on the last row, which has a rounded bottom edge
+/// instead). Shared by stack cards and the trailing portfolio-total card so
+/// both render identically inside the same group.
+class _GroupedCardRow extends StatelessWidget {
+  const _GroupedCardRow({
+    required this.card,
+    required this.rangePillData,
+    required this.priceScale,
+    required this.currency,
+    required this.position,
+    required this.isLast,
+  });
+
+  final Widget card;
+  final List<PricePoint> rangePillData;
+  final double priceScale;
+  final Currency currency;
+  final StackCardPosition position;
+  final bool isLast;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         RangePillsRow(
           card: card,
-          rangePillData: widget.rangePillData,
-          priceScale: widget.priceScale,
-          currency: widget.currency,
-          position: _position,
+          rangePillData: rangePillData,
+          priceScale: priceScale,
+          currency: currency,
+          position: position,
         ),
-        if (!widget.isLast)
+        if (!isLast)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: ColoredBox(

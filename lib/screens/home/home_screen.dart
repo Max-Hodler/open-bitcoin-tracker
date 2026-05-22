@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import '../../api/api.dart';
 import '../../data/app_enums.dart';
 import '../../data/fx_history.dart';
-import '../../data/sats.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../services/app_haptics.dart';
 import '../../services/stacks_unlock_orchestrator.dart';
@@ -23,7 +22,6 @@ import 'header/home_header.dart';
 import 'widgets/hashrate_card.dart';
 import 'widgets/home_buttons.dart';
 import 'widgets/mempool_card.dart';
-import 'widgets/range_pills_row.dart';
 import 'widgets/stacks_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -435,11 +433,13 @@ class _HomeScreenState extends State<HomeScreen> {
             btcRate: rate,
             bitcoinDisplayMode: app.bitcoinDisplayMode,
             rangePillData: _memoAllHistoryConverted,
+            // showTotal already implies stacks.length >= 2, so the total is
+            // always the last row of a non-empty group.
+            totalCard: showTotal
+                ? _totalCard(context, app, totalSats, currency, rate)
+                : null,
+            totalSats: showTotal ? totalSats : null,
           ),
-        if (showTotal) ...[
-          const SizedBox(height: AppSpacing.sm),
-          _totalCardWithMenu(context, app, totalSats, currency, rate),
-        ],
         if (stacks.isEmpty) ...[
           const SizedBox(height: AppSpacing.sm),
           Padding(
@@ -555,7 +555,7 @@ List<Widget> lockedStacksBlock() => [
     );
   }
 
-  Widget _totalCardWithMenu(
+  Widget _totalCard(
     BuildContext context,
     AppStateNotifier app,
     int totalSats,
@@ -563,24 +563,19 @@ List<Widget> lockedStacksBlock() => [
     double? rate,
   ) {
     final l10n = AppLocalizations.of(context);
-    final card = Builder(
+    return Builder(
       builder: (cardContext) => StackCard(
         name: l10n.totalCardName,
         sats: totalSats,
         currency: currency,
         btcRate: rate,
         bitcoinDisplayMode: app.bitcoinDisplayMode,
+        position: StackCardPosition.last,
         onTap: () {
           AppHaptics.light();
           _showTotalMenu(cardContext, app);
         },
       ),
-    );
-    return RangePillsRow(
-      card: card,
-      rangePillData: _memoAllHistoryConverted,
-      priceScale: totalSats / Sats.perBtc,
-      currency: currency,
     );
   }
 
