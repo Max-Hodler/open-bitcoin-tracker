@@ -48,11 +48,15 @@ Future<(Widget, AppStateNotifier)> _wrap(WidgetTester tester, {String? initialSt
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('Currencies row opens the currency picker', (tester) async {
+  testWidgets('Currencies row inside BTC price opens the currency picker',
+      (tester) async {
     final (w, _) = await _wrap(tester);
     await tester.pumpWidget(w);
     await tester.pump();
 
+    // Currencies now lives inside the BTC price sub-screen.
+    await tester.tap(find.text('BTC price'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Currencies'));
     await tester.pumpAndSettle();
 
@@ -70,6 +74,8 @@ void main() {
     await tester.pumpWidget(w);
     await tester.pump();
 
+    await tester.tap(find.text('BTC price'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Currencies'));
     await tester.pumpAndSettle();
 
@@ -94,6 +100,8 @@ void main() {
     await tester.pumpWidget(w);
     await tester.pump();
 
+    await tester.tap(find.text('BTC price'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Currencies'));
     await tester.pumpAndSettle();
 
