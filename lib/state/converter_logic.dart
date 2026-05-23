@@ -1,6 +1,6 @@
 import '../data/app_enums.dart';
 import '../data/sats.dart';
-import '../format/fiat.dart';
+import '../data/fiat.dart';
 import 'converter_state.dart';
 
 /// What unit a slot's raw string is interpreted in.

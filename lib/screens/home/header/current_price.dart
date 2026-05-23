@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../../../api/api.dart';
 import '../../../data/app_enums.dart';
-import '../../../format/fiat.dart';
+import '../../../data/fiat.dart';
 import '../../../services/app_haptics.dart';
 import '../../../state/state.dart';
 import '../../../theme/theme.dart';

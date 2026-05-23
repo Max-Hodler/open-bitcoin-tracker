@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../api/api.dart';
 import '../../../data/app_enums.dart';
-import '../../../format/fiat.dart';
+import '../../../data/fiat.dart';
 import '../../../services/app_haptics.dart';
 import '../../../theme/theme.dart';
 import '../../../widgets/stack_card.dart' show StackCardPosition;

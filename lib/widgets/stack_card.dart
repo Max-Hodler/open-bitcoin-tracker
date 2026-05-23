@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/app_enums.dart';
 import '../data/sats.dart';
-import '../format/fiat.dart';
+import '../data/fiat.dart';
 import '../theme/theme.dart';
 
 /// Where this card sits in a vertical group, used to decide which corners

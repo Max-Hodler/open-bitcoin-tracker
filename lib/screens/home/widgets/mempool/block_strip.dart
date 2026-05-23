@@ -3,8 +3,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 import '../../../../api/api.dart';
-import '../../../../main.dart' show appRouteObserver;
 import '../../../../services/app_haptics.dart';
+import '../../../../services/route_observer.dart';
 import '../../../../theme/theme.dart';
 import 'block_visuals.dart';
 

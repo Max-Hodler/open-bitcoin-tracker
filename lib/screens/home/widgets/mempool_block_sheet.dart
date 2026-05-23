@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../api/api.dart';
 import '../../../data/app_enums.dart';
-import '../../../format/fiat.dart' show formatBtcAmount, intFormatter;
+import '../../../data/fiat.dart' show formatBtcAmount, intFormatter;
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../services/app_haptics.dart';
 import '../../../state/state.dart';

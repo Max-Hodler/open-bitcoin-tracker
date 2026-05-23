@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../api/api.dart';
-import '../../../../format/fiat.dart' show intFormatter;
+import '../../../../data/fiat.dart' show intFormatter;
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../services/app_haptics.dart';
 import '../../../../state/state.dart';

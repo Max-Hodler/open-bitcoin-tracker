@@ -1,5 +1,4 @@
 import 'package:open_bitcoin_tracker/data/data.dart';
-import 'package:open_bitcoin_tracker/format/fiat.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

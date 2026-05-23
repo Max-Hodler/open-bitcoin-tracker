@@ -13,17 +13,12 @@ import 'screens/home/home_screen.dart';
 import 'screens/converter_screen.dart';
 import 'screens/new_stack_screens.dart';
 import 'screens/settings_screen.dart';
+import 'services/route_observer.dart';
 import 'services/stacks_auth_service.dart';
 import 'services/stacks_crypto_service.dart';
 import 'services/stacks_unlock_orchestrator.dart';
 import 'state/state.dart';
 import 'theme/theme.dart';
-
-// Global route observer. Widgets that need to react when the route they live
-// on becomes visible again (e.g. the mempool block strip re-centering its
-// divider after returning from Settings) subscribe via RouteAware.
-final RouteObserver<ModalRoute<void>> appRouteObserver =
-    RouteObserver<ModalRoute<void>>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

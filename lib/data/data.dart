@@ -1,7 +1,10 @@
 export 'app_enums.dart';
 export 'app_state.dart';
 export 'app_state_repository.dart';
+export 'btc_history.dart';
 export 'btc_history_cache.dart';
 export 'btc_rates_cache.dart';
+export 'fiat.dart';
+export 'fx_history.dart';
 export 'sats.dart';
 export 'stack.dart';

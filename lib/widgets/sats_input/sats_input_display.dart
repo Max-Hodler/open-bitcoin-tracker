@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 import '../../data/app_enums.dart';
-import '../../format/fiat.dart';
+import '../../data/fiat.dart';
 import '../../theme/theme.dart';
 import '../blinking_caret.dart';
 
