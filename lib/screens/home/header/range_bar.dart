@@ -19,43 +19,12 @@ const List<BtcRange> _leadingQuickRanges = [
   BtcRange.w1,
 ];
 
-// Ranges the user can mount in the months overflow slot (1M..12M). Same long-
-// press / swipe model as the years slot.
-const List<BtcRange> _overflowMonthsRanges = [
-  BtcRange.m1,
-  BtcRange.m2,
-  BtcRange.m3,
-  BtcRange.m4,
-  BtcRange.m5,
-  BtcRange.m6,
-  BtcRange.m7,
-  BtcRange.m8,
-  BtcRange.m9,
-  BtcRange.m10,
-  BtcRange.m11,
-  BtcRange.m12,
-];
-
-// Ranges the user can mount in the years overflow slot via long-press. Tapping
-// the overflow chip just selects whichever of these is currently mounted; the
-// picker only changes which one occupies the slot.
-const List<BtcRange> _overflowMenuRanges = [
-  BtcRange.y1,
-  BtcRange.y2,
-  BtcRange.y3,
-  BtcRange.y4,
-  BtcRange.y5,
-  BtcRange.y6,
-  BtcRange.y7,
-  BtcRange.y8,
-  BtcRange.y9,
-  BtcRange.y10,
-  BtcRange.y11,
-  BtcRange.y12,
-  BtcRange.y13,
-  BtcRange.y14,
-  BtcRange.y15,
-];
+// Ranges the user can mount in the months overflow slot (1M..12M) and the
+// years overflow slot (1Y..15Y). Same long-press / swipe model on both.
+// Derived from the enum's [BtcRange.isMonths] / [BtcRange.isYears] getters so
+// adding a new month/year value to the enum automatically picks it up here.
+final List<BtcRange> _overflowMonthsRanges = btcRangeMonths;
+final List<BtcRange> _overflowMenuRanges = btcRangeYears;
 
 class RangeBar extends StatelessWidget {
   const RangeBar({
@@ -682,52 +651,20 @@ String _btcRangeLabel(BuildContext context, BtcRange r) {
 }
 
 // Long-form label for the months overflow picker: "1 Month", "6 Months", etc.
+// Falls back to the short label for non-month ranges (safety belt; the picker
+// only ever supplies month-shaped values).
 String _btcRangeMonthsLongLabel(BuildContext context, BtcRange r) {
-  final l10n = AppLocalizations.of(context);
-  final months = switch (r) {
-    BtcRange.m1 => 1,
-    BtcRange.m2 => 2,
-    BtcRange.m3 => 3,
-    BtcRange.m4 => 4,
-    BtcRange.m5 => 5,
-    BtcRange.m6 => 6,
-    BtcRange.m7 => 7,
-    BtcRange.m8 => 8,
-    BtcRange.m9 => 9,
-    BtcRange.m10 => 10,
-    BtcRange.m11 => 11,
-    BtcRange.m12 => 12,
-    _ => 0,
-  };
-  if (months == 0) return _btcRangeLabel(context, r);
-  return l10n.rangePickerMonthsFull(months);
+  final months = r.months;
+  if (months == null) return _btcRangeLabel(context, r);
+  return AppLocalizations.of(context).rangePickerMonthsFull(months);
 }
 
 // Long-form label for the overflow-slot picker: "1 Year", "5 Years", etc.
-// Only year ranges are listed in that picker, so non-year inputs fall back to
-// the short label for safety.
+// Falls back to the short label for non-year ranges.
 String _btcRangeLongLabel(BuildContext context, BtcRange r) {
-  final l10n = AppLocalizations.of(context);
-  final years = switch (r) {
-    BtcRange.y1 => 1,
-    BtcRange.y2 => 2,
-    BtcRange.y3 => 3,
-    BtcRange.y4 => 4,
-    BtcRange.y5 => 5,
-    BtcRange.y6 => 6,
-    BtcRange.y7 => 7,
-    BtcRange.y8 => 8,
-    BtcRange.y9 => 9,
-    BtcRange.y10 => 10,
-    BtcRange.y11 => 11,
-    BtcRange.y12 => 12,
-    BtcRange.y13 => 13,
-    BtcRange.y14 => 14,
-    BtcRange.y15 => 15,
-    _ => 0,
-  };
-  if (years == 0) return _btcRangeLabel(context, r);
-  return l10n.rangePickerYearsFull(years);
+  final years = r.years;
+  if (years == null) return _btcRangeLabel(context, r);
+  return AppLocalizations.of(context).rangePickerYearsFull(years);
 }
 
 String _formatRangePct(double pct) {

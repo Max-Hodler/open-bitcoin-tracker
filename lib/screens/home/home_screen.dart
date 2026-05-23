@@ -163,8 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
     controller.fetchIntraday(range, force: force);
   }
 
-  bool _isIntradayRange(BtcRange range) =>
-      range == BtcRange.d1 || range == BtcRange.w1 || range == BtcRange.m1;
+  bool _isIntradayRange(BtcRange range) => range.isShortRange;
 
   @override
   Widget build(BuildContext context) {
@@ -198,35 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
 
-    final usesAllHistory =
-        range == BtcRange.all ||
-        range == BtcRange.m2 ||
-        range == BtcRange.m3 ||
-        range == BtcRange.m4 ||
-        range == BtcRange.m5 ||
-        range == BtcRange.m6 ||
-        range == BtcRange.m7 ||
-        range == BtcRange.m8 ||
-        range == BtcRange.m9 ||
-        range == BtcRange.m10 ||
-        range == BtcRange.m11 ||
-        range == BtcRange.m12 ||
-        range == BtcRange.ytd ||
-        range == BtcRange.y1 ||
-        range == BtcRange.y2 ||
-        range == BtcRange.y3 ||
-        range == BtcRange.y4 ||
-        range == BtcRange.y5 ||
-        range == BtcRange.y6 ||
-        range == BtcRange.y7 ||
-        range == BtcRange.y8 ||
-        range == BtcRange.y9 ||
-        range == BtcRange.y10 ||
-        range == BtcRange.y11 ||
-        range == BtcRange.y12 ||
-        range == BtcRange.y13 ||
-        range == BtcRange.y14 ||
-        range == BtcRange.y15;
+    final usesAllHistory = range.usesAllHistory;
     final allHistory = context.select<LivePriceController, List<HistoryPoint>>(
       (c) => c.allHistory,
     );

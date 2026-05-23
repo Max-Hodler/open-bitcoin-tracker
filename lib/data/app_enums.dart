@@ -127,7 +127,70 @@ enum BtcRange {
     }
     return BtcRange.y10;
   }
+
+  // Number of months this range represents, or null if it isn't month-shaped.
+  // (m1..m12 → 1..12; everything else → null.)
+  int? get months {
+    switch (this) {
+      case BtcRange.m1: return 1;
+      case BtcRange.m2: return 2;
+      case BtcRange.m3: return 3;
+      case BtcRange.m4: return 4;
+      case BtcRange.m5: return 5;
+      case BtcRange.m6: return 6;
+      case BtcRange.m7: return 7;
+      case BtcRange.m8: return 8;
+      case BtcRange.m9: return 9;
+      case BtcRange.m10: return 10;
+      case BtcRange.m11: return 11;
+      case BtcRange.m12: return 12;
+      default: return null;
+    }
+  }
+
+  // Number of years this range represents, or null otherwise.
+  int? get years {
+    switch (this) {
+      case BtcRange.y1: return 1;
+      case BtcRange.y2: return 2;
+      case BtcRange.y3: return 3;
+      case BtcRange.y4: return 4;
+      case BtcRange.y5: return 5;
+      case BtcRange.y6: return 6;
+      case BtcRange.y7: return 7;
+      case BtcRange.y8: return 8;
+      case BtcRange.y9: return 9;
+      case BtcRange.y10: return 10;
+      case BtcRange.y11: return 11;
+      case BtcRange.y12: return 12;
+      case BtcRange.y13: return 13;
+      case BtcRange.y14: return 14;
+      case BtcRange.y15: return 15;
+      default: return null;
+    }
+  }
+
+  bool get isMonths => months != null;
+  bool get isYears => years != null;
+
+  // The d1 / w1 / m1 ranges that come from Kraken's intraday OHLC endpoint
+  // (per-minute or per-hour candles, single trailing window). Everything else
+  // is served from the full daily history series.
+  bool get isShortRange =>
+      this == BtcRange.d1 || this == BtcRange.w1 || this == BtcRange.m1;
+
+  // Whether the chart draws against the full FX history series rather than a
+  // recent OHLC window. Complement of [isShortRange].
+  bool get usesAllHistory => !isShortRange;
 }
+
+// Stable, sorted list of the months overflow slot's candidates (m1..m12).
+final List<BtcRange> btcRangeMonths =
+    BtcRange.values.where((r) => r.isMonths).toList(growable: false);
+
+// Stable, sorted list of the years overflow slot's candidates (y1..y15).
+final List<BtcRange> btcRangeYears =
+    BtcRange.values.where((r) => r.isYears).toList(growable: false);
 
 enum StacksAuthMode {
   off('off'),

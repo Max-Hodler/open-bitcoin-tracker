@@ -37,34 +37,7 @@ class KrakenOhlcClient {
         return _fetch(intervalMinutes: 60, takeLast: 168);
       case BtcRange.m1:
         return _fetch(intervalMinutes: 60);
-      case BtcRange.m2:
-      case BtcRange.m3:
-      case BtcRange.m4:
-      case BtcRange.m5:
-      case BtcRange.m6:
-      case BtcRange.m7:
-      case BtcRange.m8:
-      case BtcRange.m9:
-      case BtcRange.m10:
-      case BtcRange.m11:
-      case BtcRange.m12:
-      case BtcRange.ytd:
-      case BtcRange.y1:
-      case BtcRange.y2:
-      case BtcRange.y3:
-      case BtcRange.y4:
-      case BtcRange.y5:
-      case BtcRange.y6:
-      case BtcRange.y7:
-      case BtcRange.y8:
-      case BtcRange.y9:
-      case BtcRange.y10:
-      case BtcRange.y11:
-      case BtcRange.y12:
-      case BtcRange.y13:
-      case BtcRange.y14:
-      case BtcRange.y15:
-      case BtcRange.all:
+      default:
         throw ArgumentError.value(
           range,
           'range',
