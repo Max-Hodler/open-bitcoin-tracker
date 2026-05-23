@@ -5,6 +5,7 @@ import 'package:open_bitcoin_tracker/data/data.dart';
 import 'package:open_bitcoin_tracker/l10n/generated/app_localizations.dart';
 import 'package:open_bitcoin_tracker/screens/new_stack_screens.dart';
 import 'package:open_bitcoin_tracker/widgets/number_pad.dart';
+import 'package:open_bitcoin_tracker/widgets/sats_input/sats_input_display.dart';
 import 'package:open_bitcoin_tracker/state/state.dart';
 import 'package:open_bitcoin_tracker/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,18 @@ Future<(Widget, AppStateNotifier)> _wrap(WidgetTester tester, {String? initialSt
   return (widget, appNotifier);
 }
 
+// SatsInputDisplay renders each digit/separator as its own Text widget so taps
+// can place the caret per-glyph; join them back into a single string for
+// assertion. Excludes the '₿' symbol Text which is a sibling in the Row.
+String _amountText(WidgetTester t) => t
+    .widgetList<Text>(find.descendant(
+      of: find.byType(SatsInputDisplay),
+      matching: find.byType(Text),
+    ))
+    .map((w) => w.data ?? '')
+    .where((s) => s != '₿')
+    .join();
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -61,7 +74,7 @@ void main() {
     await tester.tap(find.byKey(numberPadKey('3')));
     await tester.pump();
 
-    expect(find.text('123'), findsOneWidget);
+    expect(_amountText(tester), '123');
 
     await tester.tap(find.text('Next'));
     await tester.pumpAndSettle();
@@ -77,11 +90,11 @@ void main() {
     await tester.tap(find.byKey(numberPadKey('9')));
     await tester.tap(find.byKey(numberPadKey('9')));
     await tester.pump();
-    expect(find.text('99'), findsOneWidget);
+    expect(_amountText(tester), '99');
 
     await tester.tap(find.byKey(numberPadKey('AC')));
     await tester.pump();
-    expect(find.text('99'), findsNothing);
+    expect(_amountText(tester), '');
   });
 
   testWidgets('backspace deletes last digit', (tester) async {
@@ -91,11 +104,11 @@ void main() {
     await tester.tap(find.byKey(numberPadKey('1')));
     await tester.tap(find.byKey(numberPadKey('2')));
     await tester.pump();
-    expect(find.text('12'), findsOneWidget);
+    expect(_amountText(tester), '12');
 
     await tester.tap(find.byKey(numberPadKey('backspace')));
     await tester.pump();
-    expect(find.text('12'), findsNothing);
+    expect(_amountText(tester), '1');
   });
 
   testWidgets('confirm is disabled when input is empty', (tester) async {
