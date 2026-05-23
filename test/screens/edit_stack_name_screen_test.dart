@@ -16,8 +16,16 @@ Future<(Widget, AppStateNotifier)> _wrap({required String stackId}) async {
   });
   final prefs = await SharedPreferences.getInstance();
   final app = AppStateNotifier(AppStateRepository(prefs));
-  final widget = ChangeNotifierProvider.value(
-    value: app,
+  // EditStackNameScreen reads StacksLockController in initState to pop home
+  // when the stacks re-lock mid-edit; supply one so the test doesn't
+  // ProviderNotFound.
+  final lock = StacksLockController(app: app);
+  addTearDown(lock.dispose);
+  final widget = MultiProvider(
+    providers: [
+      ChangeNotifierProvider.value(value: app),
+      ChangeNotifierProvider.value(value: lock),
+    ],
     child: MaterialApp(
       home: EditStackNameScreen(stackId: stackId),
       // AppPalette extension is registered by AppThemes.light(); without it,
@@ -50,6 +58,8 @@ void main() {
 
   testWidgets('confirm saves trimmed name and pops', (tester) async {
     final (_, app) = await _wrap(stackId: 's1');
+    final lock = StacksLockController(app: app);
+    addTearDown(lock.dispose);
     await tester.pumpWidget(MaterialApp(
       theme: AppThemes.light(),
       locale: const Locale('en', 'GB'),
@@ -62,8 +72,11 @@ void main() {
       ],
       home: Navigator(
         onGenerateRoute: (_) => MaterialPageRoute<void>(
-          builder: (_) => ChangeNotifierProvider.value(
-            value: app,
+          builder: (_) => MultiProvider(
+            providers: [
+              ChangeNotifierProvider.value(value: app),
+              ChangeNotifierProvider.value(value: lock),
+            ],
             child: const EditStackNameScreen(stackId: 's1'),
           ),
         ),

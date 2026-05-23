@@ -21,6 +21,11 @@ Future<(Widget, AppStateNotifier)> _wrap(WidgetTester tester, {required String i
   SharedPreferences.setMockInitialValues({'btc_tracker': initialState});
   final prefs = await SharedPreferences.getInstance();
   final app = AppStateNotifier(AppStateRepository(prefs));
+  // EditStackAmountScreen reads StacksLockController in initState to pop home
+  // when the stacks re-lock mid-edit; supply one so the test doesn't
+  // ProviderNotFound.
+  final lock = StacksLockController(app: app);
+  addTearDown(lock.dispose);
   final noopHttp = MockClient((_) async => http.Response('', 500));
   final stream = KrakenStreamService();
   final ohlc = KrakenOhlcClient(httpClient: noopHttp);
@@ -29,6 +34,7 @@ Future<(Widget, AppStateNotifier)> _wrap(WidgetTester tester, {required String i
   final widget = MultiProvider(
     providers: [
       ChangeNotifierProvider.value(value: app),
+      ChangeNotifierProvider.value(value: lock),
       ChangeNotifierProvider(create: (_) => LivePriceController(stream: stream, ohlc: ohlc, cache: cache, historyCache: historyCache)),
     ],
     child: MaterialApp(
