@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-/// Mixin that owns the expand/collapse animation state shared between
-/// [HashrateCard] and [HomeHeader]: a controller, its curve, and a
-/// "keep the body mounted across the collapse animation" gate so the
-/// expandable subtree clips smoothly out of view instead of disappearing
-/// in a single frame before the parent shrinks.
+/// Mixin that owns the expand/collapse animation state for [HashrateCard]:
+/// a controller, its curve, and a "keep the body mounted across the collapse
+/// animation" gate so the expandable subtree clips smoothly out of view
+/// instead of disappearing in a single frame before the parent shrinks.
 ///
 /// Usage:
 /// ```
