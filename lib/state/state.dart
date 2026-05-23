@@ -1,4 +1,5 @@
 export 'app_state_notifier.dart';
+export 'converter_logic.dart';
 export 'converter_state.dart';
 export 'hashrate_controller.dart';
 export 'live_price_controller.dart';

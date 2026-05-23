@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../data/app_enums.dart';
-import '../data/sats.dart';
 import '../format/fiat.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../services/app_haptics.dart';
@@ -43,15 +42,15 @@ class ConverterScreen extends StatelessWidget {
     // Both are idempotent: hydrateOnce guards on its own flag, onPersist
     // uses ??=. Safe to call unconditionally from build.
     cs.hydrateOnce(
-      fiat: _entryFrom(
+      fiat: entryFrom(
         notifier.converterFiatModeRaw,
         notifier.converterFiatModeActiveSlot,
       ),
-      sats: _entryFrom(
+      sats: entryFrom(
         notifier.converterSatsModeRaw,
         notifier.converterSatsModeActiveSlot,
       ),
-      mode: _parseMode(notifier.converterMode) ?? ConverterMode.fiat,
+      mode: parseMode(notifier.converterMode) ?? ConverterMode.fiat,
     );
     cs.onPersist ??= (mode, entry) {
       final write = mode == ConverterMode.fiat
@@ -98,7 +97,7 @@ class ConverterScreen extends StatelessWidget {
     // Derive both slots' raw strings. The active slot is verbatim; the other
     // is computed from it. Returns ('' '') when there's nothing useful to
     // show (rate unavailable in fiat mode, etc.).
-    final raws = _deriveRaws(
+    final raws = deriveRaws(
       mode: cs.mode,
       active: cs.active,
       raw: cs.raw,
@@ -139,7 +138,7 @@ class ConverterScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _SlotView(
-                        unit: _slotUnit(cs.mode, ConverterSlot.top, btcMode),
+                        unit: slotUnit(cs.mode, ConverterSlot.top, btcMode),
                         currency: currency,
                         raw: raws.top,
                         active: cs.active == ConverterSlot.top,
@@ -156,7 +155,7 @@ class ConverterScreen extends StatelessWidget {
                       const _ArrowStack(),
                       const SizedBox(height: AppSpacing.sm),
                       _SlotView(
-                        unit: _slotUnit(cs.mode, ConverterSlot.bottom, btcMode),
+                        unit: slotUnit(cs.mode, ConverterSlot.bottom, btcMode),
                         currency: currency,
                         raw: raws.bottom,
                         active: cs.active == ConverterSlot.bottom,
@@ -196,7 +195,7 @@ class ConverterScreen extends StatelessWidget {
               const SizedBox(height: AppSpacing.sm),
               NumberPad(
                 showConfirm: false,
-                showDecimal: _activeAllowsDecimal(cs.mode, cs.active, btcMode),
+                showDecimal: activeAllowsDecimal(cs.mode, cs.active, btcMode),
                 decimalLabel: localeDecimalSeparator,
                 onInput: (v) => _onInput(cs, v, btcMode),
                 onDelete: () => _onDelete(cs),
@@ -205,7 +204,7 @@ class ConverterScreen extends StatelessWidget {
                 isValid: false,
                 isEmpty: cs.raw.isEmpty,
                 zeroDisabled:
-                    _leadingZeroBlocked(cs.mode, cs.active, cs.raw, btcMode),
+                    leadingZeroBlocked(cs.mode, cs.active, cs.raw, btcMode),
                 onZeroBlocked: () => cs.edit(warning: true),
               ),
             ],
@@ -216,14 +215,14 @@ class ConverterScreen extends StatelessWidget {
   }
 
   void _onInput(ConverterState cs, String v, BtcDisplayMode btcMode) {
-    final unit = _slotUnit(cs.mode, cs.active, btcMode);
-    final result = _insertChar(cs.raw, cs.caret, v, unit);
+    final unit = slotUnit(cs.mode, cs.active, btcMode);
+    final result = insertChar(cs.raw, cs.caret, v, unit);
     if (result == null) {
       // Insert rejected. The sats-side leading-zero rule still needs to
       // surface its warning even when the keypad's zeroDisabled gate didn't
       // fire (e.g. typing '0' at caret 0 with non-empty input).
       if (v == '0' &&
-          unit == _InputUnit.sats &&
+          unit == ConverterInputUnit.sats &&
           cs.caret == 0 &&
           cs.raw.isNotEmpty) {
         cs.edit(warning: true);
@@ -261,10 +260,10 @@ class ConverterScreen extends StatelessWidget {
       cs.edit(active: slot, warning: false);
       return;
     }
-    final fromUnit = _slotUnit(cs.mode, cs.active, btcMode);
-    final toUnit = _slotUnit(cs.mode, slot, btcMode);
-    final sats = _rawToSats(cs.raw, fromUnit, rate);
-    final converted = _satsToRaw(sats, toUnit, rate);
+    final fromUnit = slotUnit(cs.mode, cs.active, btcMode);
+    final toUnit = slotUnit(cs.mode, slot, btcMode);
+    final sats = rawToSats(cs.raw, fromUnit, rate);
+    final converted = satsToRaw(sats, toUnit, rate);
     cs.edit(active: slot, raw: converted, warning: false);
   }
 
@@ -337,7 +336,7 @@ class _SlotView extends StatelessWidget {
     required this.onLabelTap,
   });
 
-  final _InputUnit unit;
+  final ConverterInputUnit unit;
   final Currency currency;
   final String raw;
   final bool active;
@@ -354,11 +353,11 @@ class _SlotView extends StatelessWidget {
 
     final String labelText;
     switch (unit) {
-      case _InputUnit.fiat:
+      case ConverterInputUnit.fiat:
         labelText = currency.code.toUpperCase();
-      case _InputUnit.sats:
+      case ConverterInputUnit.sats:
         labelText = 'BITCOIN (${l10n.bitcoinDisplayModeSats.toUpperCase()})';
-      case _InputUnit.btc:
+      case ConverterInputUnit.btc:
         labelText = 'BITCOIN (${l10n.bitcoinDisplayModeBtc.toUpperCase()})';
     }
 
@@ -366,11 +365,11 @@ class _SlotView extends StatelessWidget {
     final String prefix;
     final String? suffix;
     switch (unit) {
-      case _InputUnit.fiat:
+      case ConverterInputUnit.fiat:
         prefix = symbolAfterAmount ? '' : symbol;
         suffix = symbolAfterAmount ? symbol : null;
-      case _InputUnit.sats:
-      case _InputUnit.btc:
+      case ConverterInputUnit.sats:
+      case ConverterInputUnit.btc:
         prefix = symbolAfterAmount ? '' : '₿';
         suffix = symbolAfterAmount ? '₿' : null;
     }
@@ -381,7 +380,7 @@ class _SlotView extends StatelessWidget {
     // Sats raw is a pure digit string; everything else may contain a decimal
     // separator. formatFiatRaw handles both cleanly (it routes through
     // groupDigits for integer-only and splits/regroups around the '.').
-    final display = unit == _InputUnit.sats ? groupDigits(raw) : formatFiatRaw(raw);
+    final display = unit == ConverterInputUnit.sats ? groupDigits(raw) : formatFiatRaw(raw);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -406,164 +405,6 @@ class _SlotView extends StatelessWidget {
       ],
     );
   }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Pure logic: units and derivation
-// ─────────────────────────────────────────────────────────────────────────────
-
-/// What unit a slot's raw string is interpreted in.
-enum _InputUnit { fiat, sats, btc }
-
-_InputUnit _slotUnit(
-  ConverterMode mode,
-  ConverterSlot slot,
-  BtcDisplayMode btcMode,
-) {
-  switch (mode) {
-    case ConverterMode.fiat:
-      if (slot == ConverterSlot.top) return _InputUnit.fiat;
-      return btcMode == BtcDisplayMode.btc ? _InputUnit.btc : _InputUnit.sats;
-    case ConverterMode.sats:
-      if (slot == ConverterSlot.top) return _InputUnit.sats;
-      return _InputUnit.btc;
-  }
-}
-
-bool _activeAllowsDecimal(
-  ConverterMode mode,
-  ConverterSlot active,
-  BtcDisplayMode btcMode,
-) =>
-    _slotUnit(mode, active, btcMode) != _InputUnit.sats;
-
-bool _leadingZeroBlocked(
-  ConverterMode mode,
-  ConverterSlot active,
-  String raw,
-  BtcDisplayMode btcMode,
-) =>
-    raw.isEmpty && _slotUnit(mode, active, btcMode) == _InputUnit.sats;
-
-/// Both slots' raw strings for this build. The active slot is the user's
-/// in-progress input verbatim; the other is derived via the live BTC price
-/// (fiat mode) or a pure sats↔BTC conversion (sats mode). The derived
-/// string may be empty when the rate isn't available yet or the input
-/// rounds to zero.
-({String top, String bottom}) _deriveRaws({
-  required ConverterMode mode,
-  required ConverterSlot active,
-  required String raw,
-  required BtcDisplayMode btcMode,
-  required double rate,
-}) {
-  final fromUnit = _slotUnit(mode, active, btcMode);
-  final otherSlot =
-      active == ConverterSlot.top ? ConverterSlot.bottom : ConverterSlot.top;
-  final toUnit = _slotUnit(mode, otherSlot, btcMode);
-  final derived = _convertRaw(raw, from: fromUnit, to: toUnit, rate: rate);
-  return active == ConverterSlot.top
-      ? (top: raw, bottom: derived)
-      : (top: derived, bottom: raw);
-}
-
-/// Converts a raw string between two units, routing through sats. The rate
-/// is only needed when fiat is involved on either side; pure BTC↔sats works
-/// even before the BTC price has loaded.
-String _convertRaw(
-  String raw, {
-  required _InputUnit from,
-  required _InputUnit to,
-  required double rate,
-}) {
-  if (from == to) return raw;
-  if (raw.isEmpty) return '';
-  final fiatInvolved = from == _InputUnit.fiat || to == _InputUnit.fiat;
-  if (fiatInvolved && rate <= 0) return '';
-  return _satsToRaw(_rawToSats(raw, from, rate), to, rate);
-}
-
-/// Parses a raw input string into sats. Returns 0 if parsing fails or the
-/// value is zero. For fiat→sats, uses the live rate.
-int _rawToSats(String raw, _InputUnit unit, double rate) {
-  if (raw.isEmpty) return 0;
-  switch (unit) {
-    case _InputUnit.fiat:
-      if (rate <= 0) return 0;
-      final fiat = double.tryParse(raw) ?? 0;
-      return fiat == 0 ? 0 : (fiat / rate * Sats.perBtc).round();
-    case _InputUnit.sats:
-      return int.tryParse(raw) ?? 0;
-    case _InputUnit.btc:
-      return Sats.btcRawToSats(raw);
-  }
-}
-
-/// Renders an int sats value as a raw input string in the target unit.
-/// Returns '' for zero so the inactive slot reads as empty rather than '0'.
-String _satsToRaw(int sats, _InputUnit unit, double rate) {
-  if (sats == 0) return '';
-  switch (unit) {
-    case _InputUnit.fiat:
-      if (rate <= 0) return '';
-      return clampDerivedFiatRaw(sats / Sats.perBtc * rate);
-    case _InputUnit.sats:
-      return sats.toString();
-    case _InputUnit.btc:
-      return Sats.satsToBtcRaw(sats);
-  }
-}
-
-/// Returns the new raw input + caret position after inserting [v] at [caret]
-/// into a string in the given [unit], or null if the keystroke should be
-/// rejected (caller suppresses haptic/visual change).
-(String, int)? _insertChar(String raw, int caret, String v, _InputUnit unit) {
-  if (unit == _InputUnit.sats) {
-    if (v == '.') return null;
-    if (raw.length >= Sats.maxInputDigits) return null;
-    if (v == '0' && caret == 0 && raw.isNotEmpty) return null;
-    return ('${raw.substring(0, caret)}$v${raw.substring(caret)}', caret + 1);
-  }
-  // Fiat or BTC display: digits + at most one '.', capped at the unit's
-  // max fractional digits (8 for BTC, kFiatMaxDecimals for fiat).
-  final maxDecimals = unit == _InputUnit.btc ? 8 : kFiatMaxDecimals;
-  if (v == '.') {
-    if (raw.contains('.')) return null;
-    if (raw.isEmpty) return ('0.', 2);
-    return ('${raw.substring(0, caret)}.${raw.substring(caret)}', caret + 1);
-  }
-  if (raw.contains('.')) {
-    final dot = raw.indexOf('.');
-    final fracLen = raw.length - dot - 1;
-    if (caret > dot && fracLen >= maxDecimals) return null;
-  }
-  return ('${raw.substring(0, caret)}$v${raw.substring(caret)}', caret + 1);
-}
-
-/// Builds a [ConverterEntry] from persisted strings, defaulting an unknown
-/// or null slot code to [ConverterSlot.top] and placing the caret at the
-/// end of the input.
-ConverterEntry _entryFrom(String? raw, String? slotCode) {
-  final r = raw ?? '';
-  return ConverterEntry(
-    raw: r,
-    active: _parseSlot(slotCode) ?? ConverterSlot.top,
-    caret: r.length,
-  );
-}
-
-ConverterSlot? _parseSlot(String? code) {
-  for (final s in ConverterSlot.values) {
-    if (s.name == code) return s;
-  }
-  return null;
-}
-
-ConverterMode? _parseMode(String? code) {
-  for (final m in ConverterMode.values) {
-    if (m.name == code) return m;
-  }
-  return null;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
