@@ -8,7 +8,7 @@ import '../state/state.dart';
 import '../theme/theme.dart';
 import '../widgets/scroll_hairline.dart';
 import 'about_screen.dart';
-import 'settings/_widgets.dart';
+import 'settings/settings_widgets.dart';
 import 'settings/btc_price_settings_screen.dart';
 import 'settings/reorder_home_widgets_screen.dart';
 import 'settings/stacks_settings_screen.dart';

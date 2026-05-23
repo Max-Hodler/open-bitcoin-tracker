@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../state/state.dart';
 import '../../../theme/theme.dart';
-import 'mempool/_block_strip.dart';
-import 'mempool/_block_visuals.dart';
+import 'mempool/block_strip.dart';
+import 'mempool/block_visuals.dart';
 import 'retry_button.dart';
 
 /// Network mempool card on the home screen. Subscribes to [MempoolController]

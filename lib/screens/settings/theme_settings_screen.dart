@@ -6,7 +6,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../state/state.dart';
 import '../../theme/theme.dart';
 import '../../widgets/scroll_hairline.dart';
-import '_widgets.dart';
+import 'settings_widgets.dart';
 
 class ThemeSettingsScreen extends StatelessWidget {
   const ThemeSettingsScreen({super.key});

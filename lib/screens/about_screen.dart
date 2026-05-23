@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../theme/theme.dart';
 import '../widgets/scroll_hairline.dart';
-import 'settings/_widgets.dart';
+import 'settings/settings_widgets.dart';
 
 const String _kGitHubUrl = 'https://github.com/Max-Hodler/open-bitcoin-tracker';
 const String _kPrivacyPolicyUrl =

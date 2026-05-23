@@ -9,8 +9,8 @@ import '../../state/state.dart';
 import '../../theme/theme.dart';
 import '../../widgets/scroll_hairline.dart';
 import '../pin_entry_screen.dart';
-import '_dialogs.dart';
-import '_widgets.dart';
+import 'settings_dialogs.dart';
+import 'settings_widgets.dart';
 
 class LockStacksSettingsScreen extends StatelessWidget {
   const LockStacksSettingsScreen({super.key});

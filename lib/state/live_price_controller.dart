@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../api/_tick_throttler.dart';
+import '../api/tick_throttler.dart';
 import '../api/kraken_ohlc_client.dart';
 import '../api/kraken_stream_service.dart';
 import '../api/price_data.dart';

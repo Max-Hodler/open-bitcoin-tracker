@@ -6,7 +6,7 @@ import '../../../../api/api.dart';
 import '../../../../main.dart' show appRouteObserver;
 import '../../../../services/app_haptics.dart';
 import '../../../../theme/theme.dart';
-import '_block_visuals.dart';
+import 'block_visuals.dart';
 
 class BlockStrip extends StatefulWidget {
   const BlockStrip({super.key, required this.snapshot, required this.boxSize});

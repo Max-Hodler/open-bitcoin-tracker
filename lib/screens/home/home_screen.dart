@@ -16,7 +16,7 @@ import '../../widgets/scroll_hairline.dart';
 import '../../widgets/stack_card.dart';
 import '../pin_entry_screen.dart';
 import '../settings_screen.dart';
-import '_chart_slice.dart';
+import 'chart_slice.dart';
 import 'header/area_chart.dart';
 import 'header/home_header.dart';
 import 'widgets/hashrate_card.dart';
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
   //   - _memoAllHistory*:   ditto for the full all-history curve (used by the
   //                         long-range "camera zoom" chart and the range pills)
   //   - _slicer:            range-window cache around the binary search in
-  //                         [ChartSlicer] (file: lib/screens/home/_chart_slice.dart)
+  //                         [ChartSlicer] (file: lib/screens/home/chart_slice.dart)
   // The fiat conversion now keys on (series identity, currency, FX-history
   // identity) instead of a single scalar rate: each historical point is
   // converted by its own day's FX rate, so the cache must invalidate whenever

@@ -7,8 +7,8 @@ import '../../state/state.dart';
 import '../../theme/theme.dart';
 import '../../widgets/scroll_hairline.dart';
 import '../new_stack_screens.dart';
-import '_dialogs.dart';
-import '_widgets.dart';
+import 'settings_dialogs.dart';
+import 'settings_widgets.dart';
 import 'lock_stacks_settings_screen.dart';
 import 'reorder_stacks_screen.dart';
 

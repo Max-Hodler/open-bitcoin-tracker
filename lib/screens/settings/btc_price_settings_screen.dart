@@ -7,7 +7,7 @@ import '../../services/app_haptics.dart';
 import '../../state/state.dart';
 import '../../theme/theme.dart';
 import '../../widgets/scroll_hairline.dart';
-import '_widgets.dart';
+import 'settings_widgets.dart';
 import 'currency_picker_screen.dart';
 
 class BtcPriceSettingsScreen extends StatelessWidget {
