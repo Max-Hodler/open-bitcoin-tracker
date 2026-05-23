@@ -68,11 +68,16 @@ Finder _findValueText(String expected) => find.byWidgetPredicate((w) {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('renders empty default state with rate label', (tester) async {
+  testWidgets('renders empty default state', (tester) async {
     await tester.pumpWidget(await _wrap());
     await tester.pump();
 
-    expect(find.text('1 BTC = \$100,000'), findsOneWidget);
+    // The old rate-label line ('1 BTC = $100,000') was removed when the
+    // converter dropped its static rate display; assert the scaffold instead.
+    expect(find.text('Fiat - BTC'), findsOneWidget);
+    expect(find.text('Sats - BTC'), findsOneWidget);
+    expect(find.text('BITCOIN (SATS)'), findsOneWidget);
+    expect(find.byType(NumberPad), findsOneWidget);
   });
 
   testWidgets('typing a fiat digit computes sats', (tester) async {
