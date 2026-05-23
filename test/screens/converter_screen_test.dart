@@ -49,6 +49,22 @@ Future<Widget> _wrap() async {
   );
 }
 
+// The active converter card renders its value as a Text.rich with per-char
+// TextSpan recognizers (so taps can place the caret); find.text won't match
+// the combined span. This finder matches either a plain Text or a Text.rich
+// whose flattened plain text — with WidgetSpan placeholder chars (U+FFFC)
+// from the caret stripped — equals [expected].
+Finder _findValueText(String expected) => find.byWidgetPredicate((w) {
+      if (w is Text) {
+        if (w.data == expected) return true;
+        final span = w.textSpan;
+        if (span == null) return false;
+        final flat = span.toPlainText().replaceAll('￼', '');
+        return flat == expected;
+      }
+      return false;
+    });
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -67,17 +83,18 @@ void main() {
     await tester.pump();
 
     // fiat = 5 -> 5,000 sats on sats card
-    expect(find.text('5,000'), findsOneWidget);
+    expect(_findValueText('5,000'), findsOneWidget);
   });
 
-  testWidgets('switching to sats then typing computes fiat', (tester) async {
+  testWidgets('switching to sats then typing computes BTC', (tester) async {
     await tester.pumpWidget(await _wrap());
     await tester.pump();
 
-    await tester.tap(find.text('BITCOIN'));
+    await tester.tap(find.text('Sats - BTC'));
     await tester.pump();
 
-    // Type 100000000 sats = 1 BTC -> 100,000 fiat.
+    // In sats mode both slots are bitcoin units (sats <-> BTC). Type
+    // 100,000,000 sats and confirm the other slot reads 1 BTC.
     await tester.tap(_keypadKey('1'));
     await tester.pump();
     for (int i = 0; i < 8; i++) {
@@ -85,8 +102,10 @@ void main() {
       await tester.pump();
     }
 
-    expect(find.text('100,000,000'), findsOneWidget);
-    expect(find.text('100,000.00'), findsOneWidget);
+    expect(_findValueText('100,000,000'), findsOneWidget);
+    // BITCOIN (BTC) slot label confirms which card the "1" belongs to.
+    expect(find.text('BITCOIN (BTC)'), findsOneWidget);
+    expect(_findValueText('1'), findsWidgets);
   });
 
   testWidgets('decimal key only available in fiat mode', (tester) async {
@@ -96,7 +115,7 @@ void main() {
     expect(_keypadKey('.'), findsOneWidget);
     expect(_keypadKey('AC'), findsNothing);
 
-    await tester.tap(find.text('BITCOIN'));
+    await tester.tap(find.text('Sats - BTC'));
     await tester.pump();
 
     expect(_keypadKey('.'), findsNothing);
