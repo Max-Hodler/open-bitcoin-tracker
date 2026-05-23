@@ -47,13 +47,13 @@ Future<(Widget, AppStateNotifier)> _wrap({required String stackId}) async {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('prefills with the current name uppercased', (tester) async {
+  testWidgets('prefills with the current name', (tester) async {
     final (w, _) = await _wrap(stackId: 's1');
     await tester.pumpWidget(w);
     await tester.pump();
 
     final field = tester.widget<TextField>(find.byType(TextField));
-    expect(field.controller!.text, 'COLD');
+    expect(field.controller!.text, 'Cold');
   });
 
   testWidgets('confirm saves trimmed name and pops', (tester) async {
@@ -88,7 +88,7 @@ void main() {
     await tester.tap(find.text('Change name'));
     await tester.pump();
 
-    expect(app.stacks.single.name, 'WARM WALLET');
+    expect(app.stacks.single.name, 'Warm wallet');
   });
 
   testWidgets('confirm is disabled when input is empty after trim', (tester) async {
