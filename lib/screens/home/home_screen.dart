@@ -42,13 +42,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Width at/above which the home screen switches to the two-pane wide layout.
-  // A phone in landscape clears this; a phone in portrait does not.
-  static const double _wideBreakpoint = 720;
-  // Cap for the single-column narrow layout so a portrait tablet doesn't
-  // stretch cards and the chart edge-to-edge.
-  static const double _maxContentWidth = 600;
-
   final ValueNotifier<PricePoint?> _hover = ValueNotifier(null);
   final ScrollController _scrollCtrl = ScrollController();
   // 0..1 hairline strength below the pinned header, derived from scroll
@@ -352,8 +345,7 @@ class _HomeScreenState extends State<HomeScreen> {
       chartWindowEndMs = nowMs;
     }
 
-    HomeHeader buildHeader({bool expandChart = false}) => HomeHeader(
-      expandChart: expandChart,
+    HomeHeader buildHeader() => HomeHeader(
       failed: intradayFailed,
       showBtcPrice: app.showBtcPrice,
       showChart: app.showChart,
@@ -508,37 +500,6 @@ List<Widget> lockedStacksBlock() => [
       ],
     );
 
-    // Wide layouts (landscape phone, tablet) split the screen into a static
-    // header pane and an independently-scrolling card pane. Narrow layouts
-    // keep the single pinned-header scroll view. The 720dp cutoff is the
-    // standard tablet/large-landscape breakpoint; a landscape phone clears it.
-    final isWide = MediaQuery.sizeOf(context).width >= _wideBreakpoint;
-
-    return Scaffold(
-      backgroundColor: cs.surfaceContainerLow,
-      // Wide layouts keep the top status-bar inset (clock + signal icons
-      // visible) and the bottom gesture-pill inset (so the range bar and
-      // cards aren't covered by the home-indicator), but go edge-to-edge on
-      // the sides — the left/right gutters and the camera-cutout region get
-      // filled by the panes. Narrow (portrait) keeps top + side insets;
-      // bottom stays absorbed by per-block padding (the trailing
-      // `SizedBox(height: 64)` in the content column).
-      body: SafeArea(
-        top: true,
-        left: !isWide,
-        right: !isWide,
-        bottom: isWide,
-        child: isWide
-            ? _wideLayout(buildHeader(expandChart: true), content)
-            : _narrowLayout(cs, buildHeader(), content),
-      ),
-    );
-  }
-
-  /// Single-column layout for portrait phones and portrait tablets. Content is
-  /// clamped to [_maxContentWidth] and centered so a wide portrait tablet
-  /// doesn't stretch cards and the chart edge-to-edge.
-  Widget _narrowLayout(ColorScheme cs, HomeHeader header, Widget content) {
     // Hairline lives inside the pinned-header slab (anchored to its bottom
     // edge) so it shares the slab's transform during overscroll. Drawing it
     // as a fixed-Y overlay outside the scroll view caused it to stay put
@@ -551,7 +512,7 @@ List<Widget> lockedStacksBlock() => [
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            header,
+            buildHeader(),
             Positioned(
               left: 0,
               right: 0,
@@ -564,9 +525,10 @@ List<Widget> lockedStacksBlock() => [
       ),
     );
 
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: _maxContentWidth),
+    return Scaffold(
+      backgroundColor: cs.surfaceContainerLow,
+      body: SafeArea(
+        bottom: false,
         child: CustomScrollView(
           controller: _scrollCtrl,
           physics: const AlwaysScrollableScrollPhysics(),
@@ -590,33 +552,6 @@ List<Widget> lockedStacksBlock() => [
           ],
         ),
       ),
-    );
-  }
-
-  /// Two-pane layout for landscape phones and landscape tablets. The header
-  /// (price + chart) and the reorderable cards each take half the width. The
-  /// header fills its pane vertically (chart grows to absorb leftover space
-  /// via [HomeHeader.expandChart]); the cards pane scrolls independently. The
-  /// header isn't above the cards here so it needs no pinning or scroll
-  /// hairline — both are portrait-only.
-  Widget _wideLayout(HomeHeader header, Widget content) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(child: header),
-        const VerticalDivider(width: 1, thickness: 1),
-        Expanded(
-          // The card pane keeps `_scrollCtrl` — the hairline-resync listener is
-          // a no-op in wide mode but the controller must stay attached to a
-          // live scroll view so rotating back to portrait doesn't throw.
-          child: SingleChildScrollView(
-            controller: _scrollCtrl,
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.only(top: AppSpacing.md),
-            child: content,
-          ),
-        ),
-      ],
     );
   }
 
