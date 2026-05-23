@@ -3,12 +3,12 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../api/api.dart';
 import '../../../data/app_enums.dart';
 import '../../../format/fiat.dart';
 import '../../../services/app_haptics.dart';
 import '../../../theme/theme.dart';
 import '../../../widgets/stack_card.dart' show StackCardPosition;
-import '../header/area_chart.dart';
 
 class RangePillsRow extends StatefulWidget {
   const RangePillsRow({

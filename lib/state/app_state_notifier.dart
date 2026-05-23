@@ -64,6 +64,24 @@ class AppStateNotifier extends ChangeNotifier {
 
   void setCurrency(Currency value) => _update((s) => s.copyWith(currency: value));
 
+  /// Step the active currency through [selectedCurrencies] by [direction] (+1
+  /// next, -1 previous), wrapping around. Returns true if the active currency
+  /// changed, false if no swap was possible (0 or 1 currency in the ring — the
+  /// caller is expected to handle that case, typically by opening the picker).
+  bool cycleCurrency(int direction) {
+    final ring = _state.selectedCurrencies;
+    if (ring.length <= 1) return false;
+    final i = ring.indexOf(_state.currency);
+    // If the active currency was removed from the ring (e.g. cleared by an
+    // external mutation), snap to the first ring entry rather than wrap
+    // around index -1.
+    final base = i < 0 ? 0 : i;
+    final next = ring[(base + direction) % ring.length];
+    if (next == _state.currency) return false;
+    setCurrency(next);
+    return true;
+  }
+
   /// Persists the converter screen's local fiat currency. Independent from
   /// [setCurrency] — does NOT touch the home-screen currency or the swipe
   /// ring. The converter screen calls this on first build (seeding from

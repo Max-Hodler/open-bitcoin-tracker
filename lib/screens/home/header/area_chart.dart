@@ -4,11 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class PricePoint {
-  const PricePoint(this.t, this.price);
-  final int t;
-  final double price;
-}
+import '../../../api/api.dart';
 
 class AreaChart extends StatefulWidget {
   const AreaChart({

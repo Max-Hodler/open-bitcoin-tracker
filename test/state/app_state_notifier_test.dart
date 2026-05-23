@@ -93,4 +93,53 @@ void main() {
     n.reorderStacks(0, 0);
     expect(notifies, 0);
   });
+
+  group('cycleCurrency', () {
+    test('returns false and is no-op when the ring is empty / singleton', () async {
+      final n = await _build();
+      // Default seed has at least one selected currency. Force a singleton.
+      n.setSelectedCurrencies([Currency.usd]);
+      final before = n.currency;
+      expect(n.cycleCurrency(1), isFalse);
+      expect(n.cycleCurrency(-1), isFalse);
+      expect(n.currency, before);
+    });
+
+    test('steps forward through the ring', () async {
+      final n = await _build();
+      n.setSelectedCurrencies([Currency.usd, Currency.eur, Currency.gbp]);
+      n.setCurrency(Currency.usd);
+
+      expect(n.cycleCurrency(1), isTrue);
+      expect(n.currency, Currency.eur);
+      expect(n.cycleCurrency(1), isTrue);
+      expect(n.currency, Currency.gbp);
+      // Wraps around.
+      expect(n.cycleCurrency(1), isTrue);
+      expect(n.currency, Currency.usd);
+    });
+
+    test('steps backward and wraps', () async {
+      final n = await _build();
+      n.setSelectedCurrencies([Currency.usd, Currency.eur, Currency.gbp]);
+      n.setCurrency(Currency.usd);
+
+      expect(n.cycleCurrency(-1), isTrue);
+      expect(n.currency, Currency.gbp);
+    });
+
+    test('snaps to first ring entry if active currency is outside the ring', () async {
+      final n = await _build();
+      // Drop EUR from the ring while it is the active currency, then re-add a
+      // different set. setSelectedCurrencies will snap if active isn't in the
+      // new list, so to engineer "active not in ring" we set the ring first
+      // then manually setCurrency to something the ring doesn't contain.
+      n.setSelectedCurrencies([Currency.usd, Currency.eur]);
+      n.setCurrency(Currency.jpy);
+
+      // Stepping forward from "outside the ring" should land on ring[0+1].
+      expect(n.cycleCurrency(1), isTrue);
+      expect(n.currency, Currency.eur);
+    });
+  });
 }

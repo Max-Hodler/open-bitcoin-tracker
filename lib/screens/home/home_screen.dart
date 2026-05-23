@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import '../../api/api.dart';
 import '../../data/app_enums.dart';
-import '../../data/fx_history.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../services/app_haptics.dart';
 import '../../services/stacks_unlock_orchestrator.dart';
@@ -17,7 +16,6 @@ import '../../widgets/stack_card.dart';
 import '../pin_entry_screen.dart';
 import '../settings_screen.dart';
 import 'chart_slice.dart';
-import 'header/area_chart.dart';
 import 'header/home_header.dart';
 import 'widgets/hashrate_card.dart';
 import 'widgets/home_buttons.dart';
@@ -74,32 +72,9 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // Three independent one-entry memos. Re-fetching from the controller hands
-  // back the same list object until the next merge, so identity (`identical`)
-  // is enough to short-circuit the fiat-conversion list comprehensions.
-  //   - _memo*Converted:    series-fiat conversion for the active range
-  //   - _memoAllHistory*:   ditto for the full all-history curve (used by the
-  //                         long-range "camera zoom" chart and the range pills)
-  //   - _slicer:            range-window cache around the binary search in
-  //                         [ChartSlicer] (file: lib/screens/home/chart_slice.dart)
-  // The fiat conversion now keys on (series identity, currency, FX-history
-  // identity) instead of a single scalar rate: each historical point is
-  // converted by its own day's FX rate, so the cache must invalidate whenever
-  // the currency changes or the bundled FX object first loads. When FX history
-  // hasn't loaded yet (`_memoFx == null`) the blocks fall back to the live
-  // `usdToCurrency` scalar — `_memoUsdToCurrency` guards that fallback path.
-  List<HistoryPoint>? _memoSeries;
-  Currency? _memoCurrency;
-  FxHistory? _memoFx;
-  double _memoUsdToCurrency = double.nan;
-  List<PricePoint> _memoConverted = const [];
-
-  List<HistoryPoint>? _memoAllHistorySeries;
-  Currency? _memoAllHistoryCurrency;
-  FxHistory? _memoAllHistoryFx;
-  double _memoAllHistoryUsdToCurrency = double.nan;
-  List<PricePoint> _memoAllHistoryConverted = const [];
-
+  // Cached range-window slice around the binary search in [ChartSlicer].
+  // The two FX-conversion memos that used to live here moved onto
+  // LivePriceController as convertedSeries / convertedAllHistory.
   final ChartSlicer _slicer = ChartSlicer();
 
   bool _needsData(AppStateNotifier app) => app.showChart && app.showBtcPrice;
@@ -201,11 +176,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final allHistory = context.select<LivePriceController, List<HistoryPoint>>(
       (c) => c.allHistory,
     );
-    // Bundled daily FX history. Null until the asset finishes loading; while
-    // null the conversion blocks fall back to the live `usdToCurrency` scalar.
-    final fxHistory = context.select<LivePriceController, FxHistory?>(
-      (c) => c.fxHistory,
-    );
+    // Subscribe to FX-history availability so the screen rebuilds (and the
+    // controller's convertedSeries memo invalidates) the moment the bundled
+    // asset finishes loading. The value itself is read inside the controller.
+    context.select<LivePriceController, bool>((c) => c.fxHistory != null);
     final lastFetchedAt = context.select<LivePriceController, DateTime?>(
       (c) => c.lastFetchedAt,
     );
@@ -228,59 +202,40 @@ class _HomeScreenState extends State<HomeScreen> {
         ? _slicer.slice(allHistory, range)
         : (intradaySeries ?? const <HistoryPoint>[]);
 
-    // Convert each historical point by its own day's FX rate. While FX history
-    // hasn't loaded, fall back to the live `usdToCurrency` scalar. The memo
-    // invalidates on series identity, currency, the FX object first loading,
-    // and (fallback only) the scalar rate.
-    if (!identical(_memoSeries, series) ||
-        _memoCurrency != currency ||
-        !identical(_memoFx, fxHistory) ||
-        (fxHistory == null && _memoUsdToCurrency != usdToCurrency)) {
-      _memoSeries = series;
-      _memoCurrency = currency;
-      _memoFx = fxHistory;
-      _memoUsdToCurrency = usdToCurrency;
-      final fx = fxHistory;
-      _memoConverted = [
-        for (final p in series)
-          PricePoint(
-            p.timeMs,
-            p.priceUsd *
-                (fx != null ? fx.rateAt(currency, p.timeMs) : usdToCurrency),
-          ),
-      ];
-    }
+    // Convert each historical point by its own day's FX rate (or the scalar
+    // `usdToCurrency` fallback if FX history hasn't loaded). The controller
+    // owns the memo cache; calling these on every build is cheap.
+    final priceController = context.read<LivePriceController>();
+    final convertedSeries = priceController.convertedSeries(
+      series: series,
+      currency: currency,
+      usdToCurrencyFallback: usdToCurrency,
+    );
+    final convertedAllHistoryBase = priceController.convertedAllHistory(
+      currency: currency,
+      usdToCurrencyFallback: usdToCurrency,
+    );
 
     final List<PricePoint> chartData;
     if (currentPrice > 0) {
-      chartData = [..._memoConverted, PricePoint(DateTime.now().millisecondsSinceEpoch, currentPrice)];
+      chartData = [
+        ...convertedSeries,
+        PricePoint(DateTime.now().millisecondsSinceEpoch, currentPrice),
+      ];
     } else {
-      chartData = _memoConverted;
+      chartData = convertedSeries;
     }
 
     // Long-range chart rendering uses the full all-history curve so switching
-    // between 3M–All animates the visible window as a camera zoom; cache the
-    // fiat-converted series separately from the range-specific one.
-    if (!identical(_memoAllHistorySeries, allHistory) ||
-        _memoAllHistoryCurrency != currency ||
-        !identical(_memoAllHistoryFx, fxHistory) ||
-        (fxHistory == null && _memoAllHistoryUsdToCurrency != usdToCurrency)) {
-      _memoAllHistorySeries = allHistory;
-      _memoAllHistoryCurrency = currency;
-      _memoAllHistoryFx = fxHistory;
-      _memoAllHistoryUsdToCurrency = usdToCurrency;
-      final fx = fxHistory;
-      _memoAllHistoryConverted = [
-        for (final p in allHistory)
-          PricePoint(
-            p.timeMs,
-            p.priceUsd *
-                (fx != null ? fx.rateAt(currency, p.timeMs) : usdToCurrency),
-          ),
-        if (currentPrice > 0)
-          PricePoint(DateTime.now().millisecondsSinceEpoch, currentPrice),
-      ];
-    }
+    // between 3M–All animates the visible window as a camera zoom. The "now"
+    // point is appended here rather than inside the memo so the cache doesn't
+    // invalidate on every live tick.
+    final convertedAllHistory = currentPrice > 0
+        ? [
+            ...convertedAllHistoryBase,
+            PricePoint(DateTime.now().millisecondsSinceEpoch, currentPrice),
+          ]
+        : convertedAllHistoryBase;
 
     final isUp = chartData.length >= 2 &&
         chartData.last.price >= chartData.first.price;
@@ -301,7 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // window as a camera zoom instead of swapping the line. For intraday
     // ranges (1D/1W/1M) the data isn't part of all-history, so we use the
     // range-specific chartData and the window just covers the series.
-    final chartRenderData = usesAllHistory ? _memoAllHistoryConverted : chartData;
+    final chartRenderData = usesAllHistory ? convertedAllHistory : chartData;
     int chartWindowStartMs;
     int chartWindowEndMs;
     if (chartData.length >= 2) {
@@ -336,27 +291,20 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       onCurrencySwipe: (direction) async {
         final notifier = context.read<AppStateNotifier>();
-        final ring = notifier.selectedCurrencies;
-        // 0/1 selected: nothing to cycle to, fall back to opening the picker.
-        if (ring.length <= 1) {
-          final picked = await Navigator.of(context).push<List<Currency>>(
-            MaterialPageRoute(
-              builder: (_) => CurrencyPickerScreen(initial: ring),
-            ),
-          );
-          if (picked != null && context.mounted) {
-            notifier.setSelectedCurrencies(picked);
-          }
+        if (notifier.cycleCurrency(direction)) {
+          AppHaptics.selection();
           return;
         }
-        final i = ring.indexOf(currency);
-        // If the active currency was removed from the ring (e.g. cleared by an
-        // external mutation), snap to the first ring entry rather than wrap
-        // around index -1.
-        final base = i < 0 ? 0 : i;
-        final next = ring[(base + direction) % ring.length];
-        AppHaptics.selection();
-        notifier.setCurrency(next);
+        // 0/1 currencies in the ring: nothing to cycle to. Open the picker so
+        // the user can add another, then adopt their selection on return.
+        final picked = await Navigator.of(context).push<List<Currency>>(
+          MaterialPageRoute(
+            builder: (_) => CurrencyPickerScreen(initial: notifier.selectedCurrencies),
+          ),
+        );
+        if (picked != null && context.mounted) {
+          notifier.setSelectedCurrencies(picked);
+        }
       },
       chartData: chartRenderData,
       chartWindowStartMs: chartWindowStartMs,
@@ -403,7 +351,7 @@ class _HomeScreenState extends State<HomeScreen> {
             currency: currency,
             btcRate: rate,
             bitcoinDisplayMode: app.bitcoinDisplayMode,
-            rangePillData: _memoAllHistoryConverted,
+            rangePillData: convertedAllHistory,
             // showTotal already implies stacks.length >= 2, so the total is
             // always the last row of a non-empty group.
             totalCard: showTotal

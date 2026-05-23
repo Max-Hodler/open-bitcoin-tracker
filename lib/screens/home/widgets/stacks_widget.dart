@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../api/api.dart';
 import '../../../data/app_enums.dart';
 import '../../../data/sats.dart';
 import '../../../data/stack.dart' as model;
@@ -13,7 +14,6 @@ import '../../../widgets/stack_card.dart' show StackCard, StackCardPosition;
 import '../../edit_stack_screens.dart';
 import '../../new_stack_screens.dart';
 import '../../settings/reorder_stacks_screen.dart';
-import '../header/area_chart.dart';
 import 'home_buttons.dart';
 import 'range_pills_row.dart';
 
