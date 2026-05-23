@@ -7,7 +7,8 @@ import '../l10n/generated/app_localizations.dart';
 import '../services/app_haptics.dart';
 import '../state/state.dart';
 import '../theme/theme.dart';
-import 'stack_screen_shared.dart';
+import '../widgets/sats_input/sats_input.dart';
+import '../widgets/stack_name/stack_name.dart';
 
 class NewStackAmountScreen extends StatefulWidget {
   const NewStackAmountScreen({super.key, this.initialSats});
@@ -40,7 +41,7 @@ class _NewStackAmountScreenState extends State<NewStackAmountScreen> {
   static String _initialInputFor(int? initialSats, BtcDisplayMode mode) {
     if (initialSats == null || initialSats == 0) return '';
     return mode == BtcDisplayMode.btc
-        ? satsToBtcRaw(initialSats)
+        ? model.Sats.satsToBtcRaw(initialSats)
         : initialSats.toString();
   }
 
@@ -50,11 +51,11 @@ class _NewStackAmountScreenState extends State<NewStackAmountScreen> {
     _modeAtInit = mode;
     if (prev == null || _input.isEmpty) return;
     final sats = prev == BtcDisplayMode.btc
-        ? btcRawToSats(_input)
+        ? model.Sats.btcRawToSats(_input)
         : (int.tryParse(_input) ?? 0);
     setState(() {
       _input = mode == BtcDisplayMode.btc
-          ? satsToBtcRaw(sats)
+          ? model.Sats.satsToBtcRaw(sats)
           : (sats == 0 ? '' : sats.toString());
       _caret = _input.length;
       _showLeadingZeroWarning = false;
@@ -63,7 +64,7 @@ class _NewStackAmountScreenState extends State<NewStackAmountScreen> {
 
   void _onInput(String ch, BtcDisplayMode mode) {
     if (mode == BtcDisplayMode.btc) {
-      final result = tryInsertBtcChar(_input, _caret, ch);
+      final result = model.Sats.tryInsertBtcChar(_input, _caret, ch);
       if (result == null) return;
       setState(() {
         _input = result.$1;
@@ -112,7 +113,7 @@ class _NewStackAmountScreenState extends State<NewStackAmountScreen> {
 
   void _onConfirm(BtcDisplayMode mode) {
     final sats = mode == BtcDisplayMode.btc
-        ? btcRawToSats(_input)
+        ? model.Sats.btcRawToSats(_input)
         : (int.tryParse(_input) ?? 0);
     if (sats == 0) return;
     Navigator.of(context).push(
@@ -154,8 +155,7 @@ class _NewStackAmountScreenState extends State<NewStackAmountScreen> {
       if (!mounted) return;
       _maybeMigrateForMode(mode);
     });
-    return buildSatsInputScaffold(
-      context: context,
+    return SatsInputScaffold(
       input: _input,
       caret: _caret,
       isValid: _input.isNotEmpty && _input != '0' && _input != '0.',

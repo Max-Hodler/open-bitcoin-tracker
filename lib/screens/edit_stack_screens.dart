@@ -7,7 +7,8 @@ import '../l10n/generated/app_localizations.dart';
 import '../services/app_haptics.dart';
 import '../state/state.dart';
 import '../theme/theme.dart';
-import 'stack_screen_shared.dart';
+import '../widgets/sats_input/sats_input.dart';
+import '../widgets/stack_name/stack_name.dart';
 
 class EditStackAmountScreen extends StatefulWidget {
   const EditStackAmountScreen({super.key, required this.stackId});
@@ -40,7 +41,7 @@ class _EditStackAmountScreenState extends State<EditStackAmountScreen> {
     _input = _original.sats == 0
         ? ''
         : (mode == BtcDisplayMode.btc
-            ? satsToBtcRaw(_original.sats)
+            ? model.Sats.satsToBtcRaw(_original.sats)
             : _original.sats.toString());
     _caret = _input.length;
     // If the stacks re-lock while the user is on this screen (e.g. they
@@ -68,11 +69,11 @@ class _EditStackAmountScreenState extends State<EditStackAmountScreen> {
     _modeAtInit = mode;
     if (prev == null || _input.isEmpty) return;
     final sats = prev == BtcDisplayMode.btc
-        ? btcRawToSats(_input)
+        ? model.Sats.btcRawToSats(_input)
         : (int.tryParse(_input) ?? 0);
     setState(() {
       _input = mode == BtcDisplayMode.btc
-          ? satsToBtcRaw(sats)
+          ? model.Sats.satsToBtcRaw(sats)
           : (sats == 0 ? '' : sats.toString());
       _caret = _input.length;
       _showLeadingZeroWarning = false;
@@ -81,7 +82,7 @@ class _EditStackAmountScreenState extends State<EditStackAmountScreen> {
 
   void _onInput(String ch, BtcDisplayMode mode) {
     if (mode == BtcDisplayMode.btc) {
-      final result = tryInsertBtcChar(_input, _caret, ch);
+      final result = model.Sats.tryInsertBtcChar(_input, _caret, ch);
       if (result == null) return;
       setState(() {
         _input = result.$1;
@@ -129,7 +130,7 @@ class _EditStackAmountScreenState extends State<EditStackAmountScreen> {
 
   void _onConfirm(BtcDisplayMode mode) {
     final sats = mode == BtcDisplayMode.btc
-        ? btcRawToSats(_input)
+        ? model.Sats.btcRawToSats(_input)
         : (int.tryParse(_input) ?? 0);
     context.read<AppStateNotifier>().updateStack(
           widget.stackId,
@@ -169,8 +170,7 @@ class _EditStackAmountScreenState extends State<EditStackAmountScreen> {
       if (!mounted) return;
       _maybeMigrateForMode(mode);
     });
-    return buildSatsInputScaffold(
-      context: context,
+    return SatsInputScaffold(
       input: _input,
       caret: _caret,
       isValid: _input.isNotEmpty && _input != '0' && _input != '0.',

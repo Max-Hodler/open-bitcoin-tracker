@@ -10,8 +10,8 @@ import '../services/stacks_auth_service.dart';
 import '../services/stacks_crypto_service.dart';
 import '../services/stacks_unlock_orchestrator.dart';
 import '../theme/theme.dart';
+import '../widgets/cancel_bar.dart';
 import '../widgets/number_pad.dart';
-import 'stack_screen_shared.dart';
 
 enum _PinFlow { verify, setup, change }
 
