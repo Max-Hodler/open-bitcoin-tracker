@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../api/live_price_controller.dart';
 import '../data/app_enums.dart';
 import '../data/sats.dart';
 import '../data/stack.dart' as model;

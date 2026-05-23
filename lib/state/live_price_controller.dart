@@ -4,15 +4,15 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../api/_tick_throttler.dart';
+import '../api/kraken_ohlc_client.dart';
+import '../api/kraken_stream_service.dart';
+import '../api/price_data.dart';
 import '../data/app_enums.dart';
 import '../data/btc_history.dart';
 import '../data/btc_history_cache.dart';
 import '../data/btc_rates_cache.dart';
 import '../data/fx_history.dart';
-import '_tick_throttler.dart';
-import 'kraken_ohlc_client.dart';
-import 'kraken_stream_service.dart';
-import 'price_data.dart';
 
 class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
   LivePriceController({

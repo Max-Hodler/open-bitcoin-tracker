@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../api/api.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../services/app_haptics.dart';
-import '../../../state/app_state_notifier.dart';
+import '../../../state/state.dart';
 import '../../../theme/theme.dart';
 import '../../../widgets/expandable_card.dart';
 import '../header/area_chart.dart';

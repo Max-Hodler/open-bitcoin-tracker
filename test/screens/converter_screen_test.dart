@@ -4,7 +4,6 @@ import 'package:open_bitcoin_tracker/api/api.dart';
 import 'package:open_bitcoin_tracker/data/data.dart';
 import 'package:open_bitcoin_tracker/l10n/generated/app_localizations.dart';
 import 'package:open_bitcoin_tracker/screens/converter_screen.dart';
-import 'package:open_bitcoin_tracker/state/converter_state.dart';
 import 'package:open_bitcoin_tracker/state/state.dart';
 import 'package:open_bitcoin_tracker/theme/theme.dart';
 import 'package:open_bitcoin_tracker/widgets/number_pad.dart';

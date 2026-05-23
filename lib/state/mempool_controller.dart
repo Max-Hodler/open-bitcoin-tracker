@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import 'mempool_client.dart';
+import '../api/mempool_client.dart';
 
 /// Polls [MempoolClient] every 60s while a subscriber is mounted and the app
 /// is foregrounded. Mined blocks land every ~10 min and the projected fee

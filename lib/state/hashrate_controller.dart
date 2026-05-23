@@ -3,7 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 
-import 'hashrate_client.dart';
+import '../api/hashrate_client.dart';
 
 /// Polls [HashrateClient] while a subscriber is mounted and the app is
 /// foregrounded. Pauses while backgrounded *or* while no subscriber is

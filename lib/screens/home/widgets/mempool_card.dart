@@ -3,8 +3,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../api/api.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../state/state.dart';
 import '../../../theme/theme.dart';
 import 'mempool/_block_strip.dart';
 import 'mempool/_block_visuals.dart';

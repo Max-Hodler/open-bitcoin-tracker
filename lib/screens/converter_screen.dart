@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../api/live_price_controller.dart';
 import '../data/app_enums.dart';
 import '../data/sats.dart';
 import '../format/fiat.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../services/app_haptics.dart';
-import '../state/converter_state.dart';
 import '../state/state.dart';
 import '../theme/theme.dart';
 import '../widgets/blinking_caret.dart';

@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../../api/api.dart';
 import '../../../data/app_enums.dart';
 import '../../../format/fiat.dart';
 import '../../../services/app_haptics.dart';
+import '../../../state/state.dart';
 import '../../../theme/theme.dart';
 import '../../../widgets/rolling_number.dart';
 import 'area_chart.dart';

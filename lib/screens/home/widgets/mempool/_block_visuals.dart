@@ -9,6 +9,7 @@ import '../../../../api/api.dart';
 import '../../../../format/fiat.dart' show intFormatter;
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../services/app_haptics.dart';
+import '../../../../state/state.dart';
 import '../../../../theme/app_colors.dart';
 import '../../../../theme/theme.dart';
 import '../mempool_block_sheet.dart';

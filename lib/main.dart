@@ -16,7 +16,6 @@ import 'screens/settings_screen.dart';
 import 'services/stacks_auth_service.dart';
 import 'services/stacks_crypto_service.dart';
 import 'services/stacks_unlock_orchestrator.dart';
-import 'state/converter_state.dart';
 import 'state/state.dart';
 import 'theme/theme.dart';
 
