@@ -10,6 +10,7 @@ import '../../services/app_haptics.dart';
 import '../../services/stacks_unlock_orchestrator.dart';
 import '../../state/state.dart';
 import '../../theme/theme.dart';
+import '../../widgets/avatar_sheet.dart';
 import '../../widgets/menu_action_tile.dart';
 import '../../widgets/scroll_hairline.dart';
 import '../../widgets/stack_card.dart';
@@ -352,6 +353,7 @@ class _HomeScreenState extends State<HomeScreen> {
             btcRate: rate,
             bitcoinDisplayMode: app.bitcoinDisplayMode,
             rangePillData: convertedAllHistory,
+            showAvatars: app.showStackImages,
             // showTotal already implies stacks.length >= 2, so the total is
             // always the last row of a non-empty group.
             totalCard: showTotal
@@ -489,12 +491,35 @@ List<Widget> lockedStacksBlock() => [
         currency: currency,
         btcRate: rate,
         bitcoinDisplayMode: app.bitcoinDisplayMode,
+        imageData: app.state.totalImageData,
+        colorKey: app.state.totalColorKey,
+        showAvatar: app.showStackImages,
         position: StackCardPosition.last,
         onTap: () {
           AppHaptics.light();
           _showTotalMenu(cardContext, app);
         },
+        onAvatarTap: () {
+          AppHaptics.light();
+          _showTotalAvatarSheet(cardContext, app);
+        },
       ),
+    );
+  }
+
+  Future<void> _showTotalAvatarSheet(
+    BuildContext iconContext,
+    AppStateNotifier app,
+  ) {
+    final l10n = AppLocalizations.of(iconContext);
+    return showAvatarSheet(
+      iconContext,
+      title: l10n.totalCardName,
+      currentImageData: app.state.totalImageData,
+      currentColorKey: app.state.totalColorKey,
+      onColorSet: app.setTotalColorKey,
+      onImageSet: app.setTotalImageData,
+      onImageCleared: () => app.setTotalImageData(null),
     );
   }
 

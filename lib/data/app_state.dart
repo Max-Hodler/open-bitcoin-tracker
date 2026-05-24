@@ -38,6 +38,9 @@ class AppState {
       HomeWidget.networkHashrate,
       HomeWidget.stacks,
     ],
+    this.totalImageData,
+    this.totalColorKey,
+    this.showStackImages = true,
   });
 
   final List<Stack> stacks;
@@ -104,6 +107,17 @@ class AppState {
   // the [fromJson] parser appends missing entries so an upgrade preserves the
   // user's prior ordering while picking up newly-added widgets.
   final List<HomeWidget> homeWidgetOrder;
+  // Avatar customization for the portfolio total card — same shape as the
+  // per-stack [Stack.imageData] / [Stack.colorKey] fields. The total card
+  // isn't a Stack so its avatar settings live here on AppState. Null means
+  // default initial-letter circle in the theme's bitcoinOrange.
+  final String? totalImageData;
+  final String? totalColorKey;
+  // Master toggle for the avatar circle on stack cards (per-stack and total).
+  // When false, all cards render without the leading avatar so the layout
+  // collapses to its pre-avatar look. Per-stack image/color settings are
+  // preserved so toggling back on restores them.
+  final bool showStackImages;
 
   AppState copyWith({
     List<Stack>? stacks,
@@ -136,6 +150,11 @@ class AppState {
     String? converterSatsModeRaw,
     String? converterSatsModeActiveSlot,
     List<HomeWidget>? homeWidgetOrder,
+    String? totalImageData,
+    bool clearTotalImage = false,
+    String? totalColorKey,
+    bool clearTotalColor = false,
+    bool? showStackImages,
   }) {
     return AppState(
       stacks: stacks ?? this.stacks,
@@ -171,6 +190,13 @@ class AppState {
       converterSatsModeActiveSlot: converterSatsModeActiveSlot ??
           this.converterSatsModeActiveSlot,
       homeWidgetOrder: homeWidgetOrder ?? this.homeWidgetOrder,
+      totalImageData: clearTotalImage
+          ? null
+          : (totalImageData ?? this.totalImageData),
+      totalColorKey: clearTotalColor
+          ? null
+          : (totalColorKey ?? this.totalColorKey),
+      showStackImages: showStackImages ?? this.showStackImages,
     );
   }
 
@@ -209,6 +235,9 @@ class AppState {
         if (converterSatsModeActiveSlot != null)
           'converterSatsModeActiveSlot': converterSatsModeActiveSlot,
         'homeWidgetOrder': [for (final w in homeWidgetOrder) w.code],
+        if (totalImageData != null) 'totalImageData': totalImageData,
+        if (totalColorKey != null) 'totalColorKey': totalColorKey,
+        'showStackImages': showStackImages,
       };
 
   factory AppState.fromJson(Map<String, dynamic> json) {
@@ -288,6 +317,13 @@ class AppState {
       converterSatsModeActiveSlot:
           json['converterSatsModeActiveSlot'] as String?,
       homeWidgetOrder: _parseHomeWidgetOrder(json['homeWidgetOrder']),
+      totalImageData: json['totalImageData'] is String
+          ? json['totalImageData'] as String
+          : null,
+      totalColorKey: json['totalColorKey'] is String
+          ? json['totalColorKey'] as String
+          : null,
+      showStackImages: json['showStackImages'] as bool? ?? true,
     );
   }
 

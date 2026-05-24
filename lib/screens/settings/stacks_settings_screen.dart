@@ -101,6 +101,12 @@ class StacksSettingsScreen extends StatelessWidget {
                     enabled: true,
                     onChanged: (v) => app.setShowPortfolio(v),
                   ),
+                SettingsToggleTile(
+                  label: l10n.settingsShowStackImages,
+                  value: app.showStackImages,
+                  enabled: true,
+                  onChanged: (v) => app.setShowStackImages(v),
+                ),
               ],
             ),
           ],

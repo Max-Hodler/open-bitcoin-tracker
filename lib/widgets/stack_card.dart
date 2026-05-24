@@ -4,6 +4,7 @@ import '../data/app_enums.dart';
 import '../data/sats.dart';
 import '../data/fiat.dart';
 import '../theme/theme.dart';
+import 'stack_avatar.dart';
 
 /// Where this card sits in a vertical group, used to decide which corners
 /// to round so a series of cards reads as one grouped surface with hairline
@@ -19,7 +20,11 @@ class StackCard extends StatelessWidget {
     required this.btcRate,
     required this.bitcoinDisplayMode,
     this.isHidden = false,
+    this.imageData,
+    this.colorKey,
+    this.showAvatar = true,
     this.onTap,
+    this.onAvatarTap,
     this.position = StackCardPosition.only,
   });
 
@@ -29,12 +34,17 @@ class StackCard extends StatelessWidget {
   final double? btcRate;
   final BtcDisplayMode bitcoinDisplayMode;
   final bool isHidden;
+  final String? imageData;
+  final String? colorKey;
+  // When false, the leading avatar circle (and its spacer) is omitted so the
+  // card collapses to a name + amount row, matching the pre-avatar layout.
+  final bool showAvatar;
   final VoidCallback? onTap;
+  final VoidCallback? onAvatarTap;
   final StackCardPosition position;
 
   @override
   Widget build(BuildContext context) {
-    const horizontalPadding = 20.0;
     final cs = Theme.of(context).colorScheme;
     final r = const Radius.circular(AppSpacing.radiusLarge);
     final BorderRadius borderRadius;
@@ -58,52 +68,74 @@ class StackCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: horizontalPadding,
-              vertical: 16,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTypography.body.copyWith(
-                    fontSize: 16,
-                    color: cs.onSurface,
-                    fontWeight: FontWeight.w600,
+                if (showAvatar) ...[
+                  // Opaque hit-test stops the tap bubbling up to the surrounding
+                  // InkWell, so the avatar opens the picker sheet while the rest
+                  // of the card still opens the stack menu.
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: onAvatarTap,
+                    child: StackAvatar(
+                      name: name,
+                      imageData: imageData,
+                      colorKey: colorKey,
+                      onTap: onAvatarTap,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        formatBtcAmount(
-                          sats,
-                          hidden: isHidden,
-                          mode: bitcoinDisplayMode,
-                        ),
+                  const SizedBox(width: AppSpacing.sm),
+                ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AppTypography.body.copyWith(
                           fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: -0.3,
-                          color: cs.onSurface.withValues(alpha: 0.85),
-                          fontFeatures: const [FontFeature.tabularFigures()],
+                          color: cs.onSurface,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    _FiatValue(
-                      sats: sats,
-                      currency: currency,
-                      btcRate: btcRate,
-                      isHidden: isHidden,
-                    ),
-                  ],
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              formatBtcAmount(
+                                sats,
+                                hidden: isHidden,
+                                mode: bitcoinDisplayMode,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.body.copyWith(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: -0.3,
+                                color: cs.onSurface.withValues(alpha: 0.85),
+                                fontFeatures: const [
+                                  FontFeature.tabularFigures()
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          _FiatValue(
+                            sats: sats,
+                            currency: currency,
+                            btcRate: btcRate,
+                            isHidden: isHidden,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

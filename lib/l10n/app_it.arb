@@ -87,6 +87,7 @@
   "settingsScaleLinear": "Lineare",
   "settingsScaleLog": "Log",
   "settingsPortfolioTotal": "Mostra totale",
+  "settingsShowStackImages": "Display stack avatars",
   "settingsConverterButton": "Convertitore",
   "settingsMempoolWidget": "Mempool",
   "settingsHashrateWidget": "Hashrate",
@@ -165,6 +166,16 @@
   "rangePickerYearsFull": "{count, plural, =1{1 Anno} other{{count} Anni}}",
   "rangePickerMonthsFull": "{count, plural, =1{1 Mese} other{{count} Mesi}}",
   "stackMenuDelete": "Elimina Stack",
+
+  "stackImageSheetSubtitle": "Pick a color or an image",
+  "stackImageSectionLabel": "Image",
+  "stackImageChooseFromGallery": "Open gallery",
+  "stackImageChangeFromGallery": "Change image",
+  "stackImageRemove": "Remove image",
+  "stackImagePickFailed": "Couldn't load that image",
+  "stackImageCropTitle": "Crop image",
+  "stackImageCropConfirm": "Done",
+  "stackImageColorLabel": "Color",
 
   "totalMenuHide": "Nascondi",
 

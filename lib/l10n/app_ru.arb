@@ -87,6 +87,7 @@
   "settingsScaleLinear": "Линейная",
   "settingsScaleLog": "Лог.",
   "settingsPortfolioTotal": "Показывать итог",
+  "settingsShowStackImages": "Display stack avatars",
   "settingsConverterButton": "Конвертер",
   "settingsMempoolWidget": "Mempool",
   "settingsHashrateWidget": "Hashrate",
@@ -165,6 +166,16 @@
   "rangePickerYearsFull": "{count, plural, one{1 год} few{{count} года} many{{count} лет} other{{count} года}}",
   "rangePickerMonthsFull": "{count, plural, one{1 месяц} few{{count} месяца} many{{count} месяцев} other{{count} месяца}}",
   "stackMenuDelete": "Удалить Stack",
+
+  "stackImageSheetSubtitle": "Pick a color or an image",
+  "stackImageSectionLabel": "Image",
+  "stackImageChooseFromGallery": "Open gallery",
+  "stackImageChangeFromGallery": "Change image",
+  "stackImageRemove": "Remove image",
+  "stackImagePickFailed": "Couldn't load that image",
+  "stackImageCropTitle": "Crop image",
+  "stackImageCropConfirm": "Done",
+  "stackImageColorLabel": "Color",
 
   "totalMenuHide": "Скрыть",
 

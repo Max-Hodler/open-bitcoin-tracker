@@ -256,6 +256,10 @@
   "@settingsPortfolioTotal": {
     "description": "Stacks settings toggle that shows or hides the portfolio total card on home (only visible with 2+ stacks). Phrased as an action ('Display total') to match the sibling 'Display current price' toggle in the BTC price sub-screen."
   },
+  "settingsShowStackImages": "Display stack avatars",
+  "@settingsShowStackImages": {
+    "description": "Stacks settings toggle that shows or hides the leading avatar circle on every stack card (and the portfolio total card). When off, cards render without the avatar and per-stack image/color choices are preserved for when the toggle is flipped back on."
+  },
   "settingsConverterButton": "Converter",
   "@settingsConverterButton": {
     "description": "Display-group toggle that shows or hides the Converter button widget on home."
@@ -550,6 +554,43 @@
   "stackMenuDelete": "Delete stack",
   "@stackMenuDelete": {
     "description": "Stack overflow menu action: delete the stack. Destructive."
+  },
+
+  "stackImageSheetSubtitle": "Pick a color or an image",
+  "@stackImageSheetSubtitle": {
+    "description": "Subtitle shown under the stack name in the avatar bottom sheet, telling the user they can either change the color of the default initial-letter circle or pick a photo."
+  },
+  "stackImageSectionLabel": "Image",
+  "@stackImageSectionLabel": {
+    "description": "Section label above the gallery/remove actions in the avatar bottom sheet. Mirrors the 'Color' label above the swatch row."
+  },
+  "stackImageChooseFromGallery": "Open gallery",
+  "@stackImageChooseFromGallery": {
+    "description": "Action in the stack-image bottom sheet that opens the system photo gallery to pick the first image for the stack's avatar (shown when the stack currently has no image)."
+  },
+  "stackImageChangeFromGallery": "Change image",
+  "@stackImageChangeFromGallery": {
+    "description": "Replacement label for the gallery action when the stack already has an image set — emphasizes that picking will replace the existing avatar rather than set it fresh."
+  },
+  "stackImageRemove": "Remove image",
+  "@stackImageRemove": {
+    "description": "Destructive action in the stack-image bottom sheet that removes the custom avatar image and restores the default initial-letter circle. Only rendered when the stack currently has an image."
+  },
+  "stackImagePickFailed": "Couldn't load that image",
+  "@stackImagePickFailed": {
+    "description": "Snackbar shown when the picked gallery image can't be decoded or processed (corrupt file, unsupported format, too large)."
+  },
+  "stackImageCropTitle": "Crop image",
+  "@stackImageCropTitle": {
+    "description": "App bar title of the full-screen square cropper shown after the user picks a gallery image and before it's saved as the stack's avatar."
+  },
+  "stackImageCropConfirm": "Done",
+  "@stackImageCropConfirm": {
+    "description": "App bar action that confirms the current crop region and proceeds to save the cropped image as the stack's avatar."
+  },
+  "stackImageColorLabel": "Color",
+  "@stackImageColorLabel": {
+    "description": "Label above the row of color swatches in the avatar bottom sheet. The swatches set the tint of the default initial-letter avatar; the row is hidden when the stack already has a picked image."
   },
 
   "totalMenuHide": "Hide",

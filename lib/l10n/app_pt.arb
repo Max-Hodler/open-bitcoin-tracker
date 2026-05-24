@@ -87,6 +87,7 @@
   "settingsScaleLinear": "Linear",
   "settingsScaleLog": "Log",
   "settingsPortfolioTotal": "Exibir total",
+  "settingsShowStackImages": "Display stack avatars",
   "settingsConverterButton": "Conversor",
   "settingsMempoolWidget": "Mempool",
   "settingsHashrateWidget": "Hashrate",
@@ -165,6 +166,16 @@
   "rangePickerYearsFull": "{count, plural, =1{1 ano} other{{count} anos}}",
   "rangePickerMonthsFull": "{count, plural, =1{1 mês} other{{count} meses}}",
   "stackMenuDelete": "Apagar stack",
+
+  "stackImageSheetSubtitle": "Pick a color or an image",
+  "stackImageSectionLabel": "Image",
+  "stackImageChooseFromGallery": "Open gallery",
+  "stackImageChangeFromGallery": "Change image",
+  "stackImageRemove": "Remove image",
+  "stackImagePickFailed": "Couldn't load that image",
+  "stackImageCropTitle": "Crop image",
+  "stackImageCropConfirm": "Done",
+  "stackImageColorLabel": "Color",
 
   "totalMenuHide": "Ocultar",
 

@@ -87,6 +87,7 @@
   "settingsScaleLinear": "リニア",
   "settingsScaleLog": "Log",
   "settingsPortfolioTotal": "合計を表示",
+  "settingsShowStackImages": "Display stack avatars",
   "settingsConverterButton": "コンバーター",
   "settingsMempoolWidget": "Mempool",
   "settingsHashrateWidget": "Hashrate",
@@ -165,6 +166,16 @@
   "rangePickerYearsFull": "{count, plural, =1{1年} other{{count}年}}",
   "rangePickerMonthsFull": "{count, plural, =1{1ヶ月} other{{count}ヶ月}}",
   "stackMenuDelete": "Stack を削除",
+
+  "stackImageSheetSubtitle": "Pick a color or an image",
+  "stackImageSectionLabel": "Image",
+  "stackImageChooseFromGallery": "Open gallery",
+  "stackImageChangeFromGallery": "Change image",
+  "stackImageRemove": "Remove image",
+  "stackImagePickFailed": "Couldn't load that image",
+  "stackImageCropTitle": "Crop image",
+  "stackImageCropConfirm": "Done",
+  "stackImageColorLabel": "Color",
 
   "totalMenuHide": "非表示",
 

@@ -87,6 +87,7 @@
   "settingsScaleLinear": "Tuyến tính",
   "settingsScaleLog": "Log",
   "settingsPortfolioTotal": "Hiển thị tổng",
+  "settingsShowStackImages": "Display stack avatars",
   "settingsConverterButton": "Bộ chuyển đổi",
   "settingsMempoolWidget": "Mempool",
   "settingsHashrateWidget": "Hashrate",
@@ -165,6 +166,16 @@
   "rangePickerYearsFull": "{count, plural, =1{1 Năm} other{{count} Năm}}",
   "rangePickerMonthsFull": "{count, plural, =1{1 Tháng} other{{count} Tháng}}",
   "stackMenuDelete": "Xóa Stack",
+
+  "stackImageSheetSubtitle": "Pick a color or an image",
+  "stackImageSectionLabel": "Image",
+  "stackImageChooseFromGallery": "Open gallery",
+  "stackImageChangeFromGallery": "Change image",
+  "stackImageRemove": "Remove image",
+  "stackImagePickFailed": "Couldn't load that image",
+  "stackImageCropTitle": "Crop image",
+  "stackImageCropConfirm": "Done",
+  "stackImageColorLabel": "Color",
 
   "totalMenuHide": "Ẩn",
 

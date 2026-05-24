@@ -9,6 +9,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../services/app_haptics.dart';
 import '../../../state/state.dart';
 import '../../../theme/theme.dart';
+import '../../../widgets/avatar_sheet.dart';
 import '../../../widgets/menu_action_tile.dart';
 import '../../../widgets/stack_card.dart' show StackCard, StackCardPosition;
 import '../../edit_stack_screens.dart';
@@ -27,6 +28,7 @@ class HomeStackList extends StatelessWidget {
     required this.btcRate,
     required this.bitcoinDisplayMode,
     required this.rangePillData,
+    required this.showAvatars,
     this.totalCard,
     this.totalSats,
   });
@@ -36,6 +38,7 @@ class HomeStackList extends StatelessWidget {
   final double? btcRate;
   final BtcDisplayMode bitcoinDisplayMode;
   final List<PricePoint> rangePillData;
+  final bool showAvatars;
   // When non-null, the portfolio total renders as the final row of the same
   // group as the stack cards, sharing its divider and corner rounding so it
   // reads as just another stack rather than a detached card. [totalSats]
@@ -61,6 +64,7 @@ class HomeStackList extends StatelessWidget {
             priceScale: stacks[i].sats / Sats.perBtc,
             isFirst: i == 0,
             isLast: i == rowCount - 1,
+            showAvatar: showAvatars,
           ),
         if (hasTotal)
           _GroupedCardRow(
@@ -89,6 +93,7 @@ class _SwipeableStackCard extends StatefulWidget {
     required this.priceScale,
     required this.isFirst,
     required this.isLast,
+    required this.showAvatar,
   });
 
   final model.Stack stack;
@@ -99,6 +104,7 @@ class _SwipeableStackCard extends StatefulWidget {
   final double priceScale;
   final bool isFirst;
   final bool isLast;
+  final bool showAvatar;
 
   @override
   State<_SwipeableStackCard> createState() => _SwipeableStackCardState();
@@ -215,6 +221,31 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
     }
   }
 
+  Future<void> _showAvatarSheet(BuildContext iconContext) {
+    final app = iconContext.read<AppStateNotifier>();
+    final stackId = widget.stack.id;
+    return showAvatarSheet(
+      iconContext,
+      title: widget.stack.name,
+      currentImageData: widget.stack.imageData,
+      currentColorKey: widget.stack.colorKey,
+      onColorSet: (key) => app.updateStack(
+        stackId,
+        (s) => key == null
+            ? s.copyWith(clearColor: true)
+            : s.copyWith(colorKey: key),
+      ),
+      onImageSet: (base64) => app.updateStack(
+        stackId,
+        (s) => s.copyWith(imageData: base64),
+      ),
+      onImageCleared: () => app.updateStack(
+        stackId,
+        (s) => s.copyWith(clearImage: true),
+      ),
+    );
+  }
+
   Future<bool?> _showDeleteDialog(BuildContext context) {
     return showDialog<bool>(
       context: context,
@@ -293,10 +324,17 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
         btcRate: widget.btcRate,
         bitcoinDisplayMode: widget.bitcoinDisplayMode,
         isHidden: widget.stack.isHidden,
+        imageData: widget.stack.imageData,
+        colorKey: widget.stack.colorKey,
+        showAvatar: widget.showAvatar,
         position: _position,
         onTap: () {
           AppHaptics.light();
           _showStackMenu(cardContext);
+        },
+        onAvatarTap: () {
+          AppHaptics.light();
+          _showAvatarSheet(cardContext);
         },
       ),
     );
@@ -378,3 +416,4 @@ class StacksLockedCard extends StatelessWidget {
     );
   }
 }
+
