@@ -68,7 +68,7 @@ class StackCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -102,7 +102,7 @@ class StackCard extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 4),
                       Row(
                         children: [
                           Expanded(

@@ -262,7 +262,7 @@ class _RangeCell extends StatelessWidget {
                 fontWeight: FontWeight.w400,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 4),
             Text(
               pastPrice == null
                   ? '—'
