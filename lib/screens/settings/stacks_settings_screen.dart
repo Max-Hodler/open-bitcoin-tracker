@@ -73,17 +73,6 @@ class StacksSettingsScreen extends StatelessWidget {
                 ),
                 if (!lock.isLocked)
                   SettingsPickerTile(
-                    label: l10n.homeAddStack,
-                    value: '',
-                    onTap: () => Navigator.of(context).push<void>(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const NewStackAmountScreen(),
-                      ),
-                    ),
-                    trailingIcon: Icons.add,
-                  ),
-                if (!lock.isLocked)
-                  SettingsPickerTile(
                     label: l10n.settingsReorderStacks,
                     value: '',
                     enabled: app.stacks.isNotEmpty,
@@ -94,6 +83,12 @@ class StacksSettingsScreen extends StatelessWidget {
                     ),
                     trailingIcon: Icons.chevron_right,
                   ),
+                SettingsToggleTile(
+                  label: l10n.settingsShowStackImages,
+                  value: app.showStackImages,
+                  enabled: true,
+                  onChanged: (v) => app.setShowStackImages(v),
+                ),
                 if (canShowTotal)
                   SettingsToggleTile(
                     label: l10n.settingsPortfolioTotal,
@@ -101,14 +96,25 @@ class StacksSettingsScreen extends StatelessWidget {
                     enabled: true,
                     onChanged: (v) => app.setShowPortfolio(v),
                   ),
-                SettingsToggleTile(
-                  label: l10n.settingsShowStackImages,
-                  value: app.showStackImages,
-                  enabled: true,
-                  onChanged: (v) => app.setShowStackImages(v),
-                ),
               ],
             ),
+            if (!lock.isLocked) ...[
+              const SizedBox(height: AppSpacing.lg),
+              SettingsGroup(
+                children: [
+                  SettingsPickerTile(
+                    label: l10n.homeAddStack,
+                    value: '',
+                    onTap: () => Navigator.of(context).push<void>(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const NewStackAmountScreen(),
+                      ),
+                    ),
+                    trailingIcon: Icons.add,
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
