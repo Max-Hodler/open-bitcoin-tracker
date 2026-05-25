@@ -177,11 +177,11 @@
   },
   "aboutSectionLinks": "Links",
   "@aboutSectionLinks": {
-    "description": "Section header on the About screen above external links (GitHub, etc.)."
+    "description": "Section header on the About screen above external links (project website, privacy policy, etc.)."
   },
-  "aboutGitHub": "Repository",
-  "@aboutGitHub": {
-    "description": "Link label on the About screen that opens the project's GitHub repository in the browser."
+  "aboutWebsite": "Website",
+  "@aboutWebsite": {
+    "description": "Link label on the About screen that opens the project's website (openbitcointracker.com) in the browser."
   },
   "aboutPrivacyPolicy": "Privacy policy",
   "@aboutPrivacyPolicy": {

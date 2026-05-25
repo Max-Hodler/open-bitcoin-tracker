@@ -7,7 +7,7 @@ import '../theme/theme.dart';
 import '../widgets/scroll_hairline.dart';
 import 'settings/settings_widgets.dart';
 
-const String _kGitHubUrl = 'https://github.com/Max-Hodler/open-bitcoin-tracker';
+const String _kWebsiteUrl = 'https://openbitcointracker.com';
 const String _kPrivacyPolicyUrl =
     'https://max-hodler.github.io/open-bitcoin-tracker/privacy/';
 const String _kKrakenUrl = 'https://www.kraken.com';
@@ -72,9 +72,9 @@ class _AboutScreenState extends State<AboutScreen> {
               children: [
                 _externalLinkTile(
                   context,
-                  label: l10n.aboutGitHub,
-                  value: 'GitHub',
-                  url: _kGitHubUrl,
+                  label: l10n.aboutWebsite,
+                  value: 'openbitcointracker.com',
+                  url: _kWebsiteUrl,
                 ),
                 _externalLinkTile(
                   context,
