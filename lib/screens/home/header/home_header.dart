@@ -83,7 +83,6 @@ class HomeHeader extends StatefulWidget {
   const HomeHeader({
     super.key,
     required this.failed,
-    required this.showBtcPrice,
     required this.showChart,
     required this.currentPrice,
     required this.hover,
@@ -113,7 +112,6 @@ class HomeHeader extends StatefulWidget {
   });
 
   final bool failed;
-  final bool showBtcPrice;
   final bool showChart;
   final double currentPrice;
   final ValueListenable<PricePoint?> hover;
@@ -169,50 +167,36 @@ class _HomeHeaderState extends State<HomeHeader> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (widget.showBtcPrice)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md,
-              AppSpacing.xs,
-              AppSpacing.md,
-              0,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: CurrentPrice(
-                    price: widget.currentPrice,
-                    hover: widget.hover,
-                    lastFetchedAt: widget.lastFetchedAt,
-                    range: widget.range,
-                    currency: widget.currency,
-                    selectedCurrencies: widget.selectedCurrencies,
-                    color: widget.chartColor,
-                    rangePct: widget.rangePct,
-                    rollDirection: widget.rollDirection,
-                    onPriceTap: widget.onPriceTap,
-                    onCurrencySwipe: widget.onCurrencySwipe,
-                  ),
-                ),
-                ?buttonsRow,
-              ],
-            ),
-          )
-        else if (showButtons)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md,
-              AppSpacing.md,
-              AppSpacing.md,
-              0,
-            ),
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: buttonsRow,
-            ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            AppSpacing.xs,
+            AppSpacing.md,
+            0,
           ),
-        if (widget.showBtcPrice && widget.showChart) ...[
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: CurrentPrice(
+                  price: widget.currentPrice,
+                  hover: widget.hover,
+                  lastFetchedAt: widget.lastFetchedAt,
+                  range: widget.range,
+                  currency: widget.currency,
+                  selectedCurrencies: widget.selectedCurrencies,
+                  color: widget.chartColor,
+                  rangePct: widget.rangePct,
+                  rollDirection: widget.rollDirection,
+                  onPriceTap: widget.onPriceTap,
+                  onCurrencySwipe: widget.onCurrencySwipe,
+                ),
+              ),
+              ?buttonsRow,
+            ],
+          ),
+        ),
+        if (widget.showChart) ...[
           SizedBox(
             height: 120,
             child: _buildChartArea(context, logScale: logScale),

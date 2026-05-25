@@ -218,15 +218,11 @@
   },
   "settingsBtcPrice": "BTC price",
   "@settingsBtcPrice": {
-    "description": "Settings toggle: show or hide the live BTC price block on home."
+    "description": "Settings row label that opens the BTC price sub-screen."
   },
   "settingsBtcPriceTitle": "BTC price",
   "@settingsBtcPriceTitle": {
-    "description": "AppBar title of the BTC price settings sub-screen (groups the BTC price toggle, cadence picker, price-delta toggle, chart toggle, and scale segmented control)."
-  },
-  "settingsBtcPriceDisplay": "Display current price",
-  "@settingsBtcPriceDisplay": {
-    "description": "Toggle row inside the BTC price sub-screen that shows or hides the live BTC price block on home. Phrased as an action ('Display current price') so the row reads as a sub-action; 'current price' disambiguates it from the price-history chart toggle that lives in the same sub-screen."
+    "description": "AppBar title of the BTC price settings sub-screen (groups the currency picker, cadence picker, chart toggle, and scale segmented control)."
   },
   "settingsReorderWidgets": "Reorder widgets",
   "@settingsReorderWidgets": {
@@ -254,7 +250,7 @@
   },
   "settingsPortfolioTotal": "Display total",
   "@settingsPortfolioTotal": {
-    "description": "Stacks settings toggle that shows or hides the portfolio total card on home (only visible with 2+ stacks). Phrased as an action ('Display total') to match the sibling 'Display current price' toggle in the BTC price sub-screen."
+    "description": "Stacks settings toggle that shows or hides the portfolio total card on home (only visible with 2+ stacks)."
   },
   "settingsShowStackImages": "Display stack avatars",
   "@settingsShowStackImages": {

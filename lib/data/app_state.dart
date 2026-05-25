@@ -12,7 +12,6 @@ class AppState {
     this.showMempool = true,
     this.showHashrate = true,
     this.showChart = true,
-    this.showBtcPrice = true,
     this.theme = AppTheme.system,
     this.darkVariant = DarkVariant.blue,
     this.lightVariant = LightVariant.cream,
@@ -54,7 +53,6 @@ class AppState {
   final bool showMempool;
   final bool showHashrate;
   final bool showChart;
-  final bool showBtcPrice;
   final AppTheme theme;
   // Which dark palette to apply when the active brightness is dark. Ignored
   // when the resolved theme is light.
@@ -128,7 +126,6 @@ class AppState {
     bool? showMempool,
     bool? showHashrate,
     bool? showChart,
-    bool? showBtcPrice,
     AppTheme? theme,
     DarkVariant? darkVariant,
     LightVariant? lightVariant,
@@ -165,7 +162,6 @@ class AppState {
       showMempool: showMempool ?? this.showMempool,
       showHashrate: showHashrate ?? this.showHashrate,
       showChart: showChart ?? this.showChart,
-      showBtcPrice: showBtcPrice ?? this.showBtcPrice,
       theme: theme ?? this.theme,
       darkVariant: darkVariant ?? this.darkVariant,
       lightVariant: lightVariant ?? this.lightVariant,
@@ -209,7 +205,6 @@ class AppState {
         'showMempool': showMempool,
         'showHashrate': showHashrate,
         'showChart': showChart,
-        'showBtcPrice': showBtcPrice,
         'theme': theme.code,
         'darkVariant': darkVariant.code,
         'lightVariant': lightVariant.code,
@@ -265,7 +260,6 @@ class AppState {
       showMempool: json['showMempool'] as bool? ?? true,
       showHashrate: json['showHashrate'] as bool? ?? true,
       showChart: json['showChart'] as bool? ?? true,
-      showBtcPrice: json['showBtcPrice'] as bool? ?? true,
       theme: fromCode('theme', AppTheme.fromCode),
       darkVariant: fromCode('darkVariant', DarkVariant.fromCode),
       lightVariant: fromCode('lightVariant', LightVariant.fromCode),

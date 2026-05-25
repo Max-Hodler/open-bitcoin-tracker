@@ -40,7 +40,6 @@ class AppStateNotifier extends ChangeNotifier {
   bool get showMempool => _state.showMempool;
   bool get showHashrate => _state.showHashrate;
   bool get showChart => _state.showChart;
-  bool get showBtcPrice => _state.showBtcPrice;
   AppTheme get theme => _state.theme;
   DarkVariant get darkVariant => _state.darkVariant;
   LightVariant get lightVariant => _state.lightVariant;
@@ -142,7 +141,6 @@ class AppStateNotifier extends ChangeNotifier {
   void setShowMempool(bool value) => _update((s) => s.copyWith(showMempool: value));
   void setShowHashrate(bool value) => _update((s) => s.copyWith(showHashrate: value));
   void setShowChart(bool value) => _update((s) => s.copyWith(showChart: value));
-  void setShowBtcPrice(bool value) => _update((s) => s.copyWith(showBtcPrice: value));
   void setTheme(AppTheme value) => _update((s) => s.copyWith(theme: value));
   void setDarkVariant(DarkVariant value) =>
       _update((s) => s.copyWith(darkVariant: value));

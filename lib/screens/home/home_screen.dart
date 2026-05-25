@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // LivePriceController as convertedSeries / convertedAllHistory.
   final ChartSlicer _slicer = ChartSlicer();
 
-  bool _needsData(AppStateNotifier app) => app.showChart && app.showBtcPrice;
+  bool _needsData(AppStateNotifier app) => app.showChart;
 
   @override
   void initState() {
@@ -274,7 +274,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     HomeHeader buildHeader() => HomeHeader(
       failed: intradayFailed,
-      showBtcPrice: app.showBtcPrice,
       showChart: app.showChart,
       currentPrice: currentPrice,
       hover: _hover,

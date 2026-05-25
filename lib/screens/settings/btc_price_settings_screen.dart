@@ -52,23 +52,11 @@ class BtcPriceSettingsScreen extends StatelessWidget {
                   onTap: () => _openCurrencyPicker(context, app),
                   trailingIcon: Icons.chevron_right,
                 ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.md),
-            SettingsGroup(
-              children: [
-                SettingsToggleTile(
-                  label: l10n.settingsBtcPriceDisplay,
-                  value: app.showBtcPrice,
-                  enabled: true,
-                  onChanged: app.setShowBtcPrice,
-                ),
                 SettingsPickerTile(
                   label: l10n.settingsLivePriceCadence,
                   value: _livePriceCadenceLabel(l10n, app.livePriceCadence),
                   onTap: () => _openLivePriceCadencePicker(context, app),
                   trailingIcon: Icons.unfold_more,
-                  enabled: app.showBtcPrice,
                 ),
               ],
             ),
@@ -78,14 +66,14 @@ class BtcPriceSettingsScreen extends StatelessWidget {
                 SettingsToggleTile(
                   label: l10n.settingsChart,
                   value: app.showChart,
-                  enabled: app.showBtcPrice,
+                  enabled: true,
                   onChanged: app.setShowChart,
                 ),
                 SettingsSegmentedTile(
                   label: l10n.settingsScale,
                   options: [l10n.settingsScaleLinear, l10n.settingsScaleLog],
                   selectedIndex: app.logScale ? 1 : 0,
-                  enabled: app.showBtcPrice && app.showChart,
+                  enabled: app.showChart,
                   onChanged: (i) => app.setLogScale(i == 1),
                 ),
               ],
