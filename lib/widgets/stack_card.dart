@@ -86,7 +86,7 @@ class StackCard extends StatelessWidget {
                       onTap: onAvatarTap,
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: 20),
                 ],
                 Expanded(
                   child: Column(
