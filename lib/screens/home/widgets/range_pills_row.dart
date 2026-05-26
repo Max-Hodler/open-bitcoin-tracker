@@ -77,7 +77,6 @@ class _RangePillsRowState extends State<RangePillsRow> {
       data: widget.rangePillData,
       priceScale: widget.priceScale,
       currency: widget.currency,
-      position: widget.position,
     );
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -107,13 +106,11 @@ class _StackRangePills extends StatelessWidget {
     required this.data,
     required this.priceScale,
     required this.currency,
-    required this.position,
   });
 
   final List<PricePoint> data;
   final double priceScale;
   final Currency currency;
-  final StackCardPosition position;
 
   @override
   Widget build(BuildContext context) {
@@ -142,39 +139,21 @@ class _StackRangePills extends StatelessWidget {
 
     final cs = Theme.of(context).colorScheme;
     final railFill = context.palette.recessedSurface ?? cs.surfaceContainer;
-    final showBottomHairline = position == StackCardPosition.first ||
-        position == StackCardPosition.middle;
-    // Stack lets the row-separator hairline ride along the bottom edge of
-    // the rail itself, on the recessed fill, so it visually continues
-    // the card-side divider painted by [_SwipeableStackCard] without a
-    // color seam at the boundary.
     return ColoredBox(
       color: railFill,
-      child: Stack(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              for (int i = 0; i < items.length; i++) ...[
-                if (i > 0)
-                  VerticalDivider(
-                    width: 1,
-                    thickness: 1,
-                    color: cs.outlineVariant,
-                  ),
-                _RangeCell(item: items[i], currency: currency),
-              ],
-            ],
-          ),
-          if (showBottomHairline)
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              height: 1,
-              child: ColoredBox(color: cs.outlineVariant),
-            ),
+          for (int i = 0; i < items.length; i++) ...[
+            if (i > 0)
+              VerticalDivider(
+                width: 1,
+                thickness: 1,
+                color: cs.outlineVariant,
+              ),
+            _RangeCell(item: items[i], currency: currency),
+          ],
         ],
       ),
     );

@@ -46,8 +46,8 @@ class StackCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    return ColoredBox(
-      color: cs.surface,
+    return Material(
+      type: MaterialType.transparency,
       child: InkWell(
         onTap: onTap,
         child: Padding(

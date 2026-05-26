@@ -384,13 +384,10 @@ class _GroupedCardRow extends StatelessWidget {
           position: position,
         ),
         if (!isLast)
-          ColoredBox(
-            color: cs.surface,
-            child: Divider(
-              height: 1,
-              thickness: 1,
-              color: cs.outlineVariant,
-            ),
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: cs.outlineVariant,
           ),
       ],
     );
