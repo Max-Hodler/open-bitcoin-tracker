@@ -74,13 +74,8 @@ class BlockBox extends StatelessWidget {
     final isProjectedStyle = kind == BlockKind.projected ||
         (contentAsProjected && minedFraction == 0);
     final isDark = cs.brightness == Brightness.dark;
-    // Projected blocks fill with surfaceContainer in light mode and the
-    // palette's recessed surface in dark mode — one step below the lifted
-    // button surfaces so they read as "below" the mined blocks. No outline
-    // needed; the fill itself provides the contrast.
     final minedColor = cs.surface;
-    final projectedFillColor =
-        context.palette.recessedSurface ?? cs.surfaceContainer;
+    final projectedFillColor = minedColor;
     final boxColor = isProjectedStyle ? projectedFillColor : minedColor;
     final textColor = isDark
         ? Colors.white.withValues(alpha: 0.85)
@@ -286,9 +281,7 @@ class BlockSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final color = kind == BlockKind.projected
-        ? (context.palette.recessedSurface ?? cs.surfaceContainer)
-        : cs.surface;
+    final color = cs.surface;
     return Container(
       width: width,
       height: width,
