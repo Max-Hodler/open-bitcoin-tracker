@@ -24,11 +24,9 @@ class RangePillsRow extends StatefulWidget {
   final List<PricePoint> rangePillData;
   final double priceScale;
   final Currency currency;
-  // Which corners the pill rail should round. Mirrors the paired stack card's
-  // position so the rail and card read as one horizontal capsule per row, with
-  // hairline dividers between adjacent rows in the group. Also controls whether
-  // a bottom hairline is drawn under this row (first/middle: yes; only/last:
-  // no — those have a rounded bottom edge instead).
+  // Controls whether a bottom hairline is drawn under this row to separate it
+  // from the next (first/middle: yes; only/last: no — those are the bottom of
+  // the group).
   final StackCardPosition position;
 
   @override
@@ -84,8 +82,6 @@ class _RangePillsRowState extends State<RangePillsRow> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final fullWidth = constraints.maxWidth;
-        const hPad = AppSpacing.md;
-        final cardWidth = (fullWidth - hPad * 2).clamp(0.0, double.infinity);
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
@@ -96,10 +92,7 @@ class _RangePillsRowState extends State<RangePillsRow> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 rangePills,
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: hPad),
-                  child: SizedBox(width: cardWidth, child: widget.card),
-                ),
+                SizedBox(width: fullWidth, child: widget.card),
               ],
             ),
           ),
@@ -148,62 +141,41 @@ class _StackRangePills extends StatelessWidget {
     ];
 
     final cs = Theme.of(context).colorScheme;
-    final r = const Radius.circular(AppSpacing.radiusLarge);
-    final BorderRadius railRadius;
-    switch (position) {
-      case StackCardPosition.only:
-        railRadius = BorderRadius.all(r);
-      case StackCardPosition.first:
-        railRadius = BorderRadius.only(topLeft: r, topRight: r);
-      case StackCardPosition.last:
-        railRadius = BorderRadius.only(bottomLeft: r, bottomRight: r);
-      case StackCardPosition.middle:
-        railRadius = BorderRadius.zero;
-    }
     final railFill = context.palette.recessedSurface ?? cs.surfaceContainer;
     final showBottomHairline = position == StackCardPosition.first ||
         position == StackCardPosition.middle;
-    return Padding(
-      padding: const EdgeInsets.only(left: AppSpacing.md),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: railFill,
-          borderRadius: railRadius,
-        ),
-        child: ClipRRect(
-          borderRadius: railRadius,
-          // Stack lets the row-separator hairline ride along the bottom edge of
-          // the rail itself, on the recessed fill, so it visually continues
-          // the card-side divider painted by [_SwipeableStackCard] without a
-          // color seam at the boundary.
-          child: Stack(
+    // Stack lets the row-separator hairline ride along the bottom edge of
+    // the rail itself, on the recessed fill, so it visually continues
+    // the card-side divider painted by [_SwipeableStackCard] without a
+    // color seam at the boundary.
+    return ColoredBox(
+      color: railFill,
+      child: Stack(
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  for (int i = 0; i < items.length; i++) ...[
-                    if (i > 0)
-                      VerticalDivider(
-                        width: 1,
-                        thickness: 1,
-                        color: cs.outlineVariant,
-                      ),
-                    _RangeCell(item: items[i], currency: currency),
-                  ],
-                ],
-              ),
-              if (showBottomHairline)
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  height: 1,
-                  child: ColoredBox(color: cs.outlineVariant),
-                ),
+              for (int i = 0; i < items.length; i++) ...[
+                if (i > 0)
+                  VerticalDivider(
+                    width: 1,
+                    thickness: 1,
+                    color: cs.outlineVariant,
+                  ),
+                _RangeCell(item: items[i], currency: currency),
+              ],
             ],
           ),
-        ),
+          if (showBottomHairline)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: 1,
+              child: ColoredBox(color: cs.outlineVariant),
+            ),
+        ],
       ),
     );
   }

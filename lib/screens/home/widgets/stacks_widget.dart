@@ -384,15 +384,12 @@ class _GroupedCardRow extends StatelessWidget {
           position: position,
         ),
         if (!isLast)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: ColoredBox(
-              color: cs.surface,
-              child: Divider(
-                height: 1,
-                thickness: 1,
-                color: cs.outlineVariant,
-              ),
+          ColoredBox(
+            color: cs.surface,
+            child: Divider(
+              height: 1,
+              thickness: 1,
+              color: cs.outlineVariant,
             ),
           ),
       ],

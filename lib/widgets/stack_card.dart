@@ -46,99 +46,84 @@ class StackCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final r = const Radius.circular(AppSpacing.radiusLarge);
-    final BorderRadius borderRadius;
-    switch (position) {
-      case StackCardPosition.only:
-        borderRadius = BorderRadius.all(r);
-      case StackCardPosition.first:
-        borderRadius = BorderRadius.only(topLeft: r, topRight: r);
-      case StackCardPosition.last:
-        borderRadius = BorderRadius.only(bottomLeft: r, bottomRight: r);
-      case StackCardPosition.middle:
-        borderRadius = BorderRadius.zero;
-    }
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: cs.surface,
-        borderRadius: borderRadius,
-      ),
-      child: ClipRRect(
-        borderRadius: borderRadius,
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (showAvatar) ...[
-                  // Opaque hit-test stops the tap bubbling up to the surrounding
-                  // InkWell, so the avatar opens the picker sheet while the rest
-                  // of the card still opens the stack menu.
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
+    return ColoredBox(
+      color: cs.surface,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: 20,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (showAvatar) ...[
+                // Opaque hit-test stops the tap bubbling up to the surrounding
+                // InkWell, so the avatar opens the picker sheet while the rest
+                // of the card still opens the stack menu.
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onAvatarTap,
+                  child: StackAvatar(
+                    name: name,
+                    imageData: imageData,
+                    colorKey: colorKey,
                     onTap: onAvatarTap,
-                    child: StackAvatar(
-                      name: name,
-                      imageData: imageData,
-                      colorKey: colorKey,
-                      onTap: onAvatarTap,
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                ],
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.body.copyWith(
-                          fontSize: 16,
-                          color: cs.onSurface,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              formatBtcAmount(
-                                sats,
-                                hidden: isHidden,
-                                mode: bitcoinDisplayMode,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTypography.body.copyWith(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: -0.3,
-                                color: cs.onSurface.withValues(alpha: 0.85),
-                                fontFeatures: const [
-                                  FontFeature.tabularFigures()
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          _FiatValue(
-                            sats: sats,
-                            currency: currency,
-                            btcRate: btcRate,
-                            isHidden: isHidden,
-                          ),
-                        ],
-                      ),
-                    ],
                   ),
                 ),
+                const SizedBox(width: AppSpacing.md),
               ],
-            ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.body.copyWith(
+                        fontSize: 16,
+                        color: cs.onSurface,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            formatBtcAmount(
+                              sats,
+                              hidden: isHidden,
+                              mode: bitcoinDisplayMode,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTypography.body.copyWith(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: -0.3,
+                              color: cs.onSurface.withValues(alpha: 0.85),
+                              fontFeatures: const [
+                                FontFeature.tabularFigures()
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        _FiatValue(
+                          sats: sats,
+                          currency: currency,
+                          btcRate: btcRate,
+                          isHidden: isHidden,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
