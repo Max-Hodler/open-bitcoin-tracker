@@ -197,8 +197,9 @@ class _HomeHeaderState extends State<HomeHeader> {
           ),
         ),
         if (widget.showChart) ...[
+          const SizedBox(height: AppSpacing.md),
           SizedBox(
-            height: 120,
+            height: 136,
             child: _buildChartArea(context, logScale: logScale),
           ),
           RangeBar(
