@@ -1,10 +1,12 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../api/api.dart';
 import '../../../../services/app_haptics.dart';
 import '../../../../services/route_observer.dart';
+import '../../../../state/state.dart';
 import '../../../../theme/theme.dart';
 import 'block_visuals.dart';
 
@@ -361,6 +363,7 @@ class _BlockStripState extends State<BlockStrip>
     required int projectedShown,
     required double dividerLeftPx,
     required double boxSize,
+    required bool reversed,
   }) {
     final initialLeft = _slotLeft(slot.initialIndex, projectedShown);
     final targetLeft = _slotLeft(slot.targetIndex, projectedShown);
@@ -384,26 +387,28 @@ class _BlockStripState extends State<BlockStrip>
     final renderAsProjected = slot.kindAtTarget == BlockKind.projected ||
         slot.crossesDivider;
 
+    final box = BlockBox(
+      block: slot.block,
+      kind: slot.kindAtTarget,
+      width: boxSize,
+      // For mined slots displayIndex/projectedCount aren't used for the
+      // URL. For projected slots, targetIndex is the post-slide display
+      // position (0..projectedCount-1).
+      displayIndex: renderAsProjected
+          ? slot.targetIndex.clamp(0, projectedShown - 1)
+          : 0,
+      projectedCount: projectedShown,
+      minedFraction: minedFraction,
+      contentAsProjected: renderAsProjected,
+    );
+
     return Positioned(
       key: slot.key,
       left: left,
       top: 0,
       width: boxSize,
       height: boxSize,
-      child: BlockBox(
-        block: slot.block,
-        kind: slot.kindAtTarget,
-        width: boxSize,
-        // For mined slots displayIndex/projectedCount aren't used for the
-        // URL. For projected slots, targetIndex is the post-slide display
-        // position (0..projectedCount-1).
-        displayIndex: renderAsProjected
-            ? slot.targetIndex.clamp(0, projectedShown - 1)
-            : 0,
-        projectedCount: projectedShown,
-        minedFraction: minedFraction,
-        contentAsProjected: renderAsProjected,
-      ),
+      child: reversed ? Transform.flip(flipX: true, child: box) : box,
     );
   }
 
@@ -415,6 +420,13 @@ class _BlockStripState extends State<BlockStrip>
     final stripHeight = boxSize;
     final stripWidth = _stripWidth(projectedShown);
     final sliding = _slots.isNotEmpty;
+    // Mirror the whole strip when reversed: mined blocks appear on the left
+    // and projected on the right, with the time arrow flowing right→left.
+    // The scroll/divider/animation math is unchanged — we only flip painting,
+    // and counter-flip each block's contents so labels stay readable.
+    final reversed = context.select<AppStateNotifier, bool>(
+      (a) => a.mempoolBlocksReversed,
+    );
 
     final strip = SizedBox(
       height: stripHeight,
@@ -444,6 +456,7 @@ class _BlockStripState extends State<BlockStrip>
                               projectedShown: projectedShown,
                               dividerLeftPx: dividerLeftPx,
                               boxSize: boxSize,
+                              reversed: reversed,
                             ),
                         ],
                       );
@@ -457,13 +470,16 @@ class _BlockStripState extends State<BlockStrip>
                       top: 0,
                       width: boxSize,
                       height: boxSize,
-                      child: BlockBox(
-                        block: s.projected[i],
-                        kind: BlockKind.projected,
-                        width: boxSize,
-                        displayIndex: projectedShown - 1 - i,
-                        projectedCount: projectedShown,
-                        contentAsProjected: true,
+                      child: _maybeFlip(
+                        reversed,
+                        BlockBox(
+                          block: s.projected[i],
+                          kind: BlockKind.projected,
+                          width: boxSize,
+                          displayIndex: projectedShown - 1 - i,
+                          projectedCount: projectedShown,
+                          contentAsProjected: true,
+                        ),
                       ),
                     ),
                   for (var i = 0; i < s.mined.length; i++)
@@ -475,13 +491,16 @@ class _BlockStripState extends State<BlockStrip>
                       top: 0,
                       width: boxSize,
                       height: boxSize,
-                      child: BlockBox(
-                        block: s.mined[i],
-                        kind: BlockKind.mined,
-                        width: boxSize,
-                        displayIndex: 0,
-                        projectedCount: projectedShown,
-                        contentAsProjected: false,
+                      child: _maybeFlip(
+                        reversed,
+                        BlockBox(
+                          block: s.mined[i],
+                          kind: BlockKind.mined,
+                          width: boxSize,
+                          displayIndex: 0,
+                          projectedCount: projectedShown,
+                          contentAsProjected: false,
+                        ),
                       ),
                     ),
                 ],
@@ -499,7 +518,7 @@ class _BlockStripState extends State<BlockStrip>
                   top: 0,
                   width: boxSize,
                   height: boxSize,
-                  child: LinkBlock(width: boxSize),
+                  child: _maybeFlip(reversed, LinkBlock(width: boxSize)),
                 ),
               ],
             ),
@@ -508,9 +527,16 @@ class _BlockStripState extends State<BlockStrip>
       ),
     );
 
-    return strip;
+    if (!reversed) return strip;
+    return Transform.flip(flipX: true, child: strip);
   }
 }
+
+/// Counter-flip a block child when the strip is mirrored, so its label/content
+/// paints upright even though the parent `Transform.flip` has reversed the X
+/// axis.
+Widget _maybeFlip(bool reversed, Widget child) =>
+    reversed ? Transform.flip(flipX: true, child: child) : child;
 
 /// Pure: scroll offset that puts the divider at the horizontal center of the
 /// viewport. Lifted out of [_BlockStripState] so the math is independently

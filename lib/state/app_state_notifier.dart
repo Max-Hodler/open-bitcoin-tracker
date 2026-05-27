@@ -38,6 +38,7 @@ class AppStateNotifier extends ChangeNotifier {
   bool get showStackImages => _state.showStackImages;
   bool get showConverterButton => _state.showConverterButton;
   bool get showMempool => _state.showMempool;
+  bool get mempoolBlocksReversed => _state.mempoolBlocksReversed;
   bool get showHashrate => _state.showHashrate;
   bool get showChart => _state.showChart;
   AppTheme get theme => _state.theme;
@@ -139,6 +140,8 @@ class AppStateNotifier extends ChangeNotifier {
   void setShowPortfolio(bool value) => _update((s) => s.copyWith(showPortfolio: value));
   void setShowConverterButton(bool value) => _update((s) => s.copyWith(showConverterButton: value));
   void setShowMempool(bool value) => _update((s) => s.copyWith(showMempool: value));
+  void setMempoolBlocksReversed(bool value) =>
+      _update((s) => s.copyWith(mempoolBlocksReversed: value));
   void setShowHashrate(bool value) => _update((s) => s.copyWith(showHashrate: value));
   void setShowChart(bool value) => _update((s) => s.copyWith(showChart: value));
   void setTheme(AppTheme value) => _update((s) => s.copyWith(theme: value));

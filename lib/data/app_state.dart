@@ -10,7 +10,8 @@ class AppState {
     this.showPortfolio = true,
     this.showConverterButton = true,
     this.showMempool = true,
-    this.showHashrate = true,
+    this.mempoolBlocksReversed = false,
+    this.showHashrate = false,
     this.showChart = true,
     this.theme = AppTheme.system,
     this.darkVariant = DarkVariant.blue,
@@ -51,6 +52,11 @@ class AppState {
   final bool showPortfolio;
   final bool showConverterButton;
   final bool showMempool;
+  // When true, mirror the mempool block strip so mined blocks appear on the
+  // left and projected blocks on the right (default has projected on the
+  // left and mined on the right). Order within each group is also reversed
+  // so the time arrow flows consistently across the divider.
+  final bool mempoolBlocksReversed;
   final bool showHashrate;
   final bool showChart;
   final AppTheme theme;
@@ -124,6 +130,7 @@ class AppState {
     bool? showPortfolio,
     bool? showConverterButton,
     bool? showMempool,
+    bool? mempoolBlocksReversed,
     bool? showHashrate,
     bool? showChart,
     AppTheme? theme,
@@ -160,6 +167,8 @@ class AppState {
       showPortfolio: showPortfolio ?? this.showPortfolio,
       showConverterButton: showConverterButton ?? this.showConverterButton,
       showMempool: showMempool ?? this.showMempool,
+      mempoolBlocksReversed:
+          mempoolBlocksReversed ?? this.mempoolBlocksReversed,
       showHashrate: showHashrate ?? this.showHashrate,
       showChart: showChart ?? this.showChart,
       theme: theme ?? this.theme,
@@ -203,6 +212,7 @@ class AppState {
         'showPortfolio': showPortfolio,
         'showConverterButton': showConverterButton,
         'showMempool': showMempool,
+        'mempoolBlocksReversed': mempoolBlocksReversed,
         'showHashrate': showHashrate,
         'showChart': showChart,
         'theme': theme.code,
@@ -258,7 +268,8 @@ class AppState {
       showPortfolio: json['showPortfolio'] as bool? ?? true,
       showConverterButton: json['showConverterButton'] as bool? ?? true,
       showMempool: json['showMempool'] as bool? ?? true,
-      showHashrate: json['showHashrate'] as bool? ?? true,
+      mempoolBlocksReversed: json['mempoolBlocksReversed'] as bool? ?? false,
+      showHashrate: json['showHashrate'] as bool? ?? false,
       showChart: json['showChart'] as bool? ?? true,
       theme: fromCode('theme', AppTheme.fromCode),
       darkVariant: fromCode('darkVariant', DarkVariant.fromCode),

@@ -10,6 +10,7 @@ import '../widgets/scroll_hairline.dart';
 import 'about_screen.dart';
 import 'settings/settings_widgets.dart';
 import 'settings/btc_price_settings_screen.dart';
+import 'settings/mempool_blocks_settings_screen.dart';
 import 'settings/reorder_home_widgets_screen.dart';
 import 'settings/stacks_settings_screen.dart';
 import 'settings/theme_settings_screen.dart';
@@ -21,6 +22,8 @@ export 'settings/btc_price_settings_screen.dart' show BtcPriceSettingsScreen;
 export 'settings/currency_picker_screen.dart' show CurrencyPickerScreen;
 export 'settings/lock_stacks_settings_screen.dart'
     show LockStacksSettingsScreen;
+export 'settings/mempool_blocks_settings_screen.dart'
+    show MempoolBlocksSettingsScreen;
 export 'settings/reorder_home_widgets_screen.dart'
     show ReorderHomeWidgetsScreen;
 export 'settings/stacks_settings_screen.dart' show StacksSettingsScreen;
@@ -104,11 +107,11 @@ class SettingsScreen extends StatelessWidget {
                   onTap: () => _openStacksSettings(context),
                   trailingIcon: Icons.chevron_right,
                 ),
-                SettingsToggleTile(
+                SettingsPickerTile(
                   label: l10n.settingsMempoolWidget,
-                  value: app.showMempool,
-                  enabled: true,
-                  onChanged: app.setShowMempool,
+                  value: '',
+                  onTap: () => _openMempoolBlocksSettings(context),
+                  trailingIcon: Icons.chevron_right,
                 ),
                 SettingsToggleTile(
                   label: l10n.settingsHashrateWidget,
@@ -178,6 +181,14 @@ class SettingsScreen extends StatelessWidget {
   void _openStacksSettings(BuildContext context) {
     Navigator.of(context).push<void>(
       MaterialPageRoute<void>(builder: (_) => const StacksSettingsScreen()),
+    );
+  }
+
+  void _openMempoolBlocksSettings(BuildContext context) {
+    Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => const MempoolBlocksSettingsScreen(),
+      ),
     );
   }
 

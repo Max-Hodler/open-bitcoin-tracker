@@ -262,7 +262,19 @@
   },
   "settingsMempoolWidget": "Mempool",
   "@settingsMempoolWidget": {
-    "description": "Display-group toggle that shows or hides the Mempool fees widget on home."
+    "description": "Picker row label that opens the Mempool blocks settings sub-screen."
+  },
+  "settingsMempoolBlocksTitle": "Mempool",
+  "@settingsMempoolBlocksTitle": {
+    "description": "App bar title for the Mempool blocks settings sub-screen."
+  },
+  "settingsMempoolBlocksVisible": "Visible",
+  "@settingsMempoolBlocksVisible": {
+    "description": "Toggle label on the Mempool sub-screen that shows or hides the Mempool blocks widget on home."
+  },
+  "settingsMempoolBlocksReverseOrder": "Reverse order",
+  "@settingsMempoolBlocksReverseOrder": {
+    "description": "Toggle label on the Mempool sub-screen that mirrors the block strip horizontally (mined blocks on the left, projected blocks on the right)."
   },
   "settingsHashrateWidget": "Hashrate",
   "@settingsHashrateWidget": {

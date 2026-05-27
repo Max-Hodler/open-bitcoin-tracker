@@ -50,15 +50,22 @@ class _MempoolCardState extends State<MempoolCard> {
     // build to track text-scale changes.
     final boxSize = _blockBoxHeight(context);
     if (fullyFailed) return _ErrorBody(boxSize: boxSize);
-    if (snapshot == null) return _LoadingBody(boxSize: boxSize);
+    if (snapshot == null) {
+      final reversed = context.select<AppStateNotifier, bool>(
+        (a) => a.mempoolBlocksReversed,
+      );
+      final body = _LoadingBody(boxSize: boxSize, reversed: reversed);
+      return reversed ? Transform.flip(flipX: true, child: body) : body;
+    }
     return BlockStrip(snapshot: snapshot, boxSize: boxSize);
   }
 }
 
 class _LoadingBody extends StatelessWidget {
-  const _LoadingBody({required this.boxSize});
+  const _LoadingBody({required this.boxSize, this.reversed = false});
 
   final double boxSize;
+  final bool reversed;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +74,8 @@ class _LoadingBody extends StatelessWidget {
     // inside the same horizontal padding as the populated strip.
     const projectedShown = 2;
     const minedShown = 4;
+    Widget counter(Widget child) =>
+        reversed ? Transform.flip(flipX: true, child: child) : child;
     return SizedBox(
       height: boxSize,
       child: SingleChildScrollView(
@@ -87,7 +96,7 @@ class _LoadingBody extends StatelessWidget {
               if (i < minedShown - 1) const SizedBox(width: AppSpacing.sm),
             ],
             const SizedBox(width: AppSpacing.sm),
-            LinkBlock(width: boxSize),
+            counter(LinkBlock(width: boxSize)),
           ],
         ),
       ),
