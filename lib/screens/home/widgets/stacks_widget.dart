@@ -75,6 +75,7 @@ class HomeStackList extends StatelessWidget {
             // The total only renders alongside >= 2 stacks, so it is always
             // the last row of a non-empty group, never a standalone card.
             position: StackCardPosition.last,
+            isLast: true,
           ),
       ],
     );
@@ -343,13 +344,15 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
       priceScale: widget.priceScale,
       currency: widget.currency,
       position: _position,
+      isLast: widget.isLast,
     );
   }
 }
 
-/// One row of the stacks group: a [RangePillsRow]. Shared by stack cards and
-/// the trailing portfolio-total card so both render identically inside the
-/// same group.
+/// One row of the stacks group: a [RangePillsRow] plus the hairline divider
+/// drawn below it (omitted on the last row, which has a rounded bottom edge
+/// instead). Shared by stack cards and the trailing portfolio-total card so
+/// both render identically inside the same group.
 class _GroupedCardRow extends StatelessWidget {
   const _GroupedCardRow({
     required this.card,
@@ -357,6 +360,7 @@ class _GroupedCardRow extends StatelessWidget {
     required this.priceScale,
     required this.currency,
     required this.position,
+    required this.isLast,
   });
 
   final Widget card;
@@ -364,15 +368,28 @@ class _GroupedCardRow extends StatelessWidget {
   final double priceScale;
   final Currency currency;
   final StackCardPosition position;
+  final bool isLast;
 
   @override
   Widget build(BuildContext context) {
-    return RangePillsRow(
-      card: card,
-      rangePillData: rangePillData,
-      priceScale: priceScale,
-      currency: currency,
-      position: position,
+    final cs = Theme.of(context).colorScheme;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        RangePillsRow(
+          card: card,
+          rangePillData: rangePillData,
+          priceScale: priceScale,
+          currency: currency,
+          position: position,
+        ),
+        if (!isLast)
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: cs.outlineVariant,
+          ),
+      ],
     );
   }
 }
