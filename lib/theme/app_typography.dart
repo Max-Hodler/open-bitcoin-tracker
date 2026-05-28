@@ -4,7 +4,6 @@ class AppTypography {
   AppTypography._();
 
   static const String sansFamily = 'Inter';
-  static const String monoFamily = 'JetBrainsMono';
 
   static const TextStyle label = TextStyle(
     fontFamily: sansFamily,
@@ -30,11 +29,5 @@ class AppTypography {
     fontFamily: sansFamily,
     fontSize: 28,
     fontWeight: FontWeight.w700,
-  );
-
-  static const TextStyle mono = TextStyle(
-    fontFamily: monoFamily,
-    fontSize: 16,
-    fontFeatures: [FontFeature.tabularFigures()],
   );
 }
