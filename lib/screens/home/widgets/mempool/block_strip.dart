@@ -51,9 +51,7 @@ class _BlockStripState extends State<BlockStrip>
   //
   // We model the strip as a unified list of slots (projected + mined) keyed
   // by stable identity; an AnimationController drives every slot's `left`
-  // from its initial to target position. Driving the slide ourselves (rather
-  // than via AnimatedPositioned) lets the crossing slot paint its background
-  // as a split of projected/mined colors using the live animation value.
+  // from its initial to target position.
   static const Duration _slideDuration = Duration(milliseconds: 600);
   static const int _maxMined = 4;
 
@@ -175,10 +173,9 @@ class _BlockStripState extends State<BlockStrip>
     // Existing projected blocks, reversed so display index 0 = leftmost.
     // Each shifts right by 1. The rightmost-projected crosses the divider
     // and becomes mined at slide-end — kindAtTarget = mined so its styling
-    // lands correctly when the slide completes. During the slide, its
-    // background is painted as a split of projected/mined colors based on
-    // the live animation value, and its content is forced to projected
-    // (label/fee) until slide-end when the snapshot-based render takes over.
+    // lands correctly when the slide completes. During the slide its content
+    // is forced to projected (label/fee) until slide-end when the
+    // snapshot-based render takes over.
     for (var displayIdx = 0; displayIdx < projectedCount; displayIdx++) {
       // s.projected is fee-priority order: [0] = highest priority = rightmost
       // (next-to-divider). Display order is reversed: leftmost shows the
@@ -361,7 +358,6 @@ class _BlockStripState extends State<BlockStrip>
     required _Slot slot,
     required double t,
     required int projectedShown,
-    required double dividerLeftPx,
     required double boxSize,
     required bool reversed,
   }) {
@@ -369,27 +365,14 @@ class _BlockStripState extends State<BlockStrip>
     final targetLeft = _slotLeft(slot.targetIndex, projectedShown);
     final left = ui.lerpDouble(initialLeft, targetLeft, t)!;
 
-    // For the crossing slot, compute the fraction of the box that lies on the
-    // mined side of the divider. The block's right edge starts at the divider
-    // (fraction = 0) and ends a stride past it (fraction = 1) — but we cap at
-    // the divider center so the projected/mined split tracks the visible line.
-    double minedFraction = 0;
-    if (slot.crossesDivider) {
-      final blockRight = left + boxSize;
-      final dividerCenter = dividerLeftPx + kMempoolDividerWidth / 2;
-      final overshoot = (blockRight - dividerCenter).clamp(0.0, boxSize);
-      minedFraction = overshoot / boxSize;
-    }
-
-    // Crossing slot's styling-kind is mined (lands correctly at slide-end),
-    // but its content during the slide is projected data — render the
-    // label/fee with projected formatting until the snapshot takes over.
+    // The crossing slot lands as mined, but its content during the slide is
+    // projected data — render the label/fee with projected formatting until
+    // the snapshot takes over.
     final renderAsProjected = slot.kindAtTarget == BlockKind.projected ||
         slot.crossesDivider;
 
     final box = BlockBox(
       block: slot.block,
-      kind: slot.kindAtTarget,
       width: boxSize,
       // For mined slots displayIndex/projectedCount aren't used for the
       // URL. For projected slots, targetIndex is the post-slide display
@@ -398,7 +381,6 @@ class _BlockStripState extends State<BlockStrip>
           ? slot.targetIndex.clamp(0, projectedShown - 1)
           : 0,
       projectedCount: projectedShown,
-      minedFraction: minedFraction,
       contentAsProjected: renderAsProjected,
     );
 
@@ -446,7 +428,6 @@ class _BlockStripState extends State<BlockStrip>
                     animation: _slideAnim,
                     builder: (context, _) {
                       final t = _slideAnim.value;
-                      final dividerLeftPx = _dividerLeft(projectedShown);
                       return Stack(
                         children: [
                           for (final slot in _slots)
@@ -454,7 +435,6 @@ class _BlockStripState extends State<BlockStrip>
                               slot: slot,
                               t: t,
                               projectedShown: projectedShown,
-                              dividerLeftPx: dividerLeftPx,
                               boxSize: boxSize,
                               reversed: reversed,
                             ),
@@ -474,7 +454,6 @@ class _BlockStripState extends State<BlockStrip>
                         reversed,
                         BlockBox(
                           block: s.projected[i],
-                          kind: BlockKind.projected,
                           width: boxSize,
                           displayIndex: projectedShown - 1 - i,
                           projectedCount: projectedShown,
@@ -495,7 +474,6 @@ class _BlockStripState extends State<BlockStrip>
                         reversed,
                         BlockBox(
                           block: s.mined[i],
-                          kind: BlockKind.mined,
                           width: boxSize,
                           displayIndex: 0,
                           projectedCount: projectedShown,
@@ -569,8 +547,8 @@ double _calculateDividerCenterScrollOffset({
 /// `kindAtTarget` is mined — that's the styling the slot lands on at
 /// fraction = 1 — but `block` carries the projected data the user sees
 /// during the slide (no mined height yet), so content is rendered as
-/// projected for the whole slide. `crossesDivider` toggles the split-fill
-/// painter that tracks the divider as the block moves across it.
+/// projected for the whole slide. `crossesDivider` keeps that projected
+/// content rendering until the slide completes.
 class _Slot {
   _Slot({
     required this.key,

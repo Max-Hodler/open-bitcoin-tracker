@@ -85,14 +85,14 @@ class _LoadingBody extends StatelessWidget {
         child: Row(
           children: [
             for (var i = 0; i < projectedShown; i++) ...[
-              BlockSkeleton(width: boxSize, kind: BlockKind.projected),
+              BlockSkeleton(width: boxSize),
               if (i < projectedShown - 1) const SizedBox(width: AppSpacing.sm),
             ],
             const SizedBox(width: AppSpacing.sm / 2),
             DashedDivider(height: boxSize),
             const SizedBox(width: AppSpacing.sm / 2),
             for (var i = 0; i < minedShown; i++) ...[
-              BlockSkeleton(width: boxSize, kind: BlockKind.mined),
+              BlockSkeleton(width: boxSize),
               if (i < minedShown - 1) const SizedBox(width: AppSpacing.sm),
             ],
             const SizedBox(width: AppSpacing.sm),
