@@ -19,7 +19,7 @@ class StackAvatarColor {
   /// reads as the leading option.
   static const List<StackAvatarColor> palette = [
     StackAvatarColor('orange', Color(0xFFF7931A)),
-    StackAvatarColor('amber', Color(0xFFE0A030)),
+    StackAvatarColor('gold', Color(0xFFD4AF37)),
     StackAvatarColor('rust', Color(0xFFC45A2C)),
     StackAvatarColor('plum', Color(0xFF8E4A6E)),
     StackAvatarColor('olive', Color(0xFF7A7A2E)),

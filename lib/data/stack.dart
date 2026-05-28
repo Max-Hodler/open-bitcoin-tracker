@@ -17,7 +17,7 @@ class Stack {
   // Raw base64-encoded JPEG (no data: prefix), pre-processed to a fixed
   // 256x256 square so the encrypted stacks blob stays small and predictable.
   final String? imageData;
-  // Palette key for the default initial-letter avatar (e.g. "amber"). Null
+  // Palette key for the default initial-letter avatar (e.g. "gold"). Null
   // means the theme's bitcoin orange. Ignored when an [imageData] is set.
   final String? colorKey;
 
