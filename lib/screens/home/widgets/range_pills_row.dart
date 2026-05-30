@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -33,17 +34,41 @@ class RangePillsRow extends StatefulWidget {
   State<RangePillsRow> createState() => _RangePillsRowState();
 }
 
-// Minimum width of a range pill cell. Cells now sit on a shared rail (no inter-
-// cell gaps), so the haptic stride equals the cell width exactly — keeping both
-// values in sync here means changing one doesn't silently desync the other.
+// Minimum width of a range pill cell. Cells stretch past this to fit long
+// price strings, so the real divider positions are measured from layout rather
+// than assumed to fall on a fixed stride — see [_RangePillsRowState].
 const double _kRangePillMinWidth = 112;
+
+// Width of the hairline divider drawn between adjacent pill cells.
+const double _kRangePillDividerWidth = 1;
 
 class _RangePillsRowState extends State<RangePillsRow> {
   final _scrollController = ScrollController();
-  // Haptic fires each time the scroll offset crosses an integer multiple of a
-  // cell width (no gaps between cells on the unified rail).
-  static const double _rangePillStride = _kRangePillMinWidth;
-  int _lastHapticRangePillCount = 0;
+  // A stable key per cell so we can read each cell's laid-out width after the
+  // frame and turn it into the scroll offset at which its leading divider
+  // crosses the left screen edge. Cells are variable-width (long prices stretch
+  // them past _kRangePillMinWidth), so a fixed stride drifts from the real
+  // dividers. Keys are pooled by index and reused across rebuilds — minting
+  // fresh GlobalKeys each build would tear down and rebuild every cell.
+  final List<GlobalKey> _cellKeys = [];
+
+  // Returns a stable key for cell [index], growing the pool as needed. The
+  // child requests one key per cell during build; surplus keys left over from a
+  // previous (longer) build are ignored by _recomputeDividerOffsets, which
+  // reads only the first [_cellCount].
+  GlobalKey _keyFor(int index) {
+    while (_cellKeys.length <= index) {
+      _cellKeys.add(GlobalKey());
+    }
+    return _cellKeys[index];
+  }
+
+  int _cellCount = 0;
+  // Scroll offsets at which each inter-cell divider crosses the left screen
+  // edge, ascending. Recomputed after layout whenever widths may have changed.
+  List<double> _dividerOffsets = const [];
+  // Index of the last divider already crossed (so we fire once per crossing).
+  int _lastCrossedDivider = 0;
 
   @override
   void initState() {
@@ -51,15 +76,51 @@ class _RangePillsRowState extends State<RangePillsRow> {
     _scrollController.addListener(_onScroll);
   }
 
+  // Reads measured cell widths and computes the scroll offset at which each
+  // inter-cell divider crosses the left screen edge. The rail is laid out
+  // right-to-left (reverse: true): at offset 0 the left screen edge sits at the
+  // rightmost pill's right edge, then walks left through the pills as the offset
+  // grows. So a divider's crossing offset is the summed width of every cell (and
+  // divider) to its right — the card width drops out entirely.
+  void _recomputeDividerOffsets() {
+    if (_cellCount == 0) return;
+    final widths = <double>[];
+    for (var i = 0; i < _cellCount; i++) {
+      final box = _cellKeys[i].currentContext?.findRenderObject() as RenderBox?;
+      if (box == null || !box.hasSize) return; // not laid out yet
+      widths.add(box.size.width);
+    }
+    // Cells are ordered left-to-right; walk from the rightmost cell leftward,
+    // accumulating widths, so the divider nearest the card lands first.
+    final offsets = <double>[];
+    var acc = 0.0;
+    for (var i = widths.length - 1; i >= 1; i--) {
+      acc += widths[i];
+      offsets.add(acc);
+      acc += _kRangePillDividerWidth;
+    }
+    if (!listEquals(offsets, _dividerOffsets)) {
+      setState(() => _dividerOffsets = offsets);
+    }
+  }
+
   void _onScroll() {
     final offset = _scrollController.offset;
     if (offset <= 0) {
-      _lastHapticRangePillCount = 0;
+      _lastCrossedDivider = 0;
       return;
     }
-    final count = (offset / _rangePillStride).floor();
-    if (count != _lastHapticRangePillCount) {
-      _lastHapticRangePillCount = count;
+    // Count how many divider boundaries the current offset has passed.
+    var crossed = 0;
+    for (final boundary in _dividerOffsets) {
+      if (offset >= boundary) {
+        crossed++;
+      } else {
+        break;
+      }
+    }
+    if (crossed != _lastCrossedDivider) {
+      _lastCrossedDivider = crossed;
       AppHaptics.selection();
     }
   }
@@ -77,10 +138,14 @@ class _RangePillsRowState extends State<RangePillsRow> {
       data: widget.rangePillData,
       priceScale: widget.priceScale,
       currency: widget.currency,
+      keyFor: _keyFor,
+      onCellCount: (count) => _cellCount = count,
     );
     return LayoutBuilder(
       builder: (context, constraints) {
         final fullWidth = constraints.maxWidth;
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => _recomputeDividerOffsets());
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
@@ -106,15 +171,26 @@ class _StackRangePills extends StatelessWidget {
     required this.data,
     required this.priceScale,
     required this.currency,
+    required this.keyFor,
+    required this.onCellCount,
   });
 
   final List<PricePoint> data;
   final double priceScale;
   final Currency currency;
+  // Supplies a stable key for each cell so the parent can measure laid-out cell
+  // widths and align haptics to the real divider positions.
+  final GlobalKey Function(int index) keyFor;
+  // Reports how many cells this build produced, so the parent measures exactly
+  // that many (and not stale keys left over from a longer previous build).
+  final ValueChanged<int> onCellCount;
 
   @override
   Widget build(BuildContext context) {
-    if (data.length < 2) return const SizedBox.shrink();
+    if (data.length < 2) {
+      onCellCount(0);
+      return const SizedBox.shrink();
+    }
     final now = DateTime.now();
     final firstT = DateTime.fromMillisecondsSinceEpoch(data.first.t);
     final maxYearsBack = now.year - firstT.year -
@@ -131,11 +207,15 @@ class _StackRangePills extends StatelessWidget {
           return (label: dateFormat.format(at), atMs: at.millisecondsSinceEpoch);
         }(),
     ];
-    if (offsets.isEmpty) return const SizedBox.shrink();
+    if (offsets.isEmpty) {
+      onCellCount(0);
+      return const SizedBox.shrink();
+    }
     final items = [
       for (final o in offsets)
         _RangePillData(label: o.label, pastPrice: _priceAt(o.atMs)),
     ];
+    onCellCount(items.length);
 
     final cs = Theme.of(context).colorScheme;
     final railFill = context.palette.recessedSurface ?? cs.surfaceContainer;
@@ -148,11 +228,11 @@ class _StackRangePills extends StatelessWidget {
           for (int i = 0; i < items.length; i++) ...[
             if (i > 0)
               VerticalDivider(
-                width: 1,
-                thickness: 1,
+                width: _kRangePillDividerWidth,
+                thickness: _kRangePillDividerWidth,
                 color: cs.outlineVariant,
               ),
-            _RangeCell(item: items[i], currency: currency),
+            _RangeCell(key: keyFor(i), item: items[i], currency: currency),
           ],
         ],
       ),
@@ -186,7 +266,7 @@ class _RangePillData {
 }
 
 class _RangeCell extends StatelessWidget {
-  const _RangeCell({required this.item, required this.currency});
+  const _RangeCell({super.key, required this.item, required this.currency});
 
   final _RangePillData item;
   final Currency currency;
