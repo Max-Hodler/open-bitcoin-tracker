@@ -256,10 +256,6 @@
   "@settingsShowStackImages": {
     "description": "Stacks settings toggle that shows or hides the leading avatar circle on every stack card (and the portfolio total card). When off, cards render without the avatar and per-stack image/color choices are preserved for when the toggle is flipped back on."
   },
-  "settingsConverterButton": "Converter",
-  "@settingsConverterButton": {
-    "description": "Display-group toggle that shows or hides the Converter button widget on home."
-  },
   "settingsMempoolWidget": "Mempool",
   "@settingsMempoolWidget": {
     "description": "Picker row label that opens the Mempool blocks settings sub-screen."

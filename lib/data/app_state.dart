@@ -8,7 +8,6 @@ class AppState {
     this.currency = Currency.usd,
     this.selectedCurrencies = const [Currency.usd, Currency.eur, Currency.gbp],
     this.showPortfolio = true,
-    this.showConverterButton = true,
     this.showMempool = true,
     this.mempoolBlocksReversed = false,
     this.showHashrate = false,
@@ -50,7 +49,6 @@ class AppState {
   // gesture cycles through. Always contains [currency].
   final List<Currency> selectedCurrencies;
   final bool showPortfolio;
-  final bool showConverterButton;
   final bool showMempool;
   // When true, mirror the mempool block strip so mined blocks appear on the
   // left and projected blocks on the right (default has projected on the
@@ -128,7 +126,6 @@ class AppState {
     Currency? currency,
     List<Currency>? selectedCurrencies,
     bool? showPortfolio,
-    bool? showConverterButton,
     bool? showMempool,
     bool? mempoolBlocksReversed,
     bool? showHashrate,
@@ -165,7 +162,6 @@ class AppState {
       currency: currency ?? this.currency,
       selectedCurrencies: selectedCurrencies ?? this.selectedCurrencies,
       showPortfolio: showPortfolio ?? this.showPortfolio,
-      showConverterButton: showConverterButton ?? this.showConverterButton,
       showMempool: showMempool ?? this.showMempool,
       mempoolBlocksReversed:
           mempoolBlocksReversed ?? this.mempoolBlocksReversed,
@@ -210,7 +206,6 @@ class AppState {
         'currency': currency.code,
         'selectedCurrencies': [for (final c in selectedCurrencies) c.code],
         'showPortfolio': showPortfolio,
-        'showConverterButton': showConverterButton,
         'showMempool': showMempool,
         'mempoolBlocksReversed': mempoolBlocksReversed,
         'showHashrate': showHashrate,
@@ -266,7 +261,6 @@ class AppState {
       currency: currency,
       selectedCurrencies: selectedCurrencies,
       showPortfolio: json['showPortfolio'] as bool? ?? true,
-      showConverterButton: json['showConverterButton'] as bool? ?? true,
       showMempool: json['showMempool'] as bool? ?? true,
       mempoolBlocksReversed: json['mempoolBlocksReversed'] as bool? ?? false,
       showHashrate: json['showHashrate'] as bool? ?? false,

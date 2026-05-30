@@ -106,7 +106,6 @@ class HomeHeader extends StatefulWidget {
     required this.onRetry,
     required this.stacksLocked,
     required this.stacksAuthMode,
-    required this.showConverterButton,
     this.onOpenSettings,
     this.onOpenConverter,
   });
@@ -135,7 +134,6 @@ class HomeHeader extends StatefulWidget {
   final VoidCallback onRetry;
   final bool stacksLocked;
   final StacksAuthMode stacksAuthMode;
-  final bool showConverterButton;
   final VoidCallback? onOpenSettings;
   final VoidCallback? onOpenConverter;
 
@@ -159,7 +157,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                   onTap: () =>
                       context.read<StacksLockController>().lockNow(),
                 ),
-              if (widget.showConverterButton && widget.onOpenConverter != null)
+              if (widget.onOpenConverter != null)
                 ConverterIconButton(onTap: widget.onOpenConverter!),
               OverflowButton(onTap: widget.onOpenSettings!),
             ],

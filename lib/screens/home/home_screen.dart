@@ -335,7 +335,6 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       stacksLocked: stacksLocked,
       stacksAuthMode: app.stacksAuthMode,
-      showConverterButton: app.showConverterButton,
       onOpenSettings: widget.onOpenSettings,
       onOpenConverter: widget.onOpenConverter,
     );

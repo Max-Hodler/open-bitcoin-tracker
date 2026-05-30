@@ -119,12 +119,6 @@ class SettingsScreen extends StatelessWidget {
                   enabled: true,
                   onChanged: app.setShowHashrate,
                 ),
-                SettingsToggleTile(
-                  label: l10n.settingsConverterButton,
-                  value: app.showConverterButton,
-                  enabled: true,
-                  onChanged: app.setShowConverterButton,
-                ),
                 SettingsPickerTile(
                   label: l10n.settingsReorderWidgets,
                   value: '',
