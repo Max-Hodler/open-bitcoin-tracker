@@ -328,7 +328,7 @@ class _PriceSubtitle extends StatelessWidget {
     }
     final p = context.palette;
     final isPositive = deltaValue! >= 0;
-    final color = p.bitcoinOrange;
+    final color = isPositive ? p.priceUp : p.priceDown;
     final symbol = currencySymbols[currency] ?? r'$';
     final amount = NumberFormat('#,##0.00', Intl.defaultLocale)
         .format(deltaValue!.abs());
