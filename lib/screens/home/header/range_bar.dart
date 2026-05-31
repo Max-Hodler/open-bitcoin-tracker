@@ -32,17 +32,16 @@ class RangeBar extends StatelessWidget {
     required this.range,
     required this.onRange,
     this.rangePct,
-    this.chartColor,
+    required this.chartColor,
   });
 
   final BtcRange range;
   final ValueChanged<BtcRange> onRange;
   final double? rangePct;
-  final Color? chartColor;
+  final Color chartColor;
 
   @override
   Widget build(BuildContext context) {
-    final p = context.palette;
     final app = context.watch<AppStateNotifier>();
     final overflowSlot = app.overflowQuickRange;
     final monthsOverflowSlot = app.monthsOverflowQuickRange;
@@ -124,7 +123,7 @@ class RangeBar extends StatelessWidget {
                       selected: r == range,
                       onTap: () => onRange(r),
                       rangePct: r == range ? rangePct : null,
-                      chartColor: chartColor ?? p.priceUp,
+                      chartColor: chartColor,
                       minLabelWidth: labelWidth(_btcRangeLabel(context, r)),
                     ),
                   _RangeChipWithPct(
@@ -135,7 +134,7 @@ class RangeBar extends StatelessWidget {
                     onSwipeUp: () => _stepMonthsOverflowSlot(context, 1),
                     onSwipeDown: () => _stepMonthsOverflowSlot(context, -1),
                     rangePct: range == monthsOverflowSlot ? rangePct : null,
-                    chartColor: chartColor ?? p.priceUp,
+                    chartColor: chartColor,
                     showChevron: true,
                     minLabelWidth: monthsOverflowLabelWidth,
                   ),
@@ -144,7 +143,7 @@ class RangeBar extends StatelessWidget {
                     selected: range == BtcRange.ytd,
                     onTap: () => onRange(BtcRange.ytd),
                     rangePct: range == BtcRange.ytd ? rangePct : null,
-                    chartColor: chartColor ?? p.priceUp,
+                    chartColor: chartColor,
                     minLabelWidth:
                         labelWidth(_btcRangeLabel(context, BtcRange.ytd)),
                   ),
@@ -156,7 +155,7 @@ class RangeBar extends StatelessWidget {
                     onSwipeUp: () => _stepOverflowSlot(context, 1),
                     onSwipeDown: () => _stepOverflowSlot(context, -1),
                     rangePct: range == overflowSlot ? rangePct : null,
-                    chartColor: chartColor ?? p.priceUp,
+                    chartColor: chartColor,
                     showChevron: true,
                     minLabelWidth: overflowLabelWidth,
                   ),
@@ -165,7 +164,7 @@ class RangeBar extends StatelessWidget {
                     selected: range == BtcRange.all,
                     onTap: () => onRange(BtcRange.all),
                     rangePct: range == BtcRange.all ? rangePct : null,
-                    chartColor: chartColor ?? p.priceUp,
+                    chartColor: chartColor,
                     minLabelWidth:
                         labelWidth(_btcRangeLabel(context, BtcRange.all)),
                   ),

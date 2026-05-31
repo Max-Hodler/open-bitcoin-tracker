@@ -238,9 +238,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ]
         : convertedAllHistoryBase;
 
-    final isUp = chartData.length >= 2 &&
-        chartData.last.price >= chartData.first.price;
-    final chartColor = isUp ? p.priceUp : p.priceDown;
+    // The price chart, delta text and range-pill percentages are always
+    // bitcoin orange — we no longer tint them green/red by direction.
+    final chartColor = p.bitcoinOrange;
     final rangePct = chartData.length >= 2 && chartData.first.price > 0
         ? (chartData.last.price - chartData.first.price) / chartData.first.price * 100
         : null;

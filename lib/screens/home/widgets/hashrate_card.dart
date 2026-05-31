@@ -386,7 +386,7 @@ class _Row extends StatelessWidget {
                       TextSpan(
                         text: _formatSignedPct(delta),
                         style: TextStyle(
-                          color: delta >= 0 ? p.priceUp : p.priceDown,
+                          color: p.bitcoinOrange,
                           fontFeatures: const [FontFeature.tabularFigures()],
                         ),
                       ),
@@ -486,8 +486,6 @@ class _ChartArea extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final delta = snapshot!.deltaPercent ?? 0;
-    final color = delta >= 0 ? p.priceUp : p.priceDown;
     final pricePoints = _pricePointsFor(snapshot!);
 
     return AreaChart(
@@ -495,7 +493,7 @@ class _ChartArea extends StatelessWidget {
       data: pricePoints,
       windowStartMs: pricePoints.first.t,
       windowEndMs: pricePoints.last.t,
-      color: color,
+      color: p.bitcoinOrange,
       logScale: false,
       rangeKey: range,
       // fl_chart hands us back a PricePoint whose `t` is the original

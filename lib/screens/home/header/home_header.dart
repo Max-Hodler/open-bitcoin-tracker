@@ -183,7 +183,6 @@ class _HomeHeaderState extends State<HomeHeader> {
                   range: widget.range,
                   currency: widget.currency,
                   selectedCurrencies: widget.selectedCurrencies,
-                  color: widget.chartColor,
                   rangePct: widget.rangePct,
                   rollDirection: widget.rollDirection,
                   onPriceTap: widget.onPriceTap,

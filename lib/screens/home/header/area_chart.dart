@@ -139,9 +139,6 @@ class _AreaChartState extends State<AreaChart>
       _rebuildSpots();
     }
     final cs = Theme.of(context).colorScheme;
-    // Light gets a soft tinted fade below the line; in dark the same gradient
-    // muddies into the near-black scaffold, so the fill is suppressed.
-    final isDark = cs.brightness == Brightness.dark;
     final spots = _spots;
     final color = widget.color;
     final data = widget.data;
@@ -285,7 +282,7 @@ class _AreaChartState extends State<AreaChart>
             barWidth: 1.5,
             dotData: const FlDotData(show: false),
             belowBarData: BarAreaData(
-              show: !isDark,
+              show: true,
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,

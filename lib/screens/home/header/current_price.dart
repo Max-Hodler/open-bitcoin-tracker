@@ -23,7 +23,6 @@ class CurrentPrice extends StatefulWidget {
     required this.range,
     required this.currency,
     required this.selectedCurrencies,
-    required this.color,
     required this.rollDirection,
     required this.onPriceTap,
     required this.onCurrencySwipe,
@@ -39,7 +38,6 @@ class CurrentPrice extends StatefulWidget {
   // callback) so we know whether a swipe will actually advance the currency —
   // only then is it correct to record a pending slide direction.
   final List<Currency> selectedCurrencies;
-  final Color color;
   final int rollDirection;
   final VoidCallback onPriceTap;
   final ValueChanged<int> onCurrencySwipe;
@@ -330,7 +328,7 @@ class _PriceSubtitle extends StatelessWidget {
     }
     final p = context.palette;
     final isPositive = deltaValue! >= 0;
-    final color = isPositive ? p.priceUp : p.priceDown;
+    final color = p.bitcoinOrange;
     final symbol = currencySymbols[currency] ?? r'$';
     final amount = NumberFormat('#,##0.00', Intl.defaultLocale)
         .format(deltaValue!.abs());

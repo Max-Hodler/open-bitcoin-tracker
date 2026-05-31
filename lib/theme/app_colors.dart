@@ -11,8 +11,6 @@ class AppColors {
 
   static const Color bitcoinOrange = Color(0xFFF7931A);
 
-  static const Color priceUp = Color(0xFF4CA66B);
-  static const Color priceDown = Color(0xFFC9483B);
   static const Color danger = Color(0xFFB3261E);
 
   static const Color textPrimary = Color(0xFF1F1B14);
@@ -33,8 +31,6 @@ class AppColors {
 
   static const Color bitcoinOrangeDark = Color(0xFFF7A53A);
 
-  static const Color priceUpDark = Color(0xFF56C078);
-  static const Color priceDownDark = Color(0xFFE55A4A);
   static const Color dangerDark = Color(0xFFFF5C50);
 
   static const Color textPrimaryDark = Color(0xFFE6E3DD);
