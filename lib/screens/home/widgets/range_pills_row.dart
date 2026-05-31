@@ -167,9 +167,9 @@ class _RangePillsRowState extends State<RangePillsRow> {
                     color: cs.surfaceContainerLow,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.18),
-                        offset: const Offset(-3, 0),
-                        blurRadius: 8,
+                        color: Colors.black.withValues(alpha: 0.10),
+                        offset: const Offset(-2, 0),
+                        blurRadius: 5,
                       ),
                     ],
                   ),
