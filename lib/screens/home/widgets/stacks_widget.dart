@@ -169,22 +169,18 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
                     ),
                   ],
                 ),
-                if (hasMultipleStacks) ...[
-                  const SizedBox(height: AppSpacing.md),
-                  MenuActionGroup(
-                    children: [
+                const SizedBox(height: AppSpacing.md),
+                Divider(height: 1, thickness: 1, color: cs.outlineVariant),
+                const SizedBox(height: AppSpacing.md),
+                MenuActionGroup(
+                  children: [
+                    if (hasMultipleStacks)
                       MenuActionTile(
                         leading: const Icon(Icons.swap_vert),
                         label: l10n.settingsReorderStacks,
                         onTap: () =>
                             Navigator.of(ctx).pop(_StackMenuAction.reorder),
                       ),
-                    ],
-                  ),
-                ],
-                const SizedBox(height: AppSpacing.md),
-                MenuActionGroup(
-                  children: [
                     MenuActionTile(
                       leading: const Icon(Icons.add),
                       label: l10n.homeAddStack,
