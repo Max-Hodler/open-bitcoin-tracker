@@ -39,11 +39,11 @@
   "@settingsDarkStyleLabel": {
     "description": "Section header on the Theme screen for the dark-variant choice (Black / Blue). Applies whenever the active theme renders dark."
   },
-  "darkStyleOptionBlack": "Space Black",
+  "darkStyleOptionBlack": "OLED Black",
   "@darkStyleOptionBlack": {
     "description": "Dark-variant option: the original pure-black dark theme."
   },
-  "darkStyleOptionBlue": "Midnight Blue",
+  "darkStyleOptionBlue": "Twilight Blue",
   "@darkStyleOptionBlue": {
     "description": "Dark-variant option: navy blue dark theme."
   },
