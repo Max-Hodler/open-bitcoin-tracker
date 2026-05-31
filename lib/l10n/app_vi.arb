@@ -70,6 +70,7 @@
   "aboutWebsite": "Trang web",
   "aboutPrivacyPolicy": "Chính sách bảo mật",
   "aboutSectionDataSources": "Nguồn dữ liệu",
+  "aboutDataSourceDisclaimer": "Ứng dụng không có liên kết với bất kỳ nhà cung cấp nào trong số này.",
   "aboutDataSourceLive": "Giá hiện tại",
   "aboutDataSourceHistory": "Giá lịch sử",
   "aboutDataSourceFx": "Tỷ giá hối đoái lịch sử",

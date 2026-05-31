@@ -70,6 +70,7 @@
   "aboutWebsite": "Web sitesi",
   "aboutPrivacyPolicy": "Gizlilik politikası",
   "aboutSectionDataSources": "Veri kaynakları",
+  "aboutDataSourceDisclaimer": "Uygulamanın bu sağlayıcılarla hiçbir bağlantısı yoktur.",
   "aboutDataSourceLive": "Güncel fiyatlar",
   "aboutDataSourceHistory": "Geçmiş fiyatlar",
   "aboutDataSourceFx": "Geçmiş döviz kurları",

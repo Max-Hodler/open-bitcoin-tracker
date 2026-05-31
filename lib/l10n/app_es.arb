@@ -70,6 +70,7 @@
   "aboutWebsite": "Sitio web",
   "aboutPrivacyPolicy": "Política de privacidad",
   "aboutSectionDataSources": "Fuentes de datos",
+  "aboutDataSourceDisclaimer": "La aplicación no tiene ninguna asociación con estos proveedores.",
   "aboutDataSourceLive": "Precios actuales",
   "aboutDataSourceHistory": "Precios históricos",
   "aboutDataSourceFx": "Tipos de cambio históricos",

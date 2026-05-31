@@ -70,6 +70,7 @@
   "aboutWebsite": "Website",
   "aboutPrivacyPolicy": "Datenschutzerklärung",
   "aboutSectionDataSources": "Datenquellen",
+  "aboutDataSourceDisclaimer": "Die App steht in keiner Verbindung zu diesen Anbietern.",
   "aboutDataSourceLive": "Aktuelle Preise",
   "aboutDataSourceHistory": "Historische Preise",
   "aboutDataSourceFx": "Historische Wechselkurse",

@@ -70,6 +70,7 @@
   "aboutWebsite": "ウェブサイト",
   "aboutPrivacyPolicy": "プライバシーポリシー",
   "aboutSectionDataSources": "データソース",
+  "aboutDataSourceDisclaimer": "本アプリはこれらの提供元と一切関係がありません。",
   "aboutDataSourceLive": "現在価格",
   "aboutDataSourceHistory": "過去価格",
   "aboutDataSourceFx": "過去の為替レート",

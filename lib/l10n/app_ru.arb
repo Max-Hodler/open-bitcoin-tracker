@@ -70,6 +70,7 @@
   "aboutWebsite": "Сайт",
   "aboutPrivacyPolicy": "Политика конфиденциальности",
   "aboutSectionDataSources": "Источники данных",
+  "aboutDataSourceDisclaimer": "Приложение не связано ни с одним из этих поставщиков.",
   "aboutDataSourceLive": "Текущие цены",
   "aboutDataSourceHistory": "Исторические цены",
   "aboutDataSourceFx": "Исторические курсы валют",

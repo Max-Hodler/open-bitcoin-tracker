@@ -86,6 +86,7 @@ class _AboutScreenState extends State<AboutScreen> {
             ),
             const SizedBox(height: AppSpacing.lg),
             _SectionHeader(label: l10n.aboutSectionDataSources),
+            _SectionNote(text: l10n.aboutDataSourceDisclaimer),
             SettingsGroup(
               children: [
                 _externalLinkTile(
@@ -174,6 +175,27 @@ class _SectionHeader extends StatelessWidget {
           fontSize: 16,
           color: cs.onSurfaceVariant,
           fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+}
+
+class _SectionNote extends StatelessWidget {
+  const _SectionNote({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, bottom: AppSpacing.sm),
+      child: Text(
+        text,
+        style: AppTypography.body.copyWith(
+          fontSize: 13,
+          color: cs.onSurfaceVariant,
         ),
       ),
     );

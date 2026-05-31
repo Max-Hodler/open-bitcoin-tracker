@@ -191,6 +191,10 @@
   "@aboutSectionDataSources": {
     "description": "Section header on the About screen above the price/history data attribution lines."
   },
+  "aboutDataSourceDisclaimer": "The app has no association with any of these providers.",
+  "@aboutDataSourceDisclaimer": {
+    "description": "Disclaimer on the About screen, shown below the Data sources header, clarifying the app is not affiliated with the listed third-party data providers."
+  },
   "aboutDataSourceLive": "Current Prices",
   "@aboutDataSourceLive": {
     "description": "Label on the About screen for the price data source. The provider name (Kraken) is appended after the colon."
