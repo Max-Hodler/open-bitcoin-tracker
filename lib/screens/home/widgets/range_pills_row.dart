@@ -134,6 +134,7 @@ class _RangePillsRowState extends State<RangePillsRow> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final rangePills = _StackRangePills(
       data: widget.rangePillData,
       priceScale: widget.priceScale,
@@ -156,7 +157,24 @@ class _RangePillsRowState extends State<RangePillsRow> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 rangePills,
-                SizedBox(width: fullWidth, child: widget.card),
+                // The card carries an opaque background and a shadow on its
+                // left edge so it reads as one level above the recessed pill
+                // rail revealed to its left. The negative x-offset with zero
+                // spread throws the blur leftward only; the card's own fill
+                // keeps the shadow from bleeding under the text.
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: cs.surfaceContainerLow,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.18),
+                        offset: const Offset(-3, 0),
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                  child: SizedBox(width: fullWidth, child: widget.card),
+                ),
               ],
             ),
           ),
