@@ -52,7 +52,7 @@ class AppColors {
   // a touch warmer to feel less clinical on a phone screen. Text and divider
   // tokens are shared with the cream variant — they're already tuned for
   // warm-paper surfaces.
-  static const Color backgroundLightPink = Color(0xFFFCE7D6);
-  static const Color surfaceLightPink = Color(0xFFFFF1E5);
-  static const Color mutedSurfaceLightPink = Color(0xFFF3D7C0);
+  static const Color backgroundLightPink = Color(0xFFF7EEE6);
+  static const Color surfaceLightPink = Color(0xFFFCF5F0);
+  static const Color mutedSurfaceLightPink = Color(0xFFEBDFD6);
 }
