@@ -8,10 +8,6 @@ Everything is stored on your phone and it's never uploaded anywhere.
 
 Free and open-source Android app.
 
-<p align="center">
-  <img src="docs/screenshots/home-screen.png" width="230" alt="Open Bitcoin Tracker home screen">
-</p>
-
 ## Install
 
 Download the latest APK from the [Releases](https://github.com/Max-Hodler/open-bitcoin-tracker/releases) page and install it on your device. You may need to enable **Install unknown apps** in your Android settings for your browser or file manager.
