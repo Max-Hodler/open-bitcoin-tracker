@@ -59,6 +59,13 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
   static const Duration _intradayAutoRefreshInterval = Duration(seconds: 60);
   bool _appBackgrounded = false;
   bool _disposed = false;
+  // Debug-only screenshot mode. When on, incoming WS ticks are swallowed
+  // before they touch `_rates`, so the displayed price freezes at whatever it
+  // was when the mode was enabled. A frozen price never differs frame-to-frame,
+  // so CurrentPrice's delta badge never fires — exactly the still, delta-free
+  // state we want for marketing screenshots. The WS keeps streaming so leaving
+  // the mode snaps straight back to a live price.
+  bool _screenshotMode = false;
   LivePriceCadence _cadence;
   // Gates price-card repaints to at most one per `_cadence.minInterval`,
   // queueing one deferred fire so a tick suppressed by the gate isn't dropped.
@@ -77,7 +84,26 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
   // at ~1 tick/sec a 1bp gate would suppress most updates.
   static const double _noOpRelTolerance = 1e-6;
 
-  BtcRates get rates => _rates;
+  // The fixed, clean price shown in screenshot mode. A round number in every
+  // currency (so "$58,000", "€58,000", etc. — no FX conversion), chosen so
+  // marketing screenshots always show the same figure regardless of when or
+  // where they're taken.
+  static const double _screenshotPrice = 58000;
+  static const BtcRates _screenshotRates = BtcRates(
+    usd: _screenshotPrice,
+    gbp: _screenshotPrice,
+    eur: _screenshotPrice,
+    jpy: _screenshotPrice,
+    cad: _screenshotPrice,
+    aud: _screenshotPrice,
+    chf: _screenshotPrice,
+  );
+
+  // In screenshot mode, hand out the fixed display rates instead of the live
+  // (frozen) ones. The real rate stays in `_rates` so leaving the mode snaps
+  // back to it.
+  BtcRates get rates => _screenshotMode ? _screenshotRates : _rates;
+  bool get screenshotMode => _screenshotMode;
   List<HistoryPoint> get allHistory => _allHistory;
   FxHistory? get fxHistory => _fxHistory;
   DateTime? get lastFetchedAt => _lastFetchedAt;
@@ -100,6 +126,27 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
       _throttler.markFired();
       notifyListeners();
     }
+  }
+
+  /// Debug-only: freeze the displayed price. While on, WS ticks are dropped
+  /// before they reach `_rates` (see [_applyTick]), so the price card holds
+  /// still and its delta badge never fires. Turning it off flushes the latest
+  /// streamed rate so the card catches up to live. Gated to debug builds at the
+  /// call site (the Settings toggle), so release builds can never enable it.
+  set screenshotMode(bool value) {
+    if (_screenshotMode == value) return;
+    _screenshotMode = value;
+    if (!value) {
+      // Leaving freeze: adopt whatever the stream cached while we were frozen
+      // so the live getter (and the next repaint) reflect the current price
+      // rather than the rate from when we entered the mode.
+      _rates = _cache.load();
+      _lastFetchedAt = DateTime.now();
+    }
+    // Notify on both edges: the `rates` getter flips between the fixed and live
+    // values here, and the Settings toggle (context.watch) must rebuild so the
+    // switch reflects the new state.
+    notifyListeners();
   }
 
   List<HistoryPoint>? intradayFor(BtcRange range) => _intraday[range];
@@ -255,6 +302,16 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
     if (_disposed) return;
     final updated = _mergeKrakenTick(_rates, tick);
     if (updated == null) return; // unrecognised pair
+    if (_screenshotMode) {
+      // Frozen for screenshots: keep the cache warm off the live merge (so
+      // leaving the mode can snap straight to the current price) but don't
+      // touch `_rates` or repaint — the visible price holds still and no delta
+      // fires. `_lastFetchedAt` is left stale on purpose so a background/resume
+      // cycle during a shoot doesn't decide the data is fresh and skip a
+      // refetch we'd want post-shoot.
+      unawaited(_cache.save(updated));
+      return;
+    }
     if (_isNoOpUpdate(_rates, updated)) {
       _lastFetchedAt = DateTime.now();
       return;
