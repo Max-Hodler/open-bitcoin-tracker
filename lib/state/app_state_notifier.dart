@@ -31,7 +31,31 @@ class AppStateNotifier extends ChangeNotifier {
   /// operation.
   List<int>? get currentDek => _dek;
 
-  List<Stack> get stacks => _state.stacks;
+  // Debug-only screenshot mode. When on, `stacks` hands out a fixed demo set
+  // (see [_screenshotStacks]) instead of the user's real stacks, so marketing
+  // screenshots always show the same curated portfolio. The real `_state` is
+  // never mutated, so toggling off restores the user's data untouched. Set in
+  // lockstep with [LivePriceController.screenshotMode] from the Settings
+  // toggle, which is itself gated to debug builds.
+  bool _screenshotMode = false;
+  bool get screenshotMode => _screenshotMode;
+  set screenshotMode(bool value) {
+    if (_screenshotMode == value) return;
+    _screenshotMode = value;
+    notifyListeners();
+  }
+
+  // The curated demo portfolio shown in screenshot mode. Snapshotted from the
+  // author's own stacks; no avatar images or colour keys, so they render with
+  // the default initial-letter avatars.
+  static const List<Stack> _screenshotStacks = [
+    Stack(id: 'shot-1', name: 'My Stack', sats: 568949327),
+    Stack(id: 'shot-2', name: "Kids' Stack", sats: 85478965),
+    Stack(id: 'shot-3', name: "Parents' Stack", sats: 9545236),
+    Stack(id: 'shot-4', name: "Grandparents' Stack", sats: 4878655),
+  ];
+
+  List<Stack> get stacks => _screenshotMode ? _screenshotStacks : _state.stacks;
   Currency get currency => _state.currency;
   List<Currency> get selectedCurrencies => _state.selectedCurrencies;
   bool get showPortfolio => _state.showPortfolio;

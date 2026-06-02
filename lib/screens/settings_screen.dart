@@ -143,7 +143,14 @@ class SettingsScreen extends StatelessWidget {
                         label: 'Screenshot mode (freeze price)',
                         value: live.screenshotMode,
                         enabled: true,
-                        onChanged: (v) => live.screenshotMode = v,
+                        // Drive both controllers in lockstep: the live price
+                        // freezes at the fixed figure and the stack list swaps
+                        // to the demo set, so the whole home screen is camera-
+                        // ready in one tap.
+                        onChanged: (v) {
+                          live.screenshotMode = v;
+                          context.read<AppStateNotifier>().screenshotMode = v;
+                        },
                       );
                     },
                   ),
