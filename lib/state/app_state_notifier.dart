@@ -49,8 +49,8 @@ class AppStateNotifier extends ChangeNotifier {
   // author's own stacks; no avatar images or colour keys, so they render with
   // the default initial-letter avatars.
   static const List<Stack> _screenshotStacks = [
-    Stack(id: 'shot-1', name: 'My Stack', sats: 568949327),
-    Stack(id: 'shot-2', name: "Kids' Stack", sats: 85478965),
+    Stack(id: 'shot-1', name: 'My Stack', sats: 68949327),
+    Stack(id: 'shot-2', name: "Kids' Stack", sats: 35478965),
     Stack(id: 'shot-3', name: "Parents' Stack", sats: 9545236),
     Stack(id: 'shot-4', name: "Grandparents' Stack", sats: 4878655),
   ];
