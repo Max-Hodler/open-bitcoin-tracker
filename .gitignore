@@ -55,6 +55,7 @@ app.*.map.json
 # Claude Code harness state (permission allowlist, session settings)
 .claude/
 
-# Local-only contributor/AI guidance file
+# Local-only contributor/AI guidance files
 CLAUDE.md
+/lib/l10n/TRANSLATING.md
 
