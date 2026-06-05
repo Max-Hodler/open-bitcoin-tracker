@@ -199,6 +199,15 @@ class _HomeScreenState extends State<HomeScreen> {
         : context.select<LivePriceController, bool>(
             (c) => c.didIntradayFail(range),
           );
+    // When the cached intraday candles have fallen behind "now", skip the live
+    // connector so the line ends at the last real candle instead of drawing a
+    // long flat segment across the empty tail. A refetch is already in flight
+    // (fetchIntraday treats stale data as a cache miss), so this is transient.
+    final intradayStale = usesAllHistory
+        ? false
+        : context.select<LivePriceController, bool>(
+            (c) => c.isIntradayStale(range),
+          );
     final series = usesAllHistory
         ? _slicer.slice(allHistory, range)
         : (intradaySeries ?? const <HistoryPoint>[]);
@@ -218,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     final List<PricePoint> chartData;
-    if (currentPrice > 0) {
+    if (currentPrice > 0 && !intradayStale) {
       chartData = [
         ...convertedSeries,
         PricePoint(DateTime.now().millisecondsSinceEpoch, currentPrice),

@@ -57,6 +57,15 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
   // trip, so we only arm this timer for 1D.
   Timer? _intradayAutoRefreshTimer;
   static const Duration _intradayAutoRefreshInterval = Duration(seconds: 60);
+  // The candle interval Kraken serves for each intraday range. Used to detect a
+  // cached series whose newest candle has fallen behind "now" (a failed refresh
+  // or a long background gap) so it can be re-fetched before the chart draws a
+  // long connector from the last candle to the live price.
+  static const Map<BtcRange, Duration> _intradayCandleInterval = {
+    BtcRange.d1: Duration(minutes: 5),
+    BtcRange.w1: Duration(hours: 1),
+    BtcRange.m1: Duration(hours: 1),
+  };
   bool _appBackgrounded = false;
   bool _disposed = false;
   // Debug-only screenshot mode. When on, incoming WS ticks are swallowed
@@ -152,6 +161,20 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
   List<HistoryPoint>? intradayFor(BtcRange range) => _intraday[range];
   bool isIntradayLoading(BtcRange range) => _intradayLoading == range;
   bool didIntradayFail(BtcRange range) => _intradayFailed.contains(range);
+
+  /// Whether the cached series for [range] is stale — empty, or its newest
+  /// candle has fallen more than ~1.5 candle intervals behind now. Stale data
+  /// is what produces the long flat connector on the right of the chart, so the
+  /// screen uses this both to gate appending the live "now" point and to decide
+  /// whether a fetch is worth forcing.
+  bool isIntradayStale(BtcRange range) {
+    final interval = _intradayCandleInterval[range];
+    if (interval == null) return false;
+    final series = _intraday[range];
+    if (series == null || series.isEmpty) return true;
+    final newest = DateTime.fromMillisecondsSinceEpoch(series.last.timeMs);
+    return DateTime.now().difference(newest) > interval * 1.5;
+  }
 
   // Two independent FX-conversion memos. The home screen renders both an
   // active-range series and the full all-history curve in the same frame, so a
@@ -397,15 +420,19 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
     if (_intradayLoading == range) return;
     if (!force &&
         _intraday.containsKey(range) &&
-        !_intradayFailed.contains(range)) {
+        !_intradayFailed.contains(range) &&
+        !isIntradayStale(range)) {
       return;
     }
 
     // 1W can be sliced from a cached 1M (last 168 hourly points) without a
-    // network call.
+    // network call — but only if that 1M is itself fresh, otherwise the slice
+    // would just inherit the stale tail.
     if (!force && range == BtcRange.w1) {
       final m1 = _intraday[BtcRange.m1];
-      if (m1 != null && !_intradayFailed.contains(BtcRange.m1)) {
+      if (m1 != null &&
+          !_intradayFailed.contains(BtcRange.m1) &&
+          !isIntradayStale(BtcRange.m1)) {
         final start = m1.length > 168 ? m1.length - 168 : 0;
         _intraday[range] = m1.sublist(start);
         _intradayFailed.remove(range);
