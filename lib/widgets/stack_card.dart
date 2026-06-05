@@ -85,23 +85,34 @@ class StackCard extends StatelessWidget {
                     const SizedBox(height: 2),
                     Row(
                       children: [
+                        // BTC keeps its Expanded share so the fiat value stays
+                        // pinned to the right. When the figure is too large to
+                        // fit that share, the FittedBox scales it down rather
+                        // than truncating with an ellipsis. centerLeft keeps it
+                        // left-aligned within its slot.
                         Expanded(
-                          child: Text(
-                            formatBtcAmount(
-                              sats,
-                              hidden: isHidden,
-                              mode: bitcoinDisplayMode,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTypography.body.copyWith(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: -0.3,
-                              color: cs.onSurface.withValues(alpha: 0.85),
-                              fontFeatures: const [
-                                FontFeature.tabularFigures()
-                              ],
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                formatBtcAmount(
+                                  sats,
+                                  hidden: isHidden,
+                                  mode: bitcoinDisplayMode,
+                                ),
+                                maxLines: 1,
+                                style: AppTypography.body.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: -0.3,
+                                  color: cs.onSurface.withValues(alpha: 0.85),
+                                  fontFeatures: const [
+                                    FontFeature.tabularFigures()
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ),
