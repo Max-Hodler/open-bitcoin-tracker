@@ -57,7 +57,7 @@
   "snackAuthenticationFailed": "Échec de l'authentification",
   "snackStacksCorrupted": "Les données de vos Stacks sont corrompues. Ouvrez Paramètres → Supprimer le verrouillage des Stacks pour les récupérer.",
 
-  "currencyPickerHint": "Faites glisser le prix vers la gauche ou la droite sur l'écran d'accueil pour passer d'une devise à l'autre.",
+  "currencyPickerHint": "Faites glisser le prix vers la droite ou la droite sur l'écran d'accueil pour passer d'une devise à l'autre.",
 
   "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "À propos",
@@ -157,6 +157,8 @@
   "totalCardName": "Total",
 
   "homeAddStack": "Ajouter un Stack",
+  "homeChangePillsHint": "Balayez le stack vers la droite pour voir l'évolution de sa valeur dans le temps.",
+  "homeChangePillsHintDismiss": "Compris",
   "homeConverter": "Convertisseur",
   "homeUnlockStacks": "Déverrouiller les Stacks",
 

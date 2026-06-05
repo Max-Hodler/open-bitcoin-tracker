@@ -18,6 +18,7 @@ import '../pin_entry_screen.dart';
 import '../settings_screen.dart';
 import 'chart_slice.dart';
 import 'header/home_header.dart';
+import 'widgets/change_pills_hint.dart';
 import 'widgets/hashrate_card.dart';
 import 'widgets/home_buttons.dart';
 import 'widgets/mempool_card.dart';
@@ -367,6 +368,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 : null,
             totalSats: showTotal ? totalSats : null,
           ),
+        // One-time hint, below the stack list, teaching the swipe-to-reveal
+        // gesture for the range/change pills. Stays until the user dismisses
+        // it (persisted), regardless of how many stacks they later add.
+        if (stacks.isNotEmpty && !app.changePillsHintDismissed) ...[
+          const SizedBox(height: AppSpacing.sm),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            child: ChangePillsHint(
+              onDismiss: () => context
+                  .read<AppStateNotifier>()
+                  .dismissChangePillsHint(),
+            ),
+          ),
+        ],
         if (stacks.isEmpty) ...[
           const SizedBox(height: AppSpacing.sm),
           Padding(

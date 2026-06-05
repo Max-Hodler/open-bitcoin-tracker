@@ -157,6 +157,8 @@
   "totalCardName": "Total",
 
   "homeAddStack": "Añadir stack",
+  "homeChangePillsHint": "Desliza el stack hacia la derecha para ver cómo ha cambiado su valor con el tiempo.",
+  "homeChangePillsHintDismiss": "Entendido",
   "homeConverter": "Conversor",
   "homeUnlockStacks": "Desbloquear stacks",
 

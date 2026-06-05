@@ -39,6 +39,7 @@ class AppState {
     ],
     this.totalImageData,
     this.totalColorKey,
+    this.changePillsHintDismissed = false,
   });
 
   final List<Stack> stacks;
@@ -114,6 +115,10 @@ class AppState {
   // default initial-letter circle in the theme's bitcoinOrange.
   final String? totalImageData;
   final String? totalColorKey;
+  // True once the user dismisses the one-time hint that explains revealing the
+  // range/change pills by swiping a stack card aside. Persisted so the hint
+  // never reappears on later launches, even after more stacks are added.
+  final bool changePillsHintDismissed;
   AppState copyWith({
     List<Stack>? stacks,
     Currency? currency,
@@ -148,6 +153,7 @@ class AppState {
     bool clearTotalImage = false,
     String? totalColorKey,
     bool clearTotalColor = false,
+    bool? changePillsHintDismissed,
   }) {
     return AppState(
       stacks: stacks ?? this.stacks,
@@ -189,6 +195,8 @@ class AppState {
       totalColorKey: clearTotalColor
           ? null
           : (totalColorKey ?? this.totalColorKey),
+      changePillsHintDismissed:
+          changePillsHintDismissed ?? this.changePillsHintDismissed,
     );
   }
 
@@ -228,6 +236,7 @@ class AppState {
         'homeWidgetOrder': [for (final w in homeWidgetOrder) w.code],
         if (totalImageData != null) 'totalImageData': totalImageData,
         if (totalColorKey != null) 'totalColorKey': totalColorKey,
+        'changePillsHintDismissed': changePillsHintDismissed,
       };
 
   factory AppState.fromJson(Map<String, dynamic> json) {
@@ -312,6 +321,8 @@ class AppState {
       totalColorKey: json['totalColorKey'] is String
           ? json['totalColorKey'] as String
           : null,
+      changePillsHintDismissed:
+          json['changePillsHintDismissed'] as bool? ?? false,
     );
   }
 

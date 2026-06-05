@@ -516,6 +516,14 @@
   "@homeAddStack": {
     "description": "Label of the Add stack shortcut button on the home screen."
   },
+  "homeChangePillsHint": "Swipe the stack to the right to see how its value has changed over time.",
+  "@homeChangePillsHint": {
+    "description": "One-time hint shown below the stack list on home, explaining that swiping a stack card aside reveals the range/change pills with its past prices. Dismissed permanently with the adjacent button."
+  },
+  "homeChangePillsHintDismiss": "Got it",
+  "@homeChangePillsHintDismiss": {
+    "description": "Button that permanently dismisses the home-screen hint about swiping a stack to reveal its change pills."
+  },
   "homeConverter": "Converter",
   "@homeConverter": {
     "description": "Label of the Converter shortcut button on the home screen."

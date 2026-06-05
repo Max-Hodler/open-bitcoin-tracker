@@ -157,6 +157,8 @@
   "totalCardName": "合計",
 
   "homeAddStack": "Stack を追加",
+  "homeChangePillsHint": "スタックを右にスワイプすると、価値の推移を確認できます。",
+  "homeChangePillsHintDismiss": "OK",
   "homeConverter": "コンバーター",
   "homeUnlockStacks": "Stacks のロックを解除",
 

@@ -57,7 +57,7 @@
   "snackAuthenticationFailed": "Ошибка аутентификации",
   "snackStacksCorrupted": "Данные Stacks повреждены. Откройте Настройки → Снять блокировку Stacks для восстановления.",
 
-  "currencyPickerHint": "Проведите влево или вправо по цене на главном экране, чтобы переключаться между валютами.",
+  "currencyPickerHint": "Проведите вправо или вправо по цене на главном экране, чтобы переключаться между валютами.",
 
   "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "О приложении",
@@ -157,6 +157,8 @@
   "totalCardName": "Итог",
 
   "homeAddStack": "Добавить Stack",
+  "homeChangePillsHint": "Проведите по стеку вправо, чтобы увидеть, как менялась его стоимость со временем.",
+  "homeChangePillsHintDismiss": "Понятно",
   "homeConverter": "Конвертер",
   "homeUnlockStacks": "Разблокировать Stacks",
 

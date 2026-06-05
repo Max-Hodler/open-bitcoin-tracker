@@ -59,6 +59,7 @@ class AppStateNotifier extends ChangeNotifier {
   Currency get currency => _state.currency;
   List<Currency> get selectedCurrencies => _state.selectedCurrencies;
   bool get showPortfolio => _state.showPortfolio;
+  bool get changePillsHintDismissed => _state.changePillsHintDismissed;
   bool get showMempool => _state.showMempool;
   bool get mempoolBlocksReversed => _state.mempoolBlocksReversed;
   bool get showHashrate => _state.showHashrate;
@@ -160,6 +161,8 @@ class AppStateNotifier extends ChangeNotifier {
         ));
   }
   void setShowPortfolio(bool value) => _update((s) => s.copyWith(showPortfolio: value));
+  void dismissChangePillsHint() =>
+      _update((s) => s.copyWith(changePillsHintDismissed: true));
   void setShowMempool(bool value) => _update((s) => s.copyWith(showMempool: value));
   void setMempoolBlocksReversed(bool value) =>
       _update((s) => s.copyWith(mempoolBlocksReversed: value));

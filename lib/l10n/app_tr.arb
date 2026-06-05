@@ -157,6 +157,8 @@
   "totalCardName": "Toplam",
 
   "homeAddStack": "Stack ekle",
+  "homeChangePillsHint": "Stack'i sağa kaydırarak değerinin zaman içinde nasıl değiştiğini görebilirsin.",
+  "homeChangePillsHintDismiss": "Anladım",
   "homeConverter": "Dönüştürücü",
   "homeUnlockStacks": "Stacks'i aç",
 

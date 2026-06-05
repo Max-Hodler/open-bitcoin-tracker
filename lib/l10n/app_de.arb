@@ -57,7 +57,7 @@
   "snackAuthenticationFailed": "Authentifizierung fehlgeschlagen",
   "snackStacksCorrupted": "Deine Stacks-Daten sind beschädigt. Öffne Einstellungen → Stacks-Sperre entfernen, um sie wiederherzustellen.",
 
-  "currencyPickerHint": "Wische auf dem Startbildschirm nach links oder rechts über den Preis, um zwischen diesen Währungen zu wechseln.",
+  "currencyPickerHint": "Wische auf dem Startbildschirm nach rechts oder rechts über den Preis, um zwischen diesen Währungen zu wechseln.",
 
   "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "Über",
@@ -157,6 +157,8 @@
   "totalCardName": "Gesamt",
 
   "homeAddStack": "Stack hinzufügen",
+  "homeChangePillsHint": "Wische den Stack nach rechts, um zu sehen, wie sich sein Wert im Laufe der Zeit verändert hat.",
+  "homeChangePillsHintDismiss": "Verstanden",
   "homeConverter": "Umrechner",
   "homeUnlockStacks": "Stacks entsperren",
 
