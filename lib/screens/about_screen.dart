@@ -8,8 +8,7 @@ import '../widgets/scroll_hairline.dart';
 import 'settings/settings_widgets.dart';
 
 const String _kWebsiteUrl = 'https://openbitcointracker.com';
-const String _kPrivacyPolicyUrl =
-    'https://max-hodler.github.io/open-bitcoin-tracker/privacy/';
+const String _kPrivacyPolicyUrl = 'https://openbitcointracker.com/privacy/';
 const String _kKrakenUrl = 'https://www.kraken.com';
 const String _kCoinMetricsUrl = 'https://coinmetrics.io';
 const String _kEcbUrl =
