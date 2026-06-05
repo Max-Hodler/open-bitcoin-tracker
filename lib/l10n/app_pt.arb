@@ -162,6 +162,7 @@
 
   "stackMenuUpdateAmount": "Atualizar quantia",
   "stackMenuChangeName": "Alterar nome",
+  "stackMenuStacksSettings": "Configurações de Stacks",
   "rangePickerLongTitle": "Selecionar intervalo",
   "rangePickerLongHint": "Dica: deslize para cima ou para baixo no chip para alternar intervalos.",
   "rangePickerYearsFull": "{count, plural, =1{1 ano} other{{count} anos}}",

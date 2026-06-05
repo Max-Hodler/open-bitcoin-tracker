@@ -162,6 +162,7 @@
 
   "stackMenuUpdateAmount": "Cập nhật số lượng",
   "stackMenuChangeName": "Đổi tên",
+  "stackMenuStacksSettings": "Cài đặt Stacks",
   "rangePickerLongTitle": "Chọn khoảng",
   "rangePickerLongHint": "Mẹo: vuốt lên hoặc xuống trên chip để chuyển đổi các khoảng.",
   "rangePickerYearsFull": "{count, plural, =1{1 Năm} other{{count} Năm}}",

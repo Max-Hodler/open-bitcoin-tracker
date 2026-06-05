@@ -162,6 +162,7 @@
 
   "stackMenuUpdateAmount": "Betrag aktualisieren",
   "stackMenuChangeName": "Namen ändern",
+  "stackMenuStacksSettings": "Stacks-Einstellungen",
   "rangePickerLongTitle": "Zeitraum wählen",
   "rangePickerLongHint": "Tipp: Wische nach oben oder unten auf dem Chip, um Zeiträume zu wechseln.",
   "rangePickerYearsFull": "{count, plural, =1{1 Jahr} other{{count} Jahre}}",

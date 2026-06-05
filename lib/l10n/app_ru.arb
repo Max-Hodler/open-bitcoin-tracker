@@ -162,6 +162,7 @@
 
   "stackMenuUpdateAmount": "Изменить количество",
   "stackMenuChangeName": "Изменить название",
+  "stackMenuStacksSettings": "Настройки Stacks",
   "rangePickerLongTitle": "Выберите диапазон",
   "rangePickerLongHint": "Совет: проведите вверх или вниз по чипу, чтобы переключать диапазоны.",
   "rangePickerYearsFull": "{count, plural, one{1 год} few{{count} года} many{{count} лет} other{{count} года}}",

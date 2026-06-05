@@ -14,11 +14,11 @@ import '../../../widgets/menu_action_tile.dart';
 import '../../../widgets/stack_card.dart' show StackCard, StackCardPosition;
 import '../../edit_stack_screens.dart';
 import '../../new_stack_screens.dart';
-import '../../settings/reorder_stacks_screen.dart';
+import '../../settings/stacks_settings_screen.dart';
 import 'home_buttons.dart';
 import 'range_pills_row.dart';
 
-enum _StackMenuAction { edit, rename, add, reorder, delete }
+enum _StackMenuAction { edit, rename, add, settings, delete }
 
 class HomeStackList extends StatelessWidget {
   const HomeStackList({
@@ -120,8 +120,6 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
       ),
       builder: (ctx) {
         final l10n = AppLocalizations.of(ctx);
-        final hasMultipleStacks =
-            ctx.read<AppStateNotifier>().stacks.length > 1;
         return SafeArea(
           top: false,
           child: Padding(
@@ -169,13 +167,17 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
                 const SizedBox(height: AppSpacing.md),
                 MenuActionGroup(
                   children: [
-                    if (hasMultipleStacks)
-                      MenuActionTile(
-                        leading: const Icon(Icons.swap_vert),
-                        label: l10n.settingsReorderStacks,
-                        onTap: () =>
-                            Navigator.of(ctx).pop(_StackMenuAction.reorder),
-                      ),
+                    MenuActionTile(
+                      leading: const Icon(Icons.settings_outlined),
+                      label: l10n.stackMenuStacksSettings,
+                      onTap: () =>
+                          Navigator.of(ctx).pop(_StackMenuAction.settings),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.md),
+                MenuActionGroup(
+                  children: [
                     MenuActionTile(
                       leading: const Icon(Icons.add),
                       label: l10n.homeAddStack,
@@ -204,9 +206,11 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
         await Navigator.of(iconContext).push(MaterialPageRoute<void>(
           builder: (_) => const NewStackAmountScreen(),
         ));
-      case _StackMenuAction.reorder:
+      case _StackMenuAction.settings:
+        // Pushed onto the home navigator (not the settings stack), so the
+        // Stacks settings page's back button returns straight to home.
         await Navigator.of(iconContext).push(MaterialPageRoute<void>(
-          builder: (_) => const ReorderStacksScreen(),
+          builder: (_) => const StacksSettingsScreen(),
         ));
       case _StackMenuAction.delete:
         final confirm = await _showDeleteDialog(iconContext);

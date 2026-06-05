@@ -162,6 +162,7 @@
 
   "stackMenuUpdateAmount": "Actualizar cantidad",
   "stackMenuChangeName": "Cambiar nombre",
+  "stackMenuStacksSettings": "Ajustes de Stacks",
   "rangePickerLongTitle": "Selecciona el rango",
   "rangePickerLongHint": "Consejo: desliza hacia arriba o abajo en el rango para cambiarlo.",
   "rangePickerYearsFull": "{count, plural, =1{1 año} other{{count} años}}",

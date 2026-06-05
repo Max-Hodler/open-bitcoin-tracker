@@ -162,6 +162,7 @@
 
   "stackMenuUpdateAmount": "数量を更新",
   "stackMenuChangeName": "名前を変更",
+  "stackMenuStacksSettings": "Stacksの設定",
   "rangePickerLongTitle": "期間を選択",
   "rangePickerLongHint": "ヒント: チップを上下にスワイプして期間を切り替えられます。",
   "rangePickerYearsFull": "{count, plural, =1{1年} other{{count}年}}",

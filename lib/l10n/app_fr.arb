@@ -162,6 +162,7 @@
 
   "stackMenuUpdateAmount": "Modifier la quantité",
   "stackMenuChangeName": "Modifier le nom",
+  "stackMenuStacksSettings": "Paramètres des Stacks",
   "rangePickerLongTitle": "Sélectionner la période",
   "rangePickerLongHint": "Astuce : faites glisser vers le haut ou vers le bas sur la puce pour changer de période.",
   "rangePickerYearsFull": "{count, plural, =1{1 an} other{{count} ans}}",

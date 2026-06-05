@@ -162,6 +162,7 @@
 
   "stackMenuUpdateAmount": "Miktarı güncelle",
   "stackMenuChangeName": "İsmi değiştir",
+  "stackMenuStacksSettings": "Stacks ayarları",
   "rangePickerLongTitle": "Aralık seçin",
   "rangePickerLongHint": "İpucu: aralıkları değiştirmek için yukarı veya aşağı kaydırın.",
   "rangePickerYearsFull": "{count, plural, =1{1 Yıl} other{{count} Yıl}}",
