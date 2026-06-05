@@ -1,3 +1,4 @@
+import 'package:open_bitcoin_tracker/api/api.dart';
 import 'package:open_bitcoin_tracker/data/data.dart';
 import 'package:open_bitcoin_tracker/l10n/generated/app_localizations.dart';
 import 'package:open_bitcoin_tracker/screens/settings_screen.dart';
@@ -21,10 +22,21 @@ Future<(Widget, AppStateNotifier)> _wrap(WidgetTester tester, {String? initialSt
   // tests that navigate into the Stacks sub-screen don't ProviderNotFound.
   final lock = StacksLockController(app: app);
   addTearDown(lock.dispose);
+  // The debug-only screenshot-mode toggle (kDebugMode is true under tests)
+  // reads LivePriceController via Provider. Supply one — never `.start()`ed, so
+  // it opens no network connections — so the settings screen builds.
+  final live = LivePriceController(
+    stream: KrakenStreamService(),
+    ohlc: KrakenOhlcClient(),
+    cache: BtcRatesCache(prefs),
+    historyCache: BtcHistoryCache(),
+  );
+  addTearDown(live.dispose);
   final widget = MultiProvider(
     providers: [
       ChangeNotifierProvider.value(value: app),
       ChangeNotifierProvider.value(value: lock),
+      ChangeNotifierProvider.value(value: live),
     ],
     child: MaterialApp(
       home: const SettingsScreen(),
