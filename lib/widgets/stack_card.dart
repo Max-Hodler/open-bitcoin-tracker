@@ -22,7 +22,6 @@ class StackCard extends StatelessWidget {
     this.isHidden = false,
     this.imageData,
     this.colorKey,
-    this.showAvatar = true,
     this.onTap,
     this.onAvatarTap,
     this.position = StackCardPosition.only,
@@ -36,9 +35,6 @@ class StackCard extends StatelessWidget {
   final bool isHidden;
   final String? imageData;
   final String? colorKey;
-  // When false, the leading avatar circle (and its spacer) is omitted so the
-  // card collapses to a name + amount row, matching the pre-avatar layout.
-  final bool showAvatar;
   final VoidCallback? onTap;
   final VoidCallback? onAvatarTap;
   final StackCardPosition position;
@@ -58,22 +54,20 @@ class StackCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              if (showAvatar) ...[
-                // Opaque hit-test stops the tap bubbling up to the surrounding
-                // InkWell, so the avatar opens the picker sheet while the rest
-                // of the card still opens the stack menu.
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
+              // Opaque hit-test stops the tap bubbling up to the surrounding
+              // InkWell, so the avatar opens the picker sheet while the rest
+              // of the card still opens the stack menu.
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onAvatarTap,
+                child: StackAvatar(
+                  name: name,
+                  imageData: imageData,
+                  colorKey: colorKey,
                   onTap: onAvatarTap,
-                  child: StackAvatar(
-                    name: name,
-                    imageData: imageData,
-                    colorKey: colorKey,
-                    onTap: onAvatarTap,
-                  ),
                 ),
-                const SizedBox(width: AppSpacing.md),
-              ],
+              ),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

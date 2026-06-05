@@ -39,7 +39,6 @@ class AppState {
     ],
     this.totalImageData,
     this.totalColorKey,
-    this.showStackImages = true,
   });
 
   final List<Stack> stacks;
@@ -115,12 +114,6 @@ class AppState {
   // default initial-letter circle in the theme's bitcoinOrange.
   final String? totalImageData;
   final String? totalColorKey;
-  // Master toggle for the avatar circle on stack cards (per-stack and total).
-  // When false, all cards render without the leading avatar so the layout
-  // collapses to its pre-avatar look. Per-stack image/color settings are
-  // preserved so toggling back on restores them.
-  final bool showStackImages;
-
   AppState copyWith({
     List<Stack>? stacks,
     Currency? currency,
@@ -155,7 +148,6 @@ class AppState {
     bool clearTotalImage = false,
     String? totalColorKey,
     bool clearTotalColor = false,
-    bool? showStackImages,
   }) {
     return AppState(
       stacks: stacks ?? this.stacks,
@@ -197,7 +189,6 @@ class AppState {
       totalColorKey: clearTotalColor
           ? null
           : (totalColorKey ?? this.totalColorKey),
-      showStackImages: showStackImages ?? this.showStackImages,
     );
   }
 
@@ -237,7 +228,6 @@ class AppState {
         'homeWidgetOrder': [for (final w in homeWidgetOrder) w.code],
         if (totalImageData != null) 'totalImageData': totalImageData,
         if (totalColorKey != null) 'totalColorKey': totalColorKey,
-        'showStackImages': showStackImages,
       };
 
   factory AppState.fromJson(Map<String, dynamic> json) {
@@ -322,7 +312,6 @@ class AppState {
       totalColorKey: json['totalColorKey'] is String
           ? json['totalColorKey'] as String
           : null,
-      showStackImages: json['showStackImages'] as bool? ?? true,
     );
   }
 

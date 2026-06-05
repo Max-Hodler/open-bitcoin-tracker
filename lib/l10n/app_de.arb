@@ -87,7 +87,6 @@
   "settingsScaleLinear": "Linear",
   "settingsScaleLog": "Log",
   "settingsPortfolioTotal": "Gesamtsumme anzeigen",
-  "settingsShowStackImages": "Stack-Avatare anzeigen",
   "settingsMempoolWidget": "Mempool",
   "settingsMempoolBlocksTitle": "Mempool",
   "settingsMempoolBlocksVisible": "Sichtbar",

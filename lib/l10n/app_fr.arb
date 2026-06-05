@@ -87,7 +87,6 @@
   "settingsScaleLinear": "Linéaire",
   "settingsScaleLog": "Log",
   "settingsPortfolioTotal": "Afficher le total",
-  "settingsShowStackImages": "Afficher les avatars de stack",
   "settingsMempoolWidget": "Mempool",
   "settingsMempoolBlocksTitle": "Mempool",
   "settingsMempoolBlocksVisible": "Visible",

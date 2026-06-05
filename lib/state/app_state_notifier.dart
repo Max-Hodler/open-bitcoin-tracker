@@ -59,7 +59,6 @@ class AppStateNotifier extends ChangeNotifier {
   Currency get currency => _state.currency;
   List<Currency> get selectedCurrencies => _state.selectedCurrencies;
   bool get showPortfolio => _state.showPortfolio;
-  bool get showStackImages => _state.showStackImages;
   bool get showMempool => _state.showMempool;
   bool get mempoolBlocksReversed => _state.mempoolBlocksReversed;
   bool get showHashrate => _state.showHashrate;
@@ -198,8 +197,6 @@ class AppStateNotifier extends ChangeNotifier {
   void setTotalColorKey(String? value) => _update((s) => value == null
       ? s.copyWith(clearTotalColor: true)
       : s.copyWith(totalColorKey: value));
-  void setShowStackImages(bool value) =>
-      _update((s) => s.copyWith(showStackImages: value));
 
   void addStack(Stack stack) =>
       _update((s) => s.copyWith(stacks: [...s.stacks, stack]));

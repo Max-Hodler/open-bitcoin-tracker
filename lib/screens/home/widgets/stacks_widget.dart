@@ -28,7 +28,6 @@ class HomeStackList extends StatelessWidget {
     required this.btcRate,
     required this.bitcoinDisplayMode,
     required this.rangePillData,
-    required this.showAvatars,
     this.totalCard,
     this.totalSats,
   });
@@ -38,7 +37,6 @@ class HomeStackList extends StatelessWidget {
   final double? btcRate;
   final BtcDisplayMode bitcoinDisplayMode;
   final List<PricePoint> rangePillData;
-  final bool showAvatars;
   // When non-null, the portfolio total renders as the final row of the same
   // group as the stack cards, sharing its divider and corner rounding so it
   // reads as just another stack rather than a detached card. [totalSats]
@@ -64,7 +62,6 @@ class HomeStackList extends StatelessWidget {
             priceScale: stacks[i].sats / Sats.perBtc,
             isFirst: i == 0,
             isLast: i == rowCount - 1,
-            showAvatar: showAvatars,
           ),
         if (hasTotal)
           _GroupedCardRow(
@@ -93,7 +90,6 @@ class _SwipeableStackCard extends StatefulWidget {
     required this.priceScale,
     required this.isFirst,
     required this.isLast,
-    required this.showAvatar,
   });
 
   final model.Stack stack;
@@ -104,7 +100,6 @@ class _SwipeableStackCard extends StatefulWidget {
   final double priceScale;
   final bool isFirst;
   final bool isLast;
-  final bool showAvatar;
 
   @override
   State<_SwipeableStackCard> createState() => _SwipeableStackCardState();
@@ -328,7 +323,6 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
         isHidden: widget.stack.isHidden,
         imageData: widget.stack.imageData,
         colorKey: widget.stack.colorKey,
-        showAvatar: widget.showAvatar,
         position: _position,
         onTap: () {
           AppHaptics.light();

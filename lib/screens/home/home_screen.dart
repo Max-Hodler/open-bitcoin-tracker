@@ -360,7 +360,6 @@ class _HomeScreenState extends State<HomeScreen> {
             btcRate: rate,
             bitcoinDisplayMode: app.bitcoinDisplayMode,
             rangePillData: convertedAllHistory,
-            showAvatars: app.showStackImages,
             // showTotal already implies stacks.length >= 2, so the total is
             // always the last row of a non-empty group.
             totalCard: showTotal
@@ -500,7 +499,6 @@ List<Widget> lockedStacksBlock() => [
         bitcoinDisplayMode: app.bitcoinDisplayMode,
         imageData: app.state.totalImageData,
         colorKey: app.state.totalColorKey,
-        showAvatar: app.showStackImages,
         position: StackCardPosition.last,
         onTap: () {
           AppHaptics.light();
