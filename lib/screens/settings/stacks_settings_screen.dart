@@ -6,7 +6,6 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../state/state.dart';
 import '../../theme/theme.dart';
 import '../../widgets/scroll_hairline.dart';
-import '../new_stack_screens.dart';
 import 'settings_dialogs.dart';
 import 'settings_widgets.dart';
 import 'lock_stacks_settings_screen.dart';
@@ -92,23 +91,6 @@ class StacksSettingsScreen extends StatelessWidget {
                   ),
               ],
             ),
-            if (!lock.isLocked) ...[
-              const SizedBox(height: AppSpacing.lg),
-              SettingsGroup(
-                children: [
-                  SettingsPickerTile(
-                    label: l10n.homeAddStack,
-                    value: '',
-                    onTap: () => Navigator.of(context).push<void>(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const NewStackAmountScreen(),
-                      ),
-                    ),
-                    trailingIcon: Icons.add,
-                  ),
-                ],
-              ),
-            ],
           ],
         ),
       ),
