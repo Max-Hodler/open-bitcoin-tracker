@@ -4,12 +4,18 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../services/app_haptics.dart';
 import '../../../theme/theme.dart';
 
-/// One-time hint shown below the stack list explaining that swiping a stack
-/// card aside reveals its range/change pills. Dismissed permanently via the
-/// "Got it" button — [onDismiss] persists that so it never returns.
-class ChangePillsHint extends StatelessWidget {
-  const ChangePillsHint({super.key, required this.onDismiss});
+/// A one-time teaching hint shown below the stack list: an info-styled card
+/// with [message] and a "Got it" button. [onDismiss] persists the dismissal so
+/// the hint never returns. Shared by the swipe-to-reveal and tap-to-add hints
+/// so they stay visually identical.
+class HomeHintCard extends StatelessWidget {
+  const HomeHintCard({
+    super.key,
+    required this.message,
+    required this.onDismiss,
+  });
 
+  final String message;
   final VoidCallback onDismiss;
 
   @override
@@ -42,7 +48,7 @@ class ChangePillsHint extends StatelessWidget {
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
-                    l10n.homeChangePillsHint,
+                    message,
                     style: AppTypography.body.copyWith(
                       fontSize: 14,
                       height: 1.35,

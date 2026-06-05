@@ -18,9 +18,9 @@ import '../pin_entry_screen.dart';
 import '../settings_screen.dart';
 import 'chart_slice.dart';
 import 'header/home_header.dart';
-import 'widgets/change_pills_hint.dart';
 import 'widgets/hashrate_card.dart';
 import 'widgets/home_buttons.dart';
+import 'widgets/home_hint_card.dart';
 import 'widgets/mempool_card.dart';
 import 'widgets/stacks_widget.dart';
 
@@ -152,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     final app = context.watch<AppStateNotifier>();
     final lock = context.watch<StacksLockController>();
+    final l10n = AppLocalizations.of(context);
     final stacksLocked = lock.isLocked;
     final cs = Theme.of(context).colorScheme;
     final p = context.palette;
@@ -368,17 +369,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 : null,
             totalSats: showTotal ? totalSats : null,
           ),
-        // One-time hint, below the stack list, teaching the swipe-to-reveal
-        // gesture for the range/change pills. Stays until the user dismisses
-        // it (persisted), regardless of how many stacks they later add.
+        // Two one-time hints below the stack list, shown in sequence so only
+        // one is visible at a time: first the swipe-to-reveal-pills gesture,
+        // then (once that's dismissed) how to add another stack. Each stays
+        // until dismissed (persisted), regardless of how many stacks exist.
         if (stacks.isNotEmpty && !app.changePillsHintDismissed) ...[
           const SizedBox(height: AppSpacing.sm),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: ChangePillsHint(
+            child: HomeHintCard(
+              message: l10n.homeChangePillsHint,
               onDismiss: () => context
                   .read<AppStateNotifier>()
                   .dismissChangePillsHint(),
+            ),
+          ),
+        ] else if (stacks.isNotEmpty && !app.addStackHintDismissed) ...[
+          const SizedBox(height: AppSpacing.sm),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            child: HomeHintCard(
+              message: l10n.homeAddStackHint,
+              onDismiss: () =>
+                  context.read<AppStateNotifier>().dismissAddStackHint(),
             ),
           ),
         ],

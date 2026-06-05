@@ -40,6 +40,7 @@ class AppState {
     this.totalImageData,
     this.totalColorKey,
     this.changePillsHintDismissed = false,
+    this.addStackHintDismissed = false,
   });
 
   final List<Stack> stacks;
@@ -119,6 +120,10 @@ class AppState {
   // range/change pills by swiping a stack card aside. Persisted so the hint
   // never reappears on later launches, even after more stacks are added.
   final bool changePillsHintDismissed;
+  // True once the user dismisses the one-time hint that explains adding another
+  // stack by tapping an existing one to open its menu. Shown only after
+  // [changePillsHintDismissed] so the two hints teach in sequence, not at once.
+  final bool addStackHintDismissed;
   AppState copyWith({
     List<Stack>? stacks,
     Currency? currency,
@@ -154,6 +159,7 @@ class AppState {
     String? totalColorKey,
     bool clearTotalColor = false,
     bool? changePillsHintDismissed,
+    bool? addStackHintDismissed,
   }) {
     return AppState(
       stacks: stacks ?? this.stacks,
@@ -197,6 +203,8 @@ class AppState {
           : (totalColorKey ?? this.totalColorKey),
       changePillsHintDismissed:
           changePillsHintDismissed ?? this.changePillsHintDismissed,
+      addStackHintDismissed:
+          addStackHintDismissed ?? this.addStackHintDismissed,
     );
   }
 
@@ -237,6 +245,7 @@ class AppState {
         if (totalImageData != null) 'totalImageData': totalImageData,
         if (totalColorKey != null) 'totalColorKey': totalColorKey,
         'changePillsHintDismissed': changePillsHintDismissed,
+        'addStackHintDismissed': addStackHintDismissed,
       };
 
   factory AppState.fromJson(Map<String, dynamic> json) {
@@ -323,6 +332,7 @@ class AppState {
           : null,
       changePillsHintDismissed:
           json['changePillsHintDismissed'] as bool? ?? false,
+      addStackHintDismissed: json['addStackHintDismissed'] as bool? ?? false,
     );
   }
 

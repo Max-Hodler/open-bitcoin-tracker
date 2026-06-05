@@ -159,6 +159,7 @@
   "homeAddStack": "Añadir stack",
   "homeChangePillsHint": "Desliza el stack hacia la derecha para ver cómo ha cambiado su valor con el tiempo.",
   "homeChangePillsHintDismiss": "Entendido",
+  "homeAddStackHint": "Toca un stack para añadir otro.",
   "homeConverter": "Conversor",
   "homeUnlockStacks": "Desbloquear stacks",
 

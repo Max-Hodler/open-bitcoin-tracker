@@ -159,6 +159,7 @@
   "homeAddStack": "Thêm Stack",
   "homeChangePillsHint": "Vuốt stack sang phải để xem giá trị của nó đã thay đổi như thế nào theo thời gian.",
   "homeChangePillsHintDismiss": "Đã hiểu",
+  "homeAddStackHint": "Chạm vào một stack để thêm một stack khác.",
   "homeConverter": "Bộ chuyển đổi",
   "homeUnlockStacks": "Mở khóa Stacks",
 
