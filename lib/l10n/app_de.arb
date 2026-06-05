@@ -157,6 +157,7 @@
   "totalCardName": "Gesamt",
 
   "homeAddStack": "Stack hinzufügen",
+  "homeAddAStack": "Einen Stack hinzufügen",
   "homeChangePillsHint": "Wische den Stack nach rechts, um zu sehen, wie sich sein Wert im Laufe der Zeit verändert hat.",
   "homeChangePillsHintDismiss": "Verstanden",
   "homeAddStackHint": "Tippe auf einen Stack, um einen weiteren hinzuzufügen.",

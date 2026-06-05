@@ -514,7 +514,11 @@
 
   "homeAddStack": "Add stack",
   "@homeAddStack": {
-    "description": "Label of the Add stack shortcut button on the home screen."
+    "description": "Terse 'Add stack' action label used in the per-stack overflow menu and the new-stack flow's confirm button. The standalone empty-state button uses the more natural homeAddAStack instead."
+  },
+  "homeAddAStack": "Add a stack",
+  "@homeAddAStack": {
+    "description": "Label of the large standalone button shown in the empty state (no stacks yet) that starts adding the first stack. Uses the article ('a stack') because as a full-width empty-state button it reads more naturally than the terse menu form."
   },
   "homeChangePillsHint": "Swipe the stack to the right to see how its value has changed over time.",
   "@homeChangePillsHint": {

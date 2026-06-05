@@ -157,6 +157,7 @@
   "totalCardName": "Итог",
 
   "homeAddStack": "Добавить Stack",
+  "homeAddAStack": "Добавить Stack",
   "homeChangePillsHint": "Проведите по стеку вправо, чтобы увидеть, как менялась его стоимость со временем.",
   "homeChangePillsHintDismiss": "Понятно",
   "homeAddStackHint": "Нажмите на стек, чтобы добавить ещё один.",

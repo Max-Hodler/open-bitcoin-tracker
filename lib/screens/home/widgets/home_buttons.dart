@@ -72,7 +72,7 @@ class AddStackButton extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return HomeButton(
       icon: Icon(Icons.add, size: 22, color: cs.onSurface.withValues(alpha: 0.85)),
-      label: AppLocalizations.of(context).homeAddStack,
+      label: AppLocalizations.of(context).homeAddAStack,
       onTap: onTap,
     );
   }

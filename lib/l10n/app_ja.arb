@@ -157,6 +157,7 @@
   "totalCardName": "合計",
 
   "homeAddStack": "Stack を追加",
+  "homeAddAStack": "Stack を追加",
   "homeChangePillsHint": "スタックを右にスワイプすると、価値の推移を確認できます。",
   "homeChangePillsHintDismiss": "OK",
   "homeAddStackHint": "スタックをタップすると、別のスタックを追加できます。",
