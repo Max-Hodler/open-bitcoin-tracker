@@ -240,7 +240,15 @@
   "@settingsReorderStacks": {
     "description": "Row label inside the Stacks settings group that opens the stack-reorder sub-screen. Used as the AppBar title of that sub-screen as well. Disabled when the user has no stacks yet."
   },
-  "settingsChart": "Display chart",
+  "settingsPriceTickerSection": "Price ticker",
+  "@settingsPriceTickerSection": {
+    "description": "Section header above the price-ticker settings group (currencies + update cadence)."
+  },
+  "settingsChartSection": "Chart",
+  "@settingsChartSection": {
+    "description": "Section header above the chart settings group (display toggle + scale)."
+  },
+  "settingsChart": "Display",
   "@settingsChart": {
     "description": "Settings toggle: show or hide the price-history chart on home."
   },

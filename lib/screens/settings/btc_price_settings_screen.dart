@@ -44,6 +44,7 @@ class BtcPriceSettingsScreen extends StatelessWidget {
             AppSpacing.xl * 2,
           ),
           children: [
+            _SectionHeader(label: l10n.settingsPriceTickerSection),
             SettingsGroup(
               children: [
                 SettingsPickerTile(
@@ -60,7 +61,8 @@ class BtcPriceSettingsScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.lg),
+            _SectionHeader(label: l10n.settingsChartSection),
             SettingsGroup(
               children: [
                 SettingsToggleTile(
@@ -150,4 +152,26 @@ Future<LivePriceCadence?> _showLivePriceCadencePicker(
       );
     },
   );
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, bottom: AppSpacing.sm),
+      child: Text(
+        label,
+        style: AppTypography.body.copyWith(
+          fontSize: 16,
+          color: cs.onSurfaceVariant,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
 }
