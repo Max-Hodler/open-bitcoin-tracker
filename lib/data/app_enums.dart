@@ -285,7 +285,7 @@ enum ChartHeight {
     for (final h in ChartHeight.values) {
       if (h.code == code) return h;
     }
-    return ChartHeight.normal;
+    return ChartHeight.tall;
   }
 }
 
