@@ -103,7 +103,6 @@
   "livePriceCadenceLive": "リアルタイム",
   "livePriceCadence5s": "5秒ごと",
   "livePriceCadence15s": "15秒ごと",
-  "livePriceCadenceOffLabel": "自動更新なし",
   "settingsLockStacks": "Stacks をロック",
   "settingsAuthType": "認証タイプ",
   "settingsTurnOffLock": "ロックをオフにする",

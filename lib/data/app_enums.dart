@@ -239,14 +239,12 @@ enum LanguagePref {
 enum LivePriceCadence {
   live('live', null),
   s5('5s', Duration(seconds: 5)),
-  s15('15s', Duration(seconds: 15)),
-  off('off', null);
+  s15('15s', Duration(seconds: 15));
 
   const LivePriceCadence(this.code, this.minInterval);
 
   final String code;
-  // null for `live` (no minimum) and for `off` (notifications suppressed
-  // entirely — the gate runs before any interval check).
+  // null for `live` (no minimum repaint interval).
   final Duration? minInterval;
 
   static LivePriceCadence fromCode(String? code) {

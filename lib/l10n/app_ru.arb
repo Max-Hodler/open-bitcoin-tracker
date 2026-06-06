@@ -103,7 +103,6 @@
   "livePriceCadenceLive": "В реальном времени",
   "livePriceCadence5s": "Каждые 5 секунд",
   "livePriceCadence15s": "Каждые 15 секунд",
-  "livePriceCadenceOffLabel": "Без автообновления",
   "settingsLockStacks": "Блокировать Stacks",
   "settingsAuthType": "Тип аутентификации",
   "settingsTurnOffLock": "Отключить блокировку",

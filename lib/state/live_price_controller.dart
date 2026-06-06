@@ -118,23 +118,14 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
   DateTime? get lastFetchedAt => _lastFetchedAt;
   LivePriceCadence get cadence => _cadence;
 
-  /// Update the throttle policy. Off → suppresses repaints entirely (the WS
-  /// keeps streaming so `_rates` stays current and currency-swipe is instant).
-  /// Switching from a slower cadence to a faster one fires one repaint
-  /// immediately so the UI catches up rather than waiting for the next tick.
+  /// Update the throttle policy. Switching from a slower cadence to a faster
+  /// one fires one repaint immediately so the UI catches up rather than
+  /// waiting for the next tick.
   set cadence(LivePriceCadence value) {
     if (_cadence == value) return;
-    final wasOff = _cadence == LivePriceCadence.off;
     _cadence = value;
     _throttler.interval = value.minInterval;
     _throttler.cancelPending();
-    if (value != LivePriceCadence.off && wasOff) {
-      // Coming back from "off": flush the cached rate so the price card
-      // reflects whatever ticks landed while we were silent. Mark the
-      // throttler as just-fired so the next tick waits a full interval.
-      _throttler.markFired();
-      notifyListeners();
-    }
   }
 
   /// Debug-only: freeze the displayed price. While on, WS ticks are dropped
@@ -345,13 +336,10 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
     _maybeNotify();
   }
 
-  // Cadence gate. "Off" suppresses notifications; the rate is still cached
-  // and stream-fresh, so resuming a non-off cadence shows up-to-date data.
-  // Throttled cadences delegate to [_throttler], which handles the immediate-
-  // vs-deferred decision and coalesces ticks suppressed by the gate.
+  // Cadence gate. Throttled cadences delegate to [_throttler], which handles
+  // the immediate-vs-deferred decision and coalesces suppressed ticks.
   void _maybeNotify() {
     if (_disposed) return;
-    if (_cadence == LivePriceCadence.off) return;
     _throttler.request();
   }
 

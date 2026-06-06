@@ -103,7 +103,6 @@
   "livePriceCadenceLive": "Live",
   "livePriceCadence5s": "Alle 5 Sekunden",
   "livePriceCadence15s": "Alle 15 Sekunden",
-  "livePriceCadenceOffLabel": "Keine automatischen Updates",
   "settingsLockStacks": "Stacks sperren",
   "settingsAuthType": "Authentifizierungstyp",
   "settingsTurnOffLock": "Sperre ausschalten",

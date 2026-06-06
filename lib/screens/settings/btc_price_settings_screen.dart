@@ -107,8 +107,6 @@ String _livePriceCadenceLabel(AppLocalizations l10n, LivePriceCadence c) {
       return l10n.livePriceCadence5s;
     case LivePriceCadence.s15:
       return l10n.livePriceCadence15s;
-    case LivePriceCadence.off:
-      return l10n.livePriceCadenceOffLabel;
   }
 }
 

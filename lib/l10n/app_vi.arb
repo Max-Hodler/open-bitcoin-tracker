@@ -103,7 +103,6 @@
   "livePriceCadenceLive": "Trực tiếp",
   "livePriceCadence5s": "Mỗi 5 giây",
   "livePriceCadence15s": "Mỗi 15 giây",
-  "livePriceCadenceOffLabel": "Không tự động cập nhật",
   "settingsLockStacks": "Khóa Stacks",
   "settingsAuthType": "Loại xác thực",
   "settingsTurnOffLock": "Tắt khóa",

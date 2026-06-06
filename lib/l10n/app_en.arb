@@ -320,10 +320,6 @@
   "@livePriceCadence15s": {
     "description": "Cadence option: throttle the price card to repaint at most every 15 seconds."
   },
-  "livePriceCadenceOffLabel": "No auto updates",
-  "@livePriceCadenceOffLabel": {
-    "description": "Cadence picker option: don't repaint the price card from live ticks. Cached value still shown. Phrased descriptively so users understand the consequence."
-  },
   "settingsLockStacks": "Lock stacks",
   "@settingsLockStacks": {
     "description": "Section header above the stack lock controls (auth type, relock timeout, change/reset PIN) on the Stacks settings screen."
