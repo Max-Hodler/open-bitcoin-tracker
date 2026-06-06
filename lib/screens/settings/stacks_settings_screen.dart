@@ -49,6 +49,19 @@ class StacksSettingsScreen extends StatelessWidget {
           children: [
             SettingsGroup(
               children: [
+                SettingsSegmentedTile(
+                  label: l10n.settingsBitcoinDisplayMode,
+                  options: [
+                    l10n.bitcoinDisplayModeSats,
+                    l10n.bitcoinDisplayModeBtc,
+                  ],
+                  selectedIndex:
+                      app.bitcoinDisplayMode == BtcDisplayMode.btc ? 1 : 0,
+                  enabled: true,
+                  onChanged: (i) => app.setBitcoinDisplayMode(
+                    i == 1 ? BtcDisplayMode.btc : BtcDisplayMode.sats,
+                  ),
+                ),
                 SettingsPickerTile(
                   label: l10n.settingsLockStacks,
                   value: authModeLabel(l10n, app.stacksAuthMode),
