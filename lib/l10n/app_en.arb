@@ -528,7 +528,7 @@
   "@homeAddAStack": {
     "description": "Label of the large standalone button shown in the empty state (no stacks yet) that starts adding the first stack. Uses the article ('a stack') because as a full-width empty-state button it reads more naturally than the terse menu form."
   },
-  "homeChangePillsHint": "Swipe the stack to the right to see how its value has changed over time.",
+  "homeChangePillsHint": "Swipe a stack to the right to see how its value has changed over time.",
   "@homeChangePillsHint": {
     "description": "One-time hint shown below the stack list on home, explaining that swiping a stack card aside reveals the range/change pills with its past prices. Dismissed permanently with the adjacent button."
   },

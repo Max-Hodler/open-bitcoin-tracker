@@ -160,7 +160,7 @@
 
   "homeAddStack": "Ajouter un Stack",
   "homeAddAStack": "Ajouter un Stack",
-  "homeChangePillsHint": "Balayez le stack vers la droite pour voir l'évolution de sa valeur dans le temps.",
+  "homeChangePillsHint": "Balayez un stack vers la droite pour voir l'évolution de sa valeur dans le temps.",
   "homeChangePillsHintDismiss": "Compris",
   "homeAddStackHint": "Touchez un stack pour en ajouter un autre.",
   "homeConverter": "Convertisseur",
