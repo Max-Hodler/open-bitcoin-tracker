@@ -266,15 +266,15 @@
   },
   "settingsChartHeight": "Height",
   "@settingsChartHeight": {
-    "description": "Settings row label for the compact/normal/tall chart height segmented control."
+    "description": "Settings row label for the compact/medium/tall chart height segmented control."
   },
   "settingsChartHeightCompact": "Compact",
   "@settingsChartHeightCompact": {
     "description": "Compact chart height segment label."
   },
-  "settingsChartHeightNormal": "Normal",
+  "settingsChartHeightNormal": "Medium",
   "@settingsChartHeightNormal": {
-    "description": "Normal (default) chart height segment label."
+    "description": "Medium (default) chart height segment label."
   },
   "settingsChartHeightTall": "Tall",
   "@settingsChartHeightTall": {
