@@ -20,8 +20,6 @@ import 'settings/widgets_settings_screen.dart';
 // file without caring how the package is laid out internally.
 export 'settings/btc_price_settings_screen.dart' show BtcPriceSettingsScreen;
 export 'settings/currency_picker_screen.dart' show CurrencyPickerScreen;
-export 'settings/lock_stacks_settings_screen.dart'
-    show LockStacksSettingsScreen;
 export 'settings/stacks_settings_screen.dart' show StacksSettingsScreen;
 export 'settings/theme_settings_screen.dart' show ThemeSettingsScreen;
 export 'settings/widgets_settings_screen.dart' show WidgetsSettingsScreen;
