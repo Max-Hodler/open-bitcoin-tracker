@@ -50,7 +50,7 @@ class _AboutScreenState extends State<AboutScreen> {
         leading: BackButton(color: cs.onSurfaceVariant),
         centerTitle: true,
         title: Text(
-          l10n.aboutAppName,
+          l10n.settingsAbout,
           style: AppTypography.title.copyWith(
             color: cs.onSurfaceVariant,
             fontWeight: FontWeight.w500,
@@ -66,6 +66,17 @@ class _AboutScreenState extends State<AboutScreen> {
             AppSpacing.xl,
           ),
           children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+              child: Text(
+                l10n.aboutAppName,
+                textAlign: TextAlign.center,
+                style: AppTypography.title.copyWith(
+                  color: cs.onSurface,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
             _SectionHeader(label: l10n.aboutSectionLinks),
             SettingsGroup(
               children: [
