@@ -218,6 +218,7 @@
   "mempoolBlockEta": "約{minutes}分",
   "mempoolError": "ネットワーク情報を読み込めませんでした",
 
+  "mempoolWidgetTitle": "Mempool",
   "hashrateWidgetTitle": "Hashrate",
   "hashrateUnit": "EH/s",
   "hashrateError": "hashrate を読み込めませんでした",

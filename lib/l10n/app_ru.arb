@@ -218,6 +218,7 @@
   "mempoolBlockEta": "~{minutes} мин",
   "mempoolError": "Не удалось загрузить данные сети",
 
+  "mempoolWidgetTitle": "Mempool",
   "hashrateWidgetTitle": "Hashrate",
   "hashrateUnit": "EH/s",
   "hashrateError": "Не удалось загрузить hashrate",

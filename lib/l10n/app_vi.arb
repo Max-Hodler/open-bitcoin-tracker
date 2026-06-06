@@ -218,6 +218,7 @@
   "mempoolBlockEta": "~{minutes} phút",
   "mempoolError": "Không thể tải dữ liệu mạng",
 
+  "mempoolWidgetTitle": "Mempool",
   "hashrateWidgetTitle": "Hashrate",
   "hashrateUnit": "EH/s",
   "hashrateError": "Không thể tải hashrate",

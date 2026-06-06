@@ -218,6 +218,7 @@
   "mempoolBlockEta": "~{minutes} dk",
   "mempoolError": "Ağ verileri yüklenemedi",
 
+  "mempoolWidgetTitle": "Mempool",
   "hashrateWidgetTitle": "Hashrate",
   "hashrateUnit": "EH/s",
   "hashrateError": "Hashrate yüklenemedi",

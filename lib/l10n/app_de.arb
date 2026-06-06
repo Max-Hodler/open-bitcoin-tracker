@@ -218,6 +218,7 @@
   "mempoolBlockEta": "~{minutes} min",
   "mempoolError": "Netzwerkdaten konnten nicht geladen werden",
 
+  "mempoolWidgetTitle": "Mempool",
   "hashrateWidgetTitle": "Hashrate",
   "hashrateUnit": "EH/s",
   "hashrateError": "Hashrate konnte nicht geladen werden",
