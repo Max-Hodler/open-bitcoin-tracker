@@ -15,9 +15,11 @@ class StackAvatar extends StatelessWidget {
     required this.name,
     this.imageData,
     this.colorKey,
-    this.size = 48,
+    this.size = defaultSize,
     this.onTap,
   });
+
+  static const double defaultSize = 48;
 
   final String name;
   // Raw base64 JPEG bytes, or null to render the initial-letter fallback.

@@ -83,47 +83,12 @@ class StackCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Row(
-                      children: [
-                        // BTC keeps its Expanded share so the fiat value stays
-                        // pinned to the right. When the figure is too large to
-                        // fit that share, the FittedBox scales it down rather
-                        // than truncating with an ellipsis. centerLeft keeps it
-                        // left-aligned within its slot.
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                formatBtcAmount(
-                                  sats,
-                                  hidden: isHidden,
-                                  mode: bitcoinDisplayMode,
-                                ),
-                                maxLines: 1,
-                                style: AppTypography.body.copyWith(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: -0.3,
-                                  color: cs.onSurface.withValues(alpha: 0.85),
-                                  fontFeatures: const [
-                                    FontFeature.tabularFigures()
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.sm),
-                        _FiatValue(
-                          sats: sats,
-                          currency: currency,
-                          btcRate: btcRate,
-                          isHidden: isHidden,
-                        ),
-                      ],
+                    _AmountsRow(
+                      sats: sats,
+                      currency: currency,
+                      btcRate: btcRate,
+                      bitcoinDisplayMode: bitcoinDisplayMode,
+                      isHidden: isHidden,
                     ),
                   ],
                 ),
@@ -136,24 +101,27 @@ class StackCard extends StatelessWidget {
   }
 }
 
-class _FiatValue extends StatelessWidget {
-  const _FiatValue({
+class _AmountsRow extends StatelessWidget {
+  const _AmountsRow({
     required this.sats,
     required this.currency,
     required this.btcRate,
+    required this.bitcoinDisplayMode,
     required this.isHidden,
   });
 
   final int sats;
   final Currency currency;
   final double? btcRate;
+  final BtcDisplayMode bitcoinDisplayMode;
   final bool isHidden;
+
+  static const _gap = AppSpacing.sm;
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final symbol = currencySymbols[currency] ?? r'$';
-    final style = AppTypography.body.copyWith(
+    final amountStyle = AppTypography.body.copyWith(
       fontSize: 16,
       fontWeight: FontWeight.w400,
       letterSpacing: -0.3,
@@ -161,13 +129,62 @@ class _FiatValue extends StatelessWidget {
       fontFeatures: const [FontFeature.tabularFigures()],
     );
 
-    if (isHidden) {
-      final hidden = symbolAfterAmount ? '**** $symbol' : '$symbol ****';
-      return Text(hidden, style: style);
+    final btc = Text(btcStr, maxLines: 1, style: amountStyle);
+    final fiat = Text(fiatStr, maxLines: 1, style: amountStyle);
+
+    // A LayoutBuilder would give us the exact slot width, but StackCard renders
+    // inside intrinsic-sizing ancestors (the swipe row) that probe it for
+    // intrinsic height, which LayoutBuilder forbids. So measure against the
+    // text column's width derived from the screen instead.
+    final scaler = MediaQuery.textScalerOf(context);
+    final fitsOnOneLine = _width(btcStr, amountStyle, scaler) +
+            _gap +
+            _width(fiatStr, amountStyle, scaler) <=
+        _columnWidth(context);
+
+    // Side by side with the fiat value right-aligned while both fit; once a
+    // large system font makes them overflow, stack them so each can grow.
+    if (fitsOnOneLine) {
+      return Row(
+        children: [
+          Expanded(child: btc),
+          const SizedBox(width: _gap),
+          fiat,
+        ],
+      );
     }
-    final rate = btcRate ?? 0;
-    final value = Sats.toFiat(sats, rate);
-    final formatted = formatFiat(value, currency, decimalsUnder10: true);
-    return Text(formatted.full, style: style);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [btc, fiat],
+    );
   }
+
+  // Width of the text column to the right of the avatar: screen width minus the
+  // card's horizontal padding (md per side), the avatar, and the avatar→text
+  // gap (md). Mirrors the layout in StackCard.build.
+  double _columnWidth(BuildContext context) =>
+      MediaQuery.sizeOf(context).width -
+      AppSpacing.md * 3 -
+      StackAvatar.defaultSize;
+
+  String get btcStr =>
+      formatBtcAmount(sats, hidden: isHidden, mode: bitcoinDisplayMode);
+
+  String get fiatStr {
+    if (isHidden) {
+      final symbol = currencySymbols[currency] ?? r'$';
+      return symbolAfterAmount ? '**** $symbol' : '$symbol ****';
+    }
+    final value = Sats.toFiat(sats, btcRate ?? 0);
+    return formatFiat(value, currency, decimalsUnder10: true).full;
+  }
+
+  static double _width(String text, TextStyle style, TextScaler scaler) =>
+      (TextPainter(
+        text: TextSpan(text: text, style: style),
+        textDirection: TextDirection.ltr,
+        textScaler: scaler,
+      )..layout())
+          .width;
 }
+
