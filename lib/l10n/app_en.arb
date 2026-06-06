@@ -155,7 +155,7 @@
   "@settingsAbout": {
     "description": "Settings row label that opens the About screen."
   },
-  "settingsWidgets": "Widgets",
+  "settingsWidgets": "Mempool & Hashrate",
   "@settingsWidgets": {
     "description": "Settings row label that opens the Widgets sub-screen (mempool, hashrate, reorder home widgets)."
   },
@@ -232,9 +232,9 @@
   "@settingsBtcPriceTitle": {
     "description": "AppBar title of the BTC price settings sub-screen (groups the currency picker, cadence picker, chart toggle, and scale segmented control)."
   },
-  "settingsReorderWidgets": "Reorder widgets",
+  "settingsReorderWidgets": "Display order",
   "@settingsReorderWidgets": {
-    "description": "Display-group row label that opens the home-widget reorder sub-screen. Used as the AppBar title of that sub-screen as well."
+    "description": "Section title above the drag-to-reorder list of home widgets (stacks, mempool, hashrate) on the Mempool & Hashrate settings screen."
   },
   "settingsReorderStacks": "Reorder stacks",
   "@settingsReorderStacks": {

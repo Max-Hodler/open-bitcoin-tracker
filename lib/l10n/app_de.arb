@@ -61,7 +61,7 @@
 
   "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "Über",
-  "settingsWidgets": "Widgets",
+  "settingsWidgets": "Mempool & Hashrate",
 
   "aboutAppName": "Open Bitcoin Tracker",
   "aboutVersion": "Version {version}",
@@ -81,7 +81,7 @@
   "settingsCurrencies": "Währungen",
   "settingsBtcPrice": "BTC-Preis",
   "settingsBtcPriceTitle": "BTC-Preis",
-  "settingsReorderWidgets": "Widgets sortieren",
+  "settingsReorderWidgets": "Anzeigereihenfolge",
   "settingsReorderStacks": "Stacks sortieren",
   "settingsPriceTickerSection": "Kursticker",
   "settingsChartSection": "Diagramm",
