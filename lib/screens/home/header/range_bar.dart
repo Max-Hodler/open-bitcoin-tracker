@@ -104,69 +104,86 @@ class RangeBar extends StatelessWidget {
       height: 20 + chipHeight,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final innerMinWidth = constraints.maxWidth - horizontalPadding * 2;
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
+          final innerWidth = constraints.maxWidth - horizontalPadding * 2;
+          return Padding(
             padding: const EdgeInsets.fromLTRB(
               horizontalPadding, 20, horizontalPadding, 0,
             ),
-            physics: const ClampingScrollPhysics(),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minWidth: innerMinWidth),
+            child: SizedBox(
+              width: innerWidth,
               child: Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   for (final r in _leadingQuickRanges)
-                    _RangeChipWithPct(
-                      label: _btcRangeLabel(context, r),
-                      selected: r == range,
-                      onTap: () => onRange(r),
-                      rangePct: r == range ? rangePct : null,
-                      chartColor: chartColor,
-                      minLabelWidth: labelWidth(_btcRangeLabel(context, r)),
+                    Expanded(
+                      child: Center(
+                        child: _RangeChipWithPct(
+                          label: _btcRangeLabel(context, r),
+                          selected: r == range,
+                          onTap: () => onRange(r),
+                          rangePct: r == range ? rangePct : null,
+                          chartColor: chartColor,
+                          minLabelWidth: labelWidth(_btcRangeLabel(context, r)),
+                        ),
+                      ),
                     ),
-                  _RangeChipWithPct(
-                    label: _btcRangeLabel(context, monthsOverflowSlot),
-                    selected: range == monthsOverflowSlot,
-                    onTap: () => onRange(monthsOverflowSlot),
-                    onLongPress: () => _showMonthsOverflowSlotPicker(context),
-                    onSwipeUp: () => _stepMonthsOverflowSlot(context, 1),
-                    onSwipeDown: () => _stepMonthsOverflowSlot(context, -1),
-                    rangePct: range == monthsOverflowSlot ? rangePct : null,
-                    chartColor: chartColor,
-                    showChevron: true,
-                    minLabelWidth: monthsOverflowLabelWidth,
+                  Expanded(
+                    child: Center(
+                      child: _RangeChipWithPct(
+                        label: _btcRangeLabel(context, monthsOverflowSlot),
+                        selected: range == monthsOverflowSlot,
+                        onTap: () => onRange(monthsOverflowSlot),
+                        onLongPress: () => _showMonthsOverflowSlotPicker(context),
+                        onSwipeUp: () => _stepMonthsOverflowSlot(context, 1),
+                        onSwipeDown: () => _stepMonthsOverflowSlot(context, -1),
+                        rangePct: range == monthsOverflowSlot ? rangePct : null,
+                        chartColor: chartColor,
+                        showChevron: true,
+                        minLabelWidth: monthsOverflowLabelWidth,
+                      ),
+                    ),
                   ),
-                  _RangeChipWithPct(
-                    label: _btcRangeLabel(context, BtcRange.ytd),
-                    selected: range == BtcRange.ytd,
-                    onTap: () => onRange(BtcRange.ytd),
-                    rangePct: range == BtcRange.ytd ? rangePct : null,
-                    chartColor: chartColor,
-                    minLabelWidth:
-                        labelWidth(_btcRangeLabel(context, BtcRange.ytd)),
+                  Expanded(
+                    child: Center(
+                      child: _RangeChipWithPct(
+                        label: _btcRangeLabel(context, BtcRange.ytd),
+                        selected: range == BtcRange.ytd,
+                        onTap: () => onRange(BtcRange.ytd),
+                        rangePct: range == BtcRange.ytd ? rangePct : null,
+                        chartColor: chartColor,
+                        minLabelWidth:
+                            labelWidth(_btcRangeLabel(context, BtcRange.ytd)),
+                      ),
+                    ),
                   ),
-                  _RangeChipWithPct(
-                    label: _btcRangeLabel(context, overflowSlot),
-                    selected: range == overflowSlot,
-                    onTap: () => onRange(overflowSlot),
-                    onLongPress: () => _showOverflowSlotPicker(context),
-                    onSwipeUp: () => _stepOverflowSlot(context, 1),
-                    onSwipeDown: () => _stepOverflowSlot(context, -1),
-                    rangePct: range == overflowSlot ? rangePct : null,
-                    chartColor: chartColor,
-                    showChevron: true,
-                    minLabelWidth: overflowLabelWidth,
+                  Expanded(
+                    child: Center(
+                      child: _RangeChipWithPct(
+                        label: _btcRangeLabel(context, overflowSlot),
+                        selected: range == overflowSlot,
+                        onTap: () => onRange(overflowSlot),
+                        onLongPress: () => _showOverflowSlotPicker(context),
+                        onSwipeUp: () => _stepOverflowSlot(context, 1),
+                        onSwipeDown: () => _stepOverflowSlot(context, -1),
+                        rangePct: range == overflowSlot ? rangePct : null,
+                        chartColor: chartColor,
+                        showChevron: true,
+                        minLabelWidth: overflowLabelWidth,
+                      ),
+                    ),
                   ),
-                  _RangeChipWithPct(
-                    label: _btcRangeLabel(context, BtcRange.all),
-                    selected: range == BtcRange.all,
-                    onTap: () => onRange(BtcRange.all),
-                    rangePct: range == BtcRange.all ? rangePct : null,
-                    chartColor: chartColor,
-                    minLabelWidth:
-                        labelWidth(_btcRangeLabel(context, BtcRange.all)),
+                  Expanded(
+                    child: Center(
+                      child: _RangeChipWithPct(
+                        label: _btcRangeLabel(context, BtcRange.all),
+                        selected: range == BtcRange.all,
+                        onTap: () => onRange(BtcRange.all),
+                        rangePct: range == BtcRange.all ? rangePct : null,
+                        chartColor: chartColor,
+                        minLabelWidth:
+                            labelWidth(_btcRangeLabel(context, BtcRange.all)),
+                      ),
+                    ),
                   ),
                 ],
               ),
