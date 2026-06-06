@@ -248,21 +248,28 @@ class _NewStackNameScreenState extends State<NewStackNameScreen> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.md,
-            AppSpacing.xl,
+            AppSpacing.md,
             AppSpacing.md,
             AppSpacing.md,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              StackNameField(
-                controller: _controller,
-                focusNode: _focusNode,
-                onSubmitted: (_) => _submit(),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    StackNameField(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      onSubmitted: (_) => _submit(),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    StackNameLimitLabel(visible: _atLimit),
+                  ],
+                ),
               ),
-              const SizedBox(height: AppSpacing.sm),
-              StackNameLimitLabel(visible: _atLimit),
-              const SizedBox(height: AppSpacing.lg),
               StackNameConfirmButton(
                 isValid: _isValid,
                 onTap: _submit,

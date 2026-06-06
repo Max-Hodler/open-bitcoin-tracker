@@ -106,9 +106,7 @@ class SatsInputScaffold extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.fromLTRB(
             AppSpacing.md,
-            // Lift the mode tabs up when a header is present; the plain
-            // new-stack flow keeps its taller breathing room above the display.
-            header != null ? AppSpacing.sm : AppSpacing.xl,
+            header != null ? AppSpacing.sm : AppSpacing.md,
             AppSpacing.md,
             AppSpacing.md,
           ),
@@ -119,24 +117,31 @@ class SatsInputScaffold extends StatelessWidget {
                 header!,
                 const SizedBox(height: AppSpacing.lg),
               ],
-              SatsInputDisplay(
-                input: input,
-                caret: caret,
-                mode: mode,
-                onLongPressAt: onInputLongPressAt,
-                onCaretAt: onCaretAt,
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SatsInputDisplay(
+                      input: input,
+                      caret: caret,
+                      mode: mode,
+                      onLongPressAt: onInputLongPressAt,
+                      onCaretAt: onCaretAt,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    SatsFiatLabel(
+                      input: input,
+                      mode: mode,
+                      showUnitHint: showUnitHint,
+                    ),
+                    if (subHeader != null) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      subHeader!,
+                    ],
+                  ],
+                ),
               ),
-              const SizedBox(height: AppSpacing.sm),
-              SatsFiatLabel(
-                input: input,
-                mode: mode,
-                showUnitHint: showUnitHint,
-              ),
-              if (subHeader != null) ...[
-                const SizedBox(height: AppSpacing.md),
-                subHeader!,
-              ],
-              const Spacer(),
               Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.lg),
                 child: Opacity(

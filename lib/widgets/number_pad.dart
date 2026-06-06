@@ -9,8 +9,8 @@ Key numberPadKey(String label) => ValueKey('keypad-$label');
 // Vertical sizing for keypad keys. Key width follows the grid (third of the
 // available width minus gaps); height is the same as width, clamped to keep
 // short phones tappable (min) and tall phones from looking like a tabloid (max).
-const double _kMinKeyHeight = 56;
-const double _kMaxKeyHeight = 80;
+const double _kMinKeyHeight = 46;
+const double _kMaxKeyHeight = 66;
 // Height of the confirm/check button that sits below the grid.
 const double _kConfirmButtonHeight = 64;
 
@@ -51,6 +51,14 @@ class NumberPad extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        if (showConfirm) ...[
+          _ConfirmButton(
+            isValid: isValid,
+            onTap: onEnter,
+            label: confirmLabel,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+        ],
         _Grid(
           onInput: onInput,
           onDelete: onDelete,
@@ -61,14 +69,6 @@ class NumberPad extends StatelessWidget {
           onZeroBlocked: onZeroBlocked,
           isEmpty: isEmpty,
         ),
-        if (showConfirm) ...[
-          const SizedBox(height: AppSpacing.sm),
-          _ConfirmButton(
-            isValid: isValid,
-            onTap: onEnter,
-            label: confirmLabel,
-          ),
-        ],
       ],
     );
   }
