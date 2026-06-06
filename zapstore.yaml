@@ -1,4 +1,5 @@
 repository: https://github.com/Max-Hodler/open-bitcoin-tracker
+pubkey: npub1h77ymedug8wrss70h7h9wzmhyj3wx4lhdne5q6kej4uc88u5jucq9pek75
 
 name: Open Bitcoin Tracker
 summary: A private, open-source value tracker for your bitcoin stacks
@@ -24,6 +25,13 @@ tags:
   - nostr
 
 icon: ./assets/icon/app_icon.png
+
+images:
+  - ./assets/App-Stores/Store-Image-1.png
+  - ./assets/App-Stores/Store-Image-2.png
+  - ./assets/App-Stores/Store-Image-3.png
+  - ./assets/App-Stores/Store-Image-4.png
+  - ./assets/App-Stores/Store-Image-5.png
 
 metadata_sources:
   - github

@@ -59,3 +59,6 @@ app.*.map.json
 CLAUDE.md
 /lib/l10n/TRANSLATING.md
 
+
+# Local store assets
+assets/App-Stores/
