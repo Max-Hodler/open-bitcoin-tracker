@@ -12,6 +12,7 @@ class AppState {
     this.mempoolBlocksReversed = false,
     this.showHashrate = false,
     this.showChart = true,
+    this.chartHeight = ChartHeight.normal,
     this.theme = AppTheme.system,
     this.darkVariant = DarkVariant.blue,
     this.lightVariant = LightVariant.cream,
@@ -58,6 +59,7 @@ class AppState {
   final bool mempoolBlocksReversed;
   final bool showHashrate;
   final bool showChart;
+  final ChartHeight chartHeight;
   final AppTheme theme;
   // Which dark palette to apply when the active brightness is dark. Ignored
   // when the resolved theme is light.
@@ -133,6 +135,7 @@ class AppState {
     bool? mempoolBlocksReversed,
     bool? showHashrate,
     bool? showChart,
+    ChartHeight? chartHeight,
     AppTheme? theme,
     DarkVariant? darkVariant,
     LightVariant? lightVariant,
@@ -171,6 +174,7 @@ class AppState {
           mempoolBlocksReversed ?? this.mempoolBlocksReversed,
       showHashrate: showHashrate ?? this.showHashrate,
       showChart: showChart ?? this.showChart,
+      chartHeight: chartHeight ?? this.chartHeight,
       theme: theme ?? this.theme,
       darkVariant: darkVariant ?? this.darkVariant,
       lightVariant: lightVariant ?? this.lightVariant,
@@ -217,6 +221,7 @@ class AppState {
         'mempoolBlocksReversed': mempoolBlocksReversed,
         'showHashrate': showHashrate,
         'showChart': showChart,
+        'chartHeight': chartHeight.code,
         'theme': theme.code,
         'darkVariant': darkVariant.code,
         'lightVariant': lightVariant.code,
@@ -273,6 +278,7 @@ class AppState {
       mempoolBlocksReversed: json['mempoolBlocksReversed'] as bool? ?? false,
       showHashrate: json['showHashrate'] as bool? ?? false,
       showChart: json['showChart'] as bool? ?? true,
+      chartHeight: ChartHeight.fromCode(json['chartHeight'] as String?),
       theme: fromCode('theme', AppTheme.fromCode),
       darkVariant: fromCode('darkVariant', DarkVariant.fromCode),
       lightVariant: fromCode('lightVariant', LightVariant.fromCode),

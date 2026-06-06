@@ -145,6 +145,7 @@ class _HomeHeaderState extends State<HomeHeader> {
   @override
   Widget build(BuildContext context) {
     final logScale = context.select<AppStateNotifier, bool>((a) => a.logScale);
+    final chartHeight = context.select<AppStateNotifier, ChartHeight>((a) => a.chartHeight);
     final showButtons = widget.onOpenSettings != null;
     final buttonsRow = !showButtons
         ? null
@@ -196,7 +197,11 @@ class _HomeHeaderState extends State<HomeHeader> {
         if (widget.showChart) ...[
           const SizedBox(height: AppSpacing.md),
           SizedBox(
-            height: 136,
+            height: switch (chartHeight) {
+              ChartHeight.compact => 91,
+              ChartHeight.normal => 136,
+              ChartHeight.tall => 272,
+            },
             child: _buildChartArea(context, logScale: logScale),
           ),
           RangeBar(

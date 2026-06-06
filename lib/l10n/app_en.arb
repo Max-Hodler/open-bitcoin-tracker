@@ -264,6 +264,22 @@
   "@settingsScaleLog": {
     "description": "Logarithmic chart scale segment label."
   },
+  "settingsChartHeight": "Height",
+  "@settingsChartHeight": {
+    "description": "Settings row label for the compact/normal/tall chart height segmented control."
+  },
+  "settingsChartHeightCompact": "Compact",
+  "@settingsChartHeightCompact": {
+    "description": "Compact chart height segment label."
+  },
+  "settingsChartHeightNormal": "Normal",
+  "@settingsChartHeightNormal": {
+    "description": "Normal (default) chart height segment label."
+  },
+  "settingsChartHeightTall": "Tall",
+  "@settingsChartHeightTall": {
+    "description": "Tall chart height segment label."
+  },
   "settingsPortfolioTotal": "Display total",
   "@settingsPortfolioTotal": {
     "description": "Stacks settings toggle that shows or hides the portfolio total card on home (only visible with 2+ stacks)."

@@ -65,6 +65,7 @@ class AppStateNotifier extends ChangeNotifier {
   bool get mempoolBlocksReversed => _state.mempoolBlocksReversed;
   bool get showHashrate => _state.showHashrate;
   bool get showChart => _state.showChart;
+  ChartHeight get chartHeight => _state.chartHeight;
   AppTheme get theme => _state.theme;
   DarkVariant get darkVariant => _state.darkVariant;
   LightVariant get lightVariant => _state.lightVariant;
@@ -171,6 +172,7 @@ class AppStateNotifier extends ChangeNotifier {
       _update((s) => s.copyWith(mempoolBlocksReversed: value));
   void setShowHashrate(bool value) => _update((s) => s.copyWith(showHashrate: value));
   void setShowChart(bool value) => _update((s) => s.copyWith(showChart: value));
+  void setChartHeight(ChartHeight value) => _update((s) => s.copyWith(chartHeight: value));
   void setTheme(AppTheme value) => _update((s) => s.copyWith(theme: value));
   void setDarkVariant(DarkVariant value) =>
       _update((s) => s.copyWith(darkVariant: value));

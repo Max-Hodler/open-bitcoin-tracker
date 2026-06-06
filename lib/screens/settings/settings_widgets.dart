@@ -245,16 +245,18 @@ class SettingsSegmentedTile extends StatelessWidget {
           horizontal: AppSpacing.md,
           vertical: 14,
         ),
-        child: Row(
+        child: Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: AppSpacing.md,
+          runSpacing: AppSpacing.sm,
           children: [
-            Expanded(
-              child: Text(
-                label,
-                style: AppTypography.body.copyWith(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: enabled ? cs.onSurface : cs.onSurfaceVariant,
-                ),
+            Text(
+              label,
+              style: AppTypography.body.copyWith(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: enabled ? cs.onSurface : cs.onSurfaceVariant,
               ),
             ),
             _Segments(

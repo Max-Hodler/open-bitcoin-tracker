@@ -273,6 +273,22 @@ enum StacksLockTimeout {
   }
 }
 
+enum ChartHeight {
+  compact('compact'),
+  normal('normal'),
+  tall('tall');
+
+  const ChartHeight(this.code);
+  final String code;
+
+  static ChartHeight fromCode(String? code) {
+    for (final h in ChartHeight.values) {
+      if (h.code == code) return h;
+    }
+    return ChartHeight.normal;
+  }
+}
+
 // Home-screen widgets that participate in user-defined ordering. The price
 // header / chart are structurally fixed and not represented here.
 enum HomeWidget {
