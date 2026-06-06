@@ -61,6 +61,7 @@
 
   "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "О приложении",
+  "settingsWidgets": "Виджеты",
 
   "aboutAppName": "Open Bitcoin Tracker",
   "aboutVersion": "Версия {version}",
@@ -88,10 +89,10 @@
   "settingsScaleLog": "Лог.",
   "settingsPortfolioTotal": "Показывать итог",
   "settingsMempoolWidget": "Mempool",
-  "settingsMempoolBlocksTitle": "Mempool",
   "settingsMempoolBlocksVisible": "Видим",
   "settingsMempoolBlocksReverseOrder": "Обратный порядок",
   "settingsHashrateWidget": "Hashrate",
+  "settingsHashrateVisible": "Видим",
   "settingsBitcoinDisplayMode": "Единица Bitcoin",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
@@ -211,7 +212,6 @@
   "currencyLabelJpy": "Японская иена",
 
   "stacksWidgetTitle": "Stacks",
-  "mempoolWidgetTitle": "Mempool",
   "mempoolUnit": "₿/vB",
   "mempoolBlockEta": "~{minutes} мин",
   "mempoolError": "Не удалось загрузить данные сети",

@@ -61,6 +61,7 @@
 
   "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "アプリについて",
+  "settingsWidgets": "ウィジェット",
 
   "aboutAppName": "Open Bitcoin Tracker",
   "aboutVersion": "バージョン {version}",
@@ -88,10 +89,10 @@
   "settingsScaleLog": "Log",
   "settingsPortfolioTotal": "合計を表示",
   "settingsMempoolWidget": "Mempool",
-  "settingsMempoolBlocksTitle": "Mempool",
   "settingsMempoolBlocksVisible": "表示",
   "settingsMempoolBlocksReverseOrder": "順序を反転",
   "settingsHashrateWidget": "Hashrate",
+  "settingsHashrateVisible": "表示",
   "settingsBitcoinDisplayMode": "ビットコインの単位",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
@@ -211,7 +212,6 @@
   "currencyLabelJpy": "日本円",
 
   "stacksWidgetTitle": "Stacks",
-  "mempoolWidgetTitle": "Mempool",
   "mempoolUnit": "₿/vB",
   "mempoolBlockEta": "約{minutes}分",
   "mempoolError": "ネットワーク情報を読み込めませんでした",

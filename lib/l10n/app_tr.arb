@@ -61,6 +61,7 @@
 
   "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "Hakkında",
+  "settingsWidgets": "Widget'lar",
 
   "aboutAppName": "Open Bitcoin Tracker",
   "aboutVersion": "Sürüm {version}",
@@ -88,10 +89,10 @@
   "settingsScaleLog": "Log",
   "settingsPortfolioTotal": "Toplamı göster",
   "settingsMempoolWidget": "Mempool",
-  "settingsMempoolBlocksTitle": "Mempool",
   "settingsMempoolBlocksVisible": "Görünür",
   "settingsMempoolBlocksReverseOrder": "Sırayı tersine çevir",
   "settingsHashrateWidget": "Hashrate",
+  "settingsHashrateVisible": "Görünür",
   "settingsBitcoinDisplayMode": "Bitcoin birimi",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
@@ -211,7 +212,6 @@
   "currencyLabelJpy": "Japon Yeni",
 
   "stacksWidgetTitle": "Stacks",
-  "mempoolWidgetTitle": "Mempool",
   "mempoolUnit": "₿/vB",
   "mempoolBlockEta": "~{minutes} dk",
   "mempoolError": "Ağ verileri yüklenemedi",

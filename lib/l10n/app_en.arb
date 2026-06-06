@@ -155,6 +155,10 @@
   "@settingsAbout": {
     "description": "Settings row label that opens the About screen."
   },
+  "settingsWidgets": "Widgets",
+  "@settingsWidgets": {
+    "description": "Settings row label that opens the Widgets sub-screen (mempool, hashrate, reorder home widgets)."
+  },
 
   "aboutAppName": "Open Bitcoin Tracker",
   "@aboutAppName": {
@@ -258,23 +262,23 @@
   },
   "settingsMempoolWidget": "Mempool",
   "@settingsMempoolWidget": {
-    "description": "Picker row label that opens the Mempool blocks settings sub-screen."
-  },
-  "settingsMempoolBlocksTitle": "Mempool",
-  "@settingsMempoolBlocksTitle": {
-    "description": "App bar title for the Mempool blocks settings sub-screen."
+    "description": "Section title above the Mempool toggles on the Widgets settings screen."
   },
   "settingsMempoolBlocksVisible": "Visible",
   "@settingsMempoolBlocksVisible": {
-    "description": "Toggle label on the Mempool sub-screen that shows or hides the Mempool blocks widget on home."
+    "description": "Toggle label in the Mempool section that shows or hides the Mempool blocks widget on home."
   },
   "settingsMempoolBlocksReverseOrder": "Reverse order",
   "@settingsMempoolBlocksReverseOrder": {
-    "description": "Toggle label on the Mempool sub-screen that mirrors the block strip horizontally (mined blocks on the left, projected blocks on the right)."
+    "description": "Toggle label in the Mempool section that mirrors the block strip horizontally (mined blocks on the left, projected blocks on the right)."
   },
   "settingsHashrateWidget": "Hashrate",
   "@settingsHashrateWidget": {
-    "description": "Display-group toggle that shows or hides the Network hashrate widget on home."
+    "description": "Section title above the Hashrate toggle on the Widgets settings screen."
+  },
+  "settingsHashrateVisible": "Visible",
+  "@settingsHashrateVisible": {
+    "description": "Toggle label in the Hashrate section that shows or hides the Network hashrate widget on home."
   },
   "settingsBitcoinDisplayMode": "Bitcoin unit",
   "@settingsBitcoinDisplayMode": {

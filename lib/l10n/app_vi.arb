@@ -61,6 +61,7 @@
 
   "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "Giới thiệu",
+  "settingsWidgets": "Widget",
 
   "aboutAppName": "Open Bitcoin Tracker",
   "aboutVersion": "Phiên bản {version}",
@@ -88,10 +89,10 @@
   "settingsScaleLog": "Log",
   "settingsPortfolioTotal": "Hiển thị tổng",
   "settingsMempoolWidget": "Mempool",
-  "settingsMempoolBlocksTitle": "Mempool",
   "settingsMempoolBlocksVisible": "Hiển thị",
   "settingsMempoolBlocksReverseOrder": "Đảo thứ tự",
   "settingsHashrateWidget": "Hashrate",
+  "settingsHashrateVisible": "Hiển thị",
   "settingsBitcoinDisplayMode": "Đơn vị Bitcoin",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
@@ -211,7 +212,6 @@
   "currencyLabelJpy": "Yên Nhật",
 
   "stacksWidgetTitle": "Stacks",
-  "mempoolWidgetTitle": "Mempool",
   "mempoolUnit": "₿/vB",
   "mempoolBlockEta": "~{minutes} phút",
   "mempoolError": "Không thể tải dữ liệu mạng",

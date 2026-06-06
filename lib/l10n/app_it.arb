@@ -61,6 +61,7 @@
 
   "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "Informazioni",
+  "settingsWidgets": "Widget",
 
   "aboutAppName": "Open Bitcoin Tracker",
   "aboutVersion": "Versione {version}",
@@ -88,10 +89,10 @@
   "settingsScaleLog": "Log",
   "settingsPortfolioTotal": "Mostra totale",
   "settingsMempoolWidget": "Mempool",
-  "settingsMempoolBlocksTitle": "Mempool",
   "settingsMempoolBlocksVisible": "Visibile",
   "settingsMempoolBlocksReverseOrder": "Inverti ordine",
   "settingsHashrateWidget": "Hashrate",
+  "settingsHashrateVisible": "Visibile",
   "settingsBitcoinDisplayMode": "Unità Bitcoin",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
@@ -211,7 +212,6 @@
   "currencyLabelJpy": "Yen giapponese",
 
   "stacksWidgetTitle": "Stacks",
-  "mempoolWidgetTitle": "Mempool",
   "mempoolUnit": "₿/vB",
   "mempoolBlockEta": "~{minutes} min",
   "mempoolError": "Impossibile caricare i dati di rete",

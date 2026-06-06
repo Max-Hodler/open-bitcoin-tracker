@@ -11,10 +11,9 @@ import '../widgets/scroll_hairline.dart';
 import 'about_screen.dart';
 import 'settings/settings_widgets.dart';
 import 'settings/btc_price_settings_screen.dart';
-import 'settings/mempool_blocks_settings_screen.dart';
-import 'settings/reorder_home_widgets_screen.dart';
 import 'settings/stacks_settings_screen.dart';
 import 'settings/theme_settings_screen.dart';
+import 'settings/widgets_settings_screen.dart';
 
 // Re-export the public sub-screen classes so external callers (main.dart,
 // home_screen.dart, settings_screen_test.dart) can keep importing this single
@@ -23,12 +22,9 @@ export 'settings/btc_price_settings_screen.dart' show BtcPriceSettingsScreen;
 export 'settings/currency_picker_screen.dart' show CurrencyPickerScreen;
 export 'settings/lock_stacks_settings_screen.dart'
     show LockStacksSettingsScreen;
-export 'settings/mempool_blocks_settings_screen.dart'
-    show MempoolBlocksSettingsScreen;
-export 'settings/reorder_home_widgets_screen.dart'
-    show ReorderHomeWidgetsScreen;
 export 'settings/stacks_settings_screen.dart' show StacksSettingsScreen;
 export 'settings/theme_settings_screen.dart' show ThemeSettingsScreen;
+export 'settings/widgets_settings_screen.dart' show WidgetsSettingsScreen;
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -96,21 +92,9 @@ class SettingsScreen extends StatelessWidget {
                   trailingIcon: Icons.chevron_right,
                 ),
                 SettingsPickerTile(
-                  label: l10n.settingsMempoolWidget,
+                  label: l10n.settingsWidgets,
                   value: '',
-                  onTap: () => _openMempoolBlocksSettings(context),
-                  trailingIcon: Icons.chevron_right,
-                ),
-                SettingsToggleTile(
-                  label: l10n.settingsHashrateWidget,
-                  value: app.showHashrate,
-                  enabled: true,
-                  onChanged: app.setShowHashrate,
-                ),
-                SettingsPickerTile(
-                  label: l10n.settingsReorderWidgets,
-                  value: '',
-                  onTap: () => _openReorderWidgetsSettings(context),
+                  onTap: () => _openWidgetsSettings(context),
                   trailingIcon: Icons.chevron_right,
                 ),
               ],
@@ -195,18 +179,10 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  void _openMempoolBlocksSettings(BuildContext context) {
+  void _openWidgetsSettings(BuildContext context) {
     Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
-        builder: (_) => const MempoolBlocksSettingsScreen(),
-      ),
-    );
-  }
-
-  void _openReorderWidgetsSettings(BuildContext context) {
-    Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
-        builder: (_) => const ReorderHomeWidgetsScreen(),
+        builder: (_) => const WidgetsSettingsScreen(),
       ),
     );
   }
