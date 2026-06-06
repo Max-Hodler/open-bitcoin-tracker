@@ -1,0 +1,29 @@
+repository: https://github.com/Max-Hodler/open-bitcoin-tracker
+
+name: Open Bitcoin Tracker
+summary: A private, open-source value tracker for your bitcoin stacks
+description: |
+  Open Bitcoin Tracker is a private, open-source app for tracking the value of
+  your bitcoin stacks. Your data stays on your device — there are no accounts,
+  no tracking, and no servers holding your holdings.
+
+  Features:
+  - Track multiple bitcoin stacks and see their combined value
+  - Historically-accurate value charts in your local currency
+  - Per-stack avatars and theming
+  - On-device encryption with biometric unlock
+  - Fully open source, no ads, no telemetry
+
+license: MIT
+website: https://openbitcointracker.com
+
+tags:
+  - bitcoin
+  - finance
+  - privacy
+  - nostr
+
+icon: ./assets/icon/app_icon.png
+
+metadata_sources:
+  - github
