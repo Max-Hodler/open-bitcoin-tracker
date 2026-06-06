@@ -46,7 +46,7 @@ class FiatFormat {
   final String amount;
 
   String get full =>
-      symbolAfterAmount ? '$amount$symbol' : '$symbol$amount';
+      symbolAfterAmount ? '$amount $symbol' : '$symbol $amount';
 }
 
 /// The decimal separator character for the active locale (e.g. ',' in Spanish, '.' in English).
@@ -163,7 +163,7 @@ String formatBtcAmount(
       NumberFormat.decimalPattern(Intl.defaultLocale).format(sats),
     BtcDisplayMode.btc => _formatBtcFromSats(sats),
   };
-  return symbolAfterAmount ? '$amount₿' : '₿$amount';
+  return symbolAfterAmount ? '$amount ₿' : '₿ $amount';
 }
 
 /// Renders [sats] as a BTC amount in the active locale: thousands grouping on
