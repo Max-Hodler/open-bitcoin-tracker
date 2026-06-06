@@ -643,6 +643,38 @@
     "description": "Destructive confirm button of the delete-stack dialog."
   },
 
+  "editAmountModeSet": "Set",
+  "@editAmountModeSet": {
+    "description": "Edit-amount screen mode selector: replace the stack's balance with the entered amount (the default)."
+  },
+  "editAmountModeAdd": "Add",
+  "@editAmountModeAdd": {
+    "description": "Edit-amount screen mode selector: add the entered amount to the stack's current balance (e.g. recording a buy)."
+  },
+  "editAmountModeSubtract": "Subtract",
+  "@editAmountModeSubtract": {
+    "description": "Edit-amount screen mode selector: subtract the entered amount from the stack's current balance (e.g. recording a sell)."
+  },
+  "editAmountConfirmAdd": "Add to stack",
+  "@editAmountConfirmAdd": {
+    "description": "Confirm button on the edit-amount screen when the Add mode is selected."
+  },
+  "editAmountConfirmSubtract": "Subtract from stack",
+  "@editAmountConfirmSubtract": {
+    "description": "Confirm button on the edit-amount screen when the Subtract mode is selected."
+  },
+  "editAmountCurrentLabel": "Current balance",
+  "@editAmountCurrentLabel": {
+    "description": "Label shown on its own line above the stack's existing balance amount on the edit-amount screen (Add/Subtract modes)."
+  },
+  "editAmountResultingLabel": "New balance",
+  "@editAmountResultingLabel": {
+    "description": "Label shown on its own line above the previewed resulting balance amount on the edit-amount screen (Add/Subtract modes)."
+  },
+  "editAmountSubtractUnderflow": "That's more than this stack holds",
+  "@editAmountSubtractUnderflow": {
+    "description": "Warning above the keypad when a Subtract entry would drive the stack balance below zero. The confirm button is disabled until the amount is reduced."
+  },
   "satsInputLabel": "Bitcoin amount",
   "@satsInputLabel": {
     "description": "Label above the sats input pad on the new-stack and edit-amount screens."

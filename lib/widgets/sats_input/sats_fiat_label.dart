@@ -14,10 +14,20 @@ import '../../theme/theme.dart';
 /// converts the current sats / BTC raw value to the selected fiat using the
 /// live BTC price; on empty input falls back to a localized hint string.
 class SatsFiatLabel extends StatelessWidget {
-  const SatsFiatLabel({super.key, required this.input, required this.mode});
+  const SatsFiatLabel({
+    super.key,
+    required this.input,
+    required this.mode,
+    this.showUnitHint = true,
+  });
 
   final String input;
   final BtcDisplayMode mode;
+
+  /// When false, the "Enter amount in sats/BTC" hint is suppressed on empty
+  /// input (the slot stays reserved but blank). The edit-amount screen turns
+  /// this off; the new-stack flow leaves it on.
+  final bool showUnitHint;
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +41,14 @@ class SatsFiatLabel extends StatelessWidget {
         : (int.tryParse(input) ?? 0) / Sats.perBtc;
     final fiatValue = rate == 0 ? 0.0 : btcValue * rate;
     final symbol = currencySymbols[currency] ?? r'$';
-    final showHint = input.isEmpty;
+    final showHint = input.isEmpty && showUnitHint;
     final l10n = AppLocalizations.of(context);
-    final label = showHint
-        ? (mode == BtcDisplayMode.btc
-            ? l10n.satsInputUnitHintBtc
-            : l10n.satsInputUnitHint)
+    final label = input.isEmpty
+        ? (showHint
+            ? (mode == BtcDisplayMode.btc
+                ? l10n.satsInputUnitHintBtc
+                : l10n.satsInputUnitHint)
+            : '')
         : rate == 0
             ? ''
             : symbolAfterAmount

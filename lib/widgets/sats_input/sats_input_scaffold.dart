@@ -30,6 +30,11 @@ class SatsInputScaffold extends StatelessWidget {
     this.confirmLabel,
     this.onInputLongPressAt,
     this.onCaretAt,
+    this.header,
+    this.subHeader,
+    this.warning,
+    this.title,
+    this.showUnitHint = true,
   });
 
   final String input;
@@ -46,6 +51,29 @@ class SatsInputScaffold extends StatelessWidget {
   final String? confirmLabel;
   final ValueChanged<Offset>? onInputLongPressAt;
   final ValueChanged<int>? onCaretAt;
+
+  /// Optional widget rendered between the app bar and the amount display —
+  /// used by the edit-amount screen for the Set/Add/Subtract toggle. Null on
+  /// the new-stack flow.
+  final Widget? header;
+
+  /// Optional widget rendered just below the amount display + fiat label —
+  /// used by the edit-amount screen for the current/new balance readout. Null
+  /// on the new-stack flow.
+  final Widget? subHeader;
+
+  /// Optional override for the warning row above the keypad. When non-null it
+  /// replaces the leading-zero warning text (e.g. the subtract-underflow
+  /// message); the row stays reserved either way so the layout never jumps.
+  final String? warning;
+
+  /// Optional app-bar title override. Defaults to the generic "Bitcoin amount"
+  /// label used by the new-stack flow.
+  final String? title;
+
+  /// Forwarded to [SatsFiatLabel]: when false, suppresses the empty-input unit
+  /// hint. The edit-amount screen sets this false.
+  final bool showUnitHint;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +94,7 @@ class SatsInputScaffold extends StatelessWidget {
         ),
         centerTitle: true,
         title: Text(
-          l10n.satsInputLabel,
+          title ?? l10n.satsInputLabel,
           style: AppTypography.title.copyWith(
             color: cs.onSurfaceVariant,
             fontWeight: FontWeight.w500,
@@ -76,15 +104,21 @@ class SatsInputScaffold extends StatelessWidget {
       body: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(
+          padding: EdgeInsets.fromLTRB(
             AppSpacing.md,
-            AppSpacing.xl,
+            // Lift the mode tabs up when a header is present; the plain
+            // new-stack flow keeps its taller breathing room above the display.
+            header != null ? AppSpacing.sm : AppSpacing.xl,
             AppSpacing.md,
             AppSpacing.md,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (header != null) ...[
+                header!,
+                const SizedBox(height: AppSpacing.lg),
+              ],
               SatsInputDisplay(
                 input: input,
                 caret: caret,
@@ -93,14 +127,23 @@ class SatsInputScaffold extends StatelessWidget {
                 onCaretAt: onCaretAt,
               ),
               const SizedBox(height: AppSpacing.sm),
-              SatsFiatLabel(input: input, mode: mode),
+              SatsFiatLabel(
+                input: input,
+                mode: mode,
+                showUnitHint: showUnitHint,
+              ),
+              if (subHeader != null) ...[
+                const SizedBox(height: AppSpacing.md),
+                subHeader!,
+              ],
               const Spacer(),
               Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.lg),
                 child: Opacity(
-                  opacity: showLeadingZeroWarning ? 1.0 : 0.0,
+                  opacity:
+                      (warning != null || showLeadingZeroWarning) ? 1.0 : 0.0,
                   child: Text(
-                    l10n.satsInputLeadingZeroWarning,
+                    warning ?? l10n.satsInputLeadingZeroWarning,
                     textAlign: TextAlign.center,
                     style: AppTypography.label.copyWith(
                       fontSize: 14,
