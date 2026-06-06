@@ -97,35 +97,6 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ],
             ),
-            // Debug-only screenshot mode. Gated to debug builds — the
-            // tree-shaker drops this whole branch from release/profile binaries,
-            // so it never ships. Freezes the live price (and thus hides the
-            // delta badge) for clean marketing screenshots.
-            if (kDebugMode) ...[
-              const SizedBox(height: AppSpacing.md),
-              SettingsGroup(
-                children: [
-                  Builder(
-                    builder: (context) {
-                      final live = context.watch<LivePriceController>();
-                      return SettingsToggleTile(
-                        label: 'Screenshot mode (freeze price)',
-                        value: live.screenshotMode,
-                        enabled: true,
-                        // Drive both controllers in lockstep: the live price
-                        // freezes at the fixed figure and the stack list swaps
-                        // to the demo set, so the whole home screen is camera-
-                        // ready in one tap.
-                        onChanged: (v) {
-                          live.screenshotMode = v;
-                          context.read<AppStateNotifier>().screenshotMode = v;
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ],
             const SizedBox(height: AppSpacing.md),
             SettingsGroup(
               children: [
@@ -145,6 +116,35 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ],
             ),
+            // Debug-only screenshot mode. Gated to debug builds — the
+            // tree-shaker drops this whole branch from release/profile binaries,
+            // so it never ships. Freezes the live price (and thus hides the
+            // delta badge) for clean marketing screenshots.
+            if (kDebugMode) ...[
+              const SizedBox(height: AppSpacing.md),
+              SettingsGroup(
+                children: [
+                  Builder(
+                    builder: (context) {
+                      final live = context.watch<LivePriceController>();
+                      return SettingsToggleTile(
+                        label: 'Screenshot mode',
+                        value: live.screenshotMode,
+                        enabled: true,
+                        // Drive both controllers in lockstep: the live price
+                        // freezes at the fixed figure and the stack list swaps
+                        // to the demo set, so the whole home screen is camera-
+                        // ready in one tap.
+                        onChanged: (v) {
+                          live.screenshotMode = v;
+                          context.read<AppStateNotifier>().screenshotMode = v;
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
