@@ -8,7 +8,7 @@ class AppState {
     this.currency = Currency.usd,
     this.selectedCurrencies = const [Currency.usd, Currency.eur, Currency.gbp],
     this.showPortfolio = true,
-    this.showMempool = true,
+    this.showMempool = false,
     this.mempoolBlocksReversed = false,
     this.showHashrate = false,
     this.showChart = true,
