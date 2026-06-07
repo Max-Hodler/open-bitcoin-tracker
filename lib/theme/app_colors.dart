@@ -10,7 +10,7 @@ class AppColors {
   static const Color mutedSurface = Color(0xFFEEEDE7);
 
   static const Color bitcoinOrange = Color(0xFFF7931A);
-  static const Color bitcoinOrangeTint = Color(0xFFFEF3E2);
+  static const Color bitcoinOrangeTint = Color(0x1AF7931A);
 
   static const Color priceUp = Color(0xFF4CA66B);
   static const Color priceDown = Color(0xFFC9483B);
