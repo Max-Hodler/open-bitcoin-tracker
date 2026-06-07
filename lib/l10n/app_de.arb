@@ -85,8 +85,8 @@
   "aboutLicenses": "Open-Source-Lizenzen",
 
   "settingsCurrencies": "Währungen",
-  "settingsBtcPrice": "BTC-Preis",
-  "settingsBtcPriceTitle": "BTC-Preis",
+  "settingsBtcPrice": "Preis und Grafik",
+  "settingsBtcPriceTitle": "Preis und Grafik",
   "settingsReorderWidgets": "Anzeigereihenfolge",
   "settingsReorderStacks": "Stacks sortieren",
   "settingsPriceTickerSection": "Kursticker",

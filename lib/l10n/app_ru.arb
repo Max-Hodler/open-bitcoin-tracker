@@ -85,8 +85,8 @@
   "aboutLicenses": "Лицензии open source",
 
   "settingsCurrencies": "Валюты",
-  "settingsBtcPrice": "Цена BTC",
-  "settingsBtcPriceTitle": "Цена BTC",
+  "settingsBtcPrice": "Цена и график",
+  "settingsBtcPriceTitle": "Цена и график",
   "settingsReorderWidgets": "Порядок отображения",
   "settingsReorderStacks": "Порядок стеков",
   "settingsPriceTickerSection": "Тикер цены",

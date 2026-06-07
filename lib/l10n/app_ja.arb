@@ -85,8 +85,8 @@
   "aboutLicenses": "オープンソースライセンス",
 
   "settingsCurrencies": "通貨",
-  "settingsBtcPrice": "BTC 価格",
-  "settingsBtcPriceTitle": "BTC 価格",
+  "settingsBtcPrice": "価格とグラフ",
+  "settingsBtcPriceTitle": "価格とグラフ",
   "settingsReorderWidgets": "表示順",
   "settingsReorderStacks": "スタックの並び替え",
   "settingsPriceTickerSection": "価格ティッカー",

@@ -78,8 +78,8 @@
   "aboutLicenses": "Licencias de código abierto",
 
   "settingsCurrencies": "Divisas",
-  "settingsBtcPrice": "Precio de BTC",
-  "settingsBtcPriceTitle": "Precio de BTC",
+  "settingsBtcPrice": "Precio y gráfico",
+  "settingsBtcPriceTitle": "Precio y gráfico",
   "settingsReorderWidgets": "Orden de visualización",
   "settingsReorderStacks": "Reordenar stacks",
   "settingsPriceTickerSection": "Precio",

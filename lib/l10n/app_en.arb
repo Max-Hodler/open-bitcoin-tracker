@@ -232,11 +232,11 @@
   "@settingsCurrencies": {
     "description": "Settings row label and currency-picker app-bar title."
   },
-  "settingsBtcPrice": "BTC price",
+  "settingsBtcPrice": "Price and graph",
   "@settingsBtcPrice": {
     "description": "Settings row label that opens the BTC price sub-screen."
   },
-  "settingsBtcPriceTitle": "BTC price",
+  "settingsBtcPriceTitle": "Price and graph",
   "@settingsBtcPriceTitle": {
     "description": "AppBar title of the BTC price settings sub-screen (groups the currency picker, cadence picker, chart toggle, and scale segmented control)."
   },
@@ -248,11 +248,11 @@
   "@settingsReorderStacks": {
     "description": "Row label inside the Stacks settings group that opens the stack-reorder sub-screen. Used as the AppBar title of that sub-screen as well. Disabled when the user has no stacks yet."
   },
-  "settingsPriceTickerSection": "Price ticker",
+  "settingsPriceTickerSection": "Price",
   "@settingsPriceTickerSection": {
     "description": "Section header above the price-ticker settings group (currencies + update cadence)."
   },
-  "settingsChartSection": "Chart",
+  "settingsChartSection": "Graph",
   "@settingsChartSection": {
     "description": "Section header above the chart settings group (display toggle + scale)."
   },
