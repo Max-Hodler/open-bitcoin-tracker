@@ -72,8 +72,26 @@
 
   "rangePill1D": "1D",
   "@rangePill1D": {"description": "Chart range pill: 1 day."},
+  "rangePill2D": "2D",
+  "@rangePill2D": {"description": "Chart range pill: 2 days."},
+  "rangePill3D": "3D",
+  "@rangePill3D": {"description": "Chart range pill: 3 days."},
+  "rangePill4D": "4D",
+  "@rangePill4D": {"description": "Chart range pill: 4 days."},
+  "rangePill5D": "5D",
+  "@rangePill5D": {"description": "Chart range pill: 5 days."},
+  "rangePill6D": "6D",
+  "@rangePill6D": {"description": "Chart range pill: 6 days."},
+  "rangePill7D": "7D",
+  "@rangePill7D": {"description": "Chart range pill: 7 days."},
   "rangePill1W": "1W",
   "@rangePill1W": {"description": "Chart range pill: 1 week."},
+  "rangePill2W": "2W",
+  "@rangePill2W": {"description": "Chart range pill: 2 weeks."},
+  "rangePill3W": "3W",
+  "@rangePill3W": {"description": "Chart range pill: 3 weeks."},
+  "rangePill4W": "4W",
+  "@rangePill4W": {"description": "Chart range pill: 4 weeks."},
   "rangePill1M": "1M",
   "@rangePill1M": {"description": "Chart range pill: 1 month."},
   "rangePill2M": "2M",
@@ -593,6 +611,20 @@
   "rangePickerMonthsFull": "{count, plural, =1{1 Month} other{{count} Months}}",
   "@rangePickerMonthsFull": {
     "description": "Long-form month range label used in the overflow picker (e.g. '1 Month', '6 Months').",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "rangePickerDaysFull": "{count, plural, =1{1 Day} other{{count} Days}}",
+  "@rangePickerDaysFull": {
+    "description": "Long-form day range label used in the overflow picker (e.g. '1 Day', '3 Days').",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "rangePickerWeeksFull": "{count, plural, =1{1 Week} other{{count} Weeks}}",
+  "@rangePickerWeeksFull": {
+    "description": "Long-form week range label used in the overflow picker (e.g. '1 Week', '2 Weeks').",
     "placeholders": {
       "count": {"type": "int"}
     }

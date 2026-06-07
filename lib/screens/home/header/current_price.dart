@@ -350,8 +350,17 @@ String _formatHoverLabel(int ms, BtcRange range) {
   final d = DateTime.fromMillisecondsSinceEpoch(ms);
   switch (range) {
     case BtcRange.d1:
+    case BtcRange.d2:
+    case BtcRange.d3:
+    case BtcRange.d4:
+    case BtcRange.d5:
+    case BtcRange.d6:
+    case BtcRange.d7:
       return DateFormat.Hm().format(d);
     case BtcRange.w1:
+    case BtcRange.w2:
+    case BtcRange.w3:
+    case BtcRange.w4:
     case BtcRange.m1:
     case BtcRange.m2:
     case BtcRange.m3:

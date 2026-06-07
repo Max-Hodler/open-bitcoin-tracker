@@ -22,8 +22,10 @@
   "chartErrorTitle": "No se han podido cargar los datos",
   "chartErrorRetry": "Reintentar",
 
-  "rangePill1D": "1D",
-  "rangePill1W": "1S",
+  "rangePill1D": "1D",  "rangePill1W": "1S",
+  "rangePill2W": "2S",
+  "rangePill3W": "3S",
+  "rangePill4W": "4S",
   "rangePill1M": "1M",
   "rangePill2M": "2M",
   "rangePill3M": "3M",
@@ -176,6 +178,8 @@
   "rangePickerLongHint": "Consejo: desliza hacia arriba o abajo en el rango para cambiarlo.",
   "rangePickerYearsFull": "{count, plural, =1{1 año} other{{count} años}}",
   "rangePickerMonthsFull": "{count, plural, =1{1 mes} other{{count} meses}}",
+  "rangePickerDaysFull": "{count, plural, =1{1 día} other{{count} días}}",
+  "rangePickerWeeksFull": "{count, plural, =1{1 semana} other{{count} semanas}}",
   "stackMenuDelete": "Eliminar Stack",
 
   "stackImageSheetSubtitle": "Elige un color o una imagen",

@@ -63,7 +63,16 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
   // long connector from the last candle to the live price.
   static const Map<BtcRange, Duration> _intradayCandleInterval = {
     BtcRange.d1: Duration(minutes: 5),
+    BtcRange.d2: Duration(minutes: 5),
+    BtcRange.d3: Duration(minutes: 5),
+    BtcRange.d4: Duration(minutes: 5),
+    BtcRange.d5: Duration(minutes: 5),
+    BtcRange.d6: Duration(minutes: 5),
+    BtcRange.d7: Duration(minutes: 5),
     BtcRange.w1: Duration(hours: 1),
+    BtcRange.w2: Duration(hours: 1),
+    BtcRange.w3: Duration(hours: 1),
+    BtcRange.w4: Duration(hours: 1),
     BtcRange.m1: Duration(hours: 1),
   };
   bool _appBackgrounded = false;
@@ -413,15 +422,16 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
       return;
     }
 
-    // 1W can be sliced from a cached 1M (last 168 hourly points) without a
-    // network call — but only if that 1M is itself fresh, otherwise the slice
-    // would just inherit the stale tail.
-    if (!force && range == BtcRange.w1) {
+    // Week ranges (1W..4W) can be sliced from a cached 1M (hourly points)
+    // without a network call — but only if that 1M is itself fresh.
+    final weeks = range.weeks;
+    if (!force && weeks != null) {
       final m1 = _intraday[BtcRange.m1];
       if (m1 != null &&
           !_intradayFailed.contains(BtcRange.m1) &&
           !isIntradayStale(BtcRange.m1)) {
-        final start = m1.length > 168 ? m1.length - 168 : 0;
+        final take = weeks * 168;
+        final start = m1.length > take ? m1.length - take : 0;
         _intraday[range] = m1.sublist(start);
         _intradayFailed.remove(range);
         notifyListeners();
@@ -444,9 +454,11 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
     _lastIntradayFetchedAt = DateTime.now();
     _intradayFailed.remove(range);
     _intradayLoading = null;
-    // A fresh 1M invalidates any previously sliced 1W so the next request
-    // re-slices from the updated 1M.
-    if (range == BtcRange.m1) _intraday.remove(BtcRange.w1);
+    // A fresh 1M invalidates all previously sliced week ranges so the next
+    // request re-slices from the updated 1M.
+    if (range == BtcRange.m1) {
+      for (final r in btcRangeWeeks) _intraday.remove(r);
+    }
     notifyListeners();
   }
 

@@ -25,25 +25,26 @@ class KrakenOhlcClient {
 
   static const String _restPair = 'XBTUSD';
 
-  /// Intraday candles for the 1D / 1W / 1M ranges. The home screen requests a
-  /// single trailing window, so we slice the response down to exactly the
-  /// span the chart will draw — Kraken always sends the most recent 720
+  /// Intraday candles for d1..d7, w1..w4, and 1M ranges. The home screen
+  /// requests a single trailing window; we slice the response down to exactly
+  /// the span the chart will draw — Kraken always sends the most recent 720
   /// candles regardless of the interval.
+  ///
+  /// All day ranges share Kraken's 5-min candle feed (288 candles = 1 day).
+  /// All week ranges share the 1-hour feed (168 candles = 1 week).
   Future<List<HistoryPoint>?> intraday(BtcRange range) {
-    switch (range) {
-      case BtcRange.d1:
-        return _fetch(intervalMinutes: 5, takeLast: 288);
-      case BtcRange.w1:
-        return _fetch(intervalMinutes: 60, takeLast: 168);
-      case BtcRange.m1:
-        return _fetch(intervalMinutes: 60);
-      default:
-        throw ArgumentError.value(
-          range,
-          'range',
-          'intraday only supports d1, w1, m1',
-        );
+    final days = range.days;
+    if (days != null) {
+      return _fetch(intervalMinutes: 5, takeLast: days * 288);
     }
+    final weeks = range.weeks;
+    if (weeks != null) {
+      return _fetch(intervalMinutes: 60, takeLast: weeks * 168);
+    }
+    if (range == BtcRange.m1) {
+      return _fetch(intervalMinutes: 60);
+    }
+    throw ArgumentError.value(range, 'range', 'intraday only supports day, week, and m1 ranges');
   }
 
   /// Daily candles. Kraken returns up to 720 days (~2y); deeper history is

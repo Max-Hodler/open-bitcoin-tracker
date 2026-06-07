@@ -11,18 +11,12 @@ import '../../../services/app_haptics.dart';
 import '../../../state/state.dart';
 import '../../../theme/theme.dart';
 
-// Fixed quick chips shown inline. The months and years overflow slots and
-// `BtcRange.all` round out the row but are rendered separately because they
-// have their own gestures or position constraints.
-const List<BtcRange> _leadingQuickRanges = [
-  BtcRange.d1,
-  BtcRange.w1,
-];
+// Stable, sorted lists for each overflow slot's candidates.
+final List<BtcRange> _overflowDaysRanges = btcRangeDays;
+final List<BtcRange> _overflowWeeksRanges = btcRangeWeeks;
 
-// Ranges the user can mount in the months overflow slot (1M..12M) and the
-// years overflow slot (1Y..15Y). Same long-press / swipe model on both.
-// Derived from the enum's [BtcRange.isMonths] / [BtcRange.isYears] getters so
-// adding a new month/year value to the enum automatically picks it up here.
+// Ranges the user can mount in each overflow slot. Derived from the enum
+// getters so adding a new value to the enum automatically picks it up here.
 final List<BtcRange> _overflowMonthsRanges = btcRangeMonths;
 final List<BtcRange> _overflowMenuRanges = btcRangeYears;
 
@@ -43,6 +37,8 @@ class RangeBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final app = context.watch<AppStateNotifier>();
+    final daysOverflowSlot = app.daysOverflowQuickRange;
+    final weeksOverflowSlot = app.weeksOverflowQuickRange;
     final overflowSlot = app.overflowQuickRange;
     final monthsOverflowSlot = app.monthsOverflowQuickRange;
     final textScaler = MediaQuery.textScalerOf(context);
@@ -91,7 +87,25 @@ class RangeBar extends StatelessWidget {
       style: boldStyle,
       textScaler: textScaler,
     );
-    // Layout: 1D, 1W, <months slot>, <years slot>, All. Both overflow slots
+    // Days chip floor: widest of 1D..7D labels.
+    final daysOverflowLabelWidth = _maxLabelWidth(
+      context: context,
+      labels: [
+        for (final r in _overflowDaysRanges) _btcRangeLabel(context, r),
+      ],
+      style: boldStyle,
+      textScaler: textScaler,
+    );
+    // Weeks chip floor: widest of 1W..4W labels.
+    final weeksOverflowLabelWidth = _maxLabelWidth(
+      context: context,
+      labels: [
+        for (final r in _overflowWeeksRanges) _btcRangeLabel(context, r),
+      ],
+      style: boldStyle,
+      textScaler: textScaler,
+    );
+    // Layout: <days slot>, <weeks slot>, <months slot>, <years slot>, All. Both overflow slots
     // are user-customizable (long-press to change) and All sits at the end. The row distributes chips across the available width with
     // spaceBetween, but when natural chip widths exceed the screen (large
     // system text), it scrolls horizontally so every chip stays reachable.
@@ -113,19 +127,38 @@ class RangeBar extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  for (final r in _leadingQuickRanges)
-                    Expanded(
-                      child: Center(
-                        child: _RangeChipWithPct(
-                          label: _btcRangeLabel(context, r),
-                          selected: r == range,
-                          onTap: () => onRange(r),
-                          rangePct: r == range ? rangePct : null,
-                          chartColor: chartColor,
-                          minLabelWidth: labelWidth(_btcRangeLabel(context, r)),
-                        ),
+                  Expanded(
+                    child: Center(
+                      child: _RangeChipWithPct(
+                        label: _btcRangeLabel(context, daysOverflowSlot),
+                        selected: range == daysOverflowSlot,
+                        onTap: () => onRange(daysOverflowSlot),
+                        onLongPress: () => _showDaysOverflowSlotPicker(context),
+                        onSwipeUp: () => _stepDaysOverflowSlot(context, 1),
+                        onSwipeDown: () => _stepDaysOverflowSlot(context, -1),
+                        rangePct: range == daysOverflowSlot ? rangePct : null,
+                        chartColor: chartColor,
+                        showChevron: true,
+                        minLabelWidth: daysOverflowLabelWidth,
                       ),
                     ),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: _RangeChipWithPct(
+                        label: _btcRangeLabel(context, weeksOverflowSlot),
+                        selected: range == weeksOverflowSlot,
+                        onTap: () => onRange(weeksOverflowSlot),
+                        onLongPress: () => _showWeeksOverflowSlotPicker(context),
+                        onSwipeUp: () => _stepWeeksOverflowSlot(context, 1),
+                        onSwipeDown: () => _stepWeeksOverflowSlot(context, -1),
+                        rangePct: range == weeksOverflowSlot ? rangePct : null,
+                        chartColor: chartColor,
+                        showChevron: true,
+                        minLabelWidth: weeksOverflowLabelWidth,
+                      ),
+                    ),
+                  ),
                   Expanded(
                     child: Center(
                       child: _RangeChipWithPct(
@@ -178,6 +211,134 @@ class RangeBar extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<void> _showDaysOverflowSlotPicker(BuildContext context) async {
+    final app = context.read<AppStateNotifier>();
+    final current = app.daysOverflowQuickRange;
+    final picked = await showDialog<BtcRange>(
+      context: context,
+      barrierColor: appDialogBarrierColor(context),
+      builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx);
+        final cs = Theme.of(ctx).colorScheme;
+        return RadioGroup<BtcRange>(
+          groupValue: _overflowDaysRanges.contains(current) ? current : null,
+          onChanged: (v) {
+            AppHaptics.selection();
+            Navigator.of(ctx).pop(v);
+          },
+          child: SimpleDialog(
+            elevation: 24,
+            shadowColor: Colors.black,
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(l10n.rangePickerLongTitle),
+                const SizedBox(height: 4),
+                Text(
+                  l10n.rangePickerLongHint,
+                  style: AppTypography.body.copyWith(
+                    fontSize: 14,
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+            children: [
+              for (final r in _overflowDaysRanges)
+                RadioListTile<BtcRange>(
+                  key: ValueKey('daysOverflowSlot-${r.name}'),
+                  title: Text(_btcRangeDaysLongLabel(ctx, r)),
+                  value: r,
+                ),
+            ],
+          ),
+        );
+      },
+    );
+    if (picked != null) {
+      app.setDaysOverflowQuickRange(picked);
+      onRange(picked);
+    }
+  }
+
+  void _stepDaysOverflowSlot(BuildContext context, int step) {
+    final app = context.read<AppStateNotifier>();
+    final current = app.daysOverflowQuickRange;
+    final ranges = _overflowDaysRanges;
+    final i = ranges.indexOf(current);
+    final base = i < 0 ? 0 : i;
+    final n = ranges.length;
+    final next = ranges[(base + step) % n];
+    if (next == current) return;
+    app.setDaysOverflowQuickRange(next);
+    onRange(next);
+  }
+
+  Future<void> _showWeeksOverflowSlotPicker(BuildContext context) async {
+    final app = context.read<AppStateNotifier>();
+    final current = app.weeksOverflowQuickRange;
+    final picked = await showDialog<BtcRange>(
+      context: context,
+      barrierColor: appDialogBarrierColor(context),
+      builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx);
+        final cs = Theme.of(ctx).colorScheme;
+        return RadioGroup<BtcRange>(
+          groupValue: _overflowWeeksRanges.contains(current) ? current : null,
+          onChanged: (v) {
+            AppHaptics.selection();
+            Navigator.of(ctx).pop(v);
+          },
+          child: SimpleDialog(
+            elevation: 24,
+            shadowColor: Colors.black,
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(l10n.rangePickerLongTitle),
+                const SizedBox(height: 4),
+                Text(
+                  l10n.rangePickerLongHint,
+                  style: AppTypography.body.copyWith(
+                    fontSize: 14,
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+            children: [
+              for (final r in _overflowWeeksRanges)
+                RadioListTile<BtcRange>(
+                  key: ValueKey('weeksOverflowSlot-${r.name}'),
+                  title: Text(_btcRangeWeeksLongLabel(ctx, r)),
+                  value: r,
+                ),
+            ],
+          ),
+        );
+      },
+    );
+    if (picked != null) {
+      app.setWeeksOverflowQuickRange(picked);
+      onRange(picked);
+    }
+  }
+
+  void _stepWeeksOverflowSlot(BuildContext context, int step) {
+    final app = context.read<AppStateNotifier>();
+    final current = app.weeksOverflowQuickRange;
+    final ranges = _overflowWeeksRanges;
+    final i = ranges.indexOf(current);
+    final base = i < 0 ? 0 : i;
+    final n = ranges.length;
+    final next = ranges[(base + step) % n];
+    if (next == current) return;
+    app.setWeeksOverflowQuickRange(next);
+    onRange(next);
   }
 
   Future<void> _showOverflowSlotPicker(BuildContext context) async {
@@ -619,7 +780,16 @@ String _btcRangeLabel(BuildContext context, BtcRange r) {
   final l10n = AppLocalizations.of(context);
   return switch (r) {
     BtcRange.d1 => l10n.rangePill1D,
+    BtcRange.d2 => l10n.rangePill2D,
+    BtcRange.d3 => l10n.rangePill3D,
+    BtcRange.d4 => l10n.rangePill4D,
+    BtcRange.d5 => l10n.rangePill5D,
+    BtcRange.d6 => l10n.rangePill6D,
+    BtcRange.d7 => l10n.rangePill7D,
     BtcRange.w1 => l10n.rangePill1W,
+    BtcRange.w2 => l10n.rangePill2W,
+    BtcRange.w3 => l10n.rangePill3W,
+    BtcRange.w4 => l10n.rangePill4W,
     BtcRange.m1 => l10n.rangePill1M,
     BtcRange.m2 => l10n.rangePill2M,
     BtcRange.m3 => l10n.rangePill3M,
@@ -649,6 +819,20 @@ String _btcRangeLabel(BuildContext context, BtcRange r) {
     BtcRange.y15 => l10n.rangePill15Y,
     BtcRange.all => l10n.rangePillAll,
   };
+}
+
+// Long-form label for the days overflow picker: "1 Day", "3 Days", etc.
+String _btcRangeDaysLongLabel(BuildContext context, BtcRange r) {
+  final d = r.days;
+  if (d == null) return _btcRangeLabel(context, r);
+  return AppLocalizations.of(context).rangePickerDaysFull(d);
+}
+
+// Long-form label for the weeks overflow picker: "1 Week", "2 Weeks", etc.
+String _btcRangeWeeksLongLabel(BuildContext context, BtcRange r) {
+  final w = r.weeks;
+  if (w == null) return _btcRangeLabel(context, r);
+  return AppLocalizations.of(context).rangePickerWeeksFull(w);
 }
 
 // Long-form label for the months overflow picker: "1 Month", "6 Months", etc.

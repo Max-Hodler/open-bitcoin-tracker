@@ -70,6 +70,8 @@ class AppStateNotifier extends ChangeNotifier {
   DarkVariant get darkVariant => _state.darkVariant;
   LightVariant get lightVariant => _state.lightVariant;
   BtcRange get btcRange => _state.btcRange;
+  BtcRange get daysOverflowQuickRange => _state.daysOverflowQuickRange;
+  BtcRange get weeksOverflowQuickRange => _state.weeksOverflowQuickRange;
   BtcRange get overflowQuickRange => _state.overflowQuickRange;
   BtcRange get monthsOverflowQuickRange => _state.monthsOverflowQuickRange;
   HashrateRange get hashrateRange => _state.hashrateRange;
@@ -179,6 +181,10 @@ class AppStateNotifier extends ChangeNotifier {
   void setLightVariant(LightVariant value) =>
       _update((s) => s.copyWith(lightVariant: value));
   void setBtcRange(BtcRange value) => _update((s) => s.copyWith(btcRange: value));
+  void setDaysOverflowQuickRange(BtcRange value) =>
+      _update((s) => s.copyWith(daysOverflowQuickRange: value));
+  void setWeeksOverflowQuickRange(BtcRange value) =>
+      _update((s) => s.copyWith(weeksOverflowQuickRange: value));
   void setOverflowQuickRange(BtcRange value) =>
       _update((s) => s.copyWith(overflowQuickRange: value));
   void setMonthsOverflowQuickRange(BtcRange value) =>

@@ -17,6 +17,8 @@ class AppState {
     this.darkVariant = DarkVariant.blue,
     this.lightVariant = LightVariant.cream,
     this.btcRange = BtcRange.y10,
+    this.daysOverflowQuickRange = BtcRange.d1,
+    this.weeksOverflowQuickRange = BtcRange.w1,
     this.overflowQuickRange = BtcRange.y10,
     this.monthsOverflowQuickRange = BtcRange.m1,
     this.hashrateRange = HashrateRange.d3,
@@ -68,12 +70,13 @@ class AppState {
   // light. Ignored when the resolved theme is dark.
   final LightVariant lightVariant;
   final BtcRange btcRange;
-  // The range currently mounted in the overflow quick-chip slot. Long-pressing
-  // the overflow chip opens a picker that updates this; tapping it just selects
-  // the range like any other quick chip.
+  // The range mounted in the days overflow chip (1D..7D).
+  final BtcRange daysOverflowQuickRange;
+  // The range mounted in the weeks overflow chip (1W..4W).
+  final BtcRange weeksOverflowQuickRange;
+  // The range currently mounted in the years overflow quick-chip slot.
   final BtcRange overflowQuickRange;
-  // Same idea for the months-overflow chip (1M..12M). Independent slot so the
-  // user's months and years selections don't fight each other.
+  // Same idea for the months-overflow chip (1M..12M).
   final BtcRange monthsOverflowQuickRange;
   final HashrateRange hashrateRange;
   final bool logScale;
@@ -140,6 +143,8 @@ class AppState {
     DarkVariant? darkVariant,
     LightVariant? lightVariant,
     BtcRange? btcRange,
+    BtcRange? daysOverflowQuickRange,
+    BtcRange? weeksOverflowQuickRange,
     BtcRange? overflowQuickRange,
     BtcRange? monthsOverflowQuickRange,
     HashrateRange? hashrateRange,
@@ -179,6 +184,10 @@ class AppState {
       darkVariant: darkVariant ?? this.darkVariant,
       lightVariant: lightVariant ?? this.lightVariant,
       btcRange: btcRange ?? this.btcRange,
+      daysOverflowQuickRange:
+          daysOverflowQuickRange ?? this.daysOverflowQuickRange,
+      weeksOverflowQuickRange:
+          weeksOverflowQuickRange ?? this.weeksOverflowQuickRange,
       overflowQuickRange: overflowQuickRange ?? this.overflowQuickRange,
       monthsOverflowQuickRange:
           monthsOverflowQuickRange ?? this.monthsOverflowQuickRange,
@@ -226,6 +235,8 @@ class AppState {
         'darkVariant': darkVariant.code,
         'lightVariant': lightVariant.code,
         'btcRange': btcRange.code,
+        'daysOverflowQuickRange': daysOverflowQuickRange.code,
+        'weeksOverflowQuickRange': weeksOverflowQuickRange.code,
         'overflowQuickRange': overflowQuickRange.code,
         'monthsOverflowQuickRange': monthsOverflowQuickRange.code,
         'hashrateRange': hashrateRange.code,
@@ -284,8 +295,14 @@ class AppState {
       lightVariant: fromCode('lightVariant', LightVariant.fromCode),
       btcRange: fromCode('btcRange', BtcRange.fromCode),
       // The overflow chips are special-cased: a missing key (vs. a wrong code)
-      // means "the user has never opened the picker", and we want that to land
-      // on the menu's default slot, not on BtcRange.fromCode's general default.
+      // means "the user has never opened the picker", so land on the default
+      // slot rather than BtcRange.fromCode's general default.
+      daysOverflowQuickRange: json['daysOverflowQuickRange'] is String
+          ? BtcRange.fromCode(json['daysOverflowQuickRange'] as String)
+          : BtcRange.d1,
+      weeksOverflowQuickRange: json['weeksOverflowQuickRange'] is String
+          ? BtcRange.fromCode(json['weeksOverflowQuickRange'] as String)
+          : BtcRange.w1,
       overflowQuickRange: json['overflowQuickRange'] is String
           ? BtcRange.fromCode(json['overflowQuickRange'] as String)
           : BtcRange.y10,

@@ -87,7 +87,16 @@ enum LightVariant {
 
 enum BtcRange {
   d1('1D'),
+  d2('2D'),
+  d3('3D'),
+  d4('4D'),
+  d5('5D'),
+  d6('6D'),
+  d7('7D'),
   w1('1W'),
+  w2('2W'),
+  w3('3W'),
+  w4('4W'),
   m1('1M'),
   m2('2M'),
   m3('3M'),
@@ -125,6 +134,31 @@ enum BtcRange {
       if (r.code == code) return r;
     }
     return BtcRange.y10;
+  }
+
+  // Number of days this range represents, or null if it isn't day-shaped.
+  int? get days {
+    switch (this) {
+      case BtcRange.d1: return 1;
+      case BtcRange.d2: return 2;
+      case BtcRange.d3: return 3;
+      case BtcRange.d4: return 4;
+      case BtcRange.d5: return 5;
+      case BtcRange.d6: return 6;
+      case BtcRange.d7: return 7;
+      default: return null;
+    }
+  }
+
+  // Number of weeks this range represents, or null if it isn't week-shaped.
+  int? get weeks {
+    switch (this) {
+      case BtcRange.w1: return 1;
+      case BtcRange.w2: return 2;
+      case BtcRange.w3: return 3;
+      case BtcRange.w4: return 4;
+      default: return null;
+    }
   }
 
   // Number of months this range represents, or null if it isn't month-shaped.
@@ -169,25 +203,28 @@ enum BtcRange {
     }
   }
 
+  bool get isDays => days != null;
+  bool get isWeeks => weeks != null;
   bool get isMonths => months != null;
   bool get isYears => years != null;
 
-  // The d1 / w1 / m1 ranges that come from Kraken's intraday OHLC endpoint
-  // (per-minute or per-hour candles, single trailing window). Everything else
-  // is served from the full daily history series.
-  bool get isShortRange =>
-      this == BtcRange.d1 || this == BtcRange.w1 || this == BtcRange.m1;
+  // The d1..d7 / w1..w4 / m1 ranges that come from Kraken's intraday OHLC
+  // endpoint (per-minute or per-hour candles, single trailing window).
+  // Everything else is served from the full daily history series.
+  bool get isShortRange => isDays || isWeeks || this == BtcRange.m1;
 
   // Whether the chart draws against the full FX history series rather than a
   // recent OHLC window. Complement of [isShortRange].
   bool get usesAllHistory => !isShortRange;
 }
 
-// Stable, sorted list of the months overflow slot's candidates (m1..m12).
+// Stable, sorted lists for each overflow slot's candidates.
+final List<BtcRange> btcRangeDays =
+    BtcRange.values.where((r) => r.isDays).toList(growable: false);
+final List<BtcRange> btcRangeWeeks =
+    BtcRange.values.where((r) => r.isWeeks).toList(growable: false);
 final List<BtcRange> btcRangeMonths =
     BtcRange.values.where((r) => r.isMonths).toList(growable: false);
-
-// Stable, sorted list of the years overflow slot's candidates (y1..y15).
 final List<BtcRange> btcRangeYears =
     BtcRange.values.where((r) => r.isYears).toList(growable: false);
 
