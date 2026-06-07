@@ -232,27 +232,20 @@ class _HomeHeaderState extends State<HomeHeader> {
     } else {
       message = null;
     }
-    // Always reserve the same vertical space so the header height — and
-    // therefore the Add Stack button position — never shifts when the hint
-    // appears or disappears.
-    return SizedBox(
-      height: AppSpacing.sm + 36,
-      child: message == null
-          ? null
-          : Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md, AppSpacing.sm, AppSpacing.md, 0,
-              ),
-              child: Text(
-                message,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                style: AppTypography.body.copyWith(
-                  fontSize: 13,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ),
+    if (message == null) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md, AppSpacing.sm, AppSpacing.md, 0,
+      ),
+      child: Text(
+        message,
+        textAlign: TextAlign.center,
+        maxLines: 2,
+        style: AppTypography.body.copyWith(
+          fontSize: 13,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
+      ),
     );
   }
 
