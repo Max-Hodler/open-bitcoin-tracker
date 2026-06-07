@@ -27,6 +27,7 @@ class CurrentPrice extends StatefulWidget {
     required this.onPriceTap,
     required this.onCurrencySwipe,
     required this.chartColor,
+    required this.showChart,
     this.rangePct,
     this.rangeAbsDiff,
   });
@@ -44,6 +45,7 @@ class CurrentPrice extends StatefulWidget {
   final VoidCallback onPriceTap;
   final ValueChanged<int> onCurrencySwipe;
   final Color chartColor;
+  final bool showChart;
   final double? rangePct;
   final double? rangeAbsDiff;
 
@@ -293,8 +295,8 @@ class _CurrentPriceState extends State<CurrentPrice>
                 deltaValue: showDelta ? _deltaValue : null,
                 currency: widget.currency,
                 fade: _deltaFade,
-                rangePct: h == null ? widget.rangePct : null,
-                rangeAbsDiff: h == null ? widget.rangeAbsDiff : null,
+                rangePct: (h == null && widget.showChart) ? widget.rangePct : null,
+                rangeAbsDiff: (h == null && widget.showChart) ? widget.rangeAbsDiff : null,
               ),
             ],
           ),

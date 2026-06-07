@@ -192,6 +192,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                   onPriceTap: widget.onPriceTap,
                   onCurrencySwipe: widget.onCurrencySwipe,
                   chartColor: widget.chartColor,
+                  showChart: widget.showChart,
                 ),
               ),
               ?buttonsRow,
