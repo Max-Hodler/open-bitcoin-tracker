@@ -22,6 +22,7 @@ import 'header/home_header.dart';
 import 'widgets/hashrate_card.dart';
 import 'widgets/home_buttons.dart';
 import 'widgets/home_hint_card.dart';
+import 'widgets/locked_stacks_skeleton.dart';
 import 'widgets/mempool_card.dart';
 import 'widgets/stacks_widget.dart';
 
@@ -467,6 +468,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: cs.surfaceContainerLow,
+      bottomNavigationBar: stacksLocked
+          ? SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.md,
+                  AppSpacing.sm,
+                  AppSpacing.md,
+                  AppSpacing.lg,
+                ),
+                child: UnlockStacksButton(
+                  onTap: () => _attemptUnlock(context),
+                ),
+              ),
+            )
+          : null,
       body: SafeArea(
         bottom: false,
         child: CustomScrollView(
@@ -494,19 +510,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               )
             else if (stacksLocked)
-              SliverFillRemaining(
-                hasScrollBody: false,
+              SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.lg * 2),
-                      child: UnlockStacksButton(
-                        onTap: () => _attemptUnlock(context),
-                      ),
-                    ),
-                  ),
+                  child: LockedStacksSkeleton(stackCount: app.lockedStackCount),
                 ),
               )
             else

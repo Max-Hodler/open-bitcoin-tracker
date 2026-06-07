@@ -27,10 +27,17 @@ class AppStateRepository {
   final SharedPreferences _prefs;
   final StacksCryptoService _crypto;
   String? _lastStacksEnc;
+  // Plaintext count stored alongside stacksEnc so the locked-state skeleton
+  // can show the right number of placeholder rows without decrypting.
+  int _lockedStackCount = 0;
 
   /// True iff the most-recently-loaded blob carried encrypted stacks. Callers
   /// that boot the lock screen rely on this to decide whether to gate the UI.
   bool get hasEncryptedStacks => _lastStacksEnc != null;
+
+  /// Number of stacks at the time they were last encrypted. Available without
+  /// the DEK so the locked-state skeleton can render the correct row count.
+  int get lockedStackCount => _lockedStackCount;
 
   AppState load() {
     final raw = _prefs.getString(storageKey);
@@ -42,6 +49,7 @@ class AppStateRepository {
       final decoded = jsonDecode(raw);
       if (decoded is Map<String, dynamic>) {
         _lastStacksEnc = decoded['stacksEnc'] as String?;
+        _lockedStackCount = decoded['lockedStackCount'] as int? ?? 0;
         return AppState.fromJson(decoded);
       }
     } on FormatException {
@@ -67,11 +75,14 @@ class AppStateRepository {
     if (dek != null) {
       final stacksJson = jsonEncode(state.stacks.map((s) => s.toJson()).toList());
       _lastStacksEnc = await _crypto.encryptString(stacksJson, dek);
+      _lockedStackCount = state.stacks.length;
       json.remove('stacks');
       json['stacksEnc'] = _lastStacksEnc;
+      json['lockedStackCount'] = _lockedStackCount;
     } else if (_lastStacksEnc != null) {
       json.remove('stacks');
       json['stacksEnc'] = _lastStacksEnc;
+      json['lockedStackCount'] = _lockedStackCount;
     }
     // else: legacy plaintext path — leave json['stacks'] as-is.
 

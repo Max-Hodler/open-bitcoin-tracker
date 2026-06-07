@@ -56,6 +56,9 @@ class AppStateNotifier extends ChangeNotifier {
   ];
 
   List<Stack> get stacks => _screenshotMode ? _screenshotStacks : _state.stacks;
+  // Stack count at the time of the last encrypt/relock, read from the repo so
+  // it survives cold starts where stacks are never decrypted into memory.
+  int get lockedStackCount => _repo.lockedStackCount;
   Currency get currency => _state.currency;
   List<Currency> get selectedCurrencies => _state.selectedCurrencies;
   bool get showPortfolio => _state.showPortfolio;
