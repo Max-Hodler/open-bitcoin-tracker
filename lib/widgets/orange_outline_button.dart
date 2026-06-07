@@ -1,0 +1,66 @@
+import 'package:flutter/material.dart';
+
+import '../services/app_haptics.dart';
+import '../theme/app_colors.dart';
+import '../theme/theme.dart';
+
+/// Full-width button with the bitcoin-orange outline style used across the app.
+/// Renders [label] text when supplied, otherwise a check icon.
+/// Dimmed and tap-blocked when [isValid] is false.
+class OrangeOutlineButton extends StatelessWidget {
+  const OrangeOutlineButton({
+    super.key,
+    required this.isValid,
+    required this.onTap,
+    this.label,
+    this.height = 64,
+  });
+
+  final bool isValid;
+  final VoidCallback onTap;
+  final String? label;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final radius = BorderRadius.circular(AppSpacing.radius);
+    return Opacity(
+      opacity: isValid ? 1.0 : 0.4,
+      child: SizedBox(
+        height: height,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.bitcoinOrangeTint,
+            borderRadius: radius,
+            border: Border.all(color: p.bitcoinOrange, width: 1),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: radius,
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: isValid
+                  ? () {
+                      AppHaptics.medium();
+                      onTap();
+                    }
+                  : null,
+              child: Center(
+                child: label == null
+                    ? Icon(Icons.check, size: 28, color: p.bitcoinOrange)
+                    : Text(
+                        label!,
+                        style: AppTypography.title.copyWith(
+                          color: p.bitcoinOrange,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

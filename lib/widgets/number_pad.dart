@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../services/app_haptics.dart';
 import '../theme/theme.dart';
+import 'orange_outline_button.dart';
 import 'soft_ink_splash.dart';
 
 Key numberPadKey(String label) => ValueKey('keypad-$label');
@@ -219,41 +220,13 @@ class _ConfirmButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p = context.palette;
-    return Opacity(
-      opacity: isValid ? 1.0 : 0.4,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 6),
-        child: SizedBox(
-          height: _kConfirmButtonHeight,
-          child: Material(
-            color: p.bitcoinOrange,
-            borderRadius: BorderRadius.circular(AppSpacing.radius),
-            clipBehavior: Clip.antiAlias,
-            child: InkWell(
-              onTap: () {
-                if (!isValid) return;
-                AppHaptics.medium();
-                onTap();
-              },
-              child: Center(
-                child: label == null
-                    ? const Icon(
-                        Icons.check,
-                        size: 28,
-                        color: Colors.white,
-                      )
-                    : Text(
-                        label!,
-                        style: AppTypography.title.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-              ),
-            ),
-          ),
-        ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: OrangeOutlineButton(
+        isValid: isValid,
+        onTap: onTap,
+        label: label,
+        height: _kConfirmButtonHeight,
       ),
     );
   }

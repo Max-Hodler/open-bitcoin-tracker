@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../services/app_haptics.dart';
 import '../../../theme/theme.dart';
+import '../../../widgets/orange_outline_button.dart';
 
 class HomeButton extends StatelessWidget {
   const HomeButton({
@@ -69,29 +70,10 @@ class AddStackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p = context.palette;
-    return SizedBox(
-      height: 64,
-      child: Material(
-        color: p.bitcoinOrange,
-        borderRadius: BorderRadius.circular(AppSpacing.radius),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap == null ? null : () {
-            AppHaptics.medium();
-            onTap!();
-          },
-          child: Center(
-            child: Text(
-              AppLocalizations.of(context).homeAddAStack,
-              style: AppTypography.title.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ),
-      ),
+    return OrangeOutlineButton(
+      isValid: true,
+      onTap: onTap ?? () {},
+      label: AppLocalizations.of(context).homeAddAStack,
     );
   }
 }
