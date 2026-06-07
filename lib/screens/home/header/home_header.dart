@@ -200,12 +200,13 @@ class _HomeHeaderState extends State<HomeHeader> {
           ),
         ),
         if (widget.showChart) ...[
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: 8),
           SizedBox(
             height: switch (chartHeight) {
               ChartHeight.compact => 136,
               ChartHeight.normal => 204,
               ChartHeight.tall => 272,
+              ChartHeight.xl => 340,
             },
             child: _buildChartArea(context, logScale: logScale),
           ),
