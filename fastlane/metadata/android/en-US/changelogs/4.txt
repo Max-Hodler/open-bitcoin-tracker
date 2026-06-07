@@ -1,0 +1,5 @@
+- Easier stack management: dedicated Stacks settings page with avatars always shown.
+- Helpful first-run hints for swipe gestures and adding stacks.
+- Better large-amount display: oversized BTC amounts scale down instead of truncating.
+- Fresher intraday charts: stale candles are now refetched automatically.
+- Updated privacy policy link and minor fixes.

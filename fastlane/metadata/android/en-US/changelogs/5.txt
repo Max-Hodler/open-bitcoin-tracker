@@ -1,0 +1,6 @@
+- New Widgets settings screen consolidating all home-screen widget options.
+- Stacks settings now hosts the Bitcoin unit toggle and lock-stacks controls.
+- Edit-stack amount screen supports Set / Add / Subtract modes.
+- BTC price settings gained section headers and a clearer chart toggle.
+- Removed the "no auto-updates" price cadence option.
+- Mempool widget title added to all non-English locales.

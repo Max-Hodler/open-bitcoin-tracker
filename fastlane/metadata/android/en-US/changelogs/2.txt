@@ -1,0 +1,3 @@
+- Historically-accurate currency charts: long-range non-USD charts now convert each day using that day's real exchange rate from a bundled ECB reference-rate dataset.
+- Tapping the live price opens BTC price settings. Currency picker moved there too.
+- Minor settings-screen tidy-up.

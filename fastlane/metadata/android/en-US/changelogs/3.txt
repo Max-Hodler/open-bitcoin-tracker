@@ -1,0 +1,4 @@
+- Stack avatars: each stack can now have its own color swatch or custom image.
+- Refreshed theming: dark themes renamed to OLED Black and Twilight Blue, charts always render in bitcoin orange.
+- Cleaner stack cards: edge-to-edge layout, refined spacing, one-tap reordering.
+- Numerous spacing, haptics, and visual polish refinements.

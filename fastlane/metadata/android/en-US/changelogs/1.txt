@@ -1,0 +1,3 @@
+First public release.
+
+Features: live BTC price, multiple stacks with PIN/biometric lock, satoshi↔fiat converter, mempool fee tracker, network hashrate chart, 10 languages, light and dark themes.
