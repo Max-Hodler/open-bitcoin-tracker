@@ -16,7 +16,6 @@ void main() {
       expect(BtcRange.w1.code, '1W');
       expect(BtcRange.m1.code, '1M');
       expect(BtcRange.m12.code, '12M');
-      expect(BtcRange.ytd.code, 'YTD');
       expect(BtcRange.y1.code, '1Y');
       expect(BtcRange.y15.code, '15Y');
       expect(BtcRange.all.code, 'All');
@@ -35,7 +34,7 @@ void main() {
         expect(r.isMonths, isTrue);
         expect(r.isYears, isFalse);
       }
-      for (final r in [BtcRange.d1, BtcRange.w1, BtcRange.ytd, BtcRange.y1,
+      for (final r in [BtcRange.d1, BtcRange.w1, BtcRange.y1,
           BtcRange.y15, BtcRange.all]) {
         expect(r.months, isNull, reason: '${r.name} is not month-shaped');
         expect(r.isMonths, isFalse);
@@ -50,7 +49,7 @@ void main() {
         expect(r.isMonths, isFalse);
       }
       for (final r in [BtcRange.d1, BtcRange.w1, BtcRange.m1, BtcRange.m12,
-          BtcRange.ytd, BtcRange.all]) {
+          BtcRange.all]) {
         expect(r.years, isNull, reason: '${r.name} is not year-shaped');
         expect(r.isYears, isFalse);
       }

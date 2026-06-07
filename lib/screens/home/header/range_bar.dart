@@ -11,9 +11,9 @@ import '../../../services/app_haptics.dart';
 import '../../../state/state.dart';
 import '../../../theme/theme.dart';
 
-// Fixed quick chips shown inline before the YTD chip. The months and years
-// overflow slots and `BtcRange.all` round out the row but are rendered
-// separately because they have their own gestures or position constraints.
+// Fixed quick chips shown inline. The months and years overflow slots and
+// `BtcRange.all` round out the row but are rendered separately because they
+// have their own gestures or position constraints.
 const List<BtcRange> _leadingQuickRanges = [
   BtcRange.d1,
   BtcRange.w1,
@@ -91,9 +91,8 @@ class RangeBar extends StatelessWidget {
       style: boldStyle,
       textScaler: textScaler,
     );
-    // Layout: 1D, 1W, <months slot>, YTD, <years slot>, All. Both overflow
-    // slots are user-customizable (long-press to change) and All sits at the
-    // end. The row distributes chips across the available width with
+    // Layout: 1D, 1W, <months slot>, <years slot>, All. Both overflow slots
+    // are user-customizable (long-press to change) and All sits at the end. The row distributes chips across the available width with
     // spaceBetween, but when natural chip widths exceed the screen (large
     // system text), it scrolls horizontally so every chip stays reachable.
     // The 20px top padding lives inside the scroll viewport so the floating
@@ -140,19 +139,6 @@ class RangeBar extends StatelessWidget {
                         chartColor: chartColor,
                         showChevron: true,
                         minLabelWidth: monthsOverflowLabelWidth,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: _RangeChipWithPct(
-                        label: _btcRangeLabel(context, BtcRange.ytd),
-                        selected: range == BtcRange.ytd,
-                        onTap: () => onRange(BtcRange.ytd),
-                        rangePct: range == BtcRange.ytd ? rangePct : null,
-                        chartColor: chartColor,
-                        minLabelWidth:
-                            labelWidth(_btcRangeLabel(context, BtcRange.ytd)),
                       ),
                     ),
                   ),
@@ -646,7 +632,6 @@ String _btcRangeLabel(BuildContext context, BtcRange r) {
     BtcRange.m10 => l10n.rangePill10M,
     BtcRange.m11 => l10n.rangePill11M,
     BtcRange.m12 => l10n.rangePill12M,
-    BtcRange.ytd => l10n.rangePillYTD,
     BtcRange.y1 => l10n.rangePill1Y,
     BtcRange.y2 => l10n.rangePill2Y,
     BtcRange.y3 => l10n.rangePill3Y,

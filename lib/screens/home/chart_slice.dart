@@ -22,13 +22,7 @@ class ChartSlicer {
       _cached = all;
       return _cached;
     }
-    final int cutoff;
-    if (range == BtcRange.ytd) {
-      final lastTs = DateTime.fromMillisecondsSinceEpoch(all.last.timeMs);
-      cutoff = DateTime(lastTs.year).millisecondsSinceEpoch;
-    } else {
-      cutoff = all.last.timeMs - _daysFor(range) * 86400000;
-    }
+    final cutoff = all.last.timeMs - _daysFor(range) * 86400000;
     var lo = 0, hi = all.length - 1, start = all.length;
     while (lo <= hi) {
       final mid = (lo + hi) >> 1;

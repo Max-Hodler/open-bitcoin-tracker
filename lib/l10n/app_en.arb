@@ -98,8 +98,6 @@
   "@rangePill11M": {"description": "Chart range pill: 11 months."},
   "rangePill12M": "12M",
   "@rangePill12M": {"description": "Chart range pill: 12 months."},
-  "rangePillYTD": "YTD",
-  "@rangePillYTD": {"description": "Chart range pill: year to date (since Jan 1 of current year)."},
   "rangePill1Y": "1Y",
   "@rangePill1Y": {"description": "Chart range pill: 1 year."},
   "rangePill2Y": "2Y",

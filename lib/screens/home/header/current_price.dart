@@ -368,7 +368,6 @@ String _formatHoverLabel(int ms, BtcRange range) {
       // renders "26 Apr, 14:32" — both DD-then-month, but month spelling and
       // capitalisation diverge.
       return '${DateFormat.MMMd().format(d)}, ${DateFormat.Hm().format(d)}';
-    case BtcRange.ytd:
     case BtcRange.y1:
     case BtcRange.y2:
     case BtcRange.y3:
