@@ -14,18 +14,18 @@ Download the latest APK from the [Releases](https://github.com/Max-Hodler/open-b
 
 ## Features
 
-- **Live BTC price** — Updated in real time.
-- **Stacks** — Organize your Bitcoin into multiple labeled portfolios (e.g. "My Wallet", "Kids", "Mum").
-- **Converter** — Instantly convert between satoshis and any supported fiat currency with a full numeric keypad.
-- **Mempool** — Live feed of the next pending blocks to keep an eye on the current median fee.
-- **Hashrate** — Network hashrate chart so you can track Bitcoin's network security.
-- **Themes** — Light and Dark modes with 4 themes in total.
-- **Languages** — Available in Deutsch, English, Español, Français, Italiano, Português, Türkçe, Tiếng Việt, Русский, and 日本語.
+- **Live BTC price**: Updated in real time.
+- **Stacks**: Organize your Bitcoin into multiple labeled portfolios (e.g. "My Wallet", "Kids", "Mum").
+- **Converter**: Instantly convert between satoshis and any supported fiat currency with a full numeric keypad.
+- **Mempool**: Live feed of the next pending blocks to keep an eye on the current median fee.
+- **Hashrate**: Network hashrate chart so you can track Bitcoin's network security.
+- **Themes**: Light and Dark modes with 4 themes in total.
+- **Languages**: Available in Deutsch, English, Español, Français, Italiano, Português, Türkçe, Tiếng Việt, Русский, and 日本語.
 
 ## Privacy & security
 
-- **No public keys** — You don't need to enter your bitcoin public keys.
-- **Private viewing** — Lock your stacks with a PIN or biometrics so you can check the price without revealing your holdings.
+- **No public keys**: You don't need to enter your bitcoin public keys.
+- **Private viewing**: Lock your stacks with a PIN or biometrics so you can check the price without revealing your holdings.
 - **No accounts, no servers.** The app fetches the current bitcoin price from Kraken and nothing else. There's no login, no cloud sync, no analytics, and no telemetry.
 - **No tracking.** The app does not collect, transmit, or share any personal information.
 

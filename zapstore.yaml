@@ -4,16 +4,15 @@ pubkey: npub1h77ymedug8wrss70h7h9wzmhyj3wx4lhdne5q6kej4uc88u5jucq9pek75
 name: Open Bitcoin Tracker
 summary: A private, open-source value tracker for your bitcoin stacks
 description: |
-  Open Bitcoin Tracker is a private, open-source app for tracking the value of
-  your bitcoin stacks. Your data stays on your device — there are no accounts,
-  no tracking, and no servers holding your holdings.
+  Open source bitcoin portfolio tracker.
 
   Features:
-  - Track multiple bitcoin stacks and see their combined value
-  - Historically-accurate value charts in your local currency
-  - Per-stack avatars and theming
-  - On-device encryption with biometric unlock
-  - Fully open source, no ads, no telemetry
+  - Total privacy: The amount in each stack is entered by hand and never leaves your phone.
+  - Fast and lightweight: OBT doesn't connect to a node so it loads fast and has minimal battery impact.
+  - Handy converter: bitcoin to sats and fiat.
+  - Multiple languages and currencies.
+  - Auto Light and Dark modes.
+
 
 license: MIT
 website: https://openbitcointracker.com
@@ -22,7 +21,6 @@ tags:
   - bitcoin
   - finance
   - privacy
-  - nostr
 
 icon: ./assets/icon/app_icon.png
 
