@@ -7,11 +7,11 @@ description: |
   Open source bitcoin portfolio tracker.
 
   Features:
-  - Total privacy: The amount in each stack is entered by hand and never leaves your phone.
+  - Total privacy: Stacks are entered manually and they never leave your phone. OBT is not a wallet, it's a price tracker.
   - Fast and lightweight: OBT doesn't connect to a node so it loads fast and has minimal battery impact.
   - Handy converter: bitcoin to sats and fiat.
   - Multiple languages and currencies.
-  - Auto Light and Dark modes.
+  - Light and Dark modes.
 
 
 license: MIT
