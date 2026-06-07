@@ -188,7 +188,8 @@ class RangeBar extends StatelessWidget {
                         onTap: () => onRange(BtcRange.all),
                         chartColor: chartColor,
                         minLabelWidth:
-                            labelWidth(_btcRangeLabel(context, BtcRange.all)),
+                            labelWidth(_btcRangeLabel(context, BtcRange.all)) +
+                            18,
                       ),
                     ),
                   ),
