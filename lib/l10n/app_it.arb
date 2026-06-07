@@ -175,6 +175,8 @@
   "homeChangePillsHint": "Scorri uno stack verso destra per vedere come è cambiato il suo valore nel tempo.",
   "homeChangePillsHintDismiss": "Ho capito",
   "homeAddStackHint": "Tocca uno stack per aggiungerne un altro.",
+  "homeRangeChipHint": "Tieni premuto un chip per cambiare il suo intervallo.",
+  "homeSwipeChipHint": "Puoi anche scorrere su o giù su un intervallo per cambiarlo.",
   "homeConverter": "Convertitore",
   "homeUnlockStacks": "Sblocca Stacks",
 

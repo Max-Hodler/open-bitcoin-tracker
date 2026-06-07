@@ -44,6 +44,8 @@ class AppState {
     this.totalColorKey,
     this.changePillsHintDismissed = false,
     this.addStackHintDismissed = false,
+    this.rangeChipHintDismissed = false,
+    this.swipeChipHintDismissed = false,
   });
 
   final List<Stack> stacks;
@@ -129,6 +131,14 @@ class AppState {
   // stack by tapping an existing one to open its menu. Shown only after
   // [changePillsHintDismissed] so the two hints teach in sequence, not at once.
   final bool addStackHintDismissed;
+  // True once the user long-presses any range chip for the first time, or the
+  // hint text is dismissed. The hint sits below the chip row and teaches that
+  // long-pressing opens the range picker for that chip slot.
+  final bool rangeChipHintDismissed;
+  // True once the user swipes up or down on any range chip for the first time.
+  // The hint (shown after [rangeChipHintDismissed]) teaches the swipe-to-cycle
+  // shortcut. Shown only after the long-press hint has been dismissed.
+  final bool swipeChipHintDismissed;
   AppState copyWith({
     List<Stack>? stacks,
     Currency? currency,
@@ -168,6 +178,8 @@ class AppState {
     bool clearTotalColor = false,
     bool? changePillsHintDismissed,
     bool? addStackHintDismissed,
+    bool? rangeChipHintDismissed,
+    bool? swipeChipHintDismissed,
   }) {
     return AppState(
       stacks: stacks ?? this.stacks,
@@ -218,6 +230,10 @@ class AppState {
           changePillsHintDismissed ?? this.changePillsHintDismissed,
       addStackHintDismissed:
           addStackHintDismissed ?? this.addStackHintDismissed,
+      rangeChipHintDismissed:
+          rangeChipHintDismissed ?? this.rangeChipHintDismissed,
+      swipeChipHintDismissed:
+          swipeChipHintDismissed ?? this.swipeChipHintDismissed,
     );
   }
 
@@ -262,6 +278,8 @@ class AppState {
         if (totalColorKey != null) 'totalColorKey': totalColorKey,
         'changePillsHintDismissed': changePillsHintDismissed,
         'addStackHintDismissed': addStackHintDismissed,
+        'rangeChipHintDismissed': rangeChipHintDismissed,
+        'swipeChipHintDismissed': swipeChipHintDismissed,
       };
 
   factory AppState.fromJson(Map<String, dynamic> json) {
@@ -361,6 +379,10 @@ class AppState {
       changePillsHintDismissed:
           json['changePillsHintDismissed'] as bool? ?? false,
       addStackHintDismissed: json['addStackHintDismissed'] as bool? ?? false,
+      rangeChipHintDismissed:
+          json['rangeChipHintDismissed'] as bool? ?? false,
+      swipeChipHintDismissed:
+          json['swipeChipHintDismissed'] as bool? ?? false,
     );
   }
 

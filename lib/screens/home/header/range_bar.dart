@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/app_enums.dart';
@@ -25,13 +24,11 @@ class RangeBar extends StatelessWidget {
     super.key,
     required this.range,
     required this.onRange,
-    this.rangePct,
     required this.chartColor,
   });
 
   final BtcRange range;
   final ValueChanged<BtcRange> onRange;
-  final double? rangePct;
   final Color chartColor;
 
   @override
@@ -109,18 +106,15 @@ class RangeBar extends StatelessWidget {
     // are user-customizable (long-press to change) and All sits at the end. The row distributes chips across the available width with
     // spaceBetween, but when natural chip widths exceed the screen (large
     // system text), it scrolls horizontally so every chip stays reachable.
-    // The 20px top padding lives inside the scroll viewport so the floating
-    // "+18K%" label (Positioned top: -15 in `_RangeChipWithPct`) isn't
-    // clipped by the viewport edge.
     const horizontalPadding = AppSpacing.md;
     return SizedBox(
-      height: 20 + chipHeight,
+      height: chipHeight,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final innerWidth = constraints.maxWidth - horizontalPadding * 2;
           return Padding(
             padding: const EdgeInsets.fromLTRB(
-              horizontalPadding, 20, horizontalPadding, 0,
+              horizontalPadding, 0, horizontalPadding, 0,
             ),
             child: SizedBox(
               width: innerWidth,
@@ -136,7 +130,6 @@ class RangeBar extends StatelessWidget {
                         onLongPress: () => _showDaysOverflowSlotPicker(context),
                         onSwipeUp: () => _stepDaysOverflowSlot(context, 1),
                         onSwipeDown: () => _stepDaysOverflowSlot(context, -1),
-                        rangePct: range == daysOverflowSlot ? rangePct : null,
                         chartColor: chartColor,
                         showChevron: true,
                         minLabelWidth: daysOverflowLabelWidth,
@@ -152,7 +145,6 @@ class RangeBar extends StatelessWidget {
                         onLongPress: () => _showWeeksOverflowSlotPicker(context),
                         onSwipeUp: () => _stepWeeksOverflowSlot(context, 1),
                         onSwipeDown: () => _stepWeeksOverflowSlot(context, -1),
-                        rangePct: range == weeksOverflowSlot ? rangePct : null,
                         chartColor: chartColor,
                         showChevron: true,
                         minLabelWidth: weeksOverflowLabelWidth,
@@ -168,7 +160,6 @@ class RangeBar extends StatelessWidget {
                         onLongPress: () => _showMonthsOverflowSlotPicker(context),
                         onSwipeUp: () => _stepMonthsOverflowSlot(context, 1),
                         onSwipeDown: () => _stepMonthsOverflowSlot(context, -1),
-                        rangePct: range == monthsOverflowSlot ? rangePct : null,
                         chartColor: chartColor,
                         showChevron: true,
                         minLabelWidth: monthsOverflowLabelWidth,
@@ -184,7 +175,6 @@ class RangeBar extends StatelessWidget {
                         onLongPress: () => _showOverflowSlotPicker(context),
                         onSwipeUp: () => _stepOverflowSlot(context, 1),
                         onSwipeDown: () => _stepOverflowSlot(context, -1),
-                        rangePct: range == overflowSlot ? rangePct : null,
                         chartColor: chartColor,
                         showChevron: true,
                         minLabelWidth: overflowLabelWidth,
@@ -197,7 +187,6 @@ class RangeBar extends StatelessWidget {
                         label: _btcRangeLabel(context, BtcRange.all),
                         selected: range == BtcRange.all,
                         onTap: () => onRange(BtcRange.all),
-                        rangePct: range == BtcRange.all ? rangePct : null,
                         chartColor: chartColor,
                         minLabelWidth:
                             labelWidth(_btcRangeLabel(context, BtcRange.all)),
@@ -215,6 +204,7 @@ class RangeBar extends StatelessWidget {
 
   Future<void> _showDaysOverflowSlotPicker(BuildContext context) async {
     final app = context.read<AppStateNotifier>();
+    app.dismissRangeChipHint();
     final current = app.daysOverflowQuickRange;
     final picked = await showDialog<BtcRange>(
       context: context,
@@ -266,6 +256,7 @@ class RangeBar extends StatelessWidget {
 
   void _stepDaysOverflowSlot(BuildContext context, int step) {
     final app = context.read<AppStateNotifier>();
+    app.dismissSwipeChipHint();
     final current = app.daysOverflowQuickRange;
     final ranges = _overflowDaysRanges;
     final i = ranges.indexOf(current);
@@ -279,6 +270,7 @@ class RangeBar extends StatelessWidget {
 
   Future<void> _showWeeksOverflowSlotPicker(BuildContext context) async {
     final app = context.read<AppStateNotifier>();
+    app.dismissRangeChipHint();
     final current = app.weeksOverflowQuickRange;
     final picked = await showDialog<BtcRange>(
       context: context,
@@ -330,6 +322,7 @@ class RangeBar extends StatelessWidget {
 
   void _stepWeeksOverflowSlot(BuildContext context, int step) {
     final app = context.read<AppStateNotifier>();
+    app.dismissSwipeChipHint();
     final current = app.weeksOverflowQuickRange;
     final ranges = _overflowWeeksRanges;
     final i = ranges.indexOf(current);
@@ -343,6 +336,7 @@ class RangeBar extends StatelessWidget {
 
   Future<void> _showOverflowSlotPicker(BuildContext context) async {
     final app = context.read<AppStateNotifier>();
+    app.dismissRangeChipHint();
     final current = app.overflowQuickRange;
     final picked = await showDialog<BtcRange>(
       context: context,
@@ -397,6 +391,7 @@ class RangeBar extends StatelessWidget {
   // next-shorter; mirrors the picker side-effect of also activating it.
   void _stepOverflowSlot(BuildContext context, int step) {
     final app = context.read<AppStateNotifier>();
+    app.dismissSwipeChipHint();
     final current = app.overflowQuickRange;
     final ranges = _overflowMenuRanges;
     final i = ranges.indexOf(current);
@@ -412,6 +407,7 @@ class RangeBar extends StatelessWidget {
 
   Future<void> _showMonthsOverflowSlotPicker(BuildContext context) async {
     final app = context.read<AppStateNotifier>();
+    app.dismissRangeChipHint();
     final current = app.monthsOverflowQuickRange;
     final picked = await showDialog<BtcRange>(
       context: context,
@@ -463,6 +459,7 @@ class RangeBar extends StatelessWidget {
 
   void _stepMonthsOverflowSlot(BuildContext context, int step) {
     final app = context.read<AppStateNotifier>();
+    app.dismissSwipeChipHint();
     final current = app.monthsOverflowQuickRange;
     final ranges = _overflowMonthsRanges;
     final i = ranges.indexOf(current);
@@ -481,7 +478,6 @@ class _RangeChipWithPct extends StatelessWidget {
     required this.selected,
     required this.onTap,
     required this.chartColor,
-    this.rangePct,
     this.onLongPress,
     this.onSwipeUp,
     this.onSwipeDown,
@@ -492,7 +488,6 @@ class _RangeChipWithPct extends StatelessWidget {
   final String label;
   final bool selected;
   final VoidCallback onTap;
-  final double? rangePct;
   final Color chartColor;
   final VoidCallback? onLongPress;
   final VoidCallback? onSwipeUp;
@@ -502,34 +497,17 @@ class _RangeChipWithPct extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.center,
-      children: [
-        _Chip(
-          label: label,
-          selected: selected,
-          onTap: onTap,
-          onLongPress: onLongPress,
-          onSwipeUp: onSwipeUp,
-          onSwipeDown: onSwipeDown,
-          compact: true,
-          showChevron: showChevron,
-          minLabelWidth: minLabelWidth,
-        ),
-        if (rangePct != null)
-          Positioned(
-            top: -15,
-            child: Text(
-              _formatRangePct(rangePct!),
-              style: AppTypography.body.copyWith(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: chartColor,
-              ),
-            ),
-          ),
-      ],
+    return _Chip(
+      label: label,
+      selected: selected,
+      onTap: onTap,
+      onLongPress: onLongPress,
+      onSwipeUp: onSwipeUp,
+      onSwipeDown: onSwipeDown,
+      compact: true,
+      showChevron: showChevron,
+      selectedColor: chartColor,
+      minLabelWidth: minLabelWidth,
     );
   }
 }
@@ -544,6 +522,7 @@ class _Chip extends StatefulWidget {
     this.onSwipeDown,
     this.compact = false,
     this.showChevron = false,
+    this.selectedColor,
     this.minLabelWidth,
   });
 
@@ -561,6 +540,9 @@ class _Chip extends StatefulWidget {
   // menu." Used on the overflow range slot so the picker affordance is
   // visible.
   final bool showChevron;
+  // When set, overrides the selected-state text/icon color (defaults to
+  // cs.onSurface). Used to tint the active chip orange to match the chart.
+  final Color? selectedColor;
   // Width floor for the label text. The overflow chip cycles through labels of
   // varying widths (1Y..15Y) and uses this to keep its size stable so the row
   // doesn't reflow on each cycle.
@@ -626,6 +608,9 @@ class _ChipState extends State<_Chip> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final activeColor = widget.selected
+        ? (widget.selectedColor ?? cs.onSurface)
+        : cs.onSurfaceVariant;
     final hasSwipe = widget.onSwipeUp != null || widget.onSwipeDown != null;
     Widget core = GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -666,9 +651,7 @@ class _ChipState extends State<_Chip> {
                           fontSize: 14,
                           fontWeight:
                               widget.selected ? FontWeight.w600 : null,
-                          color: widget.selected
-                              ? cs.onSurface
-                              : cs.onSurfaceVariant,
+                          color: activeColor,
                         ),
                       ),
                       if (widget.showChevron)
@@ -677,9 +660,7 @@ class _ChipState extends State<_Chip> {
                           child: Icon(
                             Icons.unfold_more,
                             size: 16,
-                            color: widget.selected
-                                ? cs.onSurface
-                                : cs.onSurfaceVariant,
+                            color: activeColor,
                           ),
                         ),
                     ],
@@ -703,9 +684,7 @@ class _ChipState extends State<_Chip> {
               const SizedBox(height: 3),
               Container(
                 height: 1,
-                color: widget.selected
-                    ? cs.onSurfaceVariant
-                    : Colors.transparent,
+                color: widget.selected ? activeColor : Colors.transparent,
               ),
             ],
           ),
@@ -852,34 +831,3 @@ String _btcRangeLongLabel(BuildContext context, BtcRange r) {
   return AppLocalizations.of(context).rangePickerYearsFull(years);
 }
 
-String _formatRangePct(double pct) {
-  final sign = pct < 0 ? '-' : '+';
-  final abs = pct.abs();
-  final locale = Intl.defaultLocale;
-  if (abs >= 1000000) {
-    return '$sign${(abs / 1000000).round()}M%';
-  }
-  if (abs >= 1000) {
-    return '$sign${(abs / 1000).round()}K%';
-  }
-  if (abs >= 0.5) {
-    return '$sign${NumberFormat('#,##0', locale).format(abs.round())}%';
-  }
-  if (abs == 0) {
-    return '+0.0%';
-  }
-  var decimals = 1;
-  while (decimals < 8 && (abs * _pow10(decimals)).round() == 0) {
-    decimals++;
-  }
-  final pattern = '#,##0.${'0' * decimals}';
-  return '$sign${NumberFormat(pattern, locale).format(abs)}%';
-}
-
-int _pow10(int n) {
-  var v = 1;
-  for (var i = 0; i < n; i++) {
-    v *= 10;
-  }
-  return v;
-}

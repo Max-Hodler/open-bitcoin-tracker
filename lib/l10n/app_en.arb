@@ -572,6 +572,14 @@
   "@homeAddStackHint": {
     "description": "One-time hint shown below the stack list on home (after the swipe hint is dismissed), explaining that tapping an existing stack opens a menu from which another stack can be added. Dismissed permanently with the shared Got it button."
   },
+  "homeRangeChipHint": "Hold a chip to change its range.",
+  "@homeRangeChipHint": {
+    "description": "One-time hint shown below the chart range chips, teaching that long-pressing a chip opens a picker to change which range it shows. Disappears permanently after the user long-presses any chip for the first time."
+  },
+  "homeSwipeChipHint": "You can also swipe up or down on a range to change it.",
+  "@homeSwipeChipHint": {
+    "description": "One-time hint shown below the chart range chips after the long-press hint is dismissed, teaching the swipe-to-cycle shortcut. Disappears permanently after the user swipes any chip for the first time."
+  },
   "homeConverter": "Converter",
   "@homeConverter": {
     "description": "Label of the Converter shortcut button on the home screen."

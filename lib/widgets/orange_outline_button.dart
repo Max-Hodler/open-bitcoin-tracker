@@ -37,7 +37,7 @@ class OrangeOutlineButton extends StatelessWidget {
           ),
           child: Material(
             color: Colors.transparent,
-            borderRadius: radius,
+            shape: RoundedRectangleBorder(borderRadius: radius),
             clipBehavior: Clip.antiAlias,
             child: InkWell(
               onTap: isValid

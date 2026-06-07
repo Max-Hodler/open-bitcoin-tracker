@@ -175,6 +175,8 @@
   "homeChangePillsHint": "Balayez un stack vers la droite pour voir l'évolution de sa valeur dans le temps.",
   "homeChangePillsHintDismiss": "Compris",
   "homeAddStackHint": "Touchez un stack pour en ajouter un autre.",
+  "homeRangeChipHint": "Maintenez appuyé une puce pour changer sa plage.",
+  "homeSwipeChipHint": "Vous pouvez aussi glisser vers le haut ou le bas sur une période pour la changer.",
   "homeConverter": "Convertisseur",
   "homeUnlockStacks": "Déverrouiller les Stacks",
 

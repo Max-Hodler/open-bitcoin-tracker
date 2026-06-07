@@ -26,7 +26,9 @@ class CurrentPrice extends StatefulWidget {
     required this.rollDirection,
     required this.onPriceTap,
     required this.onCurrencySwipe,
+    required this.chartColor,
     this.rangePct,
+    this.rangeAbsDiff,
   });
 
   final double price;
@@ -41,7 +43,9 @@ class CurrentPrice extends StatefulWidget {
   final int rollDirection;
   final VoidCallback onPriceTap;
   final ValueChanged<int> onCurrencySwipe;
+  final Color chartColor;
   final double? rangePct;
+  final double? rangeAbsDiff;
 
   @override
   State<CurrentPrice> createState() => _CurrentPriceState();
@@ -287,6 +291,8 @@ class _CurrentPriceState extends State<CurrentPrice>
                 deltaValue: showDelta ? _deltaValue : null,
                 currency: widget.currency,
                 fade: _deltaFade,
+                rangePct: h == null ? widget.rangePct : null,
+                rangeAbsDiff: h == null ? widget.rangeAbsDiff : null,
               ),
             ],
           ),
@@ -297,21 +303,24 @@ class _CurrentPriceState extends State<CurrentPrice>
 }
 
 /// Subtitle line below the live price. Shows the hover timestamp while the
-/// user scrubs the chart, otherwise fades the signed price delta in/out
-/// tinted green or red. When neither is active, renders an empty line so the
-/// column height stays stable.
+/// user scrubs the chart, the signed price delta when a tick arrives, the
+/// range % change when idle, or an empty line so the column height stays stable.
 class _PriceSubtitle extends StatelessWidget {
   const _PriceSubtitle({
     required this.hoverLabel,
     required this.deltaValue,
     required this.currency,
     required this.fade,
+    required this.rangePct,
+    required this.rangeAbsDiff,
   });
 
   final String? hoverLabel;
   final double? deltaValue;
   final Currency currency;
   final Animation<double> fade;
+  final double? rangePct;
+  final double? rangeAbsDiff;
 
   @override
   Widget build(BuildContext context) {
@@ -323,27 +332,90 @@ class _PriceSubtitle extends StatelessWidget {
     if (hoverLabel != null) {
       return Text(hoverLabel!, style: baseStyle);
     }
-    if (deltaValue == null) {
-      return Text('', style: baseStyle);
+
+    Widget? deltaWidget;
+    if (deltaValue != null) {
+      final p = context.palette;
+      final isPositive = deltaValue! >= 0;
+      final color = isPositive ? p.priceUp : p.priceDown;
+      final symbol = currencySymbols[currency] ?? r'$';
+      final amount = NumberFormat('#,##0.00', Intl.defaultLocale)
+          .format(deltaValue!.abs());
+      const sp = ' ';
+      final body = '${isPositive ? '+' : '-'}'
+          '${symbolAfterAmount ? '$amount$sp$symbol' : '$symbol$sp$amount'}';
+      deltaWidget = AnimatedBuilder(
+        animation: fade,
+        builder: (context, _) {
+          return Opacity(
+            opacity: Curves.easeOut.transform(fade.value),
+            child: Text(body, style: baseStyle.copyWith(color: color)),
+          );
+        },
+      );
     }
-    final p = context.palette;
-    final isPositive = deltaValue! >= 0;
-    final color = isPositive ? p.priceUp : p.priceDown;
-    final symbol = currencySymbols[currency] ?? r'$';
-    final amount = NumberFormat('#,##0.00', Intl.defaultLocale)
-        .format(deltaValue!.abs());
-    final body = '${isPositive ? '+' : '-'}'
-        '${symbolAfterAmount ? '$amount$symbol' : '$symbol$amount'}';
-    return AnimatedBuilder(
-      animation: fade,
-      builder: (context, _) {
-        return Opacity(
-          opacity: Curves.easeOut.transform(fade.value),
-          child: Text(body, style: baseStyle.copyWith(color: color)),
-        );
-      },
-    );
+
+    if (rangeAbsDiff != null || rangePct != null) {
+      final absPart = rangeAbsDiff != null
+          ? _formatRangeAbsDiff(rangeAbsDiff!, currency)
+          : '';
+      final pctPart = rangePct != null ? _formatRangePct(rangePct!) : '';
+      final label = absPart.isNotEmpty && pctPart.isNotEmpty
+          ? '$absPart ($pctPart)'
+          : absPart.isNotEmpty
+              ? absPart
+              : pctPart;
+      if (deltaWidget == null) {
+        return Text(label, style: baseStyle);
+      }
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(label, style: baseStyle),
+          const SizedBox(width: 8),
+          deltaWidget,
+        ],
+      );
+    }
+
+    if (deltaWidget != null) return deltaWidget;
+    return Text('', style: baseStyle);
   }
+}
+
+String _formatRangeAbsDiff(double diff, Currency currency) {
+  const sp = ' ';
+  final sign = diff >= 0 ? '+' : '-';
+  final abs = diff.abs();
+  final symbol = currencySymbols[currency] ?? r'$';
+  final formatted = NumberFormat('#,##0', Intl.defaultLocale).format(abs.round());
+  final after = symbolAfterAmount;
+  return '$sign${after ? '$formatted$sp$symbol' : '$symbol$sp$formatted'}';
+}
+
+String _formatRangePct(double pct) {
+  final sign = pct < 0 ? '-' : '+';
+  final abs = pct.abs();
+  final locale = Intl.defaultLocale;
+  if (abs >= 1000000) return '$sign${(abs / 1000000).round()}M%';
+  if (abs >= 1000) return '$sign${(abs / 1000).round()}K%';
+  if (abs >= 0.5) {
+    return '$sign${NumberFormat('#,##0', locale).format(abs.round())}%';
+  }
+  if (abs == 0) return '+0.0%';
+  var decimals = 1;
+  while (decimals < 8 && (abs * _pow10(decimals)).round() == 0) {
+    decimals++;
+  }
+  return '$sign${NumberFormat('#,##0.${'0' * decimals}', locale).format(abs)}%';
+}
+
+int _pow10(int n) {
+  var v = 1;
+  for (var i = 0; i < n; i++) {
+    v *= 10;
+  }
+  return v;
 }
 
 String _formatHoverLabel(int ms, BtcRange range) {

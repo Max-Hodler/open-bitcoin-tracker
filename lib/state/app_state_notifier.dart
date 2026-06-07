@@ -61,6 +61,8 @@ class AppStateNotifier extends ChangeNotifier {
   bool get showPortfolio => _state.showPortfolio;
   bool get changePillsHintDismissed => _state.changePillsHintDismissed;
   bool get addStackHintDismissed => _state.addStackHintDismissed;
+  bool get rangeChipHintDismissed => _state.rangeChipHintDismissed;
+  bool get swipeChipHintDismissed => _state.swipeChipHintDismissed;
   bool get showMempool => _state.showMempool;
   bool get mempoolBlocksReversed => _state.mempoolBlocksReversed;
   bool get showHashrate => _state.showHashrate;
@@ -169,6 +171,10 @@ class AppStateNotifier extends ChangeNotifier {
       _update((s) => s.copyWith(changePillsHintDismissed: true));
   void dismissAddStackHint() =>
       _update((s) => s.copyWith(addStackHintDismissed: true));
+  void dismissRangeChipHint() =>
+      _update((s) => s.copyWith(rangeChipHintDismissed: true));
+  void dismissSwipeChipHint() =>
+      _update((s) => s.copyWith(swipeChipHintDismissed: true));
   void setShowMempool(bool value) => _update((s) => s.copyWith(showMempool: value));
   void setMempoolBlocksReversed(bool value) =>
       _update((s) => s.copyWith(mempoolBlocksReversed: value));

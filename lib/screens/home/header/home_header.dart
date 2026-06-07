@@ -92,6 +92,7 @@ class HomeHeader extends StatefulWidget {
     required this.selectedCurrencies,
     required this.chartColor,
     required this.rangePct,
+    required this.rangeAbsDiff,
     required this.rollDirection,
     required this.onPriceTap,
     required this.onCurrencySwipe,
@@ -120,6 +121,7 @@ class HomeHeader extends StatefulWidget {
   final List<Currency> selectedCurrencies;
   final Color chartColor;
   final double? rangePct;
+  final double? rangeAbsDiff;
   final int rollDirection;
   final VoidCallback onPriceTap;
   final ValueChanged<int> onCurrencySwipe;
@@ -185,9 +187,11 @@ class _HomeHeaderState extends State<HomeHeader> {
                   currency: widget.currency,
                   selectedCurrencies: widget.selectedCurrencies,
                   rangePct: widget.rangePct,
+                  rangeAbsDiff: widget.rangeAbsDiff,
                   rollDirection: widget.rollDirection,
                   onPriceTap: widget.onPriceTap,
                   onCurrencySwipe: widget.onCurrencySwipe,
+                  chartColor: widget.chartColor,
                 ),
               ),
               ?buttonsRow,
@@ -206,12 +210,49 @@ class _HomeHeaderState extends State<HomeHeader> {
           ),
           RangeBar(
             range: widget.range,
-            rangePct: widget.rangePct,
             chartColor: widget.chartColor,
             onRange: widget.onRange,
           ),
+          _buildChipHint(context),
         ],
       ],
+    );
+  }
+
+  Widget _buildChipHint(BuildContext context) {
+    final rangeHintDismissed = context.select<AppStateNotifier, bool>(
+        (a) => a.rangeChipHintDismissed);
+    final swipeHintDismissed = context.select<AppStateNotifier, bool>(
+        (a) => a.swipeChipHintDismissed);
+    final String? message;
+    if (!rangeHintDismissed) {
+      message = AppLocalizations.of(context).homeRangeChipHint;
+    } else if (!swipeHintDismissed) {
+      message = AppLocalizations.of(context).homeSwipeChipHint;
+    } else {
+      message = null;
+    }
+    // Always reserve the same vertical space so the header height — and
+    // therefore the Add Stack button position — never shifts when the hint
+    // appears or disappears.
+    return SizedBox(
+      height: AppSpacing.sm + 36,
+      child: message == null
+          ? null
+          : Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.md, AppSpacing.sm, AppSpacing.md, 0,
+              ),
+              child: Text(
+                message,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                style: AppTypography.body.copyWith(
+                  fontSize: 13,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
     );
   }
 

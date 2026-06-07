@@ -252,8 +252,11 @@ class _HomeScreenState extends State<HomeScreen> {
     // The price chart, delta text and range-pill percentages are always
     // bitcoin orange — we no longer tint them green/red by direction.
     final chartColor = p.bitcoinOrange;
-    final rangePct = chartData.length >= 2 && chartData.first.price > 0
-        ? (chartData.last.price - chartData.first.price) / chartData.first.price * 100
+    final rangeAbsDiff = chartData.length >= 2
+        ? chartData.last.price - chartData.first.price
+        : null;
+    final rangePct = rangeAbsDiff != null && chartData.first.price > 0
+        ? rangeAbsDiff / chartData.first.price * 100
         : null;
 
     final stacks = app.stacks;
@@ -294,6 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
       selectedCurrencies: app.selectedCurrencies,
       chartColor: chartColor,
       rangePct: rangePct,
+      rangeAbsDiff: rangeAbsDiff,
       rollDirection: _rollDirection,
       onPriceTap: () => Navigator.of(context).push<void>(
         MaterialPageRoute<void>(
