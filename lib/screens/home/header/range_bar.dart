@@ -39,14 +39,13 @@ class RangeBar extends StatelessWidget {
     final overflowSlot = app.overflowQuickRange;
     final monthsOverflowSlot = app.monthsOverflowQuickRange;
     final textScaler = MediaQuery.textScalerOf(context);
-    // 1.4 line-height factor (AppTypography.body actual) + 16 padding + 3 spacer
-    // + 1px underline + 4px slack so the inner Column never overflows by sub-pixel
-    // amounts at very large text scales. The chevron icon (24px on the
-    // overflow chip) drives the row height when system text is small, so we
-    // floor on it — without that, the icon overflows the column by ~0.4px at
-    // textScale=1.0.
+    // 1.4 line-height factor (AppTypography.body actual) + 16 padding + 4px
+    // slack so the inner Column never overflows by sub-pixel amounts at very
+    // large text scales. The chevron icon (24px on the overflow chip) drives
+    // the row height when system text is small, so we floor on it — without
+    // that, the icon overflows the column by ~0.4px at textScale=1.0.
     final labelRow = math.max<double>(textScaler.scale(14) * 1.4, 24);
-    final chipHeight = labelRow + 16 + 3 + 1 + 4;
+    final chipHeight = labelRow + 16 + 4;
     // Width floor for each chip's label. Two reasons we need this:
     //   1. Selecting a chip flips its weight to w600, which is wider than the
     //      regular weight — so without a floor the chip grows on selection
@@ -680,11 +679,6 @@ class _ChipState extends State<_Chip> {
                       minW + (widget.showChevron ? 18 : 0) + 1;
                   return SizedBox(width: slotWidth, child: row);
                 },
-              ),
-              const SizedBox(height: 3),
-              Container(
-                height: 1,
-                color: widget.selected ? activeColor : Colors.transparent,
               ),
             ],
           ),
