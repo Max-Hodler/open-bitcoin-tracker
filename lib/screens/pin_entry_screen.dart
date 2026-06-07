@@ -9,6 +9,7 @@ import '../services/app_haptics.dart';
 import '../services/stacks_auth_service.dart';
 import '../services/stacks_crypto_service.dart';
 import '../services/stacks_unlock_orchestrator.dart';
+import '../state/stacks_lock_controller.dart';
 import '../theme/theme.dart';
 import '../widgets/cancel_bar.dart';
 import '../widgets/number_pad.dart';
@@ -196,6 +197,11 @@ class _PinEntryScreenState extends State<PinEntryScreen>
     if (!mounted) return;
     switch (outcome) {
       case UnlockOutcome.success:
+        // Unlock immediately so the home screen rebuilds while the pop
+        // animation is still running — the user sees stacks as the PIN
+        // screen slides away instead of after it fully dismisses.
+        AppHaptics.medium();
+        context.read<StacksLockController>().unlock();
         Navigator.of(context).pop(true);
       case UnlockOutcome.wrongCredential:
         await _registerWrongPin();

@@ -664,10 +664,8 @@ class _HomeScreenState extends State<HomeScreen> {
       _handleCorruptStacks(messenger, l10n);
       return;
     }
-    if (result == true) {
-      AppHaptics.medium();
-      lock.unlock();
-    }
+    // Unlock and haptic already fired in PinEntryScreen._handleVerify so
+    // the home screen updates during the pop animation. Nothing to do here.
   }
 
   Future<void> _onAddStackTap() async {
