@@ -447,10 +447,8 @@ String _formatHoverLabel(int ms, BtcRange range) {
     case BtcRange.m10:
     case BtcRange.m11:
     case BtcRange.m12:
-      // Skeleton-driven so es_ES renders e.g. "26 abr, 14:32" while en_GB
-      // renders "26 Apr, 14:32" — both DD-then-month, but month spelling and
-      // capitalisation diverge.
-      return '${DateFormat.MMMd().format(d)}, ${DateFormat.Hm().format(d)}';
+      // Full month name, no time — day precision is enough for week/month ranges.
+      return DateFormat.MMMMd().format(d);
     case BtcRange.y1:
     case BtcRange.y2:
     case BtcRange.y3:
