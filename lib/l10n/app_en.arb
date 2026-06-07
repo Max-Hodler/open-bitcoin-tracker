@@ -187,14 +187,6 @@
       "version": {"type": "String", "example": "1.0.0"}
     }
   },
-  "aboutMadeBy": "By Max Hodler",
-  "@aboutMadeBy": {
-    "description": "Author credit line on the About screen. Always renders the author's name unchanged."
-  },
-  "aboutDedication": "For my grandma 🌼",
-  "@aboutDedication": {
-    "description": "Personal dedication shown below the author credit on the About screen. Translators should use a natural, affectionate term for grandmother and keep the flower emoji at the end."
-  },
   "aboutSectionLinks": "Links",
   "@aboutSectionLinks": {
     "description": "Section header on the About screen above external links (project website, privacy policy, etc.)."

@@ -143,8 +143,6 @@ class _AboutScreenState extends State<AboutScreen> {
             const SizedBox(height: AppSpacing.xl),
             _Footer(
               version: l10n.aboutVersion(_appVersion),
-              madeBy: l10n.aboutMadeBy,
-              dedication: l10n.aboutDedication,
             ),
           ],
         ),
@@ -213,40 +211,17 @@ class _SectionNote extends StatelessWidget {
 }
 
 class _Footer extends StatelessWidget {
-  const _Footer({
-    required this.version,
-    required this.madeBy,
-    required this.dedication,
-  });
+  const _Footer({required this.version});
 
   final String version;
-  final String madeBy;
-  final String dedication;
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          version,
-          textAlign: TextAlign.center,
-          style: AppTypography.body.copyWith(color: cs.onSurfaceVariant),
-        ),
-        const SizedBox(height: AppSpacing.lg),
-        Text(
-          madeBy,
-          textAlign: TextAlign.center,
-          style: AppTypography.body.copyWith(color: cs.onSurfaceVariant),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Text(
-          dedication,
-          textAlign: TextAlign.center,
-          style: AppTypography.body.copyWith(color: cs.onSurfaceVariant),
-        ),
-      ],
+    return Text(
+      version,
+      textAlign: TextAlign.center,
+      style: AppTypography.body.copyWith(color: cs.onSurfaceVariant),
     );
   }
 }
