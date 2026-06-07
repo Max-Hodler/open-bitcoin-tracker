@@ -13,12 +13,14 @@ class OrangeOutlineButton extends StatelessWidget {
     required this.isValid,
     required this.onTap,
     this.label,
+    this.icon,
     this.height = 64,
   });
 
   final bool isValid;
   final VoidCallback onTap;
   final String? label;
+  final IconData? icon;
   final double height;
 
   @override
@@ -47,15 +49,30 @@ class OrangeOutlineButton extends StatelessWidget {
                     }
                   : null,
               child: Center(
-                child: label == null
+                child: label == null && icon == null
                     ? Icon(Icons.check, size: 28, color: p.bitcoinOrange)
-                    : Text(
-                        label!,
-                        style: AppTypography.title.copyWith(
-                          color: p.bitcoinOrange,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                    : icon != null && label != null
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(icon, size: 20, color: p.bitcoinOrange),
+                              const SizedBox(width: 8),
+                              Text(
+                                label!,
+                                style: AppTypography.title.copyWith(
+                                  color: p.bitcoinOrange,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          )
+                        : Text(
+                            label!,
+                            style: AppTypography.title.copyWith(
+                              color: p.bitcoinOrange,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
               ),
             ),
           ),

@@ -110,6 +110,8 @@
   "settingsBitcoinDisplayMode": "Bitcoin-Einheit",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
+  "dialogBitcoinUnitTitle": "Was ist deine bevorzugte Rechnungseinheit?",
+  "dialogBitcoinUnitSubtitle": "Du kannst es später in den Einstellungen ändern.",
   "settingsLivePriceCadence": "Aktualisierungsfrequenz",
   "livePriceCadencePickerTitle": "Aktualisierungsfrequenz",
   "livePriceCadenceLive": "Live",

@@ -16,6 +16,7 @@ import '../../widgets/scroll_hairline.dart';
 import '../../widgets/stack_card.dart';
 import '../pin_entry_screen.dart';
 import '../settings_screen.dart';
+import '../settings/settings_dialogs.dart';
 import 'chart_slice.dart';
 import 'header/home_header.dart';
 import 'widgets/hashrate_card.dart';
@@ -407,19 +408,6 @@ class _HomeScreenState extends State<HomeScreen> {
     Widget? hashrateBlock() =>
         app.showHashrate ? const HashrateCard() : null;
 
-List<Widget> lockedStacksBlock() => [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: StacksLockedCard(onTap: () => _attemptUnlock(context)),
-          ),
-        ];
-
-    // Build one content tree regardless of lock state — only the stacks slot
-    // swaps between locked/unlocked children. Splitting this into two Columns
-    // with distinct keys would force Flutter to discard and rebuild every
-    // sibling subtree (mempool, hashrate) on each unlock, which re-runs their
-    // first-frame setup (e.g. MempoolCard's post-frame jumpTo to recenter the
-    // divider) and produces a visible flicker.
     List<Widget> buildOrderedWidgets() {
       final result = <Widget>[];
       for (var i = 0; i < app.homeWidgetOrder.length; i++) {
@@ -427,7 +415,7 @@ List<Widget> lockedStacksBlock() => [
         final List<Widget> children;
         switch (hw) {
           case HomeWidget.stacks:
-            children = stacksLocked ? lockedStacksBlock() : stacksBlock();
+            children = stacksBlock();
           case HomeWidget.mempoolFees:
             final block = mempoolBlock();
             children = block == null ? const [] : [block];
@@ -501,7 +489,19 @@ List<Widget> lockedStacksBlock() => [
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                   child: Center(
-                    child: AddStackButton(onTap: widget.onAddStack),
+                    child: AddStackButton(onTap: _onAddStackTap),
+                  ),
+                ),
+              )
+            else if (stacksLocked)
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  child: Center(
+                    child: UnlockStacksButton(
+                      onTap: () => _attemptUnlock(context),
+                    ),
                   ),
                 ),
               )
@@ -657,6 +657,14 @@ List<Widget> lockedStacksBlock() => [
       AppHaptics.medium();
       lock.unlock();
     }
+  }
+
+  Future<void> _onAddStackTap() async {
+    final app = context.read<AppStateNotifier>();
+    final picked = await showBitcoinUnitDialog(context, app.bitcoinDisplayMode);
+    if (!mounted || picked == null) return;
+    app.setBitcoinDisplayMode(picked);
+    widget.onAddStack?.call();
   }
 
   void _handleCorruptStacks(

@@ -110,6 +110,8 @@
   "settingsBitcoinDisplayMode": "Bitcoin birimi",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
+  "dialogBitcoinUnitTitle": "Tercih ettiğin hesap birimi nedir?",
+  "dialogBitcoinUnitSubtitle": "Bunu daha sonra Ayarlar'dan değiştirebilirsin.",
   "settingsLivePriceCadence": "Güncelleme sıklığı",
   "livePriceCadencePickerTitle": "Güncelleme sıklığı",
   "livePriceCadenceLive": "Canlı",

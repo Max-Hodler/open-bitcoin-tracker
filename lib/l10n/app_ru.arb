@@ -110,6 +110,8 @@
   "settingsBitcoinDisplayMode": "Единица Bitcoin",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
+  "dialogBitcoinUnitTitle": "Какая единица счёта вам предпочтительна?",
+  "dialogBitcoinUnitSubtitle": "Вы можете изменить это позже в Настройках.",
   "settingsLivePriceCadence": "Частота обновления",
   "livePriceCadencePickerTitle": "Частота обновления",
   "livePriceCadenceLive": "В реальном времени",

@@ -4,6 +4,7 @@ import '../../data/app_enums.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../services/app_haptics.dart';
 import '../../theme/theme.dart';
+import '../../widgets/orange_outline_button.dart';
 
 String authModeLabel(AppLocalizations l10n, StacksAuthMode m) {
   switch (m) {
@@ -222,6 +223,74 @@ Future<void> showDeviceUnavailableDialog(BuildContext context) {
                   ),
                   child: Text(l10n.buttonOk),
                 ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Future<BtcDisplayMode?> showBitcoinUnitDialog(
+  BuildContext context,
+  BtcDisplayMode current,
+) {
+  return showDialog<BtcDisplayMode>(
+    context: context,
+    barrierColor: appDialogBarrierColor(context),
+    builder: (ctx) {
+      final l10n = AppLocalizations.of(ctx);
+      final cs = Theme.of(ctx).colorScheme;
+      return Dialog(
+        elevation: 24,
+        shadowColor: Colors.black,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                l10n.dialogBitcoinUnitTitle,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                l10n.dialogBitcoinUnitSubtitle,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                  color: cs.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 32),
+              Row(
+                children: [
+                  Expanded(
+                    child: OrangeOutlineButton(
+                      isValid: true,
+                      label: 'Bitcoin',
+                      height: 52,
+                      onTap: () {
+                        Navigator.of(ctx).pop(BtcDisplayMode.btc);
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: OrangeOutlineButton(
+                      isValid: true,
+                      label: l10n.bitcoinDisplayModeSats,
+                      height: 52,
+                      onTap: () {
+                        Navigator.of(ctx).pop(BtcDisplayMode.sats);
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

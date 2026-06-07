@@ -78,6 +78,22 @@ class AddStackButton extends StatelessWidget {
   }
 }
 
+class UnlockStacksButton extends StatelessWidget {
+  const UnlockStacksButton({super.key, required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return OrangeOutlineButton(
+      isValid: true,
+      onTap: onTap,
+      icon: Icons.lock_outline,
+      label: AppLocalizations.of(context).homeUnlockStacks,
+    );
+  }
+}
+
 
 class ConverterIconButton extends StatelessWidget {
   const ConverterIconButton({super.key, required this.onTap});
