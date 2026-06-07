@@ -69,11 +69,29 @@ class AddStackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return HomeButton(
-      icon: Icon(Icons.add, size: 22, color: cs.onSurface.withValues(alpha: 0.85)),
-      label: AppLocalizations.of(context).homeAddAStack,
-      onTap: onTap,
+    final p = context.palette;
+    return SizedBox(
+      height: 64,
+      child: Material(
+        color: p.bitcoinOrange,
+        borderRadius: BorderRadius.circular(AppSpacing.radius),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap == null ? null : () {
+            AppHaptics.medium();
+            onTap!();
+          },
+          child: Center(
+            child: Text(
+              AppLocalizations.of(context).homeAddAStack,
+              style: AppTypography.title.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

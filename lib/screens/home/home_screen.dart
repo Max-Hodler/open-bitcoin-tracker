@@ -395,13 +395,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
-        if (stacks.isEmpty) ...[
-          const SizedBox(height: AppSpacing.sm),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: AddStackButton(onTap: widget.onAddStack),
-          ),
-        ],
       ];
     }
 
@@ -498,12 +491,23 @@ List<Widget> lockedStacksBlock() => [
               )
             else
               SliverToBoxAdapter(child: measuredHeader),
-            SliverPadding(
-              padding: const EdgeInsets.only(top: AppSpacing.md),
-              sliver: SliverToBoxAdapter(
-                child: content,
+            if (stacks.isEmpty && !stacksLocked)
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  child: Center(
+                    child: AddStackButton(onTap: widget.onAddStack),
+                  ),
+                ),
+              )
+            else
+              SliverPadding(
+                padding: const EdgeInsets.only(top: AppSpacing.md),
+                sliver: SliverToBoxAdapter(
+                  child: content,
+                ),
               ),
-            ),
           ],
         ),
       ),
