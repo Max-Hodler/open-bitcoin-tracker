@@ -91,27 +91,31 @@ class StacksSettingsScreen extends StatelessWidget {
             _SectionHeader(label: l10n.settingsLockStacks),
             SettingsGroup(
               children: [
-                if (isOn)
-                  SettingsActionTile(
-                    label: l10n.settingsTurnOffLock,
-                    onTap: () => _turnOffLock(context, app),
-                  ),
-                SettingsPickerTile(
-                  label: l10n.settingsAuthType,
-                  value: authModeLabel(l10n, mode),
-                  onTap: () => _openModePicker(context, app),
+                SettingsToggleTile(
+                  label: l10n.settingsLockEnabled,
+                  value: isOn,
+                  enabled: true,
+                  onChanged: (v) => v
+                      ? _openModePicker(context, app)
+                      : _turnOffLock(context, app),
                 ),
-                if (isOn)
+                if (isOn) ...[
+                  SettingsPickerTile(
+                    label: l10n.settingsAuthType,
+                    value: authModeLabel(l10n, mode),
+                    onTap: () => _openModePicker(context, app),
+                  ),
+                  if (mode == StacksAuthMode.pin)
+                    SettingsActionTile(
+                      label: l10n.settingsChangePin,
+                      onTap: () => _changePin(context),
+                    ),
                   SettingsPickerTile(
                     label: l10n.settingsRelockAfter,
                     value: lockTimeoutLabel(l10n, app.stacksLockTimeout),
                     onTap: () => _openTimeoutPicker(context, app),
                   ),
-                if (mode == StacksAuthMode.pin)
-                  SettingsActionTile(
-                    label: l10n.settingsChangePin,
-                    onTap: () => _changePin(context),
-                  ),
+                ],
               ],
             ),
             if (mode == StacksAuthMode.pin) ...[

@@ -25,7 +25,7 @@ class AppState {
     this.logScale = true,
     this.bitcoinDisplayMode = BtcDisplayMode.sats,
     this.stacksAuthMode = StacksAuthMode.off,
-    this.stacksLockTimeout = StacksLockTimeout.m1,
+    this.stacksLockTimeout = StacksLockTimeout.m5,
     this.language = LanguagePref.system,
     this.livePriceCadence = LivePriceCadence.live,
     this.converterCurrency,

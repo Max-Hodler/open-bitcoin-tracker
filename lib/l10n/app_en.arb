@@ -352,7 +352,7 @@
   "@livePriceCadence15s": {
     "description": "Cadence option: throttle the price card to repaint at most every 15 seconds."
   },
-  "settingsLockStacks": "Lock stacks",
+  "settingsLockStacks": "Lock",
   "@settingsLockStacks": {
     "description": "Section header above the stack lock controls (auth type, relock timeout, change/reset PIN) on the Stacks settings screen."
   },
@@ -360,9 +360,9 @@
   "@settingsAuthType": {
     "description": "Lock stacks screen row label for the auth-mode picker (Off / Device / PIN), and the picker dialog title."
   },
-  "settingsTurnOffLock": "Turn off lock",
-  "@settingsTurnOffLock": {
-    "description": "Lock stacks screen action that disables the lock (equivalent to picking Off in the auth-type picker). Only visible when the lock is on."
+  "settingsLockEnabled": "Enabled",
+  "@settingsLockEnabled": {
+    "description": "Toggle label on the Lock stacks settings row. Controls whether stack locking is active."
   },
   "settingsRelockAfter": "Re-lock after",
   "@settingsRelockAfter": {
