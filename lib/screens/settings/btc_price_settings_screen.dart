@@ -83,6 +83,7 @@ class BtcPriceSettingsScreen extends StatelessWidget {
                     l10n.settingsChartHeightCompact,
                     l10n.settingsChartHeightNormal,
                     l10n.settingsChartHeightTall,
+                    l10n.settingsChartHeightXl,
                   ],
                   selectedIndex: app.chartHeight.index,
                   enabled: app.showChart,

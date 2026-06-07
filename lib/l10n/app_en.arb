@@ -280,17 +280,21 @@
   "@settingsChartHeight": {
     "description": "Settings row label for the compact/medium/tall chart height segmented control."
   },
-  "settingsChartHeightCompact": "Compact",
+  "settingsChartHeightCompact": "S",
   "@settingsChartHeightCompact": {
     "description": "Compact chart height segment label."
   },
-  "settingsChartHeightNormal": "Medium",
+  "settingsChartHeightNormal": "M",
   "@settingsChartHeightNormal": {
     "description": "Medium (default) chart height segment label."
   },
-  "settingsChartHeightTall": "Tall",
+  "settingsChartHeightTall": "L",
   "@settingsChartHeightTall": {
     "description": "Tall chart height segment label."
+  },
+  "settingsChartHeightXl": "XL",
+  "@settingsChartHeightXl": {
+    "description": "Extra-large chart height segment label."
   },
   "settingsPortfolioTotal": "Display total",
   "@settingsPortfolioTotal": {
