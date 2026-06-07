@@ -16,11 +16,11 @@ class AppState {
     this.theme = AppTheme.system,
     this.darkVariant = DarkVariant.blue,
     this.lightVariant = LightVariant.cream,
-    this.btcRange = BtcRange.y10,
+    this.btcRange = BtcRange.all,
     this.daysOverflowQuickRange = BtcRange.d1,
     this.weeksOverflowQuickRange = BtcRange.w1,
     this.overflowQuickRange = BtcRange.y10,
-    this.monthsOverflowQuickRange = BtcRange.m1,
+    this.monthsOverflowQuickRange = BtcRange.m6,
     this.hashrateRange = HashrateRange.d3,
     this.logScale = true,
     this.bitcoinDisplayMode = BtcDisplayMode.sats,
@@ -293,7 +293,12 @@ class AppState {
       theme: fromCode('theme', AppTheme.fromCode),
       darkVariant: fromCode('darkVariant', DarkVariant.fromCode),
       lightVariant: fromCode('lightVariant', LightVariant.fromCode),
-      btcRange: fromCode('btcRange', BtcRange.fromCode),
+      // btcRange is special-cased like the overflow chips: a missing key means
+      // first launch, so land on the intended default (all) rather than
+      // BtcRange.fromCode's general fallback (y10).
+      btcRange: json['btcRange'] is String
+          ? BtcRange.fromCode(json['btcRange'] as String)
+          : BtcRange.all,
       // The overflow chips are special-cased: a missing key (vs. a wrong code)
       // means "the user has never opened the picker", so land on the default
       // slot rather than BtcRange.fromCode's general default.
@@ -308,7 +313,7 @@ class AppState {
           : BtcRange.y10,
       monthsOverflowQuickRange: json['monthsOverflowQuickRange'] is String
           ? BtcRange.fromCode(json['monthsOverflowQuickRange'] as String)
-          : BtcRange.m1,
+          : BtcRange.m6,
       hashrateRange: fromCode('hashrateRange', HashrateRange.fromCode),
       logScale: json['logScale'] as bool? ?? true,
       bitcoinDisplayMode:
