@@ -46,6 +46,7 @@ class AppState {
     this.addStackHintDismissed = false,
     this.rangeChipHintDismissed = false,
     this.swipeChipHintDismissed = false,
+    this.showPriceDelta = false,
   });
 
   final List<Stack> stacks;
@@ -139,6 +140,9 @@ class AppState {
   // The hint (shown after [rangeChipHintDismissed]) teaches the swipe-to-cycle
   // shortcut. Shown only after the long-press hint has been dismissed.
   final bool swipeChipHintDismissed;
+  // When true, show the signed tick-to-tick price delta as a subtitle below
+  // the live price for ~2 s each time the price updates. Off by default.
+  final bool showPriceDelta;
   AppState copyWith({
     List<Stack>? stacks,
     Currency? currency,
@@ -180,6 +184,7 @@ class AppState {
     bool? addStackHintDismissed,
     bool? rangeChipHintDismissed,
     bool? swipeChipHintDismissed,
+    bool? showPriceDelta,
   }) {
     return AppState(
       stacks: stacks ?? this.stacks,
@@ -234,6 +239,7 @@ class AppState {
           rangeChipHintDismissed ?? this.rangeChipHintDismissed,
       swipeChipHintDismissed:
           swipeChipHintDismissed ?? this.swipeChipHintDismissed,
+      showPriceDelta: showPriceDelta ?? this.showPriceDelta,
     );
   }
 
@@ -280,6 +286,7 @@ class AppState {
         'addStackHintDismissed': addStackHintDismissed,
         'rangeChipHintDismissed': rangeChipHintDismissed,
         'swipeChipHintDismissed': swipeChipHintDismissed,
+        'showPriceDelta': showPriceDelta,
       };
 
   factory AppState.fromJson(Map<String, dynamic> json) {
@@ -383,6 +390,7 @@ class AppState {
           json['rangeChipHintDismissed'] as bool? ?? false,
       swipeChipHintDismissed:
           json['swipeChipHintDismissed'] as bool? ?? false,
+      showPriceDelta: json['showPriceDelta'] as bool? ?? false,
     );
   }
 

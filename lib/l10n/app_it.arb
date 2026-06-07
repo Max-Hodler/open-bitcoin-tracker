@@ -94,6 +94,7 @@
   "settingsPriceTickerSection": "Prezzo",
   "settingsChartSection": "Grafico",
   "settingsChart": "Mostra",
+  "settingsPriceDelta": "Mostra variazione prezzo",
   "settingsScale": "Scala",
   "settingsScaleLinear": "Lineare",
   "settingsScaleLog": "Log",

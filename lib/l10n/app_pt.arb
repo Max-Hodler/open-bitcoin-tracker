@@ -87,6 +87,7 @@
   "settingsPriceTickerSection": "Preço",
   "settingsChartSection": "Gráfico",
   "settingsChart": "Exibir",
+  "settingsPriceDelta": "Mostrar variação de preço",
   "settingsScale": "Escala",
   "settingsScaleLinear": "Linear",
   "settingsScaleLog": "Log",

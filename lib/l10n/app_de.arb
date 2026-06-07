@@ -94,6 +94,7 @@
   "settingsPriceTickerSection": "Kursticker",
   "settingsChartSection": "Diagramm",
   "settingsChart": "Anzeigen",
+  "settingsPriceDelta": "Preisänderung zeigen",
   "settingsScale": "Skala",
   "settingsScaleLinear": "Linear",
   "settingsScaleLog": "Log",

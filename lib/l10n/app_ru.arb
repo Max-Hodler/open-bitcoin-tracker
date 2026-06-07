@@ -94,6 +94,7 @@
   "settingsPriceTickerSection": "Тикер цены",
   "settingsChartSection": "График",
   "settingsChart": "Показывать",
+  "settingsPriceDelta": "Показывать изменение цены",
   "settingsScale": "Шкала",
   "settingsScaleLinear": "Линейная",
   "settingsScaleLog": "Лог.",

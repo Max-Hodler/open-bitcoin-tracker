@@ -94,6 +94,7 @@
   "settingsPriceTickerSection": "Cours",
   "settingsChartSection": "Graphique",
   "settingsChart": "Afficher",
+  "settingsPriceDelta": "Afficher la variation",
   "settingsScale": "Échelle",
   "settingsScaleLinear": "Linéaire",
   "settingsScaleLog": "Log",

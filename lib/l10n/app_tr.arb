@@ -94,6 +94,7 @@
   "settingsPriceTickerSection": "Fiyat göstergesi",
   "settingsChartSection": "Grafik",
   "settingsChart": "Göster",
+  "settingsPriceDelta": "Fiyat değişimini göster",
   "settingsScale": "Ölçek",
   "settingsScaleLinear": "Doğrusal",
   "settingsScaleLog": "Log",

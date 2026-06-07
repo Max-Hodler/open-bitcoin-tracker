@@ -59,6 +59,12 @@ class BtcPriceSettingsScreen extends StatelessWidget {
                   onTap: () => _openLivePriceCadencePicker(context, app),
                   trailingIcon: Icons.unfold_more,
                 ),
+                SettingsToggleTile(
+                  label: l10n.settingsPriceDelta,
+                  value: app.showPriceDelta,
+                  enabled: true,
+                  onChanged: app.setShowPriceDelta,
+                ),
               ],
             ),
             const SizedBox(height: AppSpacing.lg),

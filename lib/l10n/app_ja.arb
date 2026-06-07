@@ -94,6 +94,7 @@
   "settingsPriceTickerSection": "価格ティッカー",
   "settingsChartSection": "チャート",
   "settingsChart": "表示",
+  "settingsPriceDelta": "価格変動を表示",
   "settingsScale": "スケール",
   "settingsScaleLinear": "リニア",
   "settingsScaleLog": "Log",
