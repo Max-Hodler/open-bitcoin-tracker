@@ -1,0 +1,4 @@
+- New chart height setting: Compact / Normal / Tall.
+- Widgets settings screen renamed to Mempool & Hashrate.
+- Stack-card amounts stack vertically at large system font sizes.
+- Localization fixes for chart height options.

@@ -1,0 +1,6 @@
+- XL chart height option added (S / M / L / XL sizes).
+- Show/hide price change toggle in BTC price settings.
+- Overflow-style range chips: days and weeks scroll horizontally.
+- Redesigned price header: range stat in subtitle, active chip in orange.
+- Restyled buttons to orange outline on warm tint background.
+- Removed YTD range option.

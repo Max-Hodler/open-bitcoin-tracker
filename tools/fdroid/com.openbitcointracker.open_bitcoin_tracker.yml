@@ -105,8 +105,65 @@ Builds:
       - submodules/flutter
       - .pub-cache
 
+  - versionName: 1.2.3
+    versionCode: 6
+    commit: v1.2.3
+    submodules: true
+    output: build/app/outputs/flutter-apk/app-release.apk
+    prebuild:
+      - export PUB_CACHE=$(pwd)/.pub-cache
+      - submodules/flutter/bin/flutter config --no-analytics
+      - submodules/flutter/bin/flutter pub get
+    build:
+      - export PUB_CACHE=$(pwd)/.pub-cache
+      - submodules/flutter/bin/flutter build apk --release --target-platform android-arm,android-arm64
+    scanignore:
+      - submodules/flutter/bin/cache
+      - submodules/flutter/packages/flutter_tools/gradle/flutter.gradle
+    scandelete:
+      - submodules/flutter
+      - .pub-cache
+
+  - versionName: 1.2.4
+    versionCode: 7
+    commit: v1.2.4
+    submodules: true
+    output: build/app/outputs/flutter-apk/app-release.apk
+    prebuild:
+      - export PUB_CACHE=$(pwd)/.pub-cache
+      - submodules/flutter/bin/flutter config --no-analytics
+      - submodules/flutter/bin/flutter pub get
+    build:
+      - export PUB_CACHE=$(pwd)/.pub-cache
+      - submodules/flutter/bin/flutter build apk --release --target-platform android-arm,android-arm64
+    scanignore:
+      - submodules/flutter/bin/cache
+      - submodules/flutter/packages/flutter_tools/gradle/flutter.gradle
+    scandelete:
+      - submodules/flutter
+      - .pub-cache
+
+  - versionName: 1.2.5
+    versionCode: 8
+    commit: v1.2.5
+    submodules: true
+    output: build/app/outputs/flutter-apk/app-release.apk
+    prebuild:
+      - export PUB_CACHE=$(pwd)/.pub-cache
+      - submodules/flutter/bin/flutter config --no-analytics
+      - submodules/flutter/bin/flutter pub get
+    build:
+      - export PUB_CACHE=$(pwd)/.pub-cache
+      - submodules/flutter/bin/flutter build apk --release --target-platform android-arm,android-arm64
+    scanignore:
+      - submodules/flutter/bin/cache
+      - submodules/flutter/packages/flutter_tools/gradle/flutter.gradle
+    scandelete:
+      - submodules/flutter
+      - .pub-cache
+
 AutoUpdateMode: Version v%v
 UpdateCheckMode: Tags
 UpdateCheckData: pubspec.yaml|version:\s.+\+(\d+)|.|version:\s(.+)\+
-CurrentVersion: 1.2.2
-CurrentVersionCode: 5
+CurrentVersion: 1.2.5
+CurrentVersionCode: 8

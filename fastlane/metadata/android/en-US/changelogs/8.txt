@@ -1,0 +1,6 @@
+- Long-press to reorder stacks.
+- Bitcoin unit picker (sats / BTC) on first stack creation.
+- Unlock Stacks button pinned to bottom of screen.
+- Reworked PIN screen and Lock settings layout.
+- Home screen unlocks during the PIN dismiss animation.
+- Semi-transparent fill on orange outline buttons.
