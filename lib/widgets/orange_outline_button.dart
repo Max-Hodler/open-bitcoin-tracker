@@ -33,7 +33,7 @@ class OrangeOutlineButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.bitcoinOrangeTint,
             borderRadius: radius,
-            border: Border.all(color: p.bitcoinOrange, width: 1),
+            border: Border.all(color: p.bitcoinOrange, width: 0.5),
           ),
           child: Material(
             color: Colors.transparent,
