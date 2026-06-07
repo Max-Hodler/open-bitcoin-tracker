@@ -498,9 +498,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 hasScrollBody: false,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                  child: Center(
-                    child: UnlockStacksButton(
-                      onTap: () => _attemptUnlock(context),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.lg * 2),
+                      child: UnlockStacksButton(
+                        onTap: () => _attemptUnlock(context),
+                      ),
                     ),
                   ),
                 ),
