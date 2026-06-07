@@ -17,8 +17,7 @@ enum _PinFlow { verify, setup, change }
 
 enum _SetupStep { enter, confirm }
 
-const int _kMinPinLength = 4;
-const int _kMaxPinLength = 6;
+const int _kPinLength = 4;
 
 /// Sentinel returned via Navigator.pop when the stacks blob failed its MAC
 /// check after a successful PIN unwrap — the data is corrupt and the caller
@@ -113,7 +112,7 @@ class _PinEntryScreenState extends State<PinEntryScreen>
 
   bool get _onCooldown => _cooldownRemaining > Duration.zero;
   bool get _isValid =>
-      !_onCooldown && !_busy && _input.length >= _kMinPinLength;
+      !_onCooldown && !_busy && _input.length == _kPinLength;
 
   void _setStatus(String message, {bool error = false}) {
     setState(() {
@@ -130,7 +129,7 @@ class _PinEntryScreenState extends State<PinEntryScreen>
 
   void _onInput(String digit) {
     if (!mounted || _onCooldown || _busy) return;
-    if (_input.length >= _kMaxPinLength) return;
+    if (_input.length >= _kPinLength) return;
     setState(() {
       _input += digit;
       if (_statusIsError) {
@@ -138,6 +137,7 @@ class _PinEntryScreenState extends State<PinEntryScreen>
         _statusMessage = '';
       }
     });
+    if (_input.length == _kPinLength) _onConfirm();
   }
 
   void _onDelete() {
@@ -157,7 +157,7 @@ class _PinEntryScreenState extends State<PinEntryScreen>
         return l.pinVerifyTitle;
       case _PinFlow.setup:
         return _setupStep == _SetupStep.enter
-            ? l.pinPromptSetupEnter(_kMinPinLength, _kMaxPinLength)
+            ? l.pinPromptSetupEnter
             : l.pinPromptSetupConfirm;
       case _PinFlow.change:
         if (!_changeVerified) return l.pinPromptChangeEnter;
@@ -350,7 +350,7 @@ class _PinEntryScreenState extends State<PinEntryScreen>
 
   @override
   Widget build(BuildContext context) {
-    final dotCount = _kMaxPinLength;
+    final dotCount = _kPinLength;
     final screenTitle = widget.title ?? _titleForCurrentStep();
     final cs = Theme.of(context).colorScheme;
     return Scaffold(
@@ -367,34 +367,39 @@ class _PinEntryScreenState extends State<PinEntryScreen>
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               CancelBar(onCancel: () => Navigator.of(context).maybePop(false)),
-              const SizedBox(height: AppSpacing.lg),
-              Text(
-                screenTitle,
-                textAlign: TextAlign.center,
-                style: AppTypography.title,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              AnimatedBuilder(
-                animation: _shakeCtrl,
-                builder: (context, child) {
-                  final t = _shakeCtrl.value;
-                  final dx = t == 0 ? 0.0 : sin(t * pi * 8) * 10 * (1 - t);
-                  return Transform.translate(
-                    offset: Offset(dx, 0),
-                    child: child,
-                  );
-                },
-                child: _PinDots(filled: _input.length, total: dotCount),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                _statusMessage,
-                textAlign: TextAlign.center,
-                style: AppTypography.body.copyWith(
-                  color: _statusIsError ? cs.error : cs.onSurfaceVariant,
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      screenTitle,
+                      textAlign: TextAlign.center,
+                      style: AppTypography.title,
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    AnimatedBuilder(
+                      animation: _shakeCtrl,
+                      builder: (context, child) {
+                        final t = _shakeCtrl.value;
+                        final dx = t == 0 ? 0.0 : sin(t * pi * 8) * 10 * (1 - t);
+                        return Transform.translate(
+                          offset: Offset(dx, 0),
+                          child: child,
+                        );
+                      },
+                      child: _PinDots(filled: _input.length, total: dotCount),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    Text(
+                      _statusMessage,
+                      textAlign: TextAlign.center,
+                      style: AppTypography.body.copyWith(
+                        color: _statusIsError ? cs.error : cs.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const Spacer(),
               NumberPad(
                 onInput: _onInput,
                 onDelete: _onDelete,
@@ -402,6 +407,7 @@ class _PinEntryScreenState extends State<PinEntryScreen>
                 onEnter: _onConfirm,
                 isValid: _isValid,
                 isEmpty: _input.isEmpty,
+                showConfirm: false,
                 showDecimal: false,
               ),
             ],
@@ -429,15 +435,15 @@ class _PinDots extends StatelessWidget {
           if (i > 0) const SizedBox(width: AppSpacing.sm),
           AnimatedContainer(
             duration: const Duration(milliseconds: 120),
-            width: 14,
-            height: 14,
+            width: 20,
+            height: 20,
             decoration: BoxDecoration(
               color: i < filled ? p.bitcoinOrange : Colors.transparent,
               border: Border.all(
                 color: i < filled
                     ? p.bitcoinOrange
                     : cs.onSurfaceVariant,
-                width: 1.5,
+                width: 2,
               ),
               shape: BoxShape.circle,
             ),

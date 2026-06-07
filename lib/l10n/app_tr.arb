@@ -158,7 +158,7 @@
 
   "pinVerifyTitle": "PIN'i gir",
 
-  "pinPromptSetupEnter": "{minLength}–{maxLength} haneli bir PIN seçin",
+  "pinPromptSetupEnter": "4 haneli bir PIN seçin",
   "pinPromptSetupConfirm": "Onaylamak için PIN'i tekrar girin",
   "pinPromptChangeEnter": "Mevcut PIN'inizi girin",
   "pinPromptChangeNew": "Yeni bir PIN girin",

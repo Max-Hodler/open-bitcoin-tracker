@@ -499,13 +499,9 @@
   "@pinVerifyTitle": {
     "description": "Default title of the PIN entry screen in verify (unlock) mode."
   },
-  "pinPromptSetupEnter": "Choose a {minLength}–{maxLength} digit PIN",
+  "pinPromptSetupEnter": "Choose a 4-digit PIN",
   "@pinPromptSetupEnter": {
-    "description": "Status prompt shown on the first entry step of PIN setup, telling the user the allowed PIN length range.",
-    "placeholders": {
-      "minLength": {"type": "int", "example": "4"},
-      "maxLength": {"type": "int", "example": "6"}
-    }
+    "description": "Status prompt shown on the first entry step of PIN setup, telling the user that the PIN must be 4 digits."
   },
   "pinPromptSetupConfirm": "Re-enter the PIN to confirm",
   "@pinPromptSetupConfirm": {

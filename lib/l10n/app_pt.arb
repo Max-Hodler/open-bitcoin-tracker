@@ -151,7 +151,7 @@
 
   "pinVerifyTitle": "Digitar PIN",
 
-  "pinPromptSetupEnter": "Escolha um PIN de {minLength} a {maxLength} dígitos",
+  "pinPromptSetupEnter": "Escolha um PIN de 4 dígitos",
   "pinPromptSetupConfirm": "Digite o PIN novamente para confirmar",
   "pinPromptChangeEnter": "Digite o seu PIN atual",
   "pinPromptChangeNew": "Digite um novo PIN",

@@ -158,7 +158,7 @@
 
   "pinVerifyTitle": "Введите PIN",
 
-  "pinPromptSetupEnter": "Придумайте PIN из {minLength}–{maxLength} цифр",
+  "pinPromptSetupEnter": "Придумайте PIN из 4 цифр",
   "pinPromptSetupConfirm": "Введите PIN ещё раз для подтверждения",
   "pinPromptChangeEnter": "Введите текущий PIN",
   "pinPromptChangeNew": "Введите новый PIN",

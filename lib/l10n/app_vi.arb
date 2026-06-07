@@ -158,7 +158,7 @@
 
   "pinVerifyTitle": "Nhập PIN",
 
-  "pinPromptSetupEnter": "Chọn PIN gồm {minLength}–{maxLength} chữ số",
+  "pinPromptSetupEnter": "Chọn PIN gồm 4 chữ số",
   "pinPromptSetupConfirm": "Nhập lại PIN để xác nhận",
   "pinPromptChangeEnter": "Nhập PIN hiện tại của bạn",
   "pinPromptChangeNew": "Nhập PIN mới",

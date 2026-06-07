@@ -43,25 +43,37 @@ Future<StacksAuthMode?> showAuthModePicker(
     barrierColor: appDialogBarrierColor(context),
     builder: (ctx) {
       final l10n = AppLocalizations.of(ctx);
-      return RadioGroup<StacksAuthMode>(
-        groupValue: current,
-        onChanged: (v) {
-          AppHaptics.selection();
-          Navigator.of(ctx).pop(v);
-        },
-        child: SimpleDialog(
-          elevation: 24,
-          shadowColor: Colors.black,
-          title: Text(l10n.settingsAuthType),
-          children: [
-            for (final m in StacksAuthMode.values)
-              if (m != StacksAuthMode.off)
-                RadioListTile<StacksAuthMode>(
-                  key: ValueKey('stacksAuthMode-${m.code}'),
-                  title: Text(authModeLabel(l10n, m)),
-                  value: m,
-                ),
-          ],
+      return Dialog(
+        elevation: 24,
+        shadowColor: Colors.black,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                l10n.settingsAuthType,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 20),
+              for (final m in StacksAuthMode.values)
+                if (m != StacksAuthMode.off) ...[
+                  OrangeOutlineButton(
+                    key: ValueKey('stacksAuthMode-${m.code}'),
+                    isValid: true,
+                    label: authModeLabel(l10n, m),
+                    height: 52,
+                    onTap: () {
+                      AppHaptics.selection();
+                      Navigator.of(ctx).pop(m);
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                ],
+            ],
+          ),
         ),
       );
     },
@@ -77,24 +89,36 @@ Future<StacksLockTimeout?> showTimeoutPicker(
     barrierColor: appDialogBarrierColor(context),
     builder: (ctx) {
       final l10n = AppLocalizations.of(ctx);
-      return RadioGroup<StacksLockTimeout>(
-        groupValue: current,
-        onChanged: (v) {
-          AppHaptics.selection();
-          Navigator.of(ctx).pop(v);
-        },
-        child: SimpleDialog(
-          elevation: 24,
-          shadowColor: Colors.black,
-          title: Text(l10n.settingsRelockAfter),
-          children: [
-            for (final t in StacksLockTimeout.values)
-              RadioListTile<StacksLockTimeout>(
-                key: ValueKey('stacksLockTimeout-${t.code}'),
-                title: Text(lockTimeoutLabel(l10n, t)),
-                value: t,
+      return Dialog(
+        elevation: 24,
+        shadowColor: Colors.black,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                l10n.settingsRelockAfter,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
-          ],
+              const SizedBox(height: 20),
+              for (final t in StacksLockTimeout.values) ...[
+                OrangeOutlineButton(
+                  key: ValueKey('stacksLockTimeout-${t.code}'),
+                  isValid: true,
+                  label: lockTimeoutLabel(l10n, t),
+                  height: 52,
+                  onTap: () {
+                    AppHaptics.selection();
+                    Navigator.of(ctx).pop(t);
+                  },
+                ),
+                const SizedBox(height: 10),
+              ],
+            ],
+          ),
         ),
       );
     },

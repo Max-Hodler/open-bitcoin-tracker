@@ -158,7 +158,7 @@
 
   "pinVerifyTitle": "Saisir le PIN",
 
-  "pinPromptSetupEnter": "Choisissez un PIN de {minLength} à {maxLength} chiffres",
+  "pinPromptSetupEnter": "Choisissez un PIN de 4 chiffres",
   "pinPromptSetupConfirm": "Saisissez à nouveau le PIN pour confirmer",
   "pinPromptChangeEnter": "Saisissez votre PIN actuel",
   "pinPromptChangeNew": "Saisissez un nouveau PIN",

@@ -158,7 +158,7 @@
 
   "pinVerifyTitle": "PIN を入力",
 
-  "pinPromptSetupEnter": "{minLength}~{maxLength}桁の PIN を設定してください",
+  "pinPromptSetupEnter": "4桁の PIN を設定してください",
   "pinPromptSetupConfirm": "確認のため PIN をもう一度入力してください",
   "pinPromptChangeEnter": "現在の PIN を入力してください",
   "pinPromptChangeNew": "新しい PIN を入力してください",
