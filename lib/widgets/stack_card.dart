@@ -23,6 +23,7 @@ class StackCard extends StatelessWidget {
     this.imageData,
     this.colorKey,
     this.onTap,
+    this.onLongPress,
     this.onAvatarTap,
     this.position = StackCardPosition.only,
   });
@@ -36,6 +37,7 @@ class StackCard extends StatelessWidget {
   final String? imageData;
   final String? colorKey;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
   final VoidCallback? onAvatarTap;
   final StackCardPosition position;
 
@@ -46,6 +48,7 @@ class StackCard extends StatelessWidget {
       type: MaterialType.transparency,
       child: InkWell(
         onTap: onTap,
+        onLongPress: onLongPress,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,

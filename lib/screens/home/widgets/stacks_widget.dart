@@ -14,8 +14,8 @@ import '../../../widgets/menu_action_tile.dart';
 import '../../../widgets/stack_card.dart' show StackCard, StackCardPosition;
 import '../../edit_stack_screens.dart';
 import '../../new_stack_screens.dart';
+import '../../settings/reorder_stacks_screen.dart';
 import '../../settings/stacks_settings_screen.dart';
-import 'home_buttons.dart';
 import 'range_pills_row.dart';
 
 enum _StackMenuAction { edit, rename, add, settings, delete }
@@ -332,6 +332,14 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
           AppHaptics.light();
           _showStackMenu(cardContext);
         },
+        onLongPress: () {
+          AppHaptics.medium();
+          Navigator.of(context).push<void>(
+            MaterialPageRoute<void>(
+              builder: (_) => const ReorderStacksScreen(),
+            ),
+          );
+        },
         onAvatarTap: () {
           AppHaptics.light();
           _showAvatarSheet(cardContext);
@@ -394,20 +402,4 @@ class _GroupedCardRow extends StatelessWidget {
   }
 }
 
-class StacksLockedCard extends StatelessWidget {
-  const StacksLockedCard({super.key, required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return HomeButton(
-      icon: Icon(Icons.lock_outline, size: 22, color: cs.onSurfaceVariant),
-      label: AppLocalizations.of(context).homeUnlockStacks,
-      onTap: onTap,
-      height: AppSpacing.stackCardHeight + AppSpacing.lg,
-    );
-  }
-}
 

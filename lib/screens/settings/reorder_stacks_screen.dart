@@ -40,7 +40,7 @@ class ReorderStacksScreen extends StatelessWidget {
               child: ReorderableListView.builder(
                 padding: const EdgeInsets.fromLTRB(
                   AppSpacing.md,
-                  AppSpacing.xs,
+                  AppSpacing.lg,
                   AppSpacing.md,
                   AppSpacing.xl * 2,
                 ),
