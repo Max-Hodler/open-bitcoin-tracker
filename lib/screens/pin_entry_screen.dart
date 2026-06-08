@@ -441,15 +441,15 @@ class _PinDots extends StatelessWidget {
           if (i > 0) const SizedBox(width: AppSpacing.sm),
           AnimatedContainer(
             duration: const Duration(milliseconds: 120),
-            width: 20,
-            height: 20,
+            width: 80,
+            height: 80,
             decoration: BoxDecoration(
               color: i < filled ? p.bitcoinOrange : Colors.transparent,
               border: Border.all(
                 color: i < filled
                     ? p.bitcoinOrange
                     : cs.onSurfaceVariant,
-                width: 2,
+                width: 4,
               ),
               shape: BoxShape.circle,
             ),
