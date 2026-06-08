@@ -20,34 +20,27 @@ class LockedStacksSkeleton extends StatelessWidget {
     final count = _rowCount;
     return Padding(
       padding: const EdgeInsets.only(top: AppSpacing.md),
-      child: Container(
-        decoration: BoxDecoration(
-          color: cs.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (var i = 0; i < count; i++) ...[
-              _SkeletonRow(
-                position: count == 1
-                    ? StackCardPosition.only
-                    : i == 0
-                        ? StackCardPosition.first
-                        : i == count - 1
-                            ? StackCardPosition.last
-                            : StackCardPosition.middle,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var i = 0; i < count; i++) ...[
+            _SkeletonRow(
+              position: count == 1
+                  ? StackCardPosition.only
+                  : i == 0
+                      ? StackCardPosition.first
+                      : i == count - 1
+                          ? StackCardPosition.last
+                          : StackCardPosition.middle,
+            ),
+            if (i < count - 1)
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: cs.outlineVariant,
               ),
-              if (i < count - 1)
-                Divider(
-                  height: 1,
-                  thickness: 1,
-                  color: cs.outlineVariant,
-                ),
-            ],
           ],
-        ),
+        ],
       ),
     );
   }
