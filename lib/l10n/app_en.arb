@@ -171,7 +171,7 @@
   "@settingsAbout": {
     "description": "Settings row label that opens the About screen."
   },
-  "settingsWidgets": "Mempool & Hashrate",
+  "settingsWidgets": "Mempool and hashrate",
   "@settingsWidgets": {
     "description": "Settings row label that opens the Widgets sub-screen (mempool, hashrate, reorder home widgets)."
   },
