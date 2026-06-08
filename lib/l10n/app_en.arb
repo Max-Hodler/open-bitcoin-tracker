@@ -588,7 +588,7 @@
   "@homeConverter": {
     "description": "Label of the Converter shortcut button on the home screen."
   },
-  "homeUnlockStacks": "Unlock Stacks",
+  "homeUnlockStacks": "Unlock stacks",
   "@homeUnlockStacks": {
     "description": "Label on the locked-stacks placeholder card shown when the user is locked. Tapping it triggers re-authentication."
   },
