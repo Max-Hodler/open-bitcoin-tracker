@@ -62,6 +62,7 @@ class HomeStackList extends StatelessWidget {
             priceScale: stacks[i].sats / Sats.perBtc,
             isFirst: i == 0,
             isLast: i == rowCount - 1,
+            canReorder: stacks.length > 1,
           ),
         if (hasTotal)
           _GroupedCardRow(
@@ -90,6 +91,7 @@ class _SwipeableStackCard extends StatefulWidget {
     required this.priceScale,
     required this.isFirst,
     required this.isLast,
+    required this.canReorder,
   });
 
   final model.Stack stack;
@@ -100,6 +102,9 @@ class _SwipeableStackCard extends StatefulWidget {
   final double priceScale;
   final bool isFirst;
   final bool isLast;
+  // Reordering is meaningless with a single stack, so the long-press gesture
+  // that opens the reorder screen is suppressed unless there are >= 2 stacks.
+  final bool canReorder;
 
   @override
   State<_SwipeableStackCard> createState() => _SwipeableStackCardState();
@@ -332,14 +337,16 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
           AppHaptics.light();
           _showStackMenu(cardContext);
         },
-        onLongPress: () {
-          AppHaptics.medium();
-          Navigator.of(context).push<void>(
-            MaterialPageRoute<void>(
-              builder: (_) => const ReorderStacksScreen(),
-            ),
-          );
-        },
+        onLongPress: widget.canReorder
+            ? () {
+                AppHaptics.medium();
+                Navigator.of(context).push<void>(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const ReorderStacksScreen(),
+                  ),
+                );
+              }
+            : null,
         onAvatarTap: () {
           AppHaptics.light();
           _showAvatarSheet(cardContext);

@@ -66,11 +66,11 @@ class StacksSettingsScreen extends StatelessWidget {
                     i == 1 ? BtcDisplayMode.btc : BtcDisplayMode.sats,
                   ),
                 ),
-                if (!lock.isLocked)
+                if (!lock.isLocked && app.stacks.length > 1)
                   SettingsPickerTile(
                     label: l10n.settingsReorderStacks,
                     value: '',
-                    enabled: app.stacks.isNotEmpty,
+                    enabled: true,
                     onTap: () => Navigator.of(context).push<void>(
                       MaterialPageRoute<void>(
                         builder: (_) => const ReorderStacksScreen(),
