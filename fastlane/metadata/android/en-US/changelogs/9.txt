@@ -1,0 +1,7 @@
+- Stack settings, plus stack actions in the Total card menu.
+- Default chart height is now XL.
+- Swipe hint added to the range picker dialog.
+- PIN dots animate while unlocking and are larger.
+- Stack reorder hidden when only one stack exists.
+- Clearer wording for the bitcoin unit dialog and range hints.
+- Total ghost row shows in the locked-state skeleton.
