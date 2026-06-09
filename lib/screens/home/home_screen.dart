@@ -511,7 +511,10 @@ class _HomeScreenState extends State<HomeScreen> {
               )
             else if (stacksLocked)
               SliverToBoxAdapter(
-                child: LockedStacksSkeleton(stackCount: app.lockedStackCount),
+                child: LockedStacksSkeleton(
+                  stackCount: app.lockedStackCount,
+                  showTotal: app.showPortfolio && app.lockedStackCount >= 2,
+                ),
               )
             else
               SliverPadding(

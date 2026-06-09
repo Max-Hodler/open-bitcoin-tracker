@@ -7,12 +7,15 @@ class LockedStacksSkeleton extends StatelessWidget {
   const LockedStacksSkeleton({
     super.key,
     required this.stackCount,
+    this.showTotal = false,
   });
 
   final int stackCount;
+  // When true, an extra ghost row is appended for the portfolio total card.
+  final bool showTotal;
 
   // Shows at least one row so there's always something visible.
-  int get _rowCount => stackCount.clamp(1, 20);
+  int get _rowCount => stackCount.clamp(1, 20) + (showTotal ? 1 : 0);
 
   @override
   Widget build(BuildContext context) {
