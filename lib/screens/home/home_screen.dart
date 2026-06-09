@@ -14,9 +14,11 @@ import '../../widgets/avatar_sheet.dart';
 import '../../widgets/menu_action_tile.dart';
 import '../../widgets/scroll_hairline.dart';
 import '../../widgets/stack_card.dart';
+import '../new_stack_screens.dart';
 import '../pin_entry_screen.dart';
 import '../settings_screen.dart';
 import '../settings/settings_dialogs.dart';
+import '../settings/stacks_settings_screen.dart';
 import 'chart_slice.dart';
 import 'header/home_header.dart';
 import 'widgets/hashrate_card.dart';
@@ -25,6 +27,8 @@ import 'widgets/home_hint_card.dart';
 import 'widgets/locked_stacks_skeleton.dart';
 import 'widgets/mempool_card.dart';
 import 'widgets/stacks_widget.dart';
+
+enum _TotalMenuAction { hide, settings, add }
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -578,7 +582,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _showTotalMenu(BuildContext iconContext, AppStateNotifier app) async {
     final theme = Theme.of(iconContext);
     final cs = theme.colorScheme;
-    final didHide = await showModalBottomSheet<bool>(
+    final action = await showModalBottomSheet<_TotalMenuAction>(
       context: iconContext,
       backgroundColor: theme.brightness == Brightness.dark
           ? cs.surfaceContainerHigh
@@ -607,7 +611,30 @@ class _HomeScreenState extends State<HomeScreen> {
                     MenuActionTile(
                       leading: const Icon(Icons.visibility_off_outlined),
                       label: l10n.totalMenuHide,
-                      onTap: () => Navigator.of(ctx).pop(true),
+                      onTap: () =>
+                          Navigator.of(ctx).pop(_TotalMenuAction.hide),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.md),
+                MenuActionGroup(
+                  children: [
+                    MenuActionTile(
+                      leading: const Icon(Icons.settings_outlined),
+                      label: l10n.stackMenuStacksSettings,
+                      onTap: () =>
+                          Navigator.of(ctx).pop(_TotalMenuAction.settings),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.md),
+                MenuActionGroup(
+                  children: [
+                    MenuActionTile(
+                      leading: const Icon(Icons.add),
+                      label: l10n.homeAddStack,
+                      onTap: () =>
+                          Navigator.of(ctx).pop(_TotalMenuAction.add),
                     ),
                   ],
                 ),
@@ -617,8 +644,20 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
-    if (didHide ?? false) {
-      app.setShowPortfolio(false);
+    if (!iconContext.mounted) return;
+    switch (action) {
+      case _TotalMenuAction.hide:
+        app.setShowPortfolio(false);
+      case _TotalMenuAction.settings:
+        await Navigator.of(iconContext).push(MaterialPageRoute<void>(
+          builder: (_) => const StacksSettingsScreen(),
+        ));
+      case _TotalMenuAction.add:
+        await Navigator.of(iconContext).push(MaterialPageRoute<void>(
+          builder: (_) => const NewStackAmountScreen(),
+        ));
+      case null:
+        break;
     }
   }
 
