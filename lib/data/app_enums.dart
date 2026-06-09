@@ -310,19 +310,22 @@ enum StacksLockTimeout {
 }
 
 enum ChartHeight {
-  compact('compact'),
-  normal('normal'),
-  tall('tall'),
+  s('s'),
+  m('m'),
+  l('l'),
   xl('xl');
 
   const ChartHeight(this.code);
   final String code;
 
   static ChartHeight fromCode(String? code) {
+    // Legacy codes written by older builds.
+    const legacy = {'compact': ChartHeight.s, 'normal': ChartHeight.m, 'tall': ChartHeight.l};
+    if (legacy.containsKey(code)) return legacy[code]!;
     for (final h in ChartHeight.values) {
       if (h.code == code) return h;
     }
-    return ChartHeight.tall;
+    return ChartHeight.l;
   }
 }
 

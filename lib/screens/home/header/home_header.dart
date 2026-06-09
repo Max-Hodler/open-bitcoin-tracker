@@ -203,9 +203,9 @@ class _HomeHeaderState extends State<HomeHeader> {
           const SizedBox(height: 8),
           SizedBox(
             height: switch (chartHeight) {
-              ChartHeight.compact => 136,
-              ChartHeight.normal => 204,
-              ChartHeight.tall => 272,
+              ChartHeight.s => 136,
+              ChartHeight.m => 204,
+              ChartHeight.l => 272,
               ChartHeight.xl => 340,
             },
             child: _buildChartArea(context, logScale: logScale),
