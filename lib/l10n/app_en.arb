@@ -332,7 +332,7 @@
   "@bitcoinDisplayModeBtc": {
     "description": "Segment label for the BTC display mode. Renders amounts like 0.00339288 with the ₿ symbol."
   },
-  "dialogBitcoinUnitTitle": "What's your preferred bitcoin unit?",
+  "dialogBitcoinUnitTitle": "What bitcoin unit would you like to use?",
   "@dialogBitcoinUnitTitle": {
     "description": "Title of the dialog shown when adding the first stack, asking the user to choose their preferred Bitcoin display unit (Sats or BTC)."
   },
