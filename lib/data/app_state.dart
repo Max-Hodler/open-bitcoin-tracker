@@ -12,7 +12,7 @@ class AppState {
     this.mempoolBlocksReversed = false,
     this.showHashrate = false,
     this.showChart = true,
-    this.chartHeight = ChartHeight.l,
+    this.chartHeight = ChartHeight.xl,
     this.theme = AppTheme.system,
     this.darkVariant = DarkVariant.blue,
     this.lightVariant = LightVariant.cream,
