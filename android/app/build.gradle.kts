@@ -18,7 +18,7 @@ val keystoreProperties = Properties().apply {
 val hasReleaseKeystore = keystoreProperties.getProperty("storeFile")?.isNotBlank() == true
 
 android {
-    namespace = "com.openbitcointracker.open_bitcoin_tracker"
+    namespace = "com.openbitcointracker.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -32,7 +32,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.openbitcointracker.open_bitcoin_tracker"
+        applicationId = "com.openbitcointracker.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

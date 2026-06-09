@@ -1,4 +1,4 @@
-package com.openbitcointracker.open_bitcoin_tracker
+package com.openbitcointracker.app
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 
