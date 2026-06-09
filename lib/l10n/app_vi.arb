@@ -186,7 +186,6 @@
   "stackMenuChangeName": "Đổi tên",
   "stackMenuStacksSettings": "Cài đặt Stacks",
   "rangePickerLongTitle": "Chọn khoảng",
-  "rangePickerLongHint": "Mẹo: vuốt lên hoặc xuống trên một phạm vi để chuyển đổi giữa các phạm vi.",
   "rangePickerYearsFull": "{count, plural, =1{1 Năm} other{{count} Năm}}",
   "rangePickerMonthsFull": "{count, plural, =1{1 Tháng} other{{count} Tháng}}",
   "rangePickerDaysFull": "{count, plural, =1{1 Ngày} other{{count} Ngày}}",

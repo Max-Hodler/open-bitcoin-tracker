@@ -228,7 +228,7 @@ class RangeBar extends StatelessWidget {
                 Text(l10n.rangePickerLongTitle),
                 const SizedBox(height: 4),
                 Text(
-                  l10n.rangePickerLongHint,
+                  l10n.homeSwipeChipHint,
                   style: AppTypography.body.copyWith(
                     fontSize: 14,
                     color: cs.onSurfaceVariant,
@@ -294,7 +294,7 @@ class RangeBar extends StatelessWidget {
                 Text(l10n.rangePickerLongTitle),
                 const SizedBox(height: 4),
                 Text(
-                  l10n.rangePickerLongHint,
+                  l10n.homeSwipeChipHint,
                   style: AppTypography.body.copyWith(
                     fontSize: 14,
                     color: cs.onSurfaceVariant,
@@ -360,7 +360,7 @@ class RangeBar extends StatelessWidget {
                 Text(l10n.rangePickerLongTitle),
                 const SizedBox(height: 4),
                 Text(
-                  l10n.rangePickerLongHint,
+                  l10n.homeSwipeChipHint,
                   style: AppTypography.body.copyWith(
                     fontSize: 14,
                     color: cs.onSurfaceVariant,
@@ -431,7 +431,7 @@ class RangeBar extends StatelessWidget {
                 Text(l10n.rangePickerLongTitle),
                 const SizedBox(height: 4),
                 Text(
-                  l10n.rangePickerLongHint,
+                  l10n.homeSwipeChipHint,
                   style: AppTypography.body.copyWith(
                     fontSize: 14,
                     color: cs.onSurfaceVariant,

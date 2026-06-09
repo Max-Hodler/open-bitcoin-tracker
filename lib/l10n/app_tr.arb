@@ -186,7 +186,6 @@
   "stackMenuChangeName": "İsmi değiştir",
   "stackMenuStacksSettings": "Stacks ayarları",
   "rangePickerLongTitle": "Aralık seçin",
-  "rangePickerLongHint": "İpucu: aralıkları değiştirmek için yukarı veya aşağı kaydırın.",
   "rangePickerYearsFull": "{count, plural, =1{1 Yıl} other{{count} Yıl}}",
   "rangePickerMonthsFull": "{count, plural, =1{1 Ay} other{{count} Ay}}",
   "rangePickerDaysFull": "{count, plural, =1{1 Gün} other{{count} Gün}}",

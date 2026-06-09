@@ -186,7 +186,6 @@
   "stackMenuChangeName": "名前を変更",
   "stackMenuStacksSettings": "Stacksの設定",
   "rangePickerLongTitle": "期間を選択",
-  "rangePickerLongHint": "ヒント: 期間を上下にスワイプすると切り替えられます。",
   "rangePickerYearsFull": "{count, plural, =1{1年} other{{count}年}}",
   "rangePickerMonthsFull": "{count, plural, =1{1ヶ月} other{{count}ヶ月}}",
   "rangePickerDaysFull": "{count, plural, =1{1日} other{{count}日}}",

@@ -186,7 +186,6 @@
   "stackMenuChangeName": "Modifier le nom",
   "stackMenuStacksSettings": "Paramètres des Stacks",
   "rangePickerLongTitle": "Sélectionner la période",
-  "rangePickerLongHint": "Astuce : faites glisser vers le haut ou le bas sur une plage pour les parcourir.",
   "rangePickerYearsFull": "{count, plural, =1{1 an} other{{count} ans}}",
   "rangePickerMonthsFull": "{count, plural, =1{1 mois} other{{count} mois}}",
   "rangePickerDaysFull": "{count, plural, =1{1 jour} other{{count} jours}}",

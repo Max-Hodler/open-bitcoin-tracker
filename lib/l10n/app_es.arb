@@ -179,7 +179,6 @@
   "stackMenuChangeName": "Cambiar nombre",
   "stackMenuStacksSettings": "Ajustes de Stacks",
   "rangePickerLongTitle": "Selecciona el rango",
-  "rangePickerLongHint": "Consejo: desliza hacia arriba o abajo en el rango para cambiarlo.",
   "rangePickerYearsFull": "{count, plural, =1{1 año} other{{count} años}}",
   "rangePickerMonthsFull": "{count, plural, =1{1 mes} other{{count} meses}}",
   "rangePickerDaysFull": "{count, plural, =1{1 día} other{{count} días}}",

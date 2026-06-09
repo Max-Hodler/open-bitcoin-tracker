@@ -186,7 +186,6 @@
   "stackMenuChangeName": "Изменить название",
   "stackMenuStacksSettings": "Настройки Stacks",
   "rangePickerLongTitle": "Выберите диапазон",
-  "rangePickerLongHint": "Совет: проведите вверх или вниз по диапазону, чтобы переключать их.",
   "rangePickerYearsFull": "{count, plural, one{1 год} few{{count} года} many{{count} лет} other{{count} года}}",
   "rangePickerMonthsFull": "{count, plural, one{1 месяц} few{{count} месяца} many{{count} месяцев} other{{count} месяца}}",
   "rangePickerDaysFull": "{count, plural, one{1 день} few{{count} дня} many{{count} дней} other{{count} дня}}",

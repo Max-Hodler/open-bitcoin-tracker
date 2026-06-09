@@ -237,7 +237,7 @@ class _HomeHeaderState extends State<HomeHeader> {
     if (message == null) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.fromLTRB(
-        AppSpacing.md, AppSpacing.sm, AppSpacing.md, 0,
+        AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.sm,
       ),
       child: Text(
         message,

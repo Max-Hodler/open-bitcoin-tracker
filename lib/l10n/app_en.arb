@@ -609,10 +609,6 @@
   "@rangePickerLongTitle": {
     "description": "Title of the dialog that lets the user pick which year range to mount on the overflow chip (1Y..15Y)."
   },
-  "rangePickerLongHint": "Tip: swipe up or down on a range to cycle through them.",
-  "@rangePickerLongHint": {
-    "description": "Subtitle under the range picker dialog title teaching the swipe-to-cycle shortcut on the overflow range button."
-  },
   "rangePickerYearsFull": "{count, plural, =1{1 Year} other{{count} Years}}",
   "@rangePickerYearsFull": {
     "description": "Long-form year range label used in the overflow picker (e.g. '1 Year', '5 Years').",
