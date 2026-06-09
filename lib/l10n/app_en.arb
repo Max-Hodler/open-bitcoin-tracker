@@ -393,7 +393,7 @@
   "@authModeOff": {
     "description": "Auth mode option: stacks are not locked at all."
   },
-  "authModeDevice": "Device authentication",
+  "authModeDevice": "Device",
   "@authModeDevice": {
     "description": "Auth mode option: stacks are encrypted and unlocked via the device biometric."
   },
