@@ -276,7 +276,7 @@ class _CurrentPriceState extends State<CurrentPrice>
                     },
                     child: RollingNumber(
                       key: ValueKey(widget.currency.code),
-                      text: formatFiat(displayPrice, widget.currency).full,
+                      text: formatFiat(displayPrice, widget.currency).tight,
                       direction: widget.rollDirection,
                       // Snap (don't roll) while the user is scrubbing the
                       // chart; hover supplies displayPrice and rolling each

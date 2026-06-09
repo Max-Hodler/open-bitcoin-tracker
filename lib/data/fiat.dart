@@ -47,6 +47,10 @@ class FiatFormat {
 
   String get full =>
       symbolAfterAmount ? '$amount $symbol' : '$symbol $amount';
+
+  /// Like [full] but with no gap between the symbol and the amount.
+  String get tight =>
+      symbolAfterAmount ? '$amount$symbol' : '$symbol$amount';
 }
 
 /// The decimal separator character for the active locale (e.g. ',' in Spanish, '.' in English).
