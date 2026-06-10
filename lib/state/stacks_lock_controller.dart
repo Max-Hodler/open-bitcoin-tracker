@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../data/app_enums.dart';
+import '../services/platform_security.dart';
 import 'app_state_notifier.dart';
 
 class StacksLockController extends ChangeNotifier
@@ -25,6 +26,10 @@ class StacksLockController extends ChangeNotifier
     if (_started || _disposed) return;
     _started = true;
     WidgetsBinding.instance.addObserver(this);
+    // FLAG_SECURE follows the lock setting, not the unlocked state: while the
+    // lock is enabled the recents thumbnail must never show holdings, even
+    // (especially) when currently unlocked.
+    PlatformSecurity.setSecureScreen(mode != StacksAuthMode.off);
   }
 
   /// Flip the UI to unlocked. The caller must have already decrypted the
@@ -52,12 +57,14 @@ class StacksLockController extends ChangeNotifier
     _lastMode = next;
     if (next == StacksAuthMode.off) {
       // Auth was disabled -> reveal stacks immediately.
+      PlatformSecurity.setSecureScreen(false);
       if (!_unlocked) {
         _unlocked = true;
         notifyListeners();
       }
     } else if (prev == StacksAuthMode.off) {
       // Auth was enabled from off -> lock right away (cold-start parity).
+      PlatformSecurity.setSecureScreen(true);
       if (_unlocked) {
         _unlocked = false;
         notifyListeners();
