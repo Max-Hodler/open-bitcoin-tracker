@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/widgets.dart' show AppLifecycleState;
 import 'package:open_bitcoin_tracker/data/data.dart';
 import 'package:open_bitcoin_tracker/services/stacks_crypto_service.dart';
 import 'package:open_bitcoin_tracker/state/state.dart';
@@ -125,13 +126,66 @@ void main() {
 
       h.notifier.relock();
       h.notifier.setCurrency(Currency.eur);
-      await Future<void>.delayed(Duration.zero);
+      // Settings churn is debounced; backgrounding must flush it through the
+      // same single-blob path that re-emits the cached envelope.
+      h.notifier.didChangeAppLifecycleState(AppLifecycleState.paused);
+      await pumpEventQueue();
 
       final afterBlob = jsonDecode(h.prefs.getString('btc_tracker')!)
           as Map<String, dynamic>;
       expect(afterBlob['currency'], 'EUR');
       expect(afterBlob['stacksEnc'], beforeBlob['stacksEnc']);
       expect(afterBlob.containsKey('stacks'), isFalse);
+    });
+  });
+
+  group('unlocked save-path envelope reuse', () {
+    test('settings-only save reuses the envelope byte-for-byte (no '
+        're-encryption)', () async {
+      final h = await build(initialPrefs: const {
+        'btc_tracker':
+            '{"currency":"USD","stacks":[{"id":"a","name":"Cold","sats":100}]}',
+      });
+      final dek = await h.crypto.initWithPin('pw');
+      await h.notifier.adoptDek(dek);
+      final envBefore = (jsonDecode(h.prefs.getString('btc_tracker')!)
+          as Map<String, dynamic>)['stacksEnc'];
+
+      h.notifier.setCurrency(Currency.eur);
+      h.notifier.flushPendingSave();
+      await pumpEventQueue();
+
+      final blob = jsonDecode(h.prefs.getString('btc_tracker')!)
+          as Map<String, dynamic>;
+      expect(blob['currency'], 'EUR');
+      // AES-GCM uses a random nonce, so a byte-identical envelope proves the
+      // stacks were not re-encrypted — and definitely not nulled out.
+      expect(blob['stacksEnc'], envBefore);
+      expect(blob.containsKey('stacks'), isFalse);
+    });
+
+    test('stack mutation re-encrypts: new envelope, correct round-trip',
+        () async {
+      final h = await build(initialPrefs: const {
+        'btc_tracker':
+            '{"currency":"USD","stacks":[{"id":"a","name":"Cold","sats":100}]}',
+      });
+      final dek = await h.crypto.initWithPin('pw');
+      await h.notifier.adoptDek(dek);
+      final envBefore = (jsonDecode(h.prefs.getString('btc_tracker')!)
+          as Map<String, dynamic>)['stacksEnc'];
+
+      h.notifier.addStack(const Stack(id: 'b', name: 'Hot', sats: 5));
+      await pumpEventQueue();
+
+      final blob = jsonDecode(h.prefs.getString('btc_tracker')!)
+          as Map<String, dynamic>;
+      expect(blob['stacksEnc'], isNotNull);
+      expect(blob['stacksEnc'], isNot(envBefore));
+      expect(blob['lockedStackCount'], 2);
+
+      final stacks = await h.repo.decryptStacks(dek);
+      expect(stacks!.map((s) => s.name), ['Cold', 'Hot']);
     });
   });
 

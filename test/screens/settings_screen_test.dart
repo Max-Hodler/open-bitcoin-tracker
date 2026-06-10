@@ -161,6 +161,9 @@ void main() {
     await tester.tap(find.text('Display total'));
     await tester.pump();
     expect(app.showPortfolio, isFalse);
+
+    // Let the notifier's debounced settings save fire before teardown.
+    await tester.pump(AppStateNotifier.saveDebounceWindow);
   });
 
 }

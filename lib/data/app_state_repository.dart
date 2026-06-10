@@ -27,9 +27,24 @@ class AppStateRepository {
   final SharedPreferences _prefs;
   final StacksCryptoService _crypto;
   String? _lastStacksEnc;
+  // Identity of the (stacks list, DEK) pair that produced _lastStacksEnc.
+  // AppState.copyWith preserves the stacks list object on settings-only
+  // changes and every stack mutation builds a new list, so identity is a
+  // sound cache key: while both match, the cached envelope is still the
+  // ciphertext of the current stacks and an unlocked settings-only save can
+  // reuse it instead of re-serializing + re-encrypting. Both halves still go
+  // out in the single setString below — this never becomes a side path.
+  List<Stack>? _lastEncryptedStacks;
+  List<int>? _lastEncryptedDek;
   // Plaintext count stored alongside stacksEnc so the locked-state skeleton
   // can show the right number of placeholder rows without decrypting.
   int _lockedStackCount = 0;
+  // Saves are fired-and-forgotten by the notifier, and an encrypting save
+  // awaits the cipher before writing while a cached-envelope save does not —
+  // without ordering, a newer fast save could hit disk first and then be
+  // overwritten by an older slow one. Chaining every save through this future
+  // makes writes land in call order.
+  Future<void> _writeChain = Future.value();
 
   /// True iff the most-recently-loaded blob carried encrypted stacks. Callers
   /// that boot the lock screen rely on this to decide whether to gate the UI.
@@ -40,6 +55,8 @@ class AppStateRepository {
   int get lockedStackCount => _lockedStackCount;
 
   AppState load() {
+    _lastEncryptedStacks = null;
+    _lastEncryptedDek = null;
     final raw = _prefs.getString(storageKey);
     if (raw == null || raw.isEmpty) {
       _lastStacksEnc = null;
@@ -69,13 +86,29 @@ class AppStateRepository {
   /// - If [dek] is null and there's no envelope, the legacy plaintext
   ///   `stacks` field is written. This is today's behavior, preserved for
   ///   users who haven't enabled the lock yet.
-  Future<void> save(AppState state, {List<int>? dek}) async {
+  Future<void> save(AppState state, {List<int>? dek}) {
+    final task = _writeChain.then((_) => _save(state, dek: dek));
+    // Keep the chain alive past a failed write; the failure still surfaces
+    // through the returned future.
+    _writeChain = task.then((_) {}, onError: (_) {});
+    return task;
+  }
+
+  Future<void> _save(AppState state, {List<int>? dek}) async {
     final json = state.toJson();
 
     if (dek != null) {
-      final stacksJson = jsonEncode(state.stacks.map((s) => s.toJson()).toList());
-      _lastStacksEnc = await _crypto.encryptString(stacksJson, dek);
-      _lockedStackCount = state.stacks.length;
+      final reusable = _lastStacksEnc != null &&
+          identical(state.stacks, _lastEncryptedStacks) &&
+          identical(dek, _lastEncryptedDek);
+      if (!reusable) {
+        final stacksJson =
+            jsonEncode(state.stacks.map((s) => s.toJson()).toList());
+        _lastStacksEnc = await _crypto.encryptString(stacksJson, dek);
+        _lockedStackCount = state.stacks.length;
+        _lastEncryptedStacks = state.stacks;
+        _lastEncryptedDek = dek;
+      }
       json.remove('stacks');
       json['stacksEnc'] = _lastStacksEnc;
       json['lockedStackCount'] = _lockedStackCount;
@@ -112,5 +145,7 @@ class AppStateRepository {
   /// (decrypt-back path) and the next save must emit plaintext `stacks` again.
   void clearEncryptedStacks() {
     _lastStacksEnc = null;
+    _lastEncryptedStacks = null;
+    _lastEncryptedDek = null;
   }
 }

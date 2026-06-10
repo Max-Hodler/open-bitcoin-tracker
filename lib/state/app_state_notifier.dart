@@ -1,15 +1,30 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart'
+    show AppLifecycleState, WidgetsBinding, WidgetsBindingObserver;
 
 import '../api/hashrate_client.dart';
 import '../data/data.dart';
 
-class AppStateNotifier extends ChangeNotifier {
-  AppStateNotifier(this._repo) : _state = _repo.load();
+class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
+  AppStateNotifier(this._repo) : _state = _repo.load() {
+    // Observes lifecycle solely to flush a pending debounced save when the
+    // app leaves the foreground.
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   final AppStateRepository _repo;
   AppState _state;
+
+  /// Quiet window for coalescing non-stack saves (converter keystrokes,
+  /// settings churn). 500 ms turns a typing burst into at most two writes per
+  /// second instead of one per keystroke, while bounding what a crash can
+  /// lose to half a second of input. The timer is armed by the FIRST unsaved
+  /// mutation and deliberately NOT reset by later ones, so continuous typing
+  /// cannot postpone durability beyond this window.
+  static const Duration saveDebounceWindow = Duration(milliseconds: 500);
+  Timer? _saveTimer;
   // The data-encryption key, held only between unlock and re-lock. Null means
   // the stacks are either not encrypted at all (legacy) or the user is
   // currently locked. Mutations to `stacks` while this is null and the repo
@@ -134,8 +149,9 @@ class AppStateNotifier extends ChangeNotifier {
       _update((s) => s.copyWith(converterMode: value));
 
   /// Persists the per-mode raw input + active slot for the converter screen
-  /// so values survive app restarts. Called on every keystroke; the [_update]
-  /// path is cheap enough at human typing speed.
+  /// so values survive app restarts. Called on every keystroke; the
+  /// [saveDebounceWindow] in [_update] coalesces a typing burst into a single
+  /// write.
   void setConverterFiatModeEntry({
     required String raw,
     required String activeSlot,
@@ -303,6 +319,7 @@ class AppStateNotifier extends ChangeNotifier {
   /// the migration path after [StacksCryptoService.initWithPin] returns.
   Future<void> adoptDek(List<int> dek) async {
     _dek = dek;
+    _cancelPendingSave(); // this save carries the full latest state
     await _repo.save(_state, dek: dek);
   }
 
@@ -311,14 +328,61 @@ class AppStateNotifier extends ChangeNotifier {
   Future<void> clearEncryptionAndSave() async {
     _dek = null;
     _repo.clearEncryptedStacks();
+    _cancelPendingSave(); // this save carries the full latest state
     await _repo.save(_state);
   }
 
   void _update(AppState Function(AppState) mutate) {
     final next = mutate(_state);
     if (identical(next, _state)) return;
+    // Stack mutations stay durable immediately; everything else (settings,
+    // converter entries) is coalesced through the debounce window. copyWith
+    // keeps the stacks list object when it isn't part of the change, so an
+    // identity flip is exactly "this mutation touched the stacks".
+    final stacksChanged = !identical(next.stacks, _state.stacks);
     _state = next;
     notifyListeners();
-    unawaited(_repo.save(next, dek: _dek));
+    if (stacksChanged) {
+      _saveNow();
+    } else {
+      _saveTimer ??= Timer(saveDebounceWindow, _saveNow);
+    }
+  }
+
+  void _saveNow() {
+    _cancelPendingSave();
+    unawaited(_repo.save(_state, dek: _dek));
+  }
+
+  void _cancelPendingSave() {
+    _saveTimer?.cancel();
+    _saveTimer = null;
+  }
+
+  /// Persist immediately if a debounced save is pending. Called from the
+  /// lifecycle hook below so a backgrounded app never sits on unsaved input.
+  void flushPendingSave() {
+    if (_saveTimer == null) return;
+    _saveNow();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.paused:
+      case AppLifecycleState.hidden:
+      case AppLifecycleState.detached:
+        flushPendingSave();
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.resumed:
+        break;
+    }
+  }
+
+  @override
+  void dispose() {
+    flushPendingSave();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 }

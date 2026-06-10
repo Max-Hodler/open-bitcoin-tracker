@@ -1,3 +1,5 @@
+import 'package:fake_async/fake_async.dart';
+import 'package:flutter/widgets.dart' show AppLifecycleState;
 import 'package:open_bitcoin_tracker/data/data.dart';
 import 'package:open_bitcoin_tracker/state/state.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,6 +9,11 @@ Future<AppStateNotifier> _build() async {
   SharedPreferences.setMockInitialValues(const {});
   final prefs = await SharedPreferences.getInstance();
   return AppStateNotifier(AppStateRepository(prefs));
+}
+
+Future<SharedPreferences> _freshPrefs() async {
+  SharedPreferences.setMockInitialValues(const {});
+  return SharedPreferences.getInstance();
 }
 
 void main() {
@@ -24,17 +31,105 @@ void main() {
     expect(n.stacks.single.name, 'Cold');
   });
 
-  test('setCurrency notifies and persists', () async {
-    final n = await _build();
-    var notifies = 0;
-    n.addListener(() => notifies++);
+  test('setCurrency notifies and persists after the debounce window',
+      () async {
+    final prefs = await _freshPrefs();
+    fakeAsync((async) {
+      final n = AppStateNotifier(AppStateRepository(prefs));
+      var notifies = 0;
+      n.addListener(() => notifies++);
 
-    n.setCurrency(Currency.gbp);
-    await Future<void>.delayed(Duration.zero);
+      n.setCurrency(Currency.gbp);
+      async.flushMicrotasks();
 
-    expect(notifies, 1);
-    final prefs = await SharedPreferences.getInstance();
-    expect(prefs.getString('btc_tracker'), contains('"currency":"GBP"'));
+      expect(notifies, 1);
+      // Settings churn is debounced — nothing on disk yet.
+      expect(prefs.getString('btc_tracker'), isNull);
+
+      async.elapse(AppStateNotifier.saveDebounceWindow);
+      async.flushMicrotasks();
+      expect(prefs.getString('btc_tracker'), contains('"currency":"GBP"'));
+    });
+  });
+
+  group('save debouncing', () {
+    test('converter keystrokes coalesce into one deferred write', () async {
+      final prefs = await _freshPrefs();
+      fakeAsync((async) {
+        final n = AppStateNotifier(AppStateRepository(prefs));
+
+        n.setConverterFiatModeEntry(raw: '1', activeSlot: 'top');
+        n.setConverterFiatModeEntry(raw: '12', activeSlot: 'top');
+        n.setConverterFiatModeEntry(raw: '123', activeSlot: 'top');
+        async.flushMicrotasks();
+        expect(prefs.getString('btc_tracker'), isNull);
+
+        async.elapse(AppStateNotifier.saveDebounceWindow);
+        async.flushMicrotasks();
+        // One write carrying the latest value.
+        expect(
+          prefs.getString('btc_tracker'),
+          contains('"converterFiatModeRaw":"123"'),
+        );
+      });
+    });
+
+    test('window anchors to the first unsaved mutation, so continuous '
+        'typing cannot postpone durability past the window', () async {
+      final prefs = await _freshPrefs();
+      fakeAsync((async) {
+        final n = AppStateNotifier(AppStateRepository(prefs));
+        final window = AppStateNotifier.saveDebounceWindow;
+
+        n.setConverterFiatModeEntry(raw: '1', activeSlot: 'top');
+        async.elapse(window * 0.6);
+        // A mutation mid-window must NOT push the deadline out.
+        n.setConverterFiatModeEntry(raw: '12', activeSlot: 'top');
+        async.elapse(window * 0.4);
+        async.flushMicrotasks();
+
+        expect(
+          prefs.getString('btc_tracker'),
+          contains('"converterFiatModeRaw":"12"'),
+        );
+      });
+    });
+
+    test('stack mutations persist immediately, flushing pending settings '
+        'churn with them', () async {
+      final prefs = await _freshPrefs();
+      fakeAsync((async) {
+        final n = AppStateNotifier(AppStateRepository(prefs));
+
+        n.setCurrency(Currency.gbp);
+        n.addStack(const Stack(id: 'a', name: 'A', sats: 1));
+        async.flushMicrotasks();
+
+        // No debounce wait: both the stack and the settings change are
+        // already on disk.
+        final raw = prefs.getString('btc_tracker')!;
+        expect(raw, contains('"id":"a"'));
+        expect(raw, contains('"currency":"GBP"'));
+      });
+    });
+
+    test('lifecycle pause flushes a pending debounced write', () async {
+      final prefs = await _freshPrefs();
+      fakeAsync((async) {
+        final n = AppStateNotifier(AppStateRepository(prefs));
+
+        n.setConverterFiatModeEntry(raw: '42', activeSlot: 'top');
+        async.flushMicrotasks();
+        expect(prefs.getString('btc_tracker'), isNull);
+
+        n.didChangeAppLifecycleState(AppLifecycleState.paused);
+        async.flushMicrotasks();
+        expect(
+          prefs.getString('btc_tracker'),
+          contains('"converterFiatModeRaw":"42"'),
+        );
+      });
+    });
   });
 
   test('addStack appends in order', () async {

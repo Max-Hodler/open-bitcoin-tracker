@@ -78,6 +78,10 @@ void main() {
     expect(find.text('Sats - BTC'), findsOneWidget);
     expect(find.text('BITCOIN (SATS)'), findsOneWidget);
     expect(find.byType(NumberPad), findsOneWidget);
+
+    // The screen's first-build seeding starts the notifier's debounced
+    // settings save; let it fire before teardown.
+    await tester.pump(AppStateNotifier.saveDebounceWindow);
   });
 
   testWidgets('typing a fiat digit computes sats', (tester) async {
@@ -89,6 +93,8 @@ void main() {
 
     // fiat = 5 -> 5,000 sats on sats card
     expect(_findValueText('5,000'), findsOneWidget);
+
+    await tester.pump(AppStateNotifier.saveDebounceWindow);
   });
 
   testWidgets('switching to sats then typing computes BTC', (tester) async {
@@ -111,6 +117,8 @@ void main() {
     // BITCOIN (BTC) slot label confirms which card the "1" belongs to.
     expect(find.text('BITCOIN (BTC)'), findsOneWidget);
     expect(_findValueText('1'), findsWidgets);
+
+    await tester.pump(AppStateNotifier.saveDebounceWindow);
   });
 
   testWidgets('decimal key only available in fiat mode', (tester) async {
@@ -125,5 +133,7 @@ void main() {
 
     expect(_keypadKey('.'), findsNothing);
     expect(_keypadKey('AC'), findsOneWidget);
+
+    await tester.pump(AppStateNotifier.saveDebounceWindow);
   });
 }

@@ -97,6 +97,15 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
   // Skip back-to-back refreshes within this window so a quick foreground/
   // background flicker doesn't double-tap the API.
   static const Duration _resumeQuietWindow = Duration(seconds: 30);
+  // Live ticks arrive about once a second, and persisting the rates cache
+  // rewrites the whole prefs file each time. The cache only matters for the
+  // first frame of the NEXT launch, so cap writes to one per interval; ticks
+  // in between just mark the cache dirty and the next tick past the deadline
+  // (or a trip to the background) flushes the latest rates. Screenshot mode
+  // keeps its write-every-tick path in [_applyTick] — deliberate, see there.
+  static const Duration _ratesCacheWriteInterval = Duration(seconds: 30);
+  DateTime? _lastRatesCacheSaveAt;
+  bool _ratesCacheDirty = false;
   // Relative tolerance below which a tick is treated as a no-op (no repaint).
   // Tightened from 1bp to ~zero so the WS path passes through real ticks —
   // at ~1 tick/sec a 1bp gate would suppress most updates.
@@ -371,7 +380,9 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
       // touch `_rates` or repaint — the visible price holds still and no delta
       // fires. `_lastFetchedAt` is left stale on purpose so a background/resume
       // cycle during a shoot doesn't decide the data is fresh and skip a
-      // refetch we'd want post-shoot.
+      // refetch we'd want post-shoot. This save deliberately bypasses the
+      // [_ratesCacheWriteInterval] throttle: leaving the mode snaps to
+      // `_cache.load()`, so the cache must always hold the newest tick.
       unawaited(_cache.save(updated));
       return;
     }
@@ -381,8 +392,30 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
     }
     _rates = updated;
     _lastFetchedAt = DateTime.now();
-    unawaited(_cache.save(_rates));
+    _maybeSaveRatesCache();
     _maybeNotify();
+  }
+
+  void _maybeSaveRatesCache() {
+    final now = DateTime.now();
+    final last = _lastRatesCacheSaveAt;
+    if (last != null && now.difference(last) < _ratesCacheWriteInterval) {
+      _ratesCacheDirty = true;
+      return;
+    }
+    _lastRatesCacheSaveAt = now;
+    _ratesCacheDirty = false;
+    unawaited(_cache.save(_rates));
+  }
+
+  // Persist rates the throttle was sitting on. Called when the app leaves the
+  // foreground (and on dispose) so the next cold start shows a price no
+  // staler than the moment the user left.
+  void _flushRatesCache() {
+    if (!_ratesCacheDirty) return;
+    _ratesCacheDirty = false;
+    _lastRatesCacheSaveAt = DateTime.now();
+    unawaited(_cache.save(_rates));
   }
 
   // Cadence gate. Throttled cadences delegate to [_throttler], which handles
@@ -527,6 +560,7 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
       case AppLifecycleState.hidden:
         _appBackgrounded = true;
         _stream.stop();
+        _flushRatesCache();
         _syncIntradayAutoRefresh();
       case AppLifecycleState.resumed:
         _appBackgrounded = false;
@@ -546,12 +580,14 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
       case AppLifecycleState.detached:
         _appBackgrounded = true;
         _stream.stop();
+        _flushRatesCache();
         _syncIntradayAutoRefresh();
     }
   }
 
   @override
   void dispose() {
+    _flushRatesCache();
     _disposed = true;
     _throttler.dispose();
     _intradayAutoRefreshTimer?.cancel();
