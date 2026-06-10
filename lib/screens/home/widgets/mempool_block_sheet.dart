@@ -65,8 +65,11 @@ class _MempoolBlockSheet extends StatelessWidget {
 
   String? _viewUrl() {
     if (kind == MempoolBlockKind.mined) {
+      // The hash comes from the network and is interpolated into a launched
+      // URL — accept only a canonical 64-char hex block hash.
       final h = block.hash;
-      return h != null ? 'https://mempool.space/block/$h' : null;
+      if (h == null || !RegExp(r'^[0-9a-fA-F]{64}$').hasMatch(h)) return null;
+      return 'https://mempool.space/block/$h';
     }
     // projected: mempool.space uses the fee-priority array index
     // (0 = highest priority = next block). Display index 0 is the leftmost
