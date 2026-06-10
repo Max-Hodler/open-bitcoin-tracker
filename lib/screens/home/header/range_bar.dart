@@ -727,6 +727,14 @@ class _EagerVerticalDragRecognizer extends VerticalDragGestureRecognizer {
   }
 }
 
+// Memo for _maxLabelWidth: RangeBar rebuilds at price-tick cadence and lays
+// out ~38 painters per build, but the widths only change with the label set
+// (locale), style, text scale, or direction. LRU-capped so locale/theme
+// switches can't grow it unboundedly.
+final Map<(String, TextStyle, TextScaler, TextDirection), double>
+    _labelWidthCache = {};
+const int _labelWidthCacheCap = 32;
+
 // Measures the widest label among `labels` rendered with `style` and the
 // supplied `TextScaler`. Used to reserve a stable width on the overflow chip
 // so cycling through 1Y..15Y doesn't shift neighboring chips.
@@ -737,6 +745,12 @@ double _maxLabelWidth({
   required TextScaler textScaler,
 }) {
   final textDirection = Directionality.of(context);
+  final key = (labels.join('\u0000'), style, textScaler, textDirection);
+  final cached = _labelWidthCache.remove(key);
+  if (cached != null) {
+    _labelWidthCache[key] = cached; // refresh LRU position
+    return cached;
+  }
   double maxWidth = 0;
   for (final label in labels) {
     final tp = TextPainter(
@@ -747,6 +761,10 @@ double _maxLabelWidth({
     if (tp.size.width > maxWidth) maxWidth = tp.size.width;
     tp.dispose();
   }
+  if (_labelWidthCache.length >= _labelWidthCacheCap) {
+    _labelWidthCache.remove(_labelWidthCache.keys.first);
+  }
+  _labelWidthCache[key] = maxWidth;
   return maxWidth;
 }
 

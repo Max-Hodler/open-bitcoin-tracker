@@ -1,5 +1,49 @@
 import 'package:flutter/widgets.dart';
 
+/// Measured cell metrics for the digit glyph '0' under a given style and
+/// text scale. Laying out a TextPainter is a real shaping call into the
+/// engine, and these widgets rebuild at price-tick cadence — so results are
+/// memoized: they only change when the style or scale changes. The painter
+/// used for measurement is disposed immediately.
+class DigitCellMetrics {
+  const DigitCellMetrics._(this.width, this.height, this.baseline);
+
+  final double width;
+  final double height;
+  final double baseline;
+
+  // TextStyle/TextScaler have value-based equality, so per-build copies of
+  // the same style hit the cache. LRU-capped: distinct styles are few (price
+  // header, converter…), but theme/color changes mint new keys over time.
+  static final Map<(TextStyle, TextScaler), DigitCellMetrics> _cache = {};
+  static const int _cacheCap = 8;
+
+  static DigitCellMetrics of(TextStyle style, TextScaler textScaler) {
+    final key = (style, textScaler);
+    final cached = _cache.remove(key);
+    if (cached != null) {
+      _cache[key] = cached; // refresh LRU position
+      return cached;
+    }
+    final tp = TextPainter(
+      text: TextSpan(text: '0', style: style),
+      textDirection: TextDirection.ltr,
+      textScaler: textScaler,
+    )..layout();
+    final metrics = DigitCellMetrics._(
+      tp.width,
+      tp.height,
+      tp.computeDistanceToActualBaseline(TextBaseline.alphabetic),
+    );
+    tp.dispose();
+    if (_cache.length >= _cacheCap) {
+      _cache.remove(_cache.keys.first);
+    }
+    _cache[key] = metrics;
+    return metrics;
+  }
+}
+
 /// Renders a formatted numeric string where each digit lives on a vertical
 /// strip. When the value changes, only the digits that actually change roll:
 /// up if [direction] is positive, down if negative. Non-digit characters
@@ -33,14 +77,10 @@ class RollingNumber extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textScaler = MediaQuery.textScalerOf(context);
-    final tp = TextPainter(
-      text: TextSpan(text: '0', style: style),
-      textDirection: TextDirection.ltr,
-      textScaler: textScaler,
-    )..layout();
-    final cellHeight = tp.height;
-    final baseline = tp.computeDistanceToActualBaseline(TextBaseline.alphabetic);
+    final metrics =
+        DigitCellMetrics.of(style, MediaQuery.textScalerOf(context));
+    final cellHeight = metrics.height;
+    final baseline = metrics.baseline;
     final capHeight = (style.fontSize ?? 14) * 0.52;
     final shiftY = cellHeight / 2 - (baseline - capHeight / 2);
 
@@ -208,15 +248,11 @@ class _RollingDigitState extends State<_RollingDigit>
 
   @override
   Widget build(BuildContext context) {
-    final textScaler = MediaQuery.textScalerOf(context);
-    final tp = TextPainter(
-      text: TextSpan(text: '0', style: widget.style),
-      textDirection: TextDirection.ltr,
-      textScaler: textScaler,
-    )..layout();
-    final cellHeight = tp.height;
-    final cellWidth = tp.width;
-    final baseline = tp.computeDistanceToActualBaseline(TextBaseline.alphabetic);
+    final metrics =
+        DigitCellMetrics.of(widget.style, MediaQuery.textScalerOf(context));
+    final cellHeight = metrics.height;
+    final cellWidth = metrics.width;
+    final baseline = metrics.baseline;
     final capHeight = (widget.style.fontSize ?? 14) * 0.52;
     final shiftY = cellHeight / 2 - (baseline - capHeight / 2);
 

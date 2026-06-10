@@ -182,12 +182,15 @@ class _AmountsRow extends StatelessWidget {
     return formatFiat(value, currency, decimalsUnder10: true).full;
   }
 
-  static double _width(String text, TextStyle style, TextScaler scaler) =>
-      (TextPainter(
-        text: TextSpan(text: text, style: style),
-        textDirection: TextDirection.ltr,
-        textScaler: scaler,
-      )..layout())
-          .width;
+  static double _width(String text, TextStyle style, TextScaler scaler) {
+    final tp = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: TextDirection.ltr,
+      textScaler: scaler,
+    )..layout();
+    final width = tp.width;
+    tp.dispose();
+    return width;
+  }
 }
 

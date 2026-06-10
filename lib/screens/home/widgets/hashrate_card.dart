@@ -547,7 +547,9 @@ double _hashrateCardHeight(BuildContext context) {
     textScaler: scaler,
     maxLines: 1,
   )..layout();
-  return verticalPadding * 2 + painter.size.height;
+  final lineHeight = painter.size.height;
+  painter.dispose();
+  return verticalPadding * 2 + lineHeight;
 }
 
 class _ErrorBody extends StatelessWidget {

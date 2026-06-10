@@ -159,5 +159,6 @@ double _blockBoxHeight(BuildContext context) {
     maxLines: 1,
   )..layout();
   final lineHeight = painter.size.height;
+  painter.dispose();
   return verticalPadding * 2 + lineHeight * 2 + innerGap;
 }

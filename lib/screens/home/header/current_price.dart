@@ -199,13 +199,10 @@ class _CurrentPriceState extends State<CurrentPrice>
     // reflow the column (which would push the chart below). Measured from
     // the same style RollingNumber uses internally, so the pinned outer
     // height and the digit cells agree on metrics.
-    final textScaler = MediaQuery.textScalerOf(context);
-    final pricePainter = TextPainter(
-      text: TextSpan(text: '0', style: priceStyle),
-      textDirection: ui.TextDirection.ltr,
-      textScaler: textScaler,
-    )..layout();
-    final priceRowHeight = pricePainter.height;
+    final priceRowHeight = DigitCellMetrics.of(
+      priceStyle,
+      MediaQuery.textScalerOf(context),
+    ).height;
     return ValueListenableBuilder<PricePoint?>(
       valueListenable: widget.hover,
       builder: (context, h, _) {
