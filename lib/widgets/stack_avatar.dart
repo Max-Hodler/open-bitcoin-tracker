@@ -1,9 +1,31 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
 import '../data/stack_avatar_color.dart';
 import '../theme/theme.dart';
+
+// Memo of base64 string → decoded bytes, so rebuilds reuse the same
+// Uint8List identity: MemoryImage keys the ImageCache on byte identity, so a
+// fresh decode per build means a guaranteed cache miss and a redundant JPEG
+// decode. LRU-capped so avatars of deleted stacks don't pin memory forever.
+final Map<String, Uint8List> _decodedAvatarBytes = <String, Uint8List>{};
+const int _decodedAvatarCap = 32;
+
+Uint8List _decodedBytesFor(String imageData) {
+  final cached = _decodedAvatarBytes.remove(imageData);
+  if (cached != null) {
+    _decodedAvatarBytes[imageData] = cached; // refresh LRU position
+    return cached;
+  }
+  final bytes = base64Decode(imageData);
+  if (_decodedAvatarBytes.length >= _decodedAvatarCap) {
+    _decodedAvatarBytes.remove(_decodedAvatarBytes.keys.first);
+  }
+  _decodedAvatarBytes[imageData] = bytes;
+  return bytes;
+}
 
 /// Circular avatar for a stack: shows the picked image when [imageData] is
 /// set, otherwise a tinted circle with the name's first grapheme. The tint
@@ -35,11 +57,17 @@ class StackAvatar extends StatelessWidget {
         StackAvatarColor.resolve(colorKey) ?? context.palette.bitcoinOrange;
     final Widget face;
     if (imageData != null) {
+      // Decode at render resolution: avatars are stored 256×256 but drawn at
+      // [size] logical px, so a full-size decode wastes ~4× the bitmap memory.
+      final cachePx =
+          (size * MediaQuery.devicePixelRatioOf(context)).round();
       face = ClipOval(
         child: Image.memory(
-          base64Decode(imageData!),
+          _decodedBytesFor(imageData!),
           width: size,
           height: size,
+          cacheWidth: cachePx,
+          cacheHeight: cachePx,
           fit: BoxFit.cover,
           gaplessPlayback: true,
         ),
