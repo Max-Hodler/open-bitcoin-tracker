@@ -105,9 +105,16 @@ class OpenBitcoinTrackerApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MempoolController()..start()),
         ChangeNotifierProvider(create: (_) => HashrateController()),
       ],
-      child: Consumer<AppStateNotifier>(
-        builder: (_, app, _) {
-          final locale = _localeFor(app.language) ?? _resolveSystemLocale();
+      // Selecting just the theme/locale fields keeps unrelated state changes
+      // (price ranges, stack edits, converter entries…) from re-running the
+      // MaterialApp builder at the root.
+      child: Selector<AppStateNotifier,
+          (LanguagePref, LightVariant, DarkVariant, AppTheme)>(
+        selector: (_, app) =>
+            (app.language, app.lightVariant, app.darkVariant, app.theme),
+        builder: (_, sel, _) {
+          final (language, lightVariant, darkVariant, theme) = sel;
+          final locale = _localeFor(language) ?? _resolveSystemLocale();
           // Drives Intl.defaultLocale so DateFormat / NumberFormat without an
           // explicit locale render in the user's chosen language. Set on every
           // rebuild so changes via the Settings picker take effect immediately.
@@ -115,13 +122,13 @@ class OpenBitcoinTrackerApp extends StatelessWidget {
           return MaterialApp(
           title: 'Open Bitcoin Tracker',
           debugShowCheckedModeBanner: false,
-          theme: app.lightVariant == LightVariant.pink
+          theme: lightVariant == LightVariant.pink
               ? AppThemes.lightPink()
               : AppThemes.light(),
-          darkTheme: app.darkVariant == DarkVariant.blue
+          darkTheme: darkVariant == DarkVariant.blue
               ? AppThemes.darkBlue()
               : AppThemes.dark(),
-          themeMode: app.theme.themeMode,
+          themeMode: theme.themeMode,
           scrollBehavior: noScrollbarsBehavior,
           navigatorObservers: [appRouteObserver],
           locale: locale,

@@ -28,7 +28,21 @@ Color appDialogBarrierColor(BuildContext context) {
 class AppThemes {
   AppThemes._();
 
-  static ThemeData light() => _build(
+  // Each variant is built from fixed inputs, so build it once and reuse it.
+  // The root MaterialApp re-reads these on every AppStateNotifier change;
+  // without the memo each read constructs a full Material3 ThemeData just for
+  // MaterialApp to deep-compare it equal to the old one.
+  static ThemeData? _light;
+  static ThemeData? _lightPink;
+  static ThemeData? _dark;
+  static ThemeData? _darkBlue;
+
+  static ThemeData light() => _light ??= _buildLight();
+  static ThemeData lightPink() => _lightPink ??= _buildLightPink();
+  static ThemeData dark() => _dark ??= _buildDark();
+  static ThemeData darkBlue() => _darkBlue ??= _buildDarkBlue();
+
+  static ThemeData _buildLight() => _build(
         base: ThemeData.light(useMaterial3: true),
         colorScheme: const ColorScheme.light(
           primary: AppColors.bitcoinOrange,
@@ -48,7 +62,7 @@ class AppThemes {
         dialogBackgroundColor: AppColors.background,
       );
 
-  static ThemeData lightPink() => _build(
+  static ThemeData _buildLightPink() => _build(
         base: ThemeData.light(useMaterial3: true),
         colorScheme: const ColorScheme.light(
           primary: AppColors.bitcoinOrange,
@@ -68,7 +82,7 @@ class AppThemes {
         dialogBackgroundColor: AppColors.backgroundLightPink,
       );
 
-  static ThemeData dark() => _build(
+  static ThemeData _buildDark() => _build(
         base: ThemeData.dark(useMaterial3: true),
         colorScheme: const ColorScheme.dark(
           primary: AppColors.bitcoinOrangeDark,
@@ -87,7 +101,7 @@ class AppThemes {
         statusBarIconBrightness: Brightness.light,
       );
 
-  static ThemeData darkBlue() => _build(
+  static ThemeData _buildDarkBlue() => _build(
         base: ThemeData.dark(useMaterial3: true),
         colorScheme: const ColorScheme.dark(
           primary: AppColors.bitcoinOrangeDark,
