@@ -73,37 +73,12 @@ class KrakenOhlcClient {
         }
         return null;
       }
-      final decoded = jsonDecode(res.body);
-      if (decoded is! Map) return null;
-      final result = decoded['result'];
-      if (result is! Map) return null;
-
-      List<dynamic>? rows;
-      for (final entry in result.entries) {
-        final v = entry.value;
-        if (v is List) {
-          rows = v;
-          break;
-        }
-      }
-      if (rows == null) return null;
-
-      final out = <HistoryPoint>[];
-      for (final raw in rows) {
-        if (raw is! List || raw.length < 5) continue;
-        final time = raw[0];
-        final close = raw[4];
-        if (time is! num) continue;
-        final closeVal = close is num
-            ? close.toDouble()
-            : (close is String ? double.tryParse(close) : null);
-        if (closeVal == null || closeVal == 0) continue;
-        out.add(HistoryPoint(time.toInt() * 1000, closeVal));
-      }
-      if (takeLast != null && out.length > takeLast) {
-        return out.sublist(out.length - takeLast);
-      }
-      return out;
+      // Parsed off the main isolate: decoding a 36-50 KB body into thousands
+      // of lists plus the HistoryPoint construction loop costs ~10-20 ms —
+      // more than a frame — and responses tend to land while the user is
+      // interacting with the chart that requested them. Mirrors the bundled
+      // CSV path in loadBundledHistory.
+      return await compute(_parseOhlcBody, (res.body, takeLast));
     } on Object catch (e) {
       if (kDebugMode) debugPrint('Kraken OHLC failed: $e');
       return null;
@@ -111,4 +86,39 @@ class KrakenOhlcClient {
   }
 
   void close() => _http.close();
+}
+
+List<HistoryPoint>? _parseOhlcBody((String, int?) args) {
+  final (body, takeLast) = args;
+  final decoded = jsonDecode(body);
+  if (decoded is! Map) return null;
+  final result = decoded['result'];
+  if (result is! Map) return null;
+
+  List<dynamic>? rows;
+  for (final entry in result.entries) {
+    final v = entry.value;
+    if (v is List) {
+      rows = v;
+      break;
+    }
+  }
+  if (rows == null) return null;
+
+  final out = <HistoryPoint>[];
+  for (final raw in rows) {
+    if (raw is! List || raw.length < 5) continue;
+    final time = raw[0];
+    final close = raw[4];
+    if (time is! num) continue;
+    final closeVal = close is num
+        ? close.toDouble()
+        : (close is String ? double.tryParse(close) : null);
+    if (closeVal == null || closeVal == 0) continue;
+    out.add(HistoryPoint(time.toInt() * 1000, closeVal));
+  }
+  if (takeLast != null && out.length > takeLast) {
+    return out.sublist(out.length - takeLast);
+  }
+  return out;
 }

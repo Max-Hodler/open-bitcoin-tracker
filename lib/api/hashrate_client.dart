@@ -138,33 +138,11 @@ class HashrateClient {
         }
         return null;
       }
-      final decoded = jsonDecode(res.body);
-      if (decoded is! Map) return null;
-      final currentRaw = decoded['currentHashrate'];
-      if (currentRaw is! num) return null;
-      final currentEHs = currentRaw.toDouble() / _ehsPerHs;
-
-      final points = <HashratePoint>[];
-      final hashrates = decoded['hashrates'];
-      if (hashrates is List) {
-        for (final entry in hashrates) {
-          if (entry is! Map) continue;
-          final ts = entry['timestamp'];
-          final v = entry['avgHashrate'];
-          if (ts is! num || v is! num) continue;
-          // mempool returns timestamps in seconds; chart wants ms.
-          points.add(HashratePoint(
-            ts.toInt() * 1000,
-            v.toDouble() / _ehsPerHs,
-          ));
-        }
-      }
-
-      return HashrateApiPayload(
-        currentHashrateEHs: currentEHs,
-        points: points,
-        fetchedAt: DateTime.now(),
-      );
+      // Parsed off the main isolate: the /all body decodes into ~3,650
+      // entries plus the HashratePoint construction loop — longer than a
+      // frame — and it can land mid-interaction while the card is expanded.
+      // Mirrors the bundled CSV path in loadBundledHistory.
+      return await compute(_parseHashrateBody, res.body);
     } on Object catch (e) {
       if (kDebugMode) {
         debugPrint('hashrate /$apiPath failed: $e');
@@ -174,6 +152,36 @@ class HashrateClient {
   }
 
   void close() => _http.close();
+}
+
+HashrateApiPayload? _parseHashrateBody(String body) {
+  final decoded = jsonDecode(body);
+  if (decoded is! Map) return null;
+  final currentRaw = decoded['currentHashrate'];
+  if (currentRaw is! num) return null;
+  final currentEHs = currentRaw.toDouble() / HashrateClient._ehsPerHs;
+
+  final points = <HashratePoint>[];
+  final hashrates = decoded['hashrates'];
+  if (hashrates is List) {
+    for (final entry in hashrates) {
+      if (entry is! Map) continue;
+      final ts = entry['timestamp'];
+      final v = entry['avgHashrate'];
+      if (ts is! num || v is! num) continue;
+      // mempool returns timestamps in seconds; chart wants ms.
+      points.add(HashratePoint(
+        ts.toInt() * 1000,
+        v.toDouble() / HashrateClient._ehsPerHs,
+      ));
+    }
+  }
+
+  return HashrateApiPayload(
+    currentHashrateEHs: currentEHs,
+    points: points,
+    fetchedAt: DateTime.now(),
+  );
 }
 
 /// Trims [payload] to the window for [range] and computes the signed delta
