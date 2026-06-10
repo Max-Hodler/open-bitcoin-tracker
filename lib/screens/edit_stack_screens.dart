@@ -71,6 +71,15 @@ class _EditStackAmountScreenState extends State<EditStackAmountScreen> {
     Navigator.of(context).popUntil((r) => r.isFirst);
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Re-interpret [_input] when the user flips the display mode mid-edit.
+    // build()'s select on bitcoinDisplayMode makes a mode change re-trigger
+    // this hook; _maybeMigrateForMode is a no-op when the mode is unchanged.
+    _maybeMigrateForMode(context.read<AppStateNotifier>().bitcoinDisplayMode);
+  }
+
   void _maybeMigrateForMode(BtcDisplayMode mode) {
     if (_modeAtInit == mode) return;
     final prev = _modeAtInit;
@@ -217,10 +226,6 @@ class _EditStackAmountScreenState extends State<EditStackAmountScreen> {
     final mode = context.select<AppStateNotifier, BtcDisplayMode>(
       (a) => a.bitcoinDisplayMode,
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _maybeMigrateForMode(mode);
-    });
     final l10n = AppLocalizations.of(context);
     final underflow = _isUnderflow(mode);
     final confirmLabel = switch (_mode) {

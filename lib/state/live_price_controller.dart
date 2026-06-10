@@ -216,6 +216,46 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
         usdToCurrencyFallback: usdToCurrencyFallback,
       );
 
+  // The live "now" point is appended in a second memo layer rather than inside
+  // the FX memo so the FX cache doesn't invalidate on every live tick — and so
+  // the appended list itself keeps its identity until the base series or the
+  // live price actually changes. AreaChart's identical() spot cache depends on
+  // that stability.
+  final _LiveAppendMemo _seriesWithLiveMemo = _LiveAppendMemo();
+  final _LiveAppendMemo _allHistoryWithLiveMemo = _LiveAppendMemo();
+
+  /// [convertedSeries] with the live price appended as a trailing "now" point.
+  /// Returns the bare converted series when [livePrice] is not positive.
+  List<PricePoint> convertedSeriesWithLive({
+    required List<HistoryPoint> series,
+    required Currency currency,
+    required double usdToCurrencyFallback,
+    required double livePrice,
+  }) {
+    final base = convertedSeries(
+      series: series,
+      currency: currency,
+      usdToCurrencyFallback: usdToCurrencyFallback,
+    );
+    if (livePrice <= 0) return base;
+    return _seriesWithLiveMemo.compute(base, livePrice);
+  }
+
+  /// [convertedAllHistory] with the live price appended as a trailing "now"
+  /// point. Returns the bare converted series when [livePrice] is not positive.
+  List<PricePoint> convertedAllHistoryWithLive({
+    required Currency currency,
+    required double usdToCurrencyFallback,
+    required double livePrice,
+  }) {
+    final base = convertedAllHistory(
+      currency: currency,
+      usdToCurrencyFallback: usdToCurrencyFallback,
+    );
+    if (livePrice <= 0) return base;
+    return _allHistoryWithLiveMemo.compute(base, livePrice);
+  }
+
   void start() {
     WidgetsBinding.instance.addObserver(this);
     _streamSub ??= _stream.ticks.listen(_applyTick);
@@ -522,6 +562,28 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
     _ohlc.close();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+}
+
+/// One-entry memo around appending the live "now" point to a converted
+/// series. Keyed on (base identity, live price): as long as neither changes,
+/// callers get back the same list object — including its original timestamp,
+/// which is fine because a rebuild without a price change has nothing new to
+/// plot at the series tail anyway.
+class _LiveAppendMemo {
+  List<PricePoint>? _base;
+  double _livePrice = double.nan;
+  List<PricePoint> _result = const [];
+
+  List<PricePoint> compute(List<PricePoint> base, double livePrice) {
+    if (identical(_base, base) && _livePrice == livePrice) return _result;
+    _base = base;
+    _livePrice = livePrice;
+    _result = [
+      ...base,
+      PricePoint(DateTime.now().millisecondsSinceEpoch, livePrice),
+    ];
+    return _result;
   }
 }
 

@@ -38,6 +38,15 @@ class _NewStackAmountScreenState extends State<NewStackAmountScreen> {
     _caret = _input.length;
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Re-interpret [_input] when the user flips the display mode mid-edit.
+    // build()'s select on bitcoinDisplayMode makes a mode change re-trigger
+    // this hook; _maybeMigrateForMode is a no-op when the mode is unchanged.
+    _maybeMigrateForMode(context.read<AppStateNotifier>().bitcoinDisplayMode);
+  }
+
   static String _initialInputFor(int? initialSats, BtcDisplayMode mode) {
     if (initialSats == null || initialSats == 0) return '';
     return mode == BtcDisplayMode.btc
@@ -150,11 +159,6 @@ class _NewStackAmountScreenState extends State<NewStackAmountScreen> {
     final mode = context.select<AppStateNotifier, BtcDisplayMode>(
       (a) => a.bitcoinDisplayMode,
     );
-    // Re-interpret [_input] one-shot if the user flipped the mode mid-edit.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _maybeMigrateForMode(mode);
-    });
     return SatsInputScaffold(
       input: _input,
       caret: _caret,

@@ -33,11 +33,22 @@ class RangeBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final app = context.watch<AppStateNotifier>();
-    final daysOverflowSlot = app.daysOverflowQuickRange;
-    final weeksOverflowSlot = app.weeksOverflowQuickRange;
-    final overflowSlot = app.overflowQuickRange;
-    final monthsOverflowSlot = app.monthsOverflowQuickRange;
+    // Select just the four overflow slots instead of watching the whole
+    // notifier — the bar sits in the per-tick header subtree, so an app-state
+    // notification (converter keystroke, hint dismissal, …) must not drag it
+    // into the rebuild.
+    final daysOverflowSlot = context.select<AppStateNotifier, BtcRange>(
+      (a) => a.daysOverflowQuickRange,
+    );
+    final weeksOverflowSlot = context.select<AppStateNotifier, BtcRange>(
+      (a) => a.weeksOverflowQuickRange,
+    );
+    final overflowSlot = context.select<AppStateNotifier, BtcRange>(
+      (a) => a.overflowQuickRange,
+    );
+    final monthsOverflowSlot = context.select<AppStateNotifier, BtcRange>(
+      (a) => a.monthsOverflowQuickRange,
+    );
     final textScaler = MediaQuery.textScalerOf(context);
     // 1.4 line-height factor (AppTypography.body actual) + 16 padding + 4px
     // slack so the inner Column never overflows by sub-pixel amounts at very

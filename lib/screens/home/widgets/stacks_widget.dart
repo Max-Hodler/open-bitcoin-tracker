@@ -25,18 +25,14 @@ class HomeStackList extends StatelessWidget {
     super.key,
     required this.stacks,
     required this.currency,
-    required this.btcRate,
     required this.bitcoinDisplayMode,
-    required this.rangePillData,
     this.totalCard,
     this.totalSats,
   });
 
   final List<model.Stack> stacks;
   final Currency currency;
-  final double? btcRate;
   final BtcDisplayMode bitcoinDisplayMode;
-  final List<PricePoint> rangePillData;
   // When non-null, the portfolio total renders as the final row of the same
   // group as the stack cards, sharing its divider and corner rounding so it
   // reads as just another stack rather than a detached card. [totalSats]
@@ -46,6 +42,24 @@ class HomeStackList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Rebuild only when the daily series refreshes (rare) or FX history
+    // finishes loading (once per launch) — never on a live price tick, so the
+    // pill rows below keep a stable data identity across ticks.
+    context.select<LivePriceController, List<HistoryPoint>>(
+      (c) => c.allHistory,
+    );
+    context.select<LivePriceController, bool>((c) => c.fxHistory != null);
+    final controller = context.read<LivePriceController>();
+    final rates = controller.rates;
+    final usd = rates.usd ?? 0;
+    final current = rates.forCurrency(currency) ?? 0;
+    // The live "now" point is deliberately not appended here: the pills look
+    // up prices >= 1 year back, so the tail point can never be a lookup
+    // result, and leaving it off keeps this list's identity stable.
+    final rangePillData = controller.convertedAllHistory(
+      currency: currency,
+      usdToCurrencyFallback: usd > 0 ? current / usd : 1.0,
+    );
     final hasTotal = totalCard != null;
     final rowCount = stacks.length + (hasTotal ? 1 : 0);
     return Column(
@@ -56,7 +70,6 @@ class HomeStackList extends StatelessWidget {
             key: ValueKey(stacks[i].id),
             stack: stacks[i],
             currency: currency,
-            btcRate: btcRate,
             bitcoinDisplayMode: bitcoinDisplayMode,
             rangePillData: rangePillData,
             priceScale: stacks[i].sats / Sats.perBtc,
@@ -85,7 +98,6 @@ class _SwipeableStackCard extends StatefulWidget {
     super.key,
     required this.stack,
     required this.currency,
-    required this.btcRate,
     required this.bitcoinDisplayMode,
     required this.rangePillData,
     required this.priceScale,
@@ -96,7 +108,6 @@ class _SwipeableStackCard extends StatefulWidget {
 
   final model.Stack stack;
   final Currency currency;
-  final double? btcRate;
   final BtcDisplayMode bitcoinDisplayMode;
   final List<PricePoint> rangePillData;
   final double priceScale;
@@ -321,11 +332,16 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
   @override
   Widget build(BuildContext context) {
     final card = Builder(
+      // Selecting the rate here (not further up) confines the per-tick
+      // rebuild to this card's subtree — the surrounding pill row and its
+      // layout-measurement machinery never see the tick.
       builder: (cardContext) => StackCard(
         name: widget.stack.name,
         sats: widget.stack.sats,
         currency: widget.currency,
-        btcRate: widget.btcRate,
+        btcRate: cardContext.select<LivePriceController, double?>(
+          (c) => c.rates.forCurrency(widget.currency),
+        ),
         bitcoinDisplayMode: widget.bitcoinDisplayMode,
         isHidden: widget.stack.isHidden,
         imageData: widget.stack.imageData,

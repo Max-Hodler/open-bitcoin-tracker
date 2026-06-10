@@ -210,8 +210,9 @@ class _CurrentPriceState extends State<CurrentPrice>
         final hoverLabel = h != null ? _formatHoverLabel(h.t, widget.range) : null;
         // Hide the delta while the user scrubs the chart — the subtitle shows
         // the hover timestamp instead. Also respect the user setting.
-        final showDeltaSetting =
-            context.watch<AppStateNotifier>().showPriceDelta;
+        final showDeltaSetting = context.select<AppStateNotifier, bool>(
+          (a) => a.showPriceDelta,
+        );
         final showDelta = h == null && _deltaValue != null && showDeltaSetting;
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
