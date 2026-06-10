@@ -17,6 +17,14 @@ val keystoreProperties = Properties().apply {
 }
 val hasReleaseKeystore = keystoreProperties.getProperty("storeFile")?.isNotBlank() == true
 
+if (!hasReleaseKeystore) {
+    logger.warn(
+        "WARNING: BTC_KEYSTORE_PROPERTIES is unset or invalid — release builds will be " +
+            "DEBUG-SIGNED. Do not distribute such an APK: it is trivially modifiable and " +
+            "installing it over the real cert forces a data-wiping reinstall."
+    )
+}
+
 android {
     namespace = "com.openbitcointracker.app"
     compileSdk = flutter.compileSdkVersion
