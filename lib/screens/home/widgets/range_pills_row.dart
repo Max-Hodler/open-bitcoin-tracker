@@ -213,8 +213,7 @@ class _StackRangePills extends StatelessWidget {
     final firstT = DateTime.fromMillisecondsSinceEpoch(data.first.t);
     final maxYearsBack = now.year - firstT.year -
         (_isBefore(now.month, now.day, firstT.month, firstT.day) ? 1 : 0);
-    final dateFormat = DateFormat(
-      "d MMM ''yy",
+    final dateFormat = _pillDateFormat(
       Localizations.localeOf(context).toString(),
     );
     final offsets = [
@@ -282,6 +281,14 @@ class _RangePillData {
   final String label;
   final double? pastPrice;
 }
+
+// DateFormat construction does a locale lookup and pattern parse each time,
+// and every pill row rebuilds it per build — i.e. per price tick. The
+// pattern is fixed, so cache one instance per locale.
+final Map<String, DateFormat> _pillDateFormats = {};
+
+DateFormat _pillDateFormat(String locale) =>
+    _pillDateFormats[locale] ??= DateFormat("d MMM ''yy", locale);
 
 class _RangeCell extends StatelessWidget {
   const _RangeCell({super.key, required this.item, required this.currency});

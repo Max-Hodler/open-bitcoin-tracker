@@ -340,8 +340,7 @@ class _PriceSubtitle extends StatelessWidget {
       final isPositive = deltaValue! >= 0;
       final color = isPositive ? p.priceUp : p.priceDown;
       final symbol = currencySymbols[currency] ?? r'$';
-      final amount = NumberFormat('#,##0.00', Intl.defaultLocale)
-          .format(deltaValue!.abs());
+      final amount = _numberFormat('#,##0.00').format(deltaValue!.abs());
       const sp = ' ';
       final body = '${isPositive ? '+' : '-'}'
           '${symbolAfterAmount ? '$amount$sp$symbol' : '$symbol$sp$amount'}';
@@ -384,12 +383,29 @@ class _PriceSubtitle extends StatelessWidget {
   }
 }
 
+// Formatter construction does a locale lookup and pattern parse each time,
+// and these run per tick (subtitle/delta) and per hover update (scrub
+// label). Cache per (pattern, locale); the key set is small and bounded
+// (fixed patterns — the dynamic-decimals pct pattern tops out at 8 — ×
+// supported locales), so no eviction is needed.
+final Map<(String, String?), NumberFormat> _numberFormats = {};
+
+NumberFormat _numberFormat(String pattern) {
+  final locale = Intl.defaultLocale;
+  return _numberFormats[(pattern, locale)] ??= NumberFormat(pattern, locale);
+}
+
+final Map<(String, String?), DateFormat> _dateFormats = {};
+
+DateFormat _dateFormat(String skeleton, DateFormat Function() create) =>
+    _dateFormats[(skeleton, Intl.defaultLocale)] ??= create();
+
 String _formatRangeAbsDiff(double diff, Currency currency) {
   const sp = ' ';
   final sign = diff >= 0 ? '+' : '-';
   final abs = diff.abs();
   final symbol = currencySymbols[currency] ?? r'$';
-  final formatted = NumberFormat('#,##0', Intl.defaultLocale).format(abs.round());
+  final formatted = _numberFormat('#,##0').format(abs.round());
   final after = symbolAfterAmount;
   return '$sign${after ? '$formatted$sp$symbol' : '$symbol$sp$formatted'}';
 }
@@ -397,18 +413,17 @@ String _formatRangeAbsDiff(double diff, Currency currency) {
 String _formatRangePct(double pct) {
   final sign = pct < 0 ? '-' : '+';
   final abs = pct.abs();
-  final locale = Intl.defaultLocale;
   if (abs >= 1000000) return '$sign${(abs / 1000000).round()}M%';
   if (abs >= 1000) return '$sign${(abs / 1000).round()}K%';
   if (abs >= 0.5) {
-    return '$sign${NumberFormat('#,##0', locale).format(abs.round())}%';
+    return '$sign${_numberFormat('#,##0').format(abs.round())}%';
   }
   if (abs == 0) return '+0.0%';
   var decimals = 1;
   while (decimals < 8 && (abs * _pow10(decimals)).round() == 0) {
     decimals++;
   }
-  return '$sign${NumberFormat('#,##0.${'0' * decimals}', locale).format(abs)}%';
+  return '$sign${_numberFormat('#,##0.${'0' * decimals}').format(abs)}%';
 }
 
 int _pow10(int n) {
@@ -429,7 +444,7 @@ String _formatHoverLabel(int ms, BtcRange range) {
     case BtcRange.d5:
     case BtcRange.d6:
     case BtcRange.d7:
-      return DateFormat.Hm().format(d);
+      return _dateFormat('Hm', DateFormat.Hm).format(d);
     case BtcRange.w1:
     case BtcRange.w2:
     case BtcRange.w3:
@@ -447,7 +462,7 @@ String _formatHoverLabel(int ms, BtcRange range) {
     case BtcRange.m11:
     case BtcRange.m12:
       // Full month name, no time — day precision is enough for week/month ranges.
-      return DateFormat.MMMMd().format(d);
+      return _dateFormat('MMMMd', DateFormat.MMMMd).format(d);
     case BtcRange.y1:
     case BtcRange.y2:
     case BtcRange.y3:
@@ -464,6 +479,6 @@ String _formatHoverLabel(int ms, BtcRange range) {
     case BtcRange.y14:
     case BtcRange.y15:
     case BtcRange.all:
-      return DateFormat.yMMMd().format(d);
+      return _dateFormat('yMMMd', DateFormat.yMMMd).format(d);
   }
 }

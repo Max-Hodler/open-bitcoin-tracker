@@ -606,13 +606,28 @@ List<PricePoint> _pricePointsFor(HashrateSnapshot snapshot) {
   return list;
 }
 
+// Formatter construction does a locale lookup and pattern parse each time,
+// and these run per hover update during a chart scrub — many times per
+// second. Cache per (pattern, locale); the key set is small and bounded
+// (fixed patterns × supported locales), so no eviction is needed.
+final Map<(String, String?), NumberFormat> _numberFormats = {};
+
+NumberFormat _numberFormat(String pattern) {
+  final locale = Intl.defaultLocale;
+  return _numberFormats[(pattern, locale)] ??= NumberFormat(pattern, locale);
+}
+
+final Map<(String, String?), DateFormat> _dateFormats = {};
+
+DateFormat _dateFormat(String skeleton, DateFormat Function() create) =>
+    _dateFormats[(skeleton, Intl.defaultLocale)] ??= create();
+
 // Network hashrate sits comfortably under 1000 EH/s for now (~977 in early
 // 2026), so 1 decimal place reads cleanly. Above 1000 we drop decimals to
 // keep the display compact — the threshold may eventually be crossed.
 String _formatEhs(double v) {
-  final locale = Intl.defaultLocale;
   final pattern = v >= 1000 ? '#,##0' : '#,##0.0';
-  return NumberFormat(pattern, locale).format(v);
+  return _numberFormat(pattern).format(v);
 }
 
 // Sign-prefixed percent. Small magnitudes get one decimal; once the number
@@ -622,9 +637,8 @@ String _formatEhs(double v) {
 String _formatSignedPct(double pct) {
   final sign = pct < 0 ? '-' : '+';
   final abs = pct.abs();
-  final locale = Intl.defaultLocale;
   if (abs < 1000) {
-    return '$sign${NumberFormat('#,##0.0', locale).format(abs)}%';
+    return '$sign${_numberFormat('#,##0.0').format(abs)}%';
   }
   const units = ['K', 'M', 'B', 'T', 'Q'];
   var scaled = abs / 1000;
@@ -638,7 +652,7 @@ String _formatSignedPct(double pct) {
   // ("+125K%", "+1,060T%"). Grouping separators apply once the scaled value
   // crosses 1,000 in the topmost unit (Q), e.g. very-large All-range values.
   final pattern = scaled >= 100 ? '#,##0' : '#,##0.0';
-  final body = NumberFormat(pattern, locale).format(scaled);
+  final body = _numberFormat(pattern).format(scaled);
   return '$sign$body${units[idx]}%';
 }
 
@@ -649,14 +663,15 @@ String _formatHoverLabel(int ms, HashrateRange range) {
   final d = DateTime.fromMillisecondsSinceEpoch(ms);
   switch (range) {
     case HashrateRange.d3:
-      return '${DateFormat.MMMd().format(d)}, ${DateFormat.Hm().format(d)}';
+      return '${_dateFormat('MMMd', DateFormat.MMMd).format(d)}, '
+          '${_dateFormat('Hm', DateFormat.Hm).format(d)}';
     case HashrateRange.m1:
     case HashrateRange.m6:
     case HashrateRange.y1:
     case HashrateRange.y5:
     case HashrateRange.y10:
     case HashrateRange.all:
-      return DateFormat.yMMMd().format(d);
+      return _dateFormat('yMMMd', DateFormat.yMMMd).format(d);
   }
 }
 
