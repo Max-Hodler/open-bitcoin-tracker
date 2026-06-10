@@ -7,22 +7,31 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
 
 import 'crypto_params.dart';
+import 'platform_security.dart';
 
 class StacksAuthService {
   StacksAuthService({
     LocalAuthentication? localAuth,
     FlutterSecureStorage? storage,
+    Future<int?> Function()? elapsedRealtimeMs,
   })  : _auth = localAuth ?? LocalAuthentication(),
         _storage = storage ??
             const FlutterSecureStorage(
               aOptions:
                   AndroidOptions(encryptedSharedPreferences: true),
-            );
+            ),
+        _elapsedRealtimeMs =
+            elapsedRealtimeMs ?? PlatformSecurity.elapsedRealtimeMs;
 
   static const _kPinHash = 'stacks_auth_pin_hash';
   static const _kPinSalt = 'stacks_auth_pin_salt';
   static const _kFailCount = 'stacks_auth_fail_count';
   static const _kCooldownUntil = 'stacks_auth_cooldown_until';
+  // Monotonic (since-boot) anchor for the same deadline, so rolling the
+  // device wall clock forward can't bypass the cooldown. Survives clock
+  // changes but not reboots; the wall-clock deadline covers the reboot case.
+  static const _kCooldownAnchorElapsed = 'stacks_auth_cooldown_anchor_elapsed';
+  static const _kCooldownDurationMs = 'stacks_auth_cooldown_duration_ms';
 
   static const int kFailuresBeforeCooldown = 5;
 
@@ -43,6 +52,7 @@ class StacksAuthService {
 
   final LocalAuthentication _auth;
   final FlutterSecureStorage _storage;
+  final Future<int?> Function() _elapsedRealtimeMs;
   final Random _rng = Random.secure();
 
   Future<bool> isDeviceAuthAvailable() async {
@@ -111,7 +121,19 @@ class StacksAuthService {
     return parsed.isUtc ? parsed : parsed.toUtc();
   }
 
+  /// Remaining cooldown per the wall clock AND the monotonic anchor —
+  /// whichever expires later wins, so neither rolling the clock forward
+  /// (defeats wall clock) nor rebooting (resets the monotonic clock) can
+  /// shorten the cooldown on its own.
   Future<Duration?> getRemainingCooldown() async {
+    final wall = await _wallClockRemaining();
+    final mono = await _monotonicRemaining();
+    if (wall == null) return mono;
+    if (mono == null) return wall;
+    return wall >= mono ? wall : mono;
+  }
+
+  Future<Duration?> _wallClockRemaining() async {
     final until = await getCooldownUntil();
     if (until == null) return null;
     final now = DateTime.now().toUtc();
@@ -119,9 +141,27 @@ class StacksAuthService {
     return until.difference(now);
   }
 
+  Future<Duration?> _monotonicRemaining() async {
+    final anchor =
+        int.tryParse(await _storage.read(key: _kCooldownAnchorElapsed) ?? '');
+    final durationMs =
+        int.tryParse(await _storage.read(key: _kCooldownDurationMs) ?? '');
+    if (anchor == null || durationMs == null) return null;
+    final nowElapsed = await _elapsedRealtimeMs();
+    if (nowElapsed == null) return null;
+    // nowElapsed < anchor means the device rebooted since the failure; the
+    // anchor is from a previous boot and meaningless now -> wall clock only.
+    if (nowElapsed < anchor) return null;
+    final remainingMs = anchor + durationMs - nowElapsed;
+    if (remainingMs <= 0) return null;
+    return Duration(milliseconds: remainingMs);
+  }
+
   Future<void> resetFailures() async {
     await _storage.delete(key: _kFailCount);
     await _storage.delete(key: _kCooldownUntil);
+    await _storage.delete(key: _kCooldownAnchorElapsed);
+    await _storage.delete(key: _kCooldownDurationMs);
   }
 
   /// Increment the persisted failure count, persist a new cooldown deadline if
@@ -133,6 +173,17 @@ class StacksAuthService {
     if (cooldown != null) {
       final until = DateTime.now().toUtc().add(cooldown);
       await _storage.write(key: _kCooldownUntil, value: until.toIso8601String());
+      final nowElapsed = await _elapsedRealtimeMs();
+      if (nowElapsed != null) {
+        await _storage.write(
+            key: _kCooldownAnchorElapsed, value: nowElapsed.toString());
+        await _storage.write(
+            key: _kCooldownDurationMs,
+            value: cooldown.inMilliseconds.toString());
+      } else {
+        await _storage.delete(key: _kCooldownAnchorElapsed);
+        await _storage.delete(key: _kCooldownDurationMs);
+      }
     }
     return next;
   }
