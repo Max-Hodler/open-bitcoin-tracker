@@ -248,7 +248,7 @@ class _CurrentPriceState extends State<CurrentPrice>
                 child: SizedBox(
                   height: priceRowHeight,
                   child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 260),
+                    duration: AppSpacing.motionDuration,
                     switchInCurve: Curves.easeOutCubic,
                     switchOutCurve: Curves.easeInCubic,
                     layoutBuilder: (current, previous) => Stack(

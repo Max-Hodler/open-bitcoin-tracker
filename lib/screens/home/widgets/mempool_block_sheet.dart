@@ -129,8 +129,8 @@ class _MempoolBlockSheet extends StatelessWidget {
               block: block,
               isMined: isMined,
               l10n: l10n,
-              bitcoinDisplayMode:
-                  context.watch<AppStateNotifier>().bitcoinDisplayMode,
+              btcDisplayMode:
+                  context.watch<AppStateNotifier>().btcDisplayMode,
             ),
             if (url != null) ...[
               const SizedBox(height: AppSpacing.md),
@@ -159,13 +159,13 @@ class _DetailRows extends StatelessWidget {
     required this.block,
     required this.isMined,
     required this.l10n,
-    required this.bitcoinDisplayMode,
+    required this.btcDisplayMode,
   });
 
   final MempoolBlock block;
   final bool isMined;
   final AppLocalizations l10n;
-  final BtcDisplayMode bitcoinDisplayMode;
+  final BtcDisplayMode btcDisplayMode;
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +198,7 @@ class _DetailRows extends StatelessWidget {
         label: l10n.mempoolSheetTotalFees,
         value: formatBtcAmount(
           block.totalFeesSats!,
-          mode: bitcoinDisplayMode,
+          mode: btcDisplayMode,
         ),
       ));
     }

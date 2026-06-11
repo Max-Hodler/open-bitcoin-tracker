@@ -291,7 +291,7 @@ class _HomeHeaderState extends State<HomeHeader> {
       return const SizedBox.shrink();
     }
     return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 260),
+      duration: AppSpacing.motionDuration,
       switchInCurve: Curves.easeOut,
       switchOutCurve: Curves.easeIn,
       child: AreaChart(

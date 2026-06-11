@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/theme.dart';
+
 /// Mixin that owns the expand/collapse animation state for [HashrateCard]:
 /// a controller, its curve, and a "keep the body mounted across the collapse
 /// animation" gate so the expandable subtree clips smoothly out of view
@@ -31,9 +33,8 @@ mixin ExpandableCardStateMixin<T extends StatefulWidget> on State<T>
   /// open animation so the first frame after launch matches persisted state.
   bool get initiallyExpanded => false;
 
-  /// Override to customize duration. Defaults to 260ms — the shared cadence
-  /// across the home screen's expand/collapse interactions.
-  Duration get expandDuration => const Duration(milliseconds: 260);
+  /// Override to customize duration. Defaults to [AppSpacing.motionDuration].
+  Duration get expandDuration => AppSpacing.motionDuration;
 
   late final AnimationController _expand;
   late final CurvedAnimation _expandCurve;

@@ -97,7 +97,7 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
   BtcRange get monthsOverflowQuickRange => _state.monthsOverflowQuickRange;
   HashrateRange get hashrateRange => _state.hashrateRange;
   bool get logScale => _state.logScale;
-  BtcDisplayMode get bitcoinDisplayMode => _state.bitcoinDisplayMode;
+  BtcDisplayMode get btcDisplayMode => _state.btcDisplayMode;
   StacksAuthMode get stacksAuthMode => _state.stacksAuthMode;
   StacksLockTimeout get stacksLockTimeout => _state.stacksLockTimeout;
   LanguagePref get language => _state.language;
@@ -220,7 +220,7 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
       _update((s) => s.copyWith(hashrateRange: value));
   void setLogScale(bool value) => _update((s) => s.copyWith(logScale: value));
   void setBitcoinDisplayMode(BtcDisplayMode value) =>
-      _update((s) => s.copyWith(bitcoinDisplayMode: value));
+      _update((s) => s.copyWith(btcDisplayMode: value));
   void setStacksAuthMode(StacksAuthMode value) =>
       _update((s) => s.copyWith(stacksAuthMode: value));
   void setStacksLockTimeout(StacksLockTimeout value) =>

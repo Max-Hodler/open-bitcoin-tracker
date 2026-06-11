@@ -18,7 +18,7 @@ class StackCard extends StatelessWidget {
     required this.sats,
     required this.currency,
     required this.btcRate,
-    required this.bitcoinDisplayMode,
+    required this.btcDisplayMode,
     this.isHidden = false,
     this.imageData,
     this.colorKey,
@@ -32,7 +32,7 @@ class StackCard extends StatelessWidget {
   final int sats;
   final Currency currency;
   final double? btcRate;
-  final BtcDisplayMode bitcoinDisplayMode;
+  final BtcDisplayMode btcDisplayMode;
   final bool isHidden;
   final String? imageData;
   final String? colorKey;
@@ -90,7 +90,7 @@ class StackCard extends StatelessWidget {
                       sats: sats,
                       currency: currency,
                       btcRate: btcRate,
-                      bitcoinDisplayMode: bitcoinDisplayMode,
+                      btcDisplayMode: btcDisplayMode,
                       isHidden: isHidden,
                     ),
                   ],
@@ -109,14 +109,14 @@ class _AmountsRow extends StatelessWidget {
     required this.sats,
     required this.currency,
     required this.btcRate,
-    required this.bitcoinDisplayMode,
+    required this.btcDisplayMode,
     required this.isHidden,
   });
 
   final int sats;
   final Currency currency;
   final double? btcRate;
-  final BtcDisplayMode bitcoinDisplayMode;
+  final BtcDisplayMode btcDisplayMode;
   final bool isHidden;
 
   static const _gap = AppSpacing.sm;
@@ -171,7 +171,7 @@ class _AmountsRow extends StatelessWidget {
       StackAvatar.defaultSize;
 
   String get btcStr =>
-      formatBtcAmount(sats, hidden: isHidden, mode: bitcoinDisplayMode);
+      formatBtcAmount(sats, hidden: isHidden, mode: btcDisplayMode);
 
   String get fiatStr {
     if (isHidden) {

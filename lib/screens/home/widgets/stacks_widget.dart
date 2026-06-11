@@ -25,14 +25,14 @@ class HomeStackList extends StatelessWidget {
     super.key,
     required this.stacks,
     required this.currency,
-    required this.bitcoinDisplayMode,
+    required this.btcDisplayMode,
     this.totalCard,
     this.totalSats,
   });
 
   final List<model.Stack> stacks;
   final Currency currency;
-  final BtcDisplayMode bitcoinDisplayMode;
+  final BtcDisplayMode btcDisplayMode;
   // When non-null, the portfolio total renders as the final row of the same
   // group as the stack cards, sharing its divider and corner rounding so it
   // reads as just another stack rather than a detached card. [totalSats]
@@ -70,7 +70,7 @@ class HomeStackList extends StatelessWidget {
             key: ValueKey(stacks[i].id),
             stack: stacks[i],
             currency: currency,
-            bitcoinDisplayMode: bitcoinDisplayMode,
+            btcDisplayMode: btcDisplayMode,
             rangePillData: rangePillData,
             priceScale: stacks[i].sats / Sats.perBtc,
             isFirst: i == 0,
@@ -98,7 +98,7 @@ class _SwipeableStackCard extends StatefulWidget {
     super.key,
     required this.stack,
     required this.currency,
-    required this.bitcoinDisplayMode,
+    required this.btcDisplayMode,
     required this.rangePillData,
     required this.priceScale,
     required this.isFirst,
@@ -108,7 +108,7 @@ class _SwipeableStackCard extends StatefulWidget {
 
   final model.Stack stack;
   final Currency currency;
-  final BtcDisplayMode bitcoinDisplayMode;
+  final BtcDisplayMode btcDisplayMode;
   final List<PricePoint> rangePillData;
   final double priceScale;
   final bool isFirst;
@@ -342,7 +342,7 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
         btcRate: cardContext.select<LivePriceController, double?>(
           (c) => c.rates.forCurrency(widget.currency),
         ),
-        bitcoinDisplayMode: widget.bitcoinDisplayMode,
+        btcDisplayMode: widget.btcDisplayMode,
         isHidden: widget.stack.isHidden,
         imageData: widget.stack.imageData,
         colorKey: widget.stack.colorKey,

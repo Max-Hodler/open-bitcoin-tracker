@@ -60,7 +60,7 @@ class StacksSettingsScreen extends StatelessWidget {
                     l10n.bitcoinDisplayModeBtc,
                   ],
                   selectedIndex:
-                      app.bitcoinDisplayMode == BtcDisplayMode.btc ? 1 : 0,
+                      app.btcDisplayMode == BtcDisplayMode.btc ? 1 : 0,
                   enabled: true,
                   onChanged: (i) => app.setBitcoinDisplayMode(
                     i == 1 ? BtcDisplayMode.btc : BtcDisplayMode.sats,

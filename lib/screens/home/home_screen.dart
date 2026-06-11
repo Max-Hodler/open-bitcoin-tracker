@@ -307,7 +307,7 @@ class _HomeScreenState extends State<HomeScreen> {
         HomeStackList(
           stacks: stacks,
           currency: currency,
-          bitcoinDisplayMode: app.bitcoinDisplayMode,
+          btcDisplayMode: app.btcDisplayMode,
           // showTotal already implies stacks.length >= 2, so the total is
           // always the last row of a non-empty group.
           totalCard: showTotal
@@ -360,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
         btcRate: cardContext.select<LivePriceController, double?>(
           (c) => c.rates.forCurrency(currency),
         ),
-        bitcoinDisplayMode: app.bitcoinDisplayMode,
+        btcDisplayMode: app.btcDisplayMode,
         imageData: app.state.totalImageData,
         colorKey: app.state.totalColorKey,
         position: StackCardPosition.last,
@@ -522,7 +522,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _onAddStackTap() async {
     final app = context.read<AppStateNotifier>();
-    final picked = await showBitcoinUnitDialog(context, app.bitcoinDisplayMode);
+    final picked = await showBitcoinUnitDialog(context, app.btcDisplayMode);
     if (!mounted || picked == null) return;
     app.setBitcoinDisplayMode(picked);
     widget.onAddStack?.call();

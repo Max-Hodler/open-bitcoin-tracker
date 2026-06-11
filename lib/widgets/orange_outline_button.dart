@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../services/app_haptics.dart';
-import '../theme/app_colors.dart';
 import '../theme/theme.dart';
 
 /// Full-width button with the bitcoin-orange outline style used across the app.

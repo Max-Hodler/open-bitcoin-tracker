@@ -8,6 +8,7 @@ import '../../../../services/app_haptics.dart';
 import '../../../../services/route_observer.dart';
 import '../../../../state/state.dart';
 import '../../../../theme/theme.dart';
+import 'block_strip_layout.dart';
 import 'block_visuals.dart';
 
 class BlockStrip extends StatefulWidget {
@@ -58,7 +59,7 @@ class _BlockStripState extends State<BlockStrip>
   late final AnimationController _slideCtrl;
   late final Animation<double> _slideAnim;
 
-  List<_Slot> _slots = const [];
+  List<BlockStripSlot> _slots = const [];
   // Highest mined-height we've reconciled. New blocks must exceed this to
   // trigger the slide. Anything else is a refresh-in-place.
   int? _topHeight;
@@ -152,7 +153,7 @@ class _BlockStripState extends State<BlockStrip>
 
     // Build the slot list: leftmost projected (idx 0) → rightmost projected
     // (idx projectedCount-1) → first mined (idx projectedCount) → last mined.
-    final slots = <_Slot>[];
+    final slots = <BlockStripSlot>[];
 
     // Insert the new "incoming projected" slot at -1 (offscreen left).
     // After the slide, it'll be at index 0 (leftmost projected).
@@ -161,7 +162,7 @@ class _BlockStripState extends State<BlockStrip>
     final placeholder = s.projected.isNotEmpty
         ? s.projected.last
         : const MempoolBlock(medianFeeSatVb: null, txCount: 0);
-    slots.add(_Slot(
+    slots.add(BlockStripSlot(
       key: ValueKey<String>('incoming-${DateTime.now().microsecondsSinceEpoch}'),
       block: placeholder,
       initialIndex: -1,
@@ -183,7 +184,7 @@ class _BlockStripState extends State<BlockStrip>
       final dataIdx = projectedCount - 1 - displayIdx;
       final block = s.projected[dataIdx];
       final crosses = displayIdx == projectedCount - 1;
-      slots.add(_Slot(
+      slots.add(BlockStripSlot(
         key: ValueKey<String>('projected-pos-$displayIdx'),
         block: block,
         initialIndex: displayIdx,
@@ -196,7 +197,7 @@ class _BlockStripState extends State<BlockStrip>
     // Existing mined blocks. Each shifts right by 1.
     for (var minedIdx = 0; minedIdx < prevMined.length; minedIdx++) {
       final block = prevMined[minedIdx];
-      slots.add(_Slot(
+      slots.add(BlockStripSlot(
         key: _minedSlotKey(block, minedIdx),
         block: block,
         initialIndex: projectedCount + minedIdx,
@@ -290,7 +291,7 @@ class _BlockStripState extends State<BlockStrip>
     if (!mounted || !_ctrl.hasClients) return false;
     if (_ctrl.position.viewportDimension <= 0) return false;
     final projectedShown = widget.snapshot.projected.length.clamp(0, 8);
-    final target = _calculateDividerCenterScrollOffset(
+    final target = calculateDividerCenterScrollOffset(
       projectedShown: projectedShown,
       viewportWidth: _ctrl.position.viewportDimension,
       boxSize: widget.boxSize,
@@ -355,7 +356,7 @@ class _BlockStripState extends State<BlockStrip>
   }
 
   Widget _slotPositioned({
-    required _Slot slot,
+    required BlockStripSlot slot,
     required double t,
     required int projectedShown,
     required double boxSize,
@@ -516,53 +517,3 @@ class _BlockStripState extends State<BlockStrip>
 Widget _maybeFlip(bool reversed, Widget child) =>
     reversed ? Transform.flip(flipX: true, child: child) : child;
 
-/// Pure: scroll offset that puts the divider at the horizontal center of the
-/// viewport. Lifted out of [_BlockStripState] so the math is independently
-/// readable and testable.
-///
-/// The divider sits between the rightmost-projected block and the first mined
-/// block. Its left-edge position inside the scroll content is:
-///   projectedShown * (boxSize + AppSpacing.sm) - AppSpacing.sm / 2
-/// We then offset by kMempoolStripPadding (the scrollable's leading padding)
-/// and target the divider's center (left + kMempoolDividerWidth / 2) at
-/// viewportWidth / 2.
-double _calculateDividerCenterScrollOffset({
-  required int projectedShown,
-  required double viewportWidth,
-  required double boxSize,
-}) {
-  final dividerLeft =
-      projectedShown * (boxSize + AppSpacing.sm) - AppSpacing.sm / 2;
-  return kMempoolStripPadding +
-      dividerLeft +
-      kMempoolDividerWidth / 2 -
-      viewportWidth / 2;
-}
-
-/// Render-state for one slot in a slide. Each slot represents a block that
-/// will animate from `initialIndex` to `targetIndex`. The slot's left edge
-/// is interpolated from the slide controller's value.
-///
-/// For the crossing slot (rightmost-projected becoming first-mined),
-/// `kindAtTarget` is mined — that's the styling the slot lands on at
-/// fraction = 1 — but `block` carries the projected data the user sees
-/// during the slide (no mined height yet), so content is rendered as
-/// projected for the whole slide. `crossesDivider` keeps that projected
-/// content rendering until the slide completes.
-class _Slot {
-  _Slot({
-    required this.key,
-    required this.block,
-    required this.initialIndex,
-    required this.targetIndex,
-    required this.kindAtTarget,
-    required this.crossesDivider,
-  });
-
-  final ValueKey<String> key;
-  final MempoolBlock block;
-  final int initialIndex;
-  final int targetIndex;
-  final BlockKind kindAtTarget;
-  final bool crossesDivider;
-}

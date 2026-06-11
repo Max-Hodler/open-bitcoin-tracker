@@ -6,6 +6,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../services/app_haptics.dart';
 import '../../state/state.dart';
 import '../../theme/theme.dart';
+import '../../widgets/reorder_row.dart';
 import '../../widgets/scroll_hairline.dart';
 import 'settings_widgets.dart';
 
@@ -97,7 +98,7 @@ class WidgetsSettingsScreen extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 buildDefaultDragHandles: false,
                 proxyDecorator: (child, index, animation) =>
-                    _ReorderRowDragProxy(animation: animation, child: child),
+                    ReorderRowDragProxy(animation: animation, child: child),
                 onReorderStart: (_) => AppHaptics.medium(),
                 onReorder: (oldIndex, newIndex) {
                   AppHaptics.medium();
@@ -119,9 +120,10 @@ class WidgetsSettingsScreen extends StatelessWidget {
                     padding: EdgeInsets.only(
                       bottom: index == visible.length - 1 ? 0 : AppSpacing.xs,
                     ),
-                    child: _ReorderRow(
+                    child: ReorderRow(
                       index: index,
                       label: _homeWidgetLabel(l10n, w),
+                      overflow: TextOverflow.visible,
                     ),
                   );
                 },
@@ -152,86 +154,6 @@ class _SectionTitle extends StatelessWidget {
           fontSize: 16,
           color: cs.onSurfaceVariant,
           fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
-}
-
-class _ReorderRow extends StatelessWidget {
-  const _ReorderRow({required this.index, required this.label});
-
-  final int index;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Material(
-      color: cs.surface,
-      borderRadius: BorderRadius.circular(AppSpacing.radius),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: 14,
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                label,
-                style: AppTypography.body.copyWith(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: cs.onSurface,
-                ),
-              ),
-            ),
-            ReorderableDragStartListener(
-              index: index,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.sm,
-                  vertical: AppSpacing.xs,
-                ),
-                child: Icon(
-                  Icons.drag_handle,
-                  size: 24,
-                  color: cs.onSurfaceVariant,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ReorderRowDragProxy extends StatelessWidget {
-  const _ReorderRowDragProxy({required this.animation, required this.child});
-
-  final Animation<double> animation;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: animation,
-      builder: (context, _) => Material(
-        color: Colors.transparent,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppSpacing.radius),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.15 * animation.value),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: child,
         ),
       ),
     );

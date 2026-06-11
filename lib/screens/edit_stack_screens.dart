@@ -9,7 +9,7 @@ import '../services/app_haptics.dart';
 import '../state/state.dart';
 import '../theme/theme.dart';
 import '../widgets/sats_input/sats_input.dart';
-import '../widgets/stack_name/stack_name.dart';
+import 'stack_name_screen_mixin.dart';
 
 /// How the amount entered on [EditStackAmountScreen] is applied to the stack's
 /// current balance. [set] replaces it (the original behavior); [add] and
@@ -44,7 +44,7 @@ class _EditStackAmountScreenState extends State<EditStackAmountScreen> {
           (s) => s.id == widget.stackId,
           orElse: () => throw StateError('Stack ${widget.stackId} not found'),
         );
-    final mode = context.read<AppStateNotifier>().bitcoinDisplayMode;
+    final mode = context.read<AppStateNotifier>().btcDisplayMode;
     _modeAtInit = mode;
     _input = _original.sats == 0
         ? ''
@@ -75,9 +75,9 @@ class _EditStackAmountScreenState extends State<EditStackAmountScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Re-interpret [_input] when the user flips the display mode mid-edit.
-    // build()'s select on bitcoinDisplayMode makes a mode change re-trigger
+    // build()'s select on btcDisplayMode makes a mode change re-trigger
     // this hook; _maybeMigrateForMode is a no-op when the mode is unchanged.
-    _maybeMigrateForMode(context.read<AppStateNotifier>().bitcoinDisplayMode);
+    _maybeMigrateForMode(context.read<AppStateNotifier>().btcDisplayMode);
   }
 
   void _maybeMigrateForMode(BtcDisplayMode mode) {
@@ -224,7 +224,7 @@ class _EditStackAmountScreenState extends State<EditStackAmountScreen> {
   @override
   Widget build(BuildContext context) {
     final mode = context.select<AppStateNotifier, BtcDisplayMode>(
-      (a) => a.bitcoinDisplayMode,
+      (a) => a.btcDisplayMode,
     );
     final l10n = AppLocalizations.of(context);
     final underflow = _isUnderflow(mode);
@@ -442,24 +442,22 @@ class EditStackNameScreen extends StatefulWidget {
   State<EditStackNameScreen> createState() => _EditStackNameScreenState();
 }
 
-class _EditStackNameScreenState extends State<EditStackNameScreen> {
-  late final TextEditingController _controller;
-  late final FocusNode _focusNode;
+class _EditStackNameScreenState extends State<EditStackNameScreen>
+    with StackNameScreenMixin {
   late final StacksLockController _lock;
 
   @override
   void initState() {
-    super.initState();
+    // Pre-populate the field with the existing stack name before the mixin
+    // runs its own initState (which creates the controller).
     final existing = context.read<AppStateNotifier>().stacks.firstWhere(
           (s) => s.id == widget.stackId,
           orElse: () => throw StateError('Stack ${widget.stackId} not found'),
         );
-    _controller = TextEditingController(text: existing.name)
-      ..addListener(() => setState(() {}));
-    _focusNode = FocusNode();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
-    // See EditStackAmountScreen: bail to home if the stacks re-lock while
-    // we're mid-edit (resume timeout fires, manual lock, etc.).
+    initialText = existing.name;
+    super.initState();
+    // Bail to home if the stacks re-lock while mid-edit (resume timeout fires,
+    // manual lock, etc.).
     _lock = context.read<StacksLockController>();
     _lock.addListener(_popIfLocked);
   }
@@ -467,8 +465,6 @@ class _EditStackNameScreenState extends State<EditStackNameScreen> {
   @override
   void dispose() {
     _lock.removeListener(_popIfLocked);
-    _controller.dispose();
-    _focusNode.dispose();
     super.dispose();
   }
 
@@ -477,15 +473,11 @@ class _EditStackNameScreenState extends State<EditStackNameScreen> {
     Navigator.of(context).popUntil((r) => r.isFirst);
   }
 
-  String get _trimmed => _controller.text.trim();
-  bool get _isValid => _trimmed.isNotEmpty;
-  bool get _atLimit => _controller.text.length >= model.Stack.maxNameLength;
-
   void _submit() {
-    if (!_isValid) return;
-    final name = _trimmed.isEmpty
+    if (!isValid) return;
+    final name = trimmed.isEmpty
         ? AppLocalizations.of(context).stackUnnamedFallback
-        : _trimmed;
+        : trimmed;
     context.read<AppStateNotifier>().updateStack(
           widget.stackId,
           (s) => s.copyWith(name: name),
@@ -497,64 +489,12 @@ class _EditStackNameScreenState extends State<EditStackNameScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
-    return Scaffold(
-      backgroundColor: cs.surfaceContainerLow,
-      appBar: AppBar(
-        backgroundColor: cs.surfaceContainerLow,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: BackButton(
-          color: cs.onSurfaceVariant,
-          onPressed: () {
-            AppHaptics.light();
-            Navigator.of(context).maybePop();
-          },
-        ),
-        centerTitle: true,
-        title: Text(
-          l10n.stackNameLabel,
-          style: AppTypography.title.copyWith(
-            color: cs.onSurfaceVariant,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-      body: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.md,
-            AppSpacing.md,
-            AppSpacing.md,
-            AppSpacing.md,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    StackNameField(
-                      controller: _controller,
-                      focusNode: _focusNode,
-                      onSubmitted: (_) => _submit(),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    StackNameLimitLabel(visible: _atLimit),
-                  ],
-                ),
-              ),
-              StackNameConfirmButton(
-                isValid: _isValid,
-                onTap: _submit,
-                label: l10n.stackMenuChangeName,
-              ),
-            ],
-          ),
-        ),
-      ),
+    return buildNameScaffold(
+      context: context,
+      cs: cs,
+      title: l10n.stackNameLabel,
+      confirmLabel: l10n.stackMenuChangeName,
+      onSubmit: _submit,
     );
   }
 }

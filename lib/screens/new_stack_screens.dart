@@ -4,11 +4,9 @@ import 'package:provider/provider.dart';
 import '../data/app_enums.dart';
 import '../data/data.dart' as model;
 import '../l10n/generated/app_localizations.dart';
-import '../services/app_haptics.dart';
 import '../state/state.dart';
-import '../theme/theme.dart';
 import '../widgets/sats_input/sats_input.dart';
-import '../widgets/stack_name/stack_name.dart';
+import 'stack_name_screen_mixin.dart';
 
 class NewStackAmountScreen extends StatefulWidget {
   const NewStackAmountScreen({super.key, this.initialSats});
@@ -32,7 +30,7 @@ class _NewStackAmountScreenState extends State<NewStackAmountScreen> {
   void initState() {
     super.initState();
     final initial = widget.initialSats;
-    final mode = context.read<AppStateNotifier>().bitcoinDisplayMode;
+    final mode = context.read<AppStateNotifier>().btcDisplayMode;
     _modeAtInit = mode;
     _input = _initialInputFor(initial, mode);
     _caret = _input.length;
@@ -42,9 +40,9 @@ class _NewStackAmountScreenState extends State<NewStackAmountScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Re-interpret [_input] when the user flips the display mode mid-edit.
-    // build()'s select on bitcoinDisplayMode makes a mode change re-trigger
+    // build()'s select on btcDisplayMode makes a mode change re-trigger
     // this hook; _maybeMigrateForMode is a no-op when the mode is unchanged.
-    _maybeMigrateForMode(context.read<AppStateNotifier>().bitcoinDisplayMode);
+    _maybeMigrateForMode(context.read<AppStateNotifier>().btcDisplayMode);
   }
 
   static String _initialInputFor(int? initialSats, BtcDisplayMode mode) {
@@ -157,7 +155,7 @@ class _NewStackAmountScreenState extends State<NewStackAmountScreen> {
   @override
   Widget build(BuildContext context) {
     final mode = context.select<AppStateNotifier, BtcDisplayMode>(
-      (a) => a.bitcoinDisplayMode,
+      (a) => a.btcDisplayMode,
     );
     return SatsInputScaffold(
       input: _input,
@@ -188,34 +186,13 @@ class NewStackNameScreen extends StatefulWidget {
   State<NewStackNameScreen> createState() => _NewStackNameScreenState();
 }
 
-class _NewStackNameScreenState extends State<NewStackNameScreen> {
-  late final TextEditingController _controller;
-  late final FocusNode _focusNode;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController()..addListener(() => setState(() {}));
-    _focusNode = FocusNode();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  String get _trimmed => _controller.text.trim();
-  bool get _isValid => _trimmed.isNotEmpty;
-  bool get _atLimit => _controller.text.length >= model.Stack.maxNameLength;
-
+class _NewStackNameScreenState extends State<NewStackNameScreen>
+    with StackNameScreenMixin {
   void _submit() {
-    if (!_isValid) return;
+    if (!isValid) return;
     context.read<AppStateNotifier>().addStack(model.Stack(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
-          name: _trimmed,
+          name: trimmed,
           sats: widget.sats,
         ));
     Navigator.of(context).popUntil((route) => route.isFirst);
@@ -225,64 +202,12 @@ class _NewStackNameScreenState extends State<NewStackNameScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
-    return Scaffold(
-      backgroundColor: cs.surfaceContainerLow,
-      appBar: AppBar(
-        backgroundColor: cs.surfaceContainerLow,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: BackButton(
-          color: cs.onSurfaceVariant,
-          onPressed: () {
-            AppHaptics.light();
-            Navigator.of(context).maybePop();
-          },
-        ),
-        centerTitle: true,
-        title: Text(
-          l10n.stackNameLabel,
-          style: AppTypography.title.copyWith(
-            color: cs.onSurfaceVariant,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-      body: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.md,
-            AppSpacing.md,
-            AppSpacing.md,
-            AppSpacing.md,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    StackNameField(
-                      controller: _controller,
-                      focusNode: _focusNode,
-                      onSubmitted: (_) => _submit(),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    StackNameLimitLabel(visible: _atLimit),
-                  ],
-                ),
-              ),
-              StackNameConfirmButton(
-                isValid: _isValid,
-                onTap: _submit,
-                label: l10n.homeAddStack,
-              ),
-            ],
-          ),
-        ),
-      ),
+    return buildNameScaffold(
+      context: context,
+      cs: cs,
+      title: l10n.stackNameLabel,
+      confirmLabel: l10n.homeAddStack,
+      onSubmit: _submit,
     );
   }
 }

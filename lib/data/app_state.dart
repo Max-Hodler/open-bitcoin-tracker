@@ -23,7 +23,7 @@ class AppState {
     this.monthsOverflowQuickRange = BtcRange.m6,
     this.hashrateRange = HashrateRange.d3,
     this.logScale = true,
-    this.bitcoinDisplayMode = BtcDisplayMode.sats,
+    this.btcDisplayMode = BtcDisplayMode.sats,
     this.stacksAuthMode = StacksAuthMode.off,
     this.stacksLockTimeout = StacksLockTimeout.m5,
     this.language = LanguagePref.system,
@@ -85,7 +85,7 @@ class AppState {
   final bool logScale;
   // Render satoshi counts as integer sats (default — preserves the unit users
   // entered) or as BTC with up to 8 decimal places. Storage is always sats.
-  final BtcDisplayMode bitcoinDisplayMode;
+  final BtcDisplayMode btcDisplayMode;
   final StacksAuthMode stacksAuthMode;
   final StacksLockTimeout stacksLockTimeout;
   final LanguagePref language;
@@ -97,7 +97,7 @@ class AppState {
   // from [currency] on that visit.
   final Currency? converterCurrency;
   // Persisted Bitcoin display unit (sats vs BTC) for the converter screen,
-  // independent from the global [bitcoinDisplayMode]. Same lifecycle as
+  // independent from the global [btcDisplayMode]. Same lifecycle as
   // [converterCurrency]: null until the screen first seeds from the global
   // setting, after which the converter's own picker is the only mutator.
   final BtcDisplayMode? converterBtcMode;
@@ -163,7 +163,7 @@ class AppState {
     BtcRange? monthsOverflowQuickRange,
     HashrateRange? hashrateRange,
     bool? logScale,
-    BtcDisplayMode? bitcoinDisplayMode,
+    BtcDisplayMode? btcDisplayMode,
     StacksAuthMode? stacksAuthMode,
     StacksLockTimeout? stacksLockTimeout,
     LanguagePref? language,
@@ -210,7 +210,7 @@ class AppState {
           monthsOverflowQuickRange ?? this.monthsOverflowQuickRange,
       hashrateRange: hashrateRange ?? this.hashrateRange,
       logScale: logScale ?? this.logScale,
-      bitcoinDisplayMode: bitcoinDisplayMode ?? this.bitcoinDisplayMode,
+      btcDisplayMode: btcDisplayMode ?? this.btcDisplayMode,
       stacksAuthMode: stacksAuthMode ?? this.stacksAuthMode,
       stacksLockTimeout: stacksLockTimeout ?? this.stacksLockTimeout,
       language: language ?? this.language,
@@ -263,7 +263,7 @@ class AppState {
         'monthsOverflowQuickRange': monthsOverflowQuickRange.code,
         'hashrateRange': hashrateRange.code,
         'logScale': logScale,
-        'bitcoinDisplayMode': bitcoinDisplayMode.code,
+        'bitcoinDisplayMode': btcDisplayMode.code,
         'stacksAuthMode': stacksAuthMode.code,
         'stacksLockTimeout': stacksLockTimeout.code,
         'language': language.code,
@@ -341,7 +341,7 @@ class AppState {
           : BtcRange.m6,
       hashrateRange: fromCode('hashrateRange', HashrateRange.fromCode),
       logScale: json['logScale'] as bool? ?? true,
-      bitcoinDisplayMode:
+      btcDisplayMode:
           fromCode('bitcoinDisplayMode', BtcDisplayMode.fromCode),
       stacksAuthMode: fromCode('stacksAuthMode', StacksAuthMode.fromCode),
       stacksLockTimeout:

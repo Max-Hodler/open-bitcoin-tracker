@@ -213,213 +213,99 @@ class RangeBar extends StatelessWidget {
     );
   }
 
-  Future<void> _showDaysOverflowSlotPicker(BuildContext context) async {
-    final app = context.read<AppStateNotifier>();
-    app.dismissRangeChipHint();
-    final current = app.daysOverflowQuickRange;
-    final picked = await showDialog<BtcRange>(
-      context: context,
-      barrierColor: appDialogBarrierColor(context),
-      builder: (ctx) {
-        final l10n = AppLocalizations.of(ctx);
-        final cs = Theme.of(ctx).colorScheme;
-        return RadioGroup<BtcRange>(
-          groupValue: _overflowDaysRanges.contains(current) ? current : null,
-          onChanged: (v) {
-            AppHaptics.selection();
-            Navigator.of(ctx).pop(v);
-          },
-          child: SimpleDialog(
-            elevation: 24,
-            shadowColor: Colors.black,
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(l10n.rangePickerLongTitle),
-                const SizedBox(height: 4),
-                Text(
-                  l10n.homeSwipeChipHint,
-                  style: AppTypography.body.copyWith(
-                    fontSize: 14,
-                    color: cs.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-            children: [
-              for (final r in _overflowDaysRanges)
-                RadioListTile<BtcRange>(
-                  key: ValueKey('daysOverflowSlot-${r.name}'),
-                  title: Text(_btcRangeDaysLongLabel(ctx, r)),
-                  value: r,
-                ),
-            ],
-          ),
-        );
-      },
-    );
-    if (picked != null) {
-      app.setDaysOverflowQuickRange(picked);
-      onRange(picked);
-    }
-  }
+  Future<void> _showDaysOverflowSlotPicker(BuildContext context) =>
+      _showOverflowPicker(
+        context,
+        ranges: _overflowDaysRanges,
+        keyPrefix: 'daysOverflowSlot',
+        getCurrent: (a) => a.daysOverflowQuickRange,
+        setCurrent: (a, v) => a.setDaysOverflowQuickRange(v),
+        longLabel: _btcRangeDaysLongLabel,
+      );
 
-  void _stepDaysOverflowSlot(BuildContext context, int step) {
-    final app = context.read<AppStateNotifier>();
-    app.dismissSwipeChipHint();
-    final current = app.daysOverflowQuickRange;
-    final ranges = _overflowDaysRanges;
-    final i = ranges.indexOf(current);
-    final base = i < 0 ? 0 : i;
-    final n = ranges.length;
-    final next = ranges[(base + step) % n];
-    if (next == current) return;
-    app.setDaysOverflowQuickRange(next);
-    onRange(next);
-  }
+  void _stepDaysOverflowSlot(BuildContext context, int step) =>
+      _stepSlot(
+        context,
+        step: step,
+        ranges: _overflowDaysRanges,
+        getCurrent: (a) => a.daysOverflowQuickRange,
+        setCurrent: (a, v) => a.setDaysOverflowQuickRange(v),
+      );
 
-  Future<void> _showWeeksOverflowSlotPicker(BuildContext context) async {
-    final app = context.read<AppStateNotifier>();
-    app.dismissRangeChipHint();
-    final current = app.weeksOverflowQuickRange;
-    final picked = await showDialog<BtcRange>(
-      context: context,
-      barrierColor: appDialogBarrierColor(context),
-      builder: (ctx) {
-        final l10n = AppLocalizations.of(ctx);
-        final cs = Theme.of(ctx).colorScheme;
-        return RadioGroup<BtcRange>(
-          groupValue: _overflowWeeksRanges.contains(current) ? current : null,
-          onChanged: (v) {
-            AppHaptics.selection();
-            Navigator.of(ctx).pop(v);
-          },
-          child: SimpleDialog(
-            elevation: 24,
-            shadowColor: Colors.black,
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(l10n.rangePickerLongTitle),
-                const SizedBox(height: 4),
-                Text(
-                  l10n.homeSwipeChipHint,
-                  style: AppTypography.body.copyWith(
-                    fontSize: 14,
-                    color: cs.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-            children: [
-              for (final r in _overflowWeeksRanges)
-                RadioListTile<BtcRange>(
-                  key: ValueKey('weeksOverflowSlot-${r.name}'),
-                  title: Text(_btcRangeWeeksLongLabel(ctx, r)),
-                  value: r,
-                ),
-            ],
-          ),
-        );
-      },
-    );
-    if (picked != null) {
-      app.setWeeksOverflowQuickRange(picked);
-      onRange(picked);
-    }
-  }
+  Future<void> _showWeeksOverflowSlotPicker(BuildContext context) =>
+      _showOverflowPicker(
+        context,
+        ranges: _overflowWeeksRanges,
+        keyPrefix: 'weeksOverflowSlot',
+        getCurrent: (a) => a.weeksOverflowQuickRange,
+        setCurrent: (a, v) => a.setWeeksOverflowQuickRange(v),
+        longLabel: _btcRangeWeeksLongLabel,
+      );
 
-  void _stepWeeksOverflowSlot(BuildContext context, int step) {
-    final app = context.read<AppStateNotifier>();
-    app.dismissSwipeChipHint();
-    final current = app.weeksOverflowQuickRange;
-    final ranges = _overflowWeeksRanges;
-    final i = ranges.indexOf(current);
-    final base = i < 0 ? 0 : i;
-    final n = ranges.length;
-    final next = ranges[(base + step) % n];
-    if (next == current) return;
-    app.setWeeksOverflowQuickRange(next);
-    onRange(next);
-  }
+  void _stepWeeksOverflowSlot(BuildContext context, int step) =>
+      _stepSlot(
+        context,
+        step: step,
+        ranges: _overflowWeeksRanges,
+        getCurrent: (a) => a.weeksOverflowQuickRange,
+        setCurrent: (a, v) => a.setWeeksOverflowQuickRange(v),
+      );
 
-  Future<void> _showOverflowSlotPicker(BuildContext context) async {
-    final app = context.read<AppStateNotifier>();
-    app.dismissRangeChipHint();
-    final current = app.overflowQuickRange;
-    final picked = await showDialog<BtcRange>(
-      context: context,
-      barrierColor: appDialogBarrierColor(context),
-      builder: (ctx) {
-        final l10n = AppLocalizations.of(ctx);
-        final cs = Theme.of(ctx).colorScheme;
-        return RadioGroup<BtcRange>(
-          groupValue: _overflowMenuRanges.contains(current) ? current : null,
-          onChanged: (v) {
-            AppHaptics.selection();
-            Navigator.of(ctx).pop(v);
-          },
-          child: SimpleDialog(
-            elevation: 24,
-            shadowColor: Colors.black,
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(l10n.rangePickerLongTitle),
-                const SizedBox(height: 4),
-                Text(
-                  l10n.homeSwipeChipHint,
-                  style: AppTypography.body.copyWith(
-                    fontSize: 14,
-                    color: cs.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-            children: [
-              for (final r in _overflowMenuRanges)
-                RadioListTile<BtcRange>(
-                  key: ValueKey('overflowSlot-${r.name}'),
-                  title: Text(_btcRangeLongLabel(ctx, r)),
-                  value: r,
-                ),
-            ],
-          ),
-        );
-      },
-    );
-    if (picked != null) {
-      app.setOverflowQuickRange(picked);
-      onRange(picked);
-    }
-  }
+  Future<void> _showOverflowSlotPicker(BuildContext context) =>
+      _showOverflowPicker(
+        context,
+        ranges: _overflowMenuRanges,
+        keyPrefix: 'overflowSlot',
+        getCurrent: (a) => a.overflowQuickRange,
+        setCurrent: (a, v) => a.setOverflowQuickRange(v),
+        longLabel: _btcRangeLongLabel,
+      );
 
   // Vertical swipe on the overflow slot cycles through `_overflowMenuRanges`
   // with wrap-around. step=+1 mounts the next-longer year, step=-1 the
   // next-shorter; mirrors the picker side-effect of also activating it.
-  void _stepOverflowSlot(BuildContext context, int step) {
-    final app = context.read<AppStateNotifier>();
-    app.dismissSwipeChipHint();
-    final current = app.overflowQuickRange;
-    final ranges = _overflowMenuRanges;
-    final i = ranges.indexOf(current);
-    final base = i < 0 ? 0 : i;
-    final n = ranges.length;
-    // Dart's % on negatives still returns non-negative for positive divisors,
-    // so this wraps cleanly without a manual fixup.
-    final next = ranges[(base + step) % n];
-    if (next == current) return;
-    app.setOverflowQuickRange(next);
-    onRange(next);
-  }
+  void _stepOverflowSlot(BuildContext context, int step) =>
+      _stepSlot(
+        context,
+        step: step,
+        ranges: _overflowMenuRanges,
+        getCurrent: (a) => a.overflowQuickRange,
+        setCurrent: (a, v) => a.setOverflowQuickRange(v),
+      );
 
-  Future<void> _showMonthsOverflowSlotPicker(BuildContext context) async {
+  Future<void> _showMonthsOverflowSlotPicker(BuildContext context) =>
+      _showOverflowPicker(
+        context,
+        ranges: _overflowMonthsRanges,
+        keyPrefix: 'monthsOverflowSlot',
+        getCurrent: (a) => a.monthsOverflowQuickRange,
+        setCurrent: (a, v) => a.setMonthsOverflowQuickRange(v),
+        longLabel: _btcRangeMonthsLongLabel,
+      );
+
+  void _stepMonthsOverflowSlot(BuildContext context, int step) =>
+      _stepSlot(
+        context,
+        step: step,
+        ranges: _overflowMonthsRanges,
+        getCurrent: (a) => a.monthsOverflowQuickRange,
+        setCurrent: (a, v) => a.setMonthsOverflowQuickRange(v),
+      );
+
+  // Generic picker: shows a radio-group dialog letting the user choose a range
+  // from [ranges] for one overflow slot. [getCurrent]/[setCurrent] read/write
+  // the slot on [AppStateNotifier]; [longLabel] formats each option's title row.
+  Future<void> _showOverflowPicker(
+    BuildContext context, {
+    required List<BtcRange> ranges,
+    required String keyPrefix,
+    required BtcRange Function(AppStateNotifier) getCurrent,
+    required void Function(AppStateNotifier, BtcRange) setCurrent,
+    required String Function(BuildContext, BtcRange) longLabel,
+  }) async {
     final app = context.read<AppStateNotifier>();
     app.dismissRangeChipHint();
-    final current = app.monthsOverflowQuickRange;
+    final current = getCurrent(app);
     final picked = await showDialog<BtcRange>(
       context: context,
       barrierColor: appDialogBarrierColor(context),
@@ -427,7 +313,7 @@ class RangeBar extends StatelessWidget {
         final l10n = AppLocalizations.of(ctx);
         final cs = Theme.of(ctx).colorScheme;
         return RadioGroup<BtcRange>(
-          groupValue: _overflowMonthsRanges.contains(current) ? current : null,
+          groupValue: ranges.contains(current) ? current : null,
           onChanged: (v) {
             AppHaptics.selection();
             Navigator.of(ctx).pop(v);
@@ -451,10 +337,10 @@ class RangeBar extends StatelessWidget {
               ],
             ),
             children: [
-              for (final r in _overflowMonthsRanges)
+              for (final r in ranges)
                 RadioListTile<BtcRange>(
-                  key: ValueKey('monthsOverflowSlot-${r.name}'),
-                  title: Text(_btcRangeMonthsLongLabel(ctx, r)),
+                  key: ValueKey('$keyPrefix-${r.name}'),
+                  title: Text(longLabel(ctx, r)),
                   value: r,
                 ),
             ],
@@ -463,22 +349,29 @@ class RangeBar extends StatelessWidget {
       },
     );
     if (picked != null) {
-      app.setMonthsOverflowQuickRange(picked);
+      setCurrent(app, picked);
       onRange(picked);
     }
   }
 
-  void _stepMonthsOverflowSlot(BuildContext context, int step) {
+  // Generic stepper: cycles [ranges] by [step] positions for one overflow slot.
+  // Dart's % on negatives returns non-negative for positive divisors, so wrap
+  // works cleanly without a manual fixup.
+  void _stepSlot(
+    BuildContext context, {
+    required int step,
+    required List<BtcRange> ranges,
+    required BtcRange Function(AppStateNotifier) getCurrent,
+    required void Function(AppStateNotifier, BtcRange) setCurrent,
+  }) {
     final app = context.read<AppStateNotifier>();
     app.dismissSwipeChipHint();
-    final current = app.monthsOverflowQuickRange;
-    final ranges = _overflowMonthsRanges;
+    final current = getCurrent(app);
     final i = ranges.indexOf(current);
     final base = i < 0 ? 0 : i;
-    final n = ranges.length;
-    final next = ranges[(base + step) % n];
+    final next = ranges[(base + step) % ranges.length];
     if (next == current) return;
-    app.setMonthsOverflowQuickRange(next);
+    setCurrent(app, next);
     onRange(next);
   }
 }

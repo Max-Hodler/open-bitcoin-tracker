@@ -11,4 +11,8 @@ class AppSpacing {
   static const double radiusLarge = 16.0;
 
   static const double stackCardHeight = 64.0;
+
+  // Shared expand/collapse animation cadence used by expandable cards,
+  // the header section reveal, and the price ticker crossfade.
+  static const Duration motionDuration = Duration(milliseconds: 260);
 }
