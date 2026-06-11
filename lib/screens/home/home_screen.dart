@@ -177,20 +177,28 @@ class _HomeScreenState extends State<HomeScreen> {
     // line then cut through the mempool pills below.
     final measuredHeader = MeasureSize(
       onChange: _onHeaderMeasured,
-      child: ColoredBox(
-        color: cs.surfaceContainerLow,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            headerSection,
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              height: 1,
-              child: ScrollHairlinePainter(strength: _headerHairline),
-            ),
-          ],
+      // Vertical swipes that start on the header slab must not drive the
+      // scroll view (or its overscroll stretch) — only the widget area below
+      // scrolls the page. The deepest recognizer wins the arena tie, so this
+      // no-op drag handler beats the CustomScrollView's; taps and the chart's
+      // raw-pointer scrubbing are unaffected.
+      child: GestureDetector(
+        onVerticalDragUpdate: (_) {},
+        child: ColoredBox(
+          color: cs.surfaceContainerLow,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              headerSection,
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: 1,
+                child: ScrollHairlinePainter(strength: _headerHairline),
+              ),
+            ],
+          ),
         ),
       ),
     );
