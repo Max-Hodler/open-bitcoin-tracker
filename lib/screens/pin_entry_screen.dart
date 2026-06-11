@@ -139,7 +139,9 @@ class _PinEntryScreenState extends State<PinEntryScreen>
         _statusMessage = '';
       }
     });
-    if (_input.length == _kPinLength) _onConfirm();
+    if (_input.length == _kPinLength) {
+      Future.delayed(const Duration(milliseconds: 80), _onConfirm);
+    }
   }
 
   void _onDelete() {
