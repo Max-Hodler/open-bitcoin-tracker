@@ -55,7 +55,12 @@ class _AreaChartState extends State<AreaChart>
   double _targetEndX = 0;
   double _targetMinY = 0;
   double _targetMaxY = 0;
-  bool _transitioning = false;
+
+  // Index into _spots/data of the point under the user's finger, or null when
+  // not touching. Drives both the visual indicator (showingIndicators) and
+  // the onHover callback. Updated from raw pointer events, not fl_chart's
+  // touch pipeline — see the comment in build().
+  int? _touchedIndex;
 
   @override
   void dispose() {
@@ -95,6 +100,42 @@ class _AreaChartState extends State<AreaChart>
     if (minY == maxY) maxY = minY + 1;
     final pad = (maxY - minY) * 0.05;
     return (minY - pad, maxY + pad);
+  }
+
+  // Maps a touch position to the nearest data point and shows the indicator
+  // there. Pixel→value mapping mirrors fl_chart's: linear over [minX, maxX]
+  // across the full widget width (all titles/borders are hidden, so the plot
+  // area is the whole box).
+  void _handleTouch(Offset localPosition) {
+    if (_zoom.isAnimating) {
+      _clearTouch();
+      return;
+    }
+    final width = context.size?.width ?? 0;
+    if (width <= 0 || _spots.isEmpty) return;
+    final x = _targetStartX +
+        (localPosition.dx / width) * (_targetEndX - _targetStartX);
+    // Binary search for the first spot at or right of x; spots are sorted.
+    var lo = 0;
+    var hi = _spots.length - 1;
+    while (lo < hi) {
+      final mid = (lo + hi) >> 1;
+      if (_spots[mid].x < x) {
+        lo = mid + 1;
+      } else {
+        hi = mid;
+      }
+    }
+    final i = (lo > 0 && x - _spots[lo - 1].x < _spots[lo].x - x) ? lo - 1 : lo;
+    if (i == _touchedIndex) return;
+    setState(() => _touchedIndex = i);
+    if (i < widget.data.length) widget.onHover(widget.data[i]);
+  }
+
+  void _clearTouch() {
+    if (_touchedIndex == null) return;
+    setState(() => _touchedIndex = null);
+    widget.onHover(null);
   }
 
   @override
@@ -141,8 +182,6 @@ class _AreaChartState extends State<AreaChart>
     final cs = Theme.of(context).colorScheme;
     final spots = _spots;
     final color = widget.color;
-    final data = widget.data;
-    final onHover = widget.onHover;
 
     final newTargetStart = widget.windowStartMs.toDouble();
     final newTargetEnd = widget.windowEndMs.toDouble();
@@ -158,42 +197,54 @@ class _AreaChartState extends State<AreaChart>
     final fromMinY = _animFromMinY ?? newTargetMinY;
     final fromMaxY = _animFromMaxY ?? newTargetMaxY;
 
-    // The chart sits inside a vertical CustomScrollView and (on the hashrate
-    // card) has a horizontal SingleChildScrollView sibling. fl_chart's
-    // PanGestureRecognizer competes with the scroll's VerticalDragGestureRecognizer
-    // in the gesture arena, and the first touch on the chart frequently loses
-    // — the user sees the indicator from the tap-down notification but no
-    // drag updates fire because the scroll claimed the gesture. Wrapping the
-    // chart in a deeper Vertical+Horizontal drag recognizer pair keeps any
-    // ancestor scrollable from claiming pointers that started on the chart;
-    // fl_chart's own pan recognizer (deeper still, on the LineChart's
-    // RenderObject) wins arena on motion and drives the scrub indicator.
-    return RawGestureDetector(
+    // Scrubbing is deliberately NOT done through fl_chart's touch pipeline.
+    // Its internal PanGestureRecognizer needs kPanSlop (~2× kTouchSlop) of
+    // travel to claim the gesture, so any single-axis drag recognizer in the
+    // arena — an ancestor scrollable, or our own spoilers below — beats it to
+    // the claim and fl_chart gets a cancel: the indicator appeared on
+    // touch-down and then vanished the moment the finger actually moved.
+    //
+    // Instead, the Listener reads raw pointer events (which bypass the
+    // gesture arena entirely, so nobody can steal them), maps the finger to
+    // the nearest data point, and drives the indicator via showingIndicators.
+    // The no-op drag recognizer pair below stays purely as an arena spoiler:
+    // it claims drags that start on the chart so ancestor scrollables (the
+    // vertical CustomScrollView; on the hashrate card also a horizontal
+    // SingleChildScrollView) don't scroll the page while the user scrubs.
+    // fl_chart itself registers no recognizers here because lineTouchData
+    // has enabled: false and no touchCallback.
+    return Listener(
       behavior: HitTestBehavior.opaque,
-      gestures: <Type, GestureRecognizerFactory>{
-        VerticalDragGestureRecognizer:
-            GestureRecognizerFactoryWithHandlers<VerticalDragGestureRecognizer>(
-          () => VerticalDragGestureRecognizer(),
-          (instance) {
-            // No callbacks: just an arena spoiler against ancestor vertical
-            // scrolls that would otherwise grab pointers over the chart.
-          },
-        ),
-        HorizontalDragGestureRecognizer:
-            GestureRecognizerFactoryWithHandlers<HorizontalDragGestureRecognizer>(
-          () => HorizontalDragGestureRecognizer(),
-          (instance) {
-            // No callbacks: arena spoiler against any ancestor horizontal
-            // scroll. fl_chart's pan recognizer is deeper in the tree, so it
-            // still wins for actual drag updates on the chart.
-          },
-        ),
-      },
-      child: AnimatedBuilder(
+      onPointerDown: (e) => _handleTouch(e.localPosition),
+      onPointerMove: (e) => _handleTouch(e.localPosition),
+      onPointerUp: (_) => _clearTouch(),
+      onPointerCancel: (_) => _clearTouch(),
+      child: RawGestureDetector(
+        behavior: HitTestBehavior.opaque,
+        gestures: <Type, GestureRecognizerFactory>{
+          VerticalDragGestureRecognizer:
+              GestureRecognizerFactoryWithHandlers<
+                  VerticalDragGestureRecognizer>(
+            () => VerticalDragGestureRecognizer(),
+            (instance) {
+              // No callbacks: just an arena spoiler against ancestor vertical
+              // scrolls that would otherwise grab pointers over the chart.
+            },
+          ),
+          HorizontalDragGestureRecognizer:
+              GestureRecognizerFactoryWithHandlers<
+                  HorizontalDragGestureRecognizer>(
+            () => HorizontalDragGestureRecognizer(),
+            (instance) {
+              // No callbacks: arena spoiler against any ancestor horizontal
+              // scroll.
+            },
+          ),
+        },
+        child: AnimatedBuilder(
       animation: _zoom,
       builder: (context, _) {
         final t = Curves.easeInOutCubic.transform(_zoom.value);
-        _transitioning = _zoom.isAnimating;
         final minX = fromStart + (newTargetStart - fromStart) * t;
         final maxX = fromEnd + (newTargetEnd - fromEnd) * t;
         final minY = fromMinY + (newTargetMinY - fromMinY) * t;
@@ -214,17 +265,12 @@ class _AreaChartState extends State<AreaChart>
           bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
         ),
         lineTouchData: LineTouchData(
-          enabled: true,
-          handleBuiltInTouches: true,
+          // Touch handling is done by the Listener above; fl_chart only
+          // paints the indicator for the showingIndicators we set on the bar.
+          enabled: false,
+          handleBuiltInTouches: false,
           getTouchLineStart: (_, _) => double.negativeInfinity,
           getTouchLineEnd: (_, _) => double.infinity,
-          touchTooltipData: LineTouchTooltipData(
-            getTooltipColor: (_) => Colors.transparent,
-            tooltipPadding: EdgeInsets.zero,
-            tooltipMargin: 0,
-            getTooltipItems: (spots) =>
-                [for (final _ in spots) null],
-          ),
           getTouchedSpotIndicator: (_, indicators) => [
             for (final _ in indicators)
               TouchedSpotIndicatorData(
@@ -253,30 +299,14 @@ class _AreaChartState extends State<AreaChart>
                 ),
               ),
           ],
-          touchCallback: (event, response) {
-            if (_transitioning) {
-              onHover(null);
-              return;
-            }
-            if (!event.isInterestedForInteractions ||
-                response == null ||
-                response.lineBarSpots == null ||
-                response.lineBarSpots!.isEmpty) {
-              onHover(null);
-              return;
-            }
-            final spot = response.lineBarSpots!.first;
-            final i = spot.spotIndex;
-            if (i < 0 || i >= data.length) {
-              onHover(null);
-              return;
-            }
-            onHover(data[i]);
-          },
         ),
         lineBarsData: [
           LineChartBarData(
             spots: spots,
+            showingIndicators: switch (_touchedIndex) {
+              final i? when i < spots.length => [i],
+              _ => const [],
+            },
             isCurved: false,
             color: color,
             barWidth: 1.5,
@@ -299,6 +329,7 @@ class _AreaChartState extends State<AreaChart>
       ),
     );
       },
+    ),
     ),
     );
   }
