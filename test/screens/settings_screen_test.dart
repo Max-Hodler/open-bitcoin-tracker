@@ -67,7 +67,7 @@ void main() {
     await tester.pump();
 
     // Currencies now lives inside the BTC price sub-screen.
-    await tester.tap(find.text('BTC price'));
+    await tester.tap(find.text('Price and graph'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Currencies'));
     await tester.pumpAndSettle();
@@ -86,7 +86,7 @@ void main() {
     await tester.pumpWidget(w);
     await tester.pump();
 
-    await tester.tap(find.text('BTC price'));
+    await tester.tap(find.text('Price and graph'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Currencies'));
     await tester.pumpAndSettle();
@@ -112,7 +112,7 @@ void main() {
     await tester.pumpWidget(w);
     await tester.pump();
 
-    await tester.tap(find.text('BTC price'));
+    await tester.tap(find.text('Price and graph'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Currencies'));
     await tester.pumpAndSettle();

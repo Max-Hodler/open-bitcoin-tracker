@@ -7,6 +7,8 @@ import 'soft_ink_splash.dart';
 
 Key numberPadKey(String label) => ValueKey('keypad-$label');
 
+const Key kNumberPadConfirmKey = ValueKey('keypad-confirm');
+
 // Vertical sizing for keypad keys. Key width follows the grid (third of the
 // available width minus gaps); height is the same as width, clamped to keep
 // short phones tappable (min) and tall phones from looking like a tabloid (max).
@@ -54,6 +56,7 @@ class NumberPad extends StatelessWidget {
       children: [
         if (showConfirm) ...[
           _ConfirmButton(
+            key: kNumberPadConfirmKey,
             isValid: isValid,
             onTap: onEnter,
             label: confirmLabel,
@@ -209,6 +212,7 @@ class _Key extends StatelessWidget {
 
 class _ConfirmButton extends StatelessWidget {
   const _ConfirmButton({
+    super.key,
     required this.isValid,
     required this.onTap,
     this.label,

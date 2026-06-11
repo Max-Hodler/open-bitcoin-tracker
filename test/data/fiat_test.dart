@@ -7,7 +7,7 @@ void main() {
       final r = formatFiat(1234567.89, Currency.usd);
       expect(r.symbol, r'$');
       expect(r.amount, '1,234,568');
-      expect(r.full, r'$1,234,568');
+      expect(r.full, '\$ 1,234,568');
     });
 
     test('picks symbol per currency', () {
@@ -18,7 +18,7 @@ void main() {
 
   group('formatBtcAmount', () {
     test('prefixes with ₿ and formats sats', () {
-      expect(formatBtcAmount(100000000), '₿100,000,000');
+      expect(formatBtcAmount(100000000), '₿ 100,000,000');
     });
 
     test('masks when hidden', () {

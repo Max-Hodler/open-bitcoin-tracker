@@ -10,14 +10,14 @@ void main() {
       expect(s.showPortfolio, true);
 
       expect(s.theme, AppTheme.system);
-      expect(s.btcRange, BtcRange.y10);
+      expect(s.btcRange, BtcRange.all);
       expect(s.logScale, true);
     });
 
     test('empty json hydrates to defaults', () {
       final s = AppState.fromJson(const {});
       expect(s.currency, Currency.usd);
-      expect(s.btcRange, BtcRange.y10);
+      expect(s.btcRange, BtcRange.all);
       expect(s.logScale, true);
     });
 

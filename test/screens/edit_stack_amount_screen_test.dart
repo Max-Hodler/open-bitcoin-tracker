@@ -4,7 +4,7 @@ import 'package:open_bitcoin_tracker/api/api.dart';
 import 'package:open_bitcoin_tracker/data/data.dart';
 import 'package:open_bitcoin_tracker/l10n/generated/app_localizations.dart';
 import 'package:open_bitcoin_tracker/screens/edit_stack_screens.dart';
-import 'package:open_bitcoin_tracker/widgets/number_pad.dart';
+import 'package:open_bitcoin_tracker/widgets/number_pad.dart' show numberPadKey, kNumberPadConfirmKey;
 import 'package:open_bitcoin_tracker/widgets/sats_input/sats_input_display.dart';
 import 'package:open_bitcoin_tracker/state/state.dart';
 import 'package:open_bitcoin_tracker/theme/theme.dart';
@@ -94,7 +94,7 @@ void main() {
     await tester.tap(find.byKey(numberPadKey('9')));
     await tester.pump();
 
-    await tester.tap(find.text('Update amount'));
+    await tester.tap(find.byKey(kNumberPadConfirmKey));
     await tester.pump();
 
     final s = app.stacks.single;
