@@ -199,6 +199,10 @@
   "@aboutPrivacyPolicy": {
     "description": "Link label on the About screen that opens the app's public privacy policy page in the browser."
   },
+  "aboutSourceCode": "Source code",
+  "@aboutSourceCode": {
+    "description": "Link label on the About screen that opens the project's GitHub repository in the browser."
+  },
   "aboutSectionDataSources": "Data sources",
   "@aboutSectionDataSources": {
     "description": "Section header on the About screen above the price/history data attribution lines."
@@ -207,11 +211,11 @@
   "@aboutDataSourceDisclaimer": {
     "description": "Disclaimer on the About screen, shown below the Data sources header, clarifying the app is not affiliated with the listed third-party data providers."
   },
-  "aboutDataSourceLive": "Current Prices",
+  "aboutDataSourceLive": "Current prices",
   "@aboutDataSourceLive": {
     "description": "Label on the About screen for the price data source. The provider name (Kraken) is appended after the colon."
   },
-  "aboutDataSourceHistory": "Historical Prices",
+  "aboutDataSourceHistory": "Historical prices",
   "@aboutDataSourceHistory": {
     "description": "Label on the About screen for the bundled historical price source. The provider name (Coin Metrics) is appended after the colon."
   },
@@ -219,7 +223,7 @@
   "@aboutDataSourceFx": {
     "description": "Label on the About screen for the bundled historical foreign-exchange rate dataset used to convert prices into non-USD currencies. The provider name (European Central Bank) is appended after the colon."
   },
-  "aboutDataSourceMempool": "Mempool and Hashrate",
+  "aboutDataSourceMempool": "Mempool and hashrate",
   "@aboutDataSourceMempool": {
     "description": "Label on the About screen for the mempool fees / blocks / hashrate data source. The provider name (mempool.space) is appended after the colon."
   },
