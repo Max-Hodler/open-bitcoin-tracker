@@ -1,0 +1,1 @@
+- Empty-state "Add a stack" button now hugs its label and sits centered below the chart.
