@@ -1,0 +1,9 @@
+- Update-amount screen simplified — Set/Add/Subtract tabs removed.
+- Chart scrubbing survives swipes; the indicator tracks your finger.
+- Home header no longer scrolls when dragged; only the widget area moves.
+- PIN screen renders the 4th dot filled before advancing.
+- Encryption moved off the main thread for smoother unlocks.
+- Charts and rendering moved off the main thread for smoother scrolling.
+- Locked stacks view hidden from screenshots and the recents switcher.
+- Release builds warn loudly if they fall back to debug signing.
+- Tidied About screen links and data-source labels.
