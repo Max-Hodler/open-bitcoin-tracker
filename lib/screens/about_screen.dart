@@ -62,7 +62,7 @@ class _AboutScreenState extends State<AboutScreen> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.md,
-            AppSpacing.md,
+            0,
             AppSpacing.md,
             AppSpacing.xl,
           ),
@@ -96,7 +96,10 @@ class _AboutScreenState extends State<AboutScreen> {
               ],
             ),
             const SizedBox(height: AppSpacing.lg),
-            _SectionHeader(label: l10n.aboutSectionDataSources),
+            _SectionHeader(
+              label: l10n.aboutSectionDataSources,
+              bottomSpacing: AppSpacing.xs,
+            ),
             _SectionNote(text: l10n.aboutDataSourceDisclaimer),
             SettingsGroup(
               children: [
@@ -175,15 +178,16 @@ Widget _externalLinkTile(
 }
 
 class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.label});
+  const _SectionHeader({required this.label, this.bottomSpacing = AppSpacing.sm});
 
   final String label;
+  final double bottomSpacing;
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.only(left: 4, bottom: AppSpacing.sm),
+      padding: EdgeInsets.only(left: 4, bottom: bottomSpacing),
       child: Text(
         label,
         style: AppTypography.body.copyWith(
