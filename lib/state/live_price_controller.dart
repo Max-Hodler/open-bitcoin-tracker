@@ -530,7 +530,9 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
     // A fresh 1M invalidates all previously sliced week ranges so the next
     // request re-slices from the updated 1M.
     if (range == BtcRange.m1) {
-      for (final r in btcRangeWeeks) _intraday.remove(r);
+      for (final r in btcRangeWeeks) {
+        _intraday.remove(r);
+      }
     }
     notifyListeners();
   }

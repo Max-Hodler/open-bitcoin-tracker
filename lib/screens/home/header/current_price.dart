@@ -125,7 +125,7 @@ class _CurrentPriceState extends State<CurrentPrice>
         // Picker-driven change (no gesture): fall back to enum-order shortest
         // path. Imperfect for non-monotonic ring orders but only matters for
         // the first frame of the cross-fade.
-        final values = Currency.values;
+        const values = Currency.values;
         final oldI = values.indexOf(old.currency);
         final newI = values.indexOf(widget.currency);
         final forward = (newI - oldI) % values.length;

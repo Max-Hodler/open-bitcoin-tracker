@@ -357,7 +357,7 @@ class _PinEntryScreenState extends State<PinEntryScreen>
 
   @override
   Widget build(BuildContext context) {
-    final dotCount = _kPinLength;
+    const dotCount = _kPinLength;
     final screenTitle = widget.title ?? _titleForCurrentStep();
     final cs = Theme.of(context).colorScheme;
     return Scaffold(

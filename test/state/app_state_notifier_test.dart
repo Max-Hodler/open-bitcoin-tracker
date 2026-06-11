@@ -79,7 +79,7 @@ void main() {
       final prefs = await _freshPrefs();
       fakeAsync((async) {
         final n = AppStateNotifier(AppStateRepository(prefs));
-        final window = AppStateNotifier.saveDebounceWindow;
+        const window = AppStateNotifier.saveDebounceWindow;
 
         n.setConverterFiatModeEntry(raw: '1', activeSlot: 'top');
         async.elapse(window * 0.6);

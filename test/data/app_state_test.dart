@@ -27,8 +27,8 @@ void main() {
     });
 
     test('round-trips through JSON', () {
-      final original = AppState(
-        stacks: const [
+      const original = AppState(
+        stacks: [
           Stack(id: 'a', name: 'Cold', sats: 100000000),
           Stack(id: 'b', name: 'Hot', sats: 50000, isHidden: true),
         ],

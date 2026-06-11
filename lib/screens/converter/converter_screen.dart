@@ -665,7 +665,7 @@ class _CardState extends State<_Card> {
       // Inactive and empty: reserve the glyph's vertical space so the card
       // doesn't squash to label-height. (Sats-mode bottom card hits this
       // when there's no input — it has no prefix/suffix to hold the row open.)
-      valueWidget = SizedBox(width: 0, height: fontSize * 1.2);
+      valueWidget = const SizedBox(width: 0, height: fontSize * 1.2);
     }
 
     return DecoratedBox(

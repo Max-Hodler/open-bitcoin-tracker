@@ -40,7 +40,7 @@ class _CurrencyPickerScreenState extends State<CurrencyPickerScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final all = Currency.values;
+    const all = Currency.values;
 
     Widget tile(Currency c) {
       final checked = _picked.contains(c);

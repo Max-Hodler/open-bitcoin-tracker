@@ -270,7 +270,7 @@ class _DashedLinePainter extends CustomPainter {
     // line (area_chart.dart): transparent at 0%/100%, full color between
     // 15%–85%.
     final shader = ui.Gradient.linear(
-      Offset(0, 0),
+      const Offset(0, 0),
       Offset(0, size.height),
       [
         color.withValues(alpha: 0),
