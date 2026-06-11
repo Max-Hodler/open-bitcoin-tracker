@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:cryptography/cryptography.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:open_bitcoin_tracker/services/crypto_params.dart';
 import 'package:open_bitcoin_tracker/services/stacks_auth_service.dart';
 
 /// In-memory stand-in for secure storage; only the members the auth service
@@ -167,6 +171,46 @@ void main() {
       expect(await s.getFailureCount(), 0);
       expect(await s.getRemainingCooldown(), isNull);
       expect(storage.map, isEmpty);
+    });
+  });
+
+  group('setPin / verifyPin (worker-isolate Argon2id)', () {
+    late _MemStorage storage;
+
+    StacksAuthService service() => StacksAuthService(
+          storage: storage,
+          elapsedRealtimeMs: () async => 1000000,
+        );
+
+    setUp(() {
+      storage = _MemStorage();
+    });
+
+    test('setPin then verifyPin round-trips; wrong PIN rejected', () async {
+      final s = service();
+      await s.setPin('1234');
+      expect(await s.verifyPin('1234'), isTrue);
+      expect(await s.verifyPin('4321'), isFalse);
+    });
+
+    // The hash moved onto a worker isolate (compute) for unlock latency.
+    // A hash written directly with the shared primitives — byte-identical
+    // to what the pre-isolate code persisted — must still verify, or
+    // existing users would be locked out by the refactor.
+    test('PIN hash written by the old main-isolate code still verifies',
+        () async {
+      final salt = List<int>.generate(16, (i) => (i * 13) % 256);
+      final derived = await buildStacksArgon2id().deriveKey(
+        secretKey: SecretKey(utf8.encode('1234')),
+        nonce: salt,
+      );
+      storage.map['stacks_auth_pin_hash'] =
+          base64.encode(await derived.extractBytes());
+      storage.map['stacks_auth_pin_salt'] = base64.encode(salt);
+
+      final s = service();
+      expect(await s.verifyPin('1234'), isTrue);
+      expect(await s.verifyPin('4321'), isFalse);
     });
   });
 }

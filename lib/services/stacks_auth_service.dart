@@ -2,12 +2,30 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:cryptography/cryptography.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
 
 import 'crypto_params.dart';
 import 'platform_security.dart';
+
+// Top-level compute() entrypoint for Argon2id PIN hashing.
+// Only plain-data types (List<int>) cross isolate boundaries.
+Future<List<int>> _argon2Hash(_Argon2HashArgs args) async {
+  final argon2id = buildStacksArgon2id();
+  final derived = await argon2id.deriveKey(
+    secretKey: SecretKey(args.pinBytes),
+    nonce: args.salt,
+  );
+  return derived.extractBytes();
+}
+
+class _Argon2HashArgs {
+  const _Argon2HashArgs({required this.pinBytes, required this.salt});
+  final List<int> pinBytes;
+  final List<int> salt;
+}
 
 class StacksAuthService {
   StacksAuthService({
@@ -47,8 +65,6 @@ class StacksAuthService {
       _ => const Duration(hours: 1),
     };
   }
-
-  static final _argon2id = buildStacksArgon2id();
 
   final LocalAuthentication _auth;
   final FlutterSecureStorage _storage;
@@ -188,14 +204,10 @@ class StacksAuthService {
     return next;
   }
 
-  Future<List<int>> _hash(String pin, List<int> salt) async {
-    final secretKey = SecretKey(utf8.encode(pin));
-    final derived = await _argon2id.deriveKey(
-      secretKey: secretKey,
-      nonce: salt,
-    );
-    return derived.extractBytes();
-  }
+  Future<List<int>> _hash(String pin, List<int> salt) => compute(
+        _argon2Hash,
+        _Argon2HashArgs(pinBytes: utf8.encode(pin), salt: salt),
+      );
 
   bool _constantTimeEquals(List<int> a, List<int> b) {
     if (a.length != b.length) return false;

@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:biometric_storage/biometric_storage.dart';
+import 'package:cryptography/cryptography.dart';
+import 'package:open_bitcoin_tracker/services/crypto_params.dart';
 import 'package:open_bitcoin_tracker/services/stacks_crypto_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -94,6 +96,59 @@ void main() {
     });
   });
 
+  // The KDF + cipher moved onto worker isolates (compute) for unlock latency.
+  // These tests write wraps/envelopes built directly from the shared
+  // primitives on the test isolate — byte-identical to what the pre-isolate
+  // code persisted — and assert the compute-based paths still read them.
+  // They fail if the isolate entrypoints ever drift from the shared
+  // buildStacksArgon2id params or the v1 envelope format.
+  group('StacksCryptoService - pre-isolate on-disk compatibility', () {
+    late _FakeSecureStorage storage;
+    late StacksCryptoService crypto;
+
+    setUp(() {
+      storage = _FakeSecureStorage();
+      crypto = StacksCryptoService(
+        storage: storage,
+        biometricVault: _FakeBioVault(),
+      );
+    });
+
+    test('PIN wrap written by the old main-isolate code still unwraps',
+        () async {
+      final salt = List<int>.generate(16, (i) => (i * 7) % 256);
+      final dek = List<int>.generate(32, (i) => 255 - i);
+      final kek = await buildStacksArgon2id().deriveKey(
+        secretKey: SecretKey(utf8.encode('1234')),
+        nonce: salt,
+      );
+      final box = await AesGcm.with256bits().encrypt(
+        dek,
+        secretKey: SecretKey(await kek.extractBytes()),
+      );
+      await storage.write(
+          key: 'stacks_crypto_kdf_salt', value: base64.encode(salt));
+      await storage.write(
+          key: 'stacks_crypto_dek_wrapped_pin',
+          value: _encodeV1Envelope(box));
+
+      expect(await crypto.unwrapDekWithPin('1234'), dek);
+      expect(await crypto.unwrapDekWithPin('9999'), isNull);
+    });
+
+    test('stacks envelope written by the old main-isolate code still '
+        'decrypts', () async {
+      final dek = List<int>.generate(32, (i) => i);
+      const plaintext = '[{"id":"a","name":"Cold","sats":100}]';
+      final box = await AesGcm.with256bits().encrypt(
+        utf8.encode(plaintext),
+        secretKey: SecretKey(dek),
+      );
+      expect(await crypto.decryptString(_encodeV1Envelope(box), dek),
+          plaintext);
+    });
+  });
+
   group('StacksCryptoService - biometric path', () {
     late _FakeSecureStorage storage;
     late _FakeBioVault bio;
@@ -153,6 +208,16 @@ void main() {
     });
   });
 }
+
+/// Encode a SecretBox in the persisted v1 envelope format, exactly as the
+/// pre-isolate StacksCryptoService did on the main isolate.
+String _encodeV1Envelope(SecretBox box) =>
+    base64.encode(utf8.encode(jsonEncode({
+      'v': 1,
+      'n': base64.encode(box.nonce),
+      'c': base64.encode(box.cipherText),
+      'm': base64.encode(box.mac.bytes),
+    })));
 
 /// Decode an envelope, flip one byte in the named base64 field, re-encode.
 String _flipByteInEnvelope(String envelopeStr, {required String field}) {

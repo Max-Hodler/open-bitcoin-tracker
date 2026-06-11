@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:biometric_storage/biometric_storage.dart';
 import 'package:cryptography/cryptography.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'crypto_params.dart';
@@ -74,6 +74,175 @@ class _BiometricStorageVault implements BiometricVault {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Top-level compute() entrypoints — must be top-level (not closures or
+// instance methods) so the isolate spawner can reference them by address.
+// Only plain-data types cross isolate boundaries here: List<int>, String.
+// No platform-channel handles (FlutterSecureStorage, BiometricVault) leak in.
+// ---------------------------------------------------------------------------
+
+/// Argon2id KEK derivation + AES-GCM wrap in one isolate hop.
+/// Returns the encoded envelope string.
+Future<String> _deriveAndWrap(_DeriveAndWrapArgs args) async {
+  final argon2id = buildStacksArgon2id();
+  final aes = AesGcm.with256bits();
+  final derived = await argon2id.deriveKey(
+    secretKey: SecretKey(args.pinBytes),
+    nonce: args.salt,
+  );
+  final kekBytes = await derived.extractBytes();
+  final box = await aes.encrypt(
+    args.plaintext,
+    secretKey: SecretKey(kekBytes),
+  );
+  return _encodeEnvelopeStatic(_EnvelopeData(
+    nonce: box.nonce,
+    ciphertext: box.cipherText,
+    mac: box.mac.bytes,
+  ));
+}
+
+/// Argon2id KEK derivation + AES-GCM unwrap in one isolate hop.
+/// Returns the decrypted bytes, or null on MAC failure or wrong PIN.
+Future<List<int>?> _deriveAndUnwrap(_DeriveAndUnwrapArgs args) async {
+  final argon2id = buildStacksArgon2id();
+  final aes = AesGcm.with256bits();
+  final derived = await argon2id.deriveKey(
+    secretKey: SecretKey(args.pinBytes),
+    nonce: args.salt,
+  );
+  final kekBytes = await derived.extractBytes();
+  try {
+    return await aes.decrypt(
+      SecretBox(args.ciphertext, nonce: args.nonce, mac: Mac(args.mac)),
+      secretKey: SecretKey(kekBytes),
+    );
+  } on SecretBoxAuthenticationError {
+    return null;
+  }
+}
+
+/// AES-GCM encrypt in one isolate hop (no KDF — key already in memory).
+/// Returns the encoded envelope string.
+Future<String> _aesEncrypt(_AesArgs args) async {
+  final aes = AesGcm.with256bits();
+  final box = await aes.encrypt(
+    args.plaintext,
+    secretKey: SecretKey(args.key),
+  );
+  return _encodeEnvelopeStatic(_EnvelopeData(
+    nonce: box.nonce,
+    ciphertext: box.cipherText,
+    mac: box.mac.bytes,
+  ));
+}
+
+/// AES-GCM decrypt in one isolate hop (no KDF — key already in memory).
+/// Returns the decrypted bytes, or null on MAC failure.
+Future<List<int>?> _aesDecrypt(_AesDecryptArgs args) async {
+  final aes = AesGcm.with256bits();
+  try {
+    return await aes.decrypt(
+      SecretBox(args.ciphertext, nonce: args.nonce, mac: Mac(args.mac)),
+      secretKey: SecretKey(args.key),
+    );
+  } on SecretBoxAuthenticationError {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Plain-data argument structs for compute() — all fields are List<int>/String,
+// which the isolate message-passing mechanism can copy without issue.
+// ---------------------------------------------------------------------------
+
+class _DeriveAndWrapArgs {
+  const _DeriveAndWrapArgs({
+    required this.pinBytes,
+    required this.salt,
+    required this.plaintext,
+  });
+  final List<int> pinBytes;
+  final List<int> salt;
+  final List<int> plaintext;
+}
+
+class _DeriveAndUnwrapArgs {
+  const _DeriveAndUnwrapArgs({
+    required this.pinBytes,
+    required this.salt,
+    required this.nonce,
+    required this.ciphertext,
+    required this.mac,
+  });
+  final List<int> pinBytes;
+  final List<int> salt;
+  final List<int> nonce;
+  final List<int> ciphertext;
+  final List<int> mac;
+}
+
+class _AesArgs {
+  const _AesArgs({
+    required this.plaintext,
+    required this.key,
+  });
+  final List<int> plaintext;
+  final List<int> key;
+}
+
+class _AesDecryptArgs {
+  const _AesDecryptArgs({
+    required this.key,
+    required this.nonce,
+    required this.ciphertext,
+    required this.mac,
+  });
+  final List<int> key;
+  final List<int> nonce;
+  final List<int> ciphertext;
+  final List<int> mac;
+}
+
+// ---------------------------------------------------------------------------
+// Envelope codec — shared between main isolate and worker isolates via the
+// static helpers below.
+// ---------------------------------------------------------------------------
+
+class _EnvelopeData {
+  _EnvelopeData({required this.nonce, required this.ciphertext, required this.mac});
+  final List<int> nonce;
+  final List<int> ciphertext;
+  final List<int> mac;
+}
+
+String _encodeEnvelopeStatic(_EnvelopeData e) =>
+    base64.encode(utf8.encode(jsonEncode({
+      'v': 1,
+      'n': base64.encode(e.nonce),
+      'c': base64.encode(e.ciphertext),
+      'm': base64.encode(e.mac),
+    })));
+
+_EnvelopeData? _decodeEnvelopeStatic(String s) {
+  try {
+    final json = jsonDecode(utf8.decode(base64.decode(s)));
+    if (json is! Map<String, dynamic>) return null;
+    if (json['v'] != 1) return null;
+    return _EnvelopeData(
+      nonce: base64.decode(json['n'] as String),
+      ciphertext: base64.decode(json['c'] as String),
+      mac: base64.decode(json['m'] as String),
+    );
+  } on FormatException {
+    return null;
+  } on TypeError {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+
 class StacksCryptoService {
   StacksCryptoService({
     FlutterSecureStorage? storage,
@@ -87,10 +256,6 @@ class StacksCryptoService {
 
   static const _kKdfSalt = 'stacks_crypto_kdf_salt';
   static const _kDekWrappedPin = 'stacks_crypto_dek_wrapped_pin';
-
-  static final _argon2id = buildStacksArgon2id();
-
-  static final _aes = AesGcm.with256bits();
 
   final FlutterSecureStorage _storage;
   final BiometricVault _bio;
@@ -113,34 +278,57 @@ class StacksCryptoService {
   Future<List<int>> initWithPin(String pin) async {
     final salt = _randomBytes(16);
     final dek = _randomBytes(32);
-    final kek = await _deriveKek(pin, salt);
-    final wrapped = await _wrap(dek, kek);
+    // Argon2id + AES-GCM on a worker isolate so the PIN screen stays live.
+    final wrapped = await compute(
+      _deriveAndWrap,
+      _DeriveAndWrapArgs(
+        pinBytes: utf8.encode(pin),
+        salt: salt,
+        plaintext: dek,
+      ),
+    );
     await _storage.write(key: _kKdfSalt, value: base64.encode(salt));
-    await _storage.write(key: _kDekWrappedPin, value: _encodeEnvelope(wrapped));
+    await _storage.write(key: _kDekWrappedPin, value: wrapped);
     return dek;
   }
 
   /// Returns the DEK if [pin] unwraps the stored DEK, or null on wrong PIN
   /// (or corrupt storage / missing data).
   Future<List<int>?> unwrapDekWithPin(String pin) async {
+    // Read plain data on the main isolate (storage handles can't cross).
     final saltB64 = await _storage.read(key: _kKdfSalt);
     final wrappedStr = await _storage.read(key: _kDekWrappedPin);
     if (saltB64 == null || wrappedStr == null) return null;
     final salt = base64.decode(saltB64);
-    final envelope = _decodeEnvelope(wrappedStr);
+    final envelope = _decodeEnvelopeStatic(wrappedStr);
     if (envelope == null) return null;
-    final kek = await _deriveKek(pin, salt);
-    return _unwrap(envelope, kek);
+    // Argon2id + AES-GCM on a worker isolate — keeps the PIN screen responsive.
+    return compute(
+      _deriveAndUnwrap,
+      _DeriveAndUnwrapArgs(
+        pinBytes: utf8.encode(pin),
+        salt: salt,
+        nonce: envelope.nonce,
+        ciphertext: envelope.ciphertext,
+        mac: envelope.mac,
+      ),
+    );
   }
 
   /// Rewrap the same DEK under a new PIN. Used by Change PIN flows so the
   /// existing stacks blob doesn't need to be re-encrypted.
   Future<void> rewrapPin(List<int> dek, String newPin) async {
     final salt = _randomBytes(16);
-    final kek = await _deriveKek(newPin, salt);
-    final wrapped = await _wrap(dek, kek);
+    final wrapped = await compute(
+      _deriveAndWrap,
+      _DeriveAndWrapArgs(
+        pinBytes: utf8.encode(newPin),
+        salt: salt,
+        plaintext: dek,
+      ),
+    );
     await _storage.write(key: _kKdfSalt, value: base64.encode(salt));
-    await _storage.write(key: _kDekWrappedPin, value: _encodeEnvelope(wrapped));
+    await _storage.write(key: _kDekWrappedPin, value: wrapped);
   }
 
   /// Wipe all wraps (PIN + biometric). Caller is responsible for also wiping
@@ -208,52 +396,31 @@ class StacksCryptoService {
   /// Encrypt arbitrary UTF-8 string under the DEK and return a single
   /// base64 envelope suitable for storage. Used for the stacks blob.
   Future<String> encryptString(String plaintext, List<int> dek) async {
-    final envelope = await _wrap(utf8.encode(plaintext), dek);
-    return _encodeEnvelope(envelope);
+    return compute(
+      _aesEncrypt,
+      _AesArgs(plaintext: utf8.encode(plaintext), key: dek),
+    );
   }
 
   /// Decrypt an envelope produced by [encryptString]. Returns null on MAC
   /// failure or malformed input.
   Future<String?> decryptString(String envelopeStr, List<int> dek) async {
-    final envelope = _decodeEnvelope(envelopeStr);
+    final envelope = _decodeEnvelopeStatic(envelopeStr);
     if (envelope == null) return null;
-    final bytes = await _unwrap(envelope, dek);
+    final bytes = await compute(
+      _aesDecrypt,
+      _AesDecryptArgs(
+        key: dek,
+        nonce: envelope.nonce,
+        ciphertext: envelope.ciphertext,
+        mac: envelope.mac,
+      ),
+    );
     if (bytes == null) return null;
     return utf8.decode(bytes, allowMalformed: false);
   }
 
   // --- internal ---
-
-  Future<List<int>> _deriveKek(String pin, List<int> salt) async {
-    final derived = await _argon2id.deriveKey(
-      secretKey: SecretKey(utf8.encode(pin)),
-      nonce: salt,
-    );
-    return derived.extractBytes();
-  }
-
-  Future<_Envelope> _wrap(List<int> plaintext, List<int> key) async {
-    final box = await _aes.encrypt(
-      plaintext,
-      secretKey: SecretKey(key),
-    );
-    return _Envelope(
-      nonce: box.nonce,
-      ciphertext: box.cipherText,
-      mac: box.mac.bytes,
-    );
-  }
-
-  Future<List<int>?> _unwrap(_Envelope env, List<int> key) async {
-    try {
-      return await _aes.decrypt(
-        SecretBox(env.ciphertext, nonce: env.nonce, mac: Mac(env.mac)),
-        secretKey: SecretKey(key),
-      );
-    } on SecretBoxAuthenticationError {
-      return null;
-    }
-  }
 
   Uint8List _randomBytes(int n) {
     final b = Uint8List(n);
@@ -262,38 +429,4 @@ class StacksCryptoService {
     }
     return b;
   }
-
-  // Envelope encoding: a single base64 string of a JSON object with three
-  // base64 fields. Compact, self-describing, and survives any future format
-  // bumps via an explicit version field.
-  String _encodeEnvelope(_Envelope e) => base64.encode(utf8.encode(jsonEncode({
-        'v': 1,
-        'n': base64.encode(e.nonce),
-        'c': base64.encode(e.ciphertext),
-        'm': base64.encode(e.mac),
-      })));
-
-  _Envelope? _decodeEnvelope(String s) {
-    try {
-      final json = jsonDecode(utf8.decode(base64.decode(s)));
-      if (json is! Map<String, dynamic>) return null;
-      if (json['v'] != 1) return null;
-      return _Envelope(
-        nonce: base64.decode(json['n'] as String),
-        ciphertext: base64.decode(json['c'] as String),
-        mac: base64.decode(json['m'] as String),
-      );
-    } on FormatException {
-      return null;
-    } on TypeError {
-      return null;
-    }
-  }
-}
-
-class _Envelope {
-  _Envelope({required this.nonce, required this.ciphertext, required this.mac});
-  final List<int> nonce;
-  final List<int> ciphertext;
-  final List<int> mac;
 }
