@@ -1,13 +1,9 @@
 {
   "@@locale": "pt",
-
   "settingsTitle": "Configurações",
-
   "settingsLanguageLabel": "Idioma",
-
   "languagePickerTitle": "Idioma",
   "languageOptionSystem": "Padrão do sistema",
-
   "settingsThemeLabel": "Tema",
   "themeOptionSystem": "Padrão do sistema",
   "themeOptionLight": "Claro",
@@ -18,11 +14,16 @@
   "settingsLightStyleLabel": "Estilo claro",
   "lightStyleOptionCream": "Papel creme",
   "lightStyleOptionPink": "Imprensa salmão",
-
   "chartErrorTitle": "Não foi possível carregar os dados",
   "chartErrorRetry": "Tentar novamente",
-
-  "rangePill1D": "1D",  "rangePill1W": "1S",
+  "rangePill1D": "1D",
+  "rangePill2D": "2D",
+  "rangePill3D": "3D",
+  "rangePill4D": "4D",
+  "rangePill5D": "5D",
+  "rangePill6D": "6D",
+  "rangePill7D": "7D",
+  "rangePill1W": "1S",
   "rangePill2W": "2S",
   "rangePill3W": "3S",
   "rangePill4W": "4S",
@@ -54,16 +55,12 @@
   "rangePill14Y": "14A",
   "rangePill15Y": "15A",
   "rangePillAll": "Tudo",
-
   "snackAuthenticationFailed": "Falha na autenticação",
   "snackStacksCorrupted": "Os dados dos stacks estão corrompidos. Abra Configurações → Remover bloqueio dos stacks para recuperar.",
-
   "currencyPickerHint": "Deslize para a direita ou direita sobre o preço na tela inicial para alternar entre estas moedas.",
-
   "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "Sobre",
   "settingsWidgets": "Mempool and hashrate",
-
   "aboutAppName": "Open Bitcoin Tracker",
   "aboutVersion": "Versão {version}",
   "aboutSectionLinks": "Links",
@@ -76,7 +73,7 @@
   "aboutDataSourceFx": "Taxas de câmbio históricas",
   "aboutDataSourceMempool": "Mempool e Hashrate",
   "aboutLicenses": "Licenças de código aberto",
-
+  "aboutSourceCode": "Código-fonte",
   "settingsCurrencies": "Moedas",
   "settingsBtcPrice": "Preço e gráfico",
   "settingsBtcPriceTitle": "Preço e gráfico",
@@ -117,15 +114,12 @@
   "settingsChangePin": "Alterar PIN",
   "settingsResetStacksLock": "Esqueceu o PIN? Redefinir stacks",
   "settingsResetAllOptions": "Redefinir todas as opções",
-
   "authModeOff": "Desativado",
   "authModeDevice": "Autenticação do dispositivo",
   "authModePin": "PIN do app",
-
   "lockTimeoutSeconds": "{seconds} segundos",
   "lockTimeoutMinutes": "{minutes, plural, =1{1 minuto} other{{minutes} minutos}}",
   "lockTimeoutNever": "Nunca",
-
   "dialogResetTitle": "Redefinir todas as opções?",
   "dialogResetBody": "Os seus stacks serão mantidos.",
   "dialogResetBodyWithLock": "Os seus stacks serão mantidos e permanecerão bloqueados.",
@@ -133,38 +127,28 @@
   "buttonCancel": "Cancelar",
   "buttonOk": "OK",
   "buttonNext": "Avançar",
-
   "dialogNoBiometricTitle": "Nenhuma biometria cadastrada",
   "dialogNoBiometricBody": "O desbloqueio do dispositivo criptografa os seus stacks com uma impressão digital ou rosto. Configure uma nas Configurações do telefone e tente novamente.",
-
   "dialogDeviceUnavailableTitle": "Autenticação do dispositivo indisponível",
   "dialogDeviceUnavailableBody": "Configure um bloqueio de tela nas Configurações do Android e tente novamente.",
-
   "dialogForgetPinTitle": "Redefinir stacks?",
   "dialogForgetPinBody": "Isto irá apagar os seus stacks atuais permanentemente. Você não perderá nenhum bitcoin. Os stacks não estão conectados a carteiras.",
   "dialogForgetPinConfirm": "Redefinir",
-
   "snackCouldNotEnableDeviceUnlock": "Não foi possível ativar o desbloqueio do dispositivo",
   "snackCouldNotSwitchToPin": "Não foi possível mudar para PIN",
-
   "pinConfirmTitle": "Confirmar PIN",
-
   "pinVerifyTitle": "Digitar PIN",
-
   "pinPromptSetupEnter": "Escolha um PIN de 4 dígitos",
   "pinPromptSetupConfirm": "Digite o PIN novamente para confirmar",
   "pinPromptChangeEnter": "Digite o seu PIN atual",
   "pinPromptChangeNew": "Digite um novo PIN",
   "pinPromptChangeConfirm": "Digite o novo PIN novamente para confirmar",
-
   "pinErrorMismatch": "Os PINs não coincidem. Tente novamente.",
   "pinErrorWrong": "PIN incorreto. Tente novamente.",
   "pinErrorWrongAttemptsRemaining": "PIN incorreto. {remaining, plural, =1{1 tentativa restante} other{{remaining} tentativas restantes}}.",
   "pinCooldownSeconds": "Muitas tentativas. Tente novamente em {seconds}s.",
   "pinCooldownMinutes": "Muitas tentativas. Tente novamente em {minutes}m {remainingSeconds}s.",
-
   "totalCardName": "Total",
-
   "homeAddStack": "Adicionar stack",
   "homeAddAStack": "Adicionar um stack",
   "homeChangePillsHint": "Deslize um stack para a direita para ver como o seu valor mudou ao longo do tempo.",
@@ -174,7 +158,6 @@
   "homeSwipeChipHint": "Também pode deslizar para cima ou para baixo num intervalo para o alterar.",
   "homeConverter": "Conversor",
   "homeUnlockStacks": "Desbloquear stacks",
-
   "stackMenuUpdateAmount": "Atualizar quantia",
   "stackMenuChangeName": "Alterar nome",
   "stackMenuStacksSettings": "Configurações de Stacks",
@@ -184,7 +167,6 @@
   "rangePickerDaysFull": "{count, plural, =1{1 dia} other{{count} dias}}",
   "rangePickerWeeksFull": "{count, plural, =1{1 semana} other{{count} semanas}}",
   "stackMenuDelete": "Apagar stack",
-
   "stackImageSheetSubtitle": "Escolha uma cor ou uma imagem",
   "stackImageSectionLabel": "Imagem",
   "stackImageChooseFromGallery": "Abrir galeria",
@@ -194,13 +176,10 @@
   "stackImageCropTitle": "Recortar imagem",
   "stackImageCropConfirm": "Concluído",
   "stackImageColorLabel": "Cor",
-
   "totalMenuHide": "Ocultar",
-
   "dialogDeleteStackTitle": "Apagar stack?",
   "dialogDeleteStackBody": "Esta ação não pode ser desfeita.",
   "dialogDeleteStackConfirm": "Apagar",
-
   "satsInputLabel": "Quantia de Bitcoin",
   "satsInputLeadingZeroWarning": "Não digite zeros à esquerda",
   "satsInputUnitHint": "Digite a quantia em sats",
@@ -209,11 +188,9 @@
   "satsInputActionPaste": "Colar",
   "snackSatsCopied": "Copiado",
   "snackSatsPasteInvalid": "A área de transferência não contém uma quantia válida de sats",
-
   "stackNameLabel": "Nome",
   "stackNameLimitReached": "Limite de 24 caracteres atingido",
   "stackUnnamedFallback": "Stack sem nome",
-
   "currencyLabelUsd": "Dólar americano",
   "currencyLabelEur": "Euro",
   "currencyLabelGbp": "Libra esterlina",
@@ -221,17 +198,14 @@
   "currencyLabelCad": "Dólar canadense",
   "currencyLabelChf": "Franco suíço",
   "currencyLabelJpy": "Iene japonês",
-
   "stacksWidgetTitle": "Stacks",
   "mempoolUnit": "₿/vB",
   "mempoolBlockEta": "~{minutes} min",
   "mempoolError": "Não foi possível carregar os dados da rede",
-
   "mempoolWidgetTitle": "Mempool",
   "hashrateWidgetTitle": "Hashrate",
   "hashrateUnit": "EH/s",
   "hashrateError": "Não foi possível carregar o hashrate",
-
   "mempoolSheetMinedTitle": "Bloco {height}",
   "mempoolSheetProjectedTitle": "Bloco pendente",
   "mempoolSheetMinedAgo": "{minutes, plural, =0{agora mesmo} =1{há 1 minuto} other{há {minutes} minutos}}",

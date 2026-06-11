@@ -1,13 +1,9 @@
 {
   "@@locale": "ja",
-
   "settingsTitle": "設定",
-
   "settingsLanguageLabel": "言語",
-
   "languagePickerTitle": "言語",
   "languageOptionSystem": "システム設定に従う",
-
   "settingsThemeLabel": "テーマ",
   "themeOptionSystem": "システム設定に従う",
   "themeOptionLight": "ライト",
@@ -18,10 +14,8 @@
   "settingsLightStyleLabel": "ライトスタイル",
   "lightStyleOptionCream": "ペーパークリーム",
   "lightStyleOptionPink": "サーモンプレス",
-
   "chartErrorTitle": "データを読み込めませんでした",
   "chartErrorRetry": "再試行",
-
   "rangePill1D": "1D",
   "rangePill2D": "2D",
   "rangePill3D": "3D",
@@ -61,16 +55,12 @@
   "rangePill14Y": "14Y",
   "rangePill15Y": "15Y",
   "rangePillAll": "全期間",
-
   "snackAuthenticationFailed": "認証に失敗しました",
   "snackStacksCorrupted": "Stacks のデータが破損しています。設定 → Stacks のロックを解除して復旧してください。",
-
   "currencyPickerHint": "ホーム画面で価格を左右にスワイプすると、これらの通貨を切り替えられます。",
-
   "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "アプリについて",
   "settingsWidgets": "Mempool and hashrate",
-
   "aboutAppName": "Open Bitcoin Tracker",
   "aboutVersion": "バージョン {version}",
   "aboutSectionLinks": "リンク",
@@ -83,7 +73,7 @@
   "aboutDataSourceFx": "過去の為替レート",
   "aboutDataSourceMempool": "Mempool と Hashrate",
   "aboutLicenses": "オープンソースライセンス",
-
+  "aboutSourceCode": "ソースコード",
   "settingsCurrencies": "通貨",
   "settingsBtcPrice": "価格とグラフ",
   "settingsBtcPriceTitle": "価格とグラフ",
@@ -124,15 +114,12 @@
   "settingsChangePin": "PIN を変更",
   "settingsResetStacksLock": "PIN を忘れた場合: Stacks をリセット",
   "settingsResetAllOptions": "すべての設定をリセット",
-
   "authModeOff": "オフ",
   "authModeDevice": "デバイス認証",
   "authModePin": "アプリ PIN",
-
   "lockTimeoutSeconds": "{seconds}秒",
   "lockTimeoutMinutes": "{minutes, plural, =1{1分} other{{minutes}分}}",
   "lockTimeoutNever": "なし",
-
   "dialogResetTitle": "すべての設定をリセットしますか?",
   "dialogResetBody": "Stacks は保持されます。",
   "dialogResetBodyWithLock": "Stacks は保持され、ロックされたままになります。",
@@ -140,38 +127,28 @@
   "buttonCancel": "キャンセル",
   "buttonOk": "OK",
   "buttonNext": "次へ",
-
   "dialogNoBiometricTitle": "生体認証が登録されていません",
   "dialogNoBiometricBody": "デバイス認証は、指紋や顔で Stacks を暗号化します。スマートフォンの設定で生体認証を登録してから、もう一度お試しください。",
-
   "dialogDeviceUnavailableTitle": "デバイス認証を利用できません",
   "dialogDeviceUnavailableBody": "Android の設定で画面ロックを設定してから、もう一度お試しください。",
-
   "dialogForgetPinTitle": "Stacks をリセットしますか?",
   "dialogForgetPinBody": "この操作で現在の Stacks は完全に削除されます。bitcoin が失われることはありません。Stacks はウォレットには接続されていません。",
   "dialogForgetPinConfirm": "リセット",
-
   "snackCouldNotEnableDeviceUnlock": "デバイス認証を有効にできませんでした",
   "snackCouldNotSwitchToPin": "PIN に切り替えられませんでした",
-
   "pinConfirmTitle": "PIN を確認",
-
   "pinVerifyTitle": "PIN を入力",
-
   "pinPromptSetupEnter": "4桁の PIN を設定してください",
   "pinPromptSetupConfirm": "確認のため PIN をもう一度入力してください",
   "pinPromptChangeEnter": "現在の PIN を入力してください",
   "pinPromptChangeNew": "新しい PIN を入力してください",
   "pinPromptChangeConfirm": "確認のため新しい PIN をもう一度入力してください",
-
   "pinErrorMismatch": "PIN が一致しません。もう一度お試しください。",
   "pinErrorWrong": "PIN が違います。もう一度お試しください。",
   "pinErrorWrongAttemptsRemaining": "PIN が違います。残り{remaining, plural, =1{1回} other{{remaining}回}}です。",
   "pinCooldownSeconds": "試行回数が多すぎます。{seconds}秒後にもう一度お試しください。",
   "pinCooldownMinutes": "試行回数が多すぎます。{minutes}分{remainingSeconds}秒後にもう一度お試しください。",
-
   "totalCardName": "合計",
-
   "homeAddStack": "Stack を追加",
   "homeAddAStack": "Stack を追加",
   "homeChangePillsHint": "スタックを右にスワイプすると、価値の推移を確認できます。",
@@ -181,7 +158,6 @@
   "homeSwipeChipHint": "期間を上下にスワイプして変更することもできます。",
   "homeConverter": "コンバーター",
   "homeUnlockStacks": "Stacks のロックを解除",
-
   "stackMenuUpdateAmount": "数量を更新",
   "stackMenuChangeName": "名前を変更",
   "stackMenuStacksSettings": "Stacksの設定",
@@ -191,7 +167,6 @@
   "rangePickerDaysFull": "{count, plural, =1{1日} other{{count}日}}",
   "rangePickerWeeksFull": "{count, plural, =1{1週間} other{{count}週間}}",
   "stackMenuDelete": "Stack を削除",
-
   "stackImageSheetSubtitle": "色または画像を選ぶ",
   "stackImageSectionLabel": "画像",
   "stackImageChooseFromGallery": "ギャラリーを開く",
@@ -201,13 +176,10 @@
   "stackImageCropTitle": "画像を切り抜く",
   "stackImageCropConfirm": "完了",
   "stackImageColorLabel": "色",
-
   "totalMenuHide": "非表示",
-
   "dialogDeleteStackTitle": "Stack を削除しますか?",
   "dialogDeleteStackBody": "この操作は取り消せません。",
   "dialogDeleteStackConfirm": "削除",
-
   "satsInputLabel": "Bitcoin の数量",
   "satsInputLeadingZeroWarning": "先頭に 0 を入力しないでください",
   "satsInputUnitHint": "数量を sats で入力してください",
@@ -216,11 +188,9 @@
   "satsInputActionPaste": "貼り付け",
   "snackSatsCopied": "コピーしました",
   "snackSatsPasteInvalid": "クリップボードに有効な sats の数量がありません",
-
   "stackNameLabel": "名前",
   "stackNameLimitReached": "24文字の上限に達しました",
   "stackUnnamedFallback": "名称未設定の Stack",
-
   "currencyLabelUsd": "米ドル",
   "currencyLabelEur": "ユーロ",
   "currencyLabelGbp": "英ポンド",
@@ -228,17 +198,14 @@
   "currencyLabelCad": "カナダドル",
   "currencyLabelChf": "スイスフラン",
   "currencyLabelJpy": "日本円",
-
   "stacksWidgetTitle": "Stacks",
   "mempoolUnit": "₿/vB",
   "mempoolBlockEta": "約{minutes}分",
   "mempoolError": "ネットワーク情報を読み込めませんでした",
-
   "mempoolWidgetTitle": "Mempool",
   "hashrateWidgetTitle": "Hashrate",
   "hashrateUnit": "EH/s",
   "hashrateError": "hashrate を読み込めませんでした",
-
   "mempoolSheetMinedTitle": "ブロック {height}",
   "mempoolSheetProjectedTitle": "保留中のブロック",
   "mempoolSheetMinedAgo": "{minutes, plural, =0{たった今} =1{1分前} other{{minutes}分前}}",

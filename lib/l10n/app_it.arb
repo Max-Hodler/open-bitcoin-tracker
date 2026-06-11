@@ -1,13 +1,9 @@
 {
   "@@locale": "it",
-
   "settingsTitle": "Impostazioni",
-
   "settingsLanguageLabel": "Lingua",
-
   "languagePickerTitle": "Lingua",
   "languageOptionSystem": "Predefinita di sistema",
-
   "settingsThemeLabel": "Tema",
   "themeOptionSystem": "Predefinito di sistema",
   "themeOptionLight": "Chiaro",
@@ -18,10 +14,8 @@
   "settingsLightStyleLabel": "Stile chiaro",
   "lightStyleOptionCream": "Carta crema",
   "lightStyleOptionPink": "Stampa salmone",
-
   "chartErrorTitle": "Impossibile caricare i dati",
   "chartErrorRetry": "Riprova",
-
   "rangePill1D": "1G",
   "rangePill2D": "2G",
   "rangePill3D": "3G",
@@ -61,16 +55,12 @@
   "rangePill14Y": "14A",
   "rangePill15Y": "15A",
   "rangePillAll": "Tutto",
-
   "snackAuthenticationFailed": "Autenticazione fallita",
   "snackStacksCorrupted": "I dati dei tuoi Stacks sono danneggiati. Apri Impostazioni → Rimuovi blocco Stacks per recuperarli.",
-
   "currencyPickerHint": "Scorri a sinistra o a destra sul prezzo nella schermata principale per passare tra queste valute.",
-
   "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "Informazioni",
   "settingsWidgets": "Mempool and hashrate",
-
   "aboutAppName": "Open Bitcoin Tracker",
   "aboutVersion": "Versione {version}",
   "aboutSectionLinks": "Link",
@@ -83,7 +73,7 @@
   "aboutDataSourceFx": "Tassi di cambio storici",
   "aboutDataSourceMempool": "Mempool e Hashrate",
   "aboutLicenses": "Licenze open source",
-
+  "aboutSourceCode": "Codice sorgente",
   "settingsCurrencies": "Valute",
   "settingsBtcPrice": "Prezzo e grafico",
   "settingsBtcPriceTitle": "Prezzo e grafico",
@@ -124,15 +114,12 @@
   "settingsChangePin": "Modifica PIN",
   "settingsResetStacksLock": "PIN dimenticato? Reimposta Stacks",
   "settingsResetAllOptions": "Reimposta tutte le opzioni",
-
   "authModeOff": "Disattivato",
   "authModeDevice": "Autenticazione del dispositivo",
   "authModePin": "PIN dell'app",
-
   "lockTimeoutSeconds": "{seconds} secondi",
   "lockTimeoutMinutes": "{minutes, plural, =1{1 minuto} other{{minutes} minuti}}",
   "lockTimeoutNever": "Mai",
-
   "dialogResetTitle": "Reimpostare tutte le opzioni?",
   "dialogResetBody": "I tuoi Stacks verranno mantenuti.",
   "dialogResetBodyWithLock": "I tuoi Stacks verranno mantenuti e resteranno bloccati.",
@@ -140,38 +127,28 @@
   "buttonCancel": "Annulla",
   "buttonOk": "OK",
   "buttonNext": "Avanti",
-
   "dialogNoBiometricTitle": "Nessun dato biometrico registrato",
   "dialogNoBiometricBody": "Lo sblocco con dispositivo cifra i tuoi Stacks con impronta o volto. Configurane uno nelle Impostazioni del telefono e riprova.",
-
   "dialogDeviceUnavailableTitle": "Autenticazione del dispositivo non disponibile",
   "dialogDeviceUnavailableBody": "Configura un blocco schermo nelle Impostazioni di Android e riprova.",
-
   "dialogForgetPinTitle": "Reimpostare Stacks?",
   "dialogForgetPinBody": "Questa azione eliminerà permanentemente i tuoi Stacks attuali. Non perderai nessun bitcoin. Gli Stacks non sono collegati ai wallet.",
   "dialogForgetPinConfirm": "Reimposta",
-
   "snackCouldNotEnableDeviceUnlock": "Impossibile attivare lo sblocco con dispositivo",
   "snackCouldNotSwitchToPin": "Impossibile passare al PIN",
-
   "pinConfirmTitle": "Conferma PIN",
-
   "pinVerifyTitle": "Inserisci PIN",
-
   "pinPromptSetupEnter": "Scegli un PIN da 4 cifre",
   "pinPromptSetupConfirm": "Inserisci di nuovo il PIN per confermare",
   "pinPromptChangeEnter": "Inserisci il tuo PIN attuale",
   "pinPromptChangeNew": "Inserisci un nuovo PIN",
   "pinPromptChangeConfirm": "Inserisci di nuovo il nuovo PIN per confermare",
-
   "pinErrorMismatch": "I PIN non corrispondono. Riprova.",
   "pinErrorWrong": "PIN errato. Riprova.",
   "pinErrorWrongAttemptsRemaining": "PIN errato. {remaining, plural, =1{1 tentativo rimasto} other{{remaining} tentativi rimasti}}.",
   "pinCooldownSeconds": "Troppi tentativi. Riprova tra {seconds} s.",
   "pinCooldownMinutes": "Troppi tentativi. Riprova tra {minutes} min {remainingSeconds} s.",
-
   "totalCardName": "Totale",
-
   "homeAddStack": "Aggiungi Stack",
   "homeAddAStack": "Aggiungi uno Stack",
   "homeChangePillsHint": "Scorri uno stack verso destra per vedere come è cambiato il suo valore nel tempo.",
@@ -181,7 +158,6 @@
   "homeSwipeChipHint": "Puoi anche scorrere su o giù su un intervallo per cambiarlo.",
   "homeConverter": "Convertitore",
   "homeUnlockStacks": "Sblocca Stacks",
-
   "stackMenuUpdateAmount": "Aggiorna importo",
   "stackMenuChangeName": "Modifica nome",
   "stackMenuStacksSettings": "Impostazioni Stacks",
@@ -191,7 +167,6 @@
   "rangePickerDaysFull": "{count, plural, =1{1 giorno} other{{count} giorni}}",
   "rangePickerWeeksFull": "{count, plural, =1{1 settimana} other{{count} settimane}}",
   "stackMenuDelete": "Elimina Stack",
-
   "stackImageSheetSubtitle": "Scegli un colore o un'immagine",
   "stackImageSectionLabel": "Immagine",
   "stackImageChooseFromGallery": "Apri galleria",
@@ -201,13 +176,10 @@
   "stackImageCropTitle": "Ritaglia immagine",
   "stackImageCropConfirm": "Fatto",
   "stackImageColorLabel": "Colore",
-
   "totalMenuHide": "Nascondi",
-
   "dialogDeleteStackTitle": "Eliminare Stack?",
   "dialogDeleteStackBody": "Questa azione non può essere annullata.",
   "dialogDeleteStackConfirm": "Elimina",
-
   "satsInputLabel": "Quantità di Bitcoin",
   "satsInputLeadingZeroWarning": "Non inserire zeri iniziali",
   "satsInputUnitHint": "Inserisci la quantità in sats",
@@ -216,11 +188,9 @@
   "satsInputActionPaste": "Incolla",
   "snackSatsCopied": "Copiato",
   "snackSatsPasteInvalid": "Gli appunti non contengono una quantità di sats valida",
-
   "stackNameLabel": "Nome",
   "stackNameLimitReached": "Limite di 24 caratteri raggiunto",
   "stackUnnamedFallback": "Stack senza nome",
-
   "currencyLabelUsd": "Dollaro USA",
   "currencyLabelEur": "Euro",
   "currencyLabelGbp": "Sterlina britannica",
@@ -228,17 +198,14 @@
   "currencyLabelCad": "Dollaro canadese",
   "currencyLabelChf": "Franco svizzero",
   "currencyLabelJpy": "Yen giapponese",
-
   "stacksWidgetTitle": "Stacks",
   "mempoolUnit": "₿/vB",
   "mempoolBlockEta": "~{minutes} min",
   "mempoolError": "Impossibile caricare i dati di rete",
-
   "mempoolWidgetTitle": "Mempool",
   "hashrateWidgetTitle": "Hashrate",
   "hashrateUnit": "EH/s",
   "hashrateError": "Impossibile caricare l'hashrate",
-
   "mempoolSheetMinedTitle": "Blocco {height}",
   "mempoolSheetProjectedTitle": "Blocco in attesa",
   "mempoolSheetMinedAgo": "{minutes, plural, =0{proprio ora} =1{1 minuto fa} other{{minutes} minuti fa}}",

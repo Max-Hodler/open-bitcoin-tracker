@@ -1,13 +1,9 @@
 {
   "@@locale": "vi",
-
   "settingsTitle": "Cài đặt",
-
   "settingsLanguageLabel": "Ngôn ngữ",
-
   "languagePickerTitle": "Ngôn ngữ",
   "languageOptionSystem": "Mặc định hệ thống",
-
   "settingsThemeLabel": "Giao diện",
   "themeOptionSystem": "Mặc định hệ thống",
   "themeOptionLight": "Sáng",
@@ -18,10 +14,8 @@
   "settingsLightStyleLabel": "Kiểu giao diện sáng",
   "lightStyleOptionCream": "Giấy kem",
   "lightStyleOptionPink": "Báo hồng cá hồi",
-
   "chartErrorTitle": "Không thể tải dữ liệu",
   "chartErrorRetry": "Thử lại",
-
   "rangePill1D": "1D",
   "rangePill2D": "2D",
   "rangePill3D": "3D",
@@ -61,16 +55,12 @@
   "rangePill14Y": "14Y",
   "rangePill15Y": "15Y",
   "rangePillAll": "Tất cả",
-
   "snackAuthenticationFailed": "Xác thực không thành công",
   "snackStacksCorrupted": "Dữ liệu Stacks của bạn bị hỏng. Mở Cài đặt → Gỡ khóa Stacks để khôi phục.",
-
   "currencyPickerHint": "Vuốt sang phải hoặc phải trên giá ở màn hình chính để chuyển đổi giữa các loại tiền tệ.",
-
   "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "Giới thiệu",
   "settingsWidgets": "Mempool and hashrate",
-
   "aboutAppName": "Open Bitcoin Tracker",
   "aboutVersion": "Phiên bản {version}",
   "aboutSectionLinks": "Liên kết",
@@ -83,7 +73,7 @@
   "aboutDataSourceFx": "Tỷ giá hối đoái lịch sử",
   "aboutDataSourceMempool": "Mempool và Hashrate",
   "aboutLicenses": "Giấy phép mã nguồn mở",
-
+  "aboutSourceCode": "Mã nguồn",
   "settingsCurrencies": "Tiền tệ",
   "settingsBtcPrice": "Giá và biểu đồ",
   "settingsBtcPriceTitle": "Giá và biểu đồ",
@@ -124,15 +114,12 @@
   "settingsChangePin": "Đổi PIN",
   "settingsResetStacksLock": "Quên PIN? Đặt lại Stacks",
   "settingsResetAllOptions": "Đặt lại tất cả tùy chọn",
-
   "authModeOff": "Tắt",
   "authModeDevice": "Xác thực thiết bị",
   "authModePin": "PIN ứng dụng",
-
   "lockTimeoutSeconds": "{seconds} giây",
   "lockTimeoutMinutes": "{minutes, plural, =1{1 phút} other{{minutes} phút}}",
   "lockTimeoutNever": "Không bao giờ",
-
   "dialogResetTitle": "Đặt lại tất cả tùy chọn?",
   "dialogResetBody": "Stacks của bạn sẽ được giữ lại.",
   "dialogResetBodyWithLock": "Stacks của bạn sẽ được giữ lại và vẫn bị khóa.",
@@ -140,38 +127,28 @@
   "buttonCancel": "Hủy",
   "buttonOk": "OK",
   "buttonNext": "Tiếp",
-
   "dialogNoBiometricTitle": "Chưa đăng ký sinh trắc học",
   "dialogNoBiometricBody": "Mở khóa bằng thiết bị sẽ mã hóa Stacks của bạn bằng vân tay hoặc khuôn mặt. Hãy thiết lập trong Cài đặt điện thoại rồi thử lại.",
-
   "dialogDeviceUnavailableTitle": "Xác thực thiết bị không khả dụng",
   "dialogDeviceUnavailableBody": "Hãy thiết lập khóa màn hình trong Cài đặt Android rồi thử lại.",
-
   "dialogForgetPinTitle": "Đặt lại Stacks?",
   "dialogForgetPinBody": "Thao tác này sẽ xóa vĩnh viễn Stacks hiện tại của bạn. Bạn sẽ không mất bitcoin nào. Stacks không được kết nối với ví.",
   "dialogForgetPinConfirm": "Đặt lại",
-
   "snackCouldNotEnableDeviceUnlock": "Không thể bật mở khóa thiết bị",
   "snackCouldNotSwitchToPin": "Không thể chuyển sang PIN",
-
   "pinConfirmTitle": "Xác nhận PIN",
-
   "pinVerifyTitle": "Nhập PIN",
-
   "pinPromptSetupEnter": "Chọn PIN gồm 4 chữ số",
   "pinPromptSetupConfirm": "Nhập lại PIN để xác nhận",
   "pinPromptChangeEnter": "Nhập PIN hiện tại của bạn",
   "pinPromptChangeNew": "Nhập PIN mới",
   "pinPromptChangeConfirm": "Nhập lại PIN mới để xác nhận",
-
   "pinErrorMismatch": "PIN không khớp. Hãy thử lại.",
   "pinErrorWrong": "PIN sai. Hãy thử lại.",
   "pinErrorWrongAttemptsRemaining": "PIN sai. Còn {remaining, plural, =1{1 lần thử} other{{remaining} lần thử}}.",
   "pinCooldownSeconds": "Quá nhiều lần thử. Hãy thử lại sau {seconds}s.",
   "pinCooldownMinutes": "Quá nhiều lần thử. Hãy thử lại sau {minutes}m {remainingSeconds}s.",
-
   "totalCardName": "Tổng",
-
   "homeAddStack": "Thêm Stack",
   "homeAddAStack": "Thêm một Stack",
   "homeChangePillsHint": "Vuốt một stack sang phải để xem giá trị của nó đã thay đổi như thế nào theo thời gian.",
@@ -181,7 +158,6 @@
   "homeSwipeChipHint": "Bạn cũng có thể vuốt lên hoặc xuống trên một phạm vi để thay đổi nó.",
   "homeConverter": "Bộ chuyển đổi",
   "homeUnlockStacks": "Mở khóa Stacks",
-
   "stackMenuUpdateAmount": "Cập nhật số lượng",
   "stackMenuChangeName": "Đổi tên",
   "stackMenuStacksSettings": "Cài đặt Stacks",
@@ -191,7 +167,6 @@
   "rangePickerDaysFull": "{count, plural, =1{1 Ngày} other{{count} Ngày}}",
   "rangePickerWeeksFull": "{count, plural, =1{1 Tuần} other{{count} Tuần}}",
   "stackMenuDelete": "Xóa Stack",
-
   "stackImageSheetSubtitle": "Chọn màu hoặc ảnh",
   "stackImageSectionLabel": "Ảnh",
   "stackImageChooseFromGallery": "Mở thư viện",
@@ -201,13 +176,10 @@
   "stackImageCropTitle": "Cắt ảnh",
   "stackImageCropConfirm": "Xong",
   "stackImageColorLabel": "Màu",
-
   "totalMenuHide": "Ẩn",
-
   "dialogDeleteStackTitle": "Xóa Stack?",
   "dialogDeleteStackBody": "Thao tác này không thể hoàn tác.",
   "dialogDeleteStackConfirm": "Xóa",
-
   "satsInputLabel": "Số lượng Bitcoin",
   "satsInputLeadingZeroWarning": "Không nhập số 0 ở đầu",
   "satsInputUnitHint": "Nhập số lượng bằng sats",
@@ -216,11 +188,9 @@
   "satsInputActionPaste": "Dán",
   "snackSatsCopied": "Đã sao chép",
   "snackSatsPasteInvalid": "Clipboard không chứa số lượng sats hợp lệ",
-
   "stackNameLabel": "Tên",
   "stackNameLimitReached": "Đã đạt giới hạn 24 ký tự",
   "stackUnnamedFallback": "Stack chưa đặt tên",
-
   "currencyLabelUsd": "Đô la Mỹ",
   "currencyLabelEur": "Euro",
   "currencyLabelGbp": "Bảng Anh",
@@ -228,17 +198,14 @@
   "currencyLabelCad": "Đô la Canada",
   "currencyLabelChf": "Franc Thụy Sĩ",
   "currencyLabelJpy": "Yên Nhật",
-
   "stacksWidgetTitle": "Stacks",
   "mempoolUnit": "₿/vB",
   "mempoolBlockEta": "~{minutes} phút",
   "mempoolError": "Không thể tải dữ liệu mạng",
-
   "mempoolWidgetTitle": "Mempool",
   "hashrateWidgetTitle": "Hashrate",
   "hashrateUnit": "EH/s",
   "hashrateError": "Không thể tải hashrate",
-
   "mempoolSheetMinedTitle": "Khối {height}",
   "mempoolSheetProjectedTitle": "Khối đang chờ",
   "mempoolSheetMinedAgo": "{minutes, plural, =0{vừa xong} =1{1 phút trước} other{{minutes} phút trước}}",
