@@ -14,6 +14,7 @@ class OrangeOutlineButton extends StatelessWidget {
     this.label,
     this.icon,
     this.height = 64,
+    this.fullWidth = true,
   });
 
   final bool isValid;
@@ -21,6 +22,10 @@ class OrangeOutlineButton extends StatelessWidget {
   final String? label;
   final IconData? icon;
   final double height;
+
+  /// When false, the button hugs its content width instead of stretching to
+  /// fill the available horizontal space.
+  final bool fullWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +35,7 @@ class OrangeOutlineButton extends StatelessWidget {
       opacity: isValid ? 1.0 : 0.4,
       child: SizedBox(
         height: height,
+        width: fullWidth ? double.infinity : null,
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: AppColors.bitcoinOrangeTint,
@@ -47,7 +53,8 @@ class OrangeOutlineButton extends StatelessWidget {
                       onTap();
                     }
                   : null,
-              child: Center(
+              child: Align(
+                widthFactor: fullWidth ? null : 1.0,
                 child: label == null && icon == null
                     ? Icon(Icons.check, size: 28, color: p.bitcoinOrange)
                     : icon != null && label != null
@@ -65,11 +72,16 @@ class OrangeOutlineButton extends StatelessWidget {
                               ),
                             ],
                           )
-                        : Text(
-                            label!,
-                            style: AppTypography.title.copyWith(
-                              color: p.bitcoinOrange,
-                              fontWeight: FontWeight.w600,
+                        : Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: fullWidth ? 0 : AppSpacing.lg,
+                            ),
+                            child: Text(
+                              label!,
+                              style: AppTypography.title.copyWith(
+                                color: p.bitcoinOrange,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
               ),

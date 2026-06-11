@@ -74,6 +74,7 @@ class AddStackButton extends StatelessWidget {
       isValid: true,
       onTap: onTap ?? () {},
       label: AppLocalizations.of(context).homeAddAStack,
+      fullWidth: false,
     );
   }
 }

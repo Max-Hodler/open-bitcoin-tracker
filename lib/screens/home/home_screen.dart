@@ -250,11 +250,19 @@ class _HomeScreenState extends State<HomeScreen> {
               if (stacks.isEmpty && !stacksLocked)
                 SliverFillRemaining(
                   hasScrollBody: false,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                    child: Center(
-                      child: AddStackButton(onTap: _onAddStackTap),
+                  child: SafeArea(
+                    top: false,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                      ),
+                      // Bias upward: the fill region extends to the very bottom
+                      // edge, so true-center reads low. Lift it into the visual
+                      // middle of the gap below the chart.
+                      child: Align(
+                        alignment: const Alignment(0, -0.25),
+                        child: AddStackButton(onTap: _onAddStackTap),
+                      ),
                     ),
                   ),
                 )
