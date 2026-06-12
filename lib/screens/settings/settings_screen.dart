@@ -86,12 +86,6 @@ class SettingsScreen extends StatelessWidget {
                   trailingIcon: Icons.chevron_right,
                 ),
                 SettingsPickerTile(
-                  label: l10n.settingsGraphLabel,
-                  value: '',
-                  onTap: () => _openGraphSettings(context),
-                  trailingIcon: Icons.chevron_right,
-                ),
-                SettingsPickerTile(
                   label: l10n.settingsGroupPrivacy,
                   value: '',
                   onTap: () => _openStacksSettings(context),
@@ -176,12 +170,6 @@ class SettingsScreen extends StatelessWidget {
   void _openBtcPriceSettings(BuildContext context) {
     Navigator.of(context).push<void>(
       MaterialPageRoute<void>(builder: (_) => const BtcPriceSettingsScreen()),
-    );
-  }
-
-  void _openGraphSettings(BuildContext context) {
-    Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(builder: (_) => const GraphSettingsScreen()),
     );
   }
 

@@ -44,12 +44,6 @@ class GraphSettingsScreen extends StatelessWidget {
           children: [
             SettingsGroup(
               children: [
-                SettingsToggleTile(
-                  label: l10n.settingsChart,
-                  value: app.showChart,
-                  enabled: true,
-                  onChanged: app.setShowChart,
-                ),
                 SettingsSegmentedTile(
                   label: l10n.settingsChartHeight,
                   options: [
@@ -59,14 +53,14 @@ class GraphSettingsScreen extends StatelessWidget {
                     l10n.settingsChartHeightXl,
                   ],
                   selectedIndex: app.chartHeight.index,
-                  enabled: app.showChart,
+                  enabled: true,
                   onChanged: (i) => app.setChartHeight(ChartHeight.values[i]),
                 ),
                 SettingsSegmentedTile(
                   label: l10n.settingsScale,
                   options: [l10n.settingsScaleLinear, l10n.settingsScaleLog],
                   selectedIndex: app.logScale ? 1 : 0,
-                  enabled: app.showChart,
+                  enabled: true,
                   onChanged: (i) => app.setLogScale(i == 1),
                 ),
               ],
