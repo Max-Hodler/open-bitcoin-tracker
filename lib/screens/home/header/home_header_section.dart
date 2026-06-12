@@ -7,6 +7,7 @@ import '../../../services/app_haptics.dart';
 import '../../../state/state.dart';
 import '../../../theme/theme.dart';
 import '../../settings/btc_price_settings_screen.dart';
+import '../../settings/graph_settings_screen.dart';
 import '../../settings/currency_picker_screen.dart';
 import '../chart_slice.dart';
 import 'home_header.dart';
@@ -212,6 +213,11 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
       onPriceTap: () => Navigator.of(context).push<void>(
         MaterialPageRoute<void>(
           builder: (_) => const BtcPriceSettingsScreen(),
+        ),
+      ),
+      onGraphSettingsTap: () => Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(
+          builder: (_) => const GraphSettingsScreen(),
         ),
       ),
       onCurrencySwipe: (direction) async {

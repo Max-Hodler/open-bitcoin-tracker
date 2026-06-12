@@ -11,6 +11,7 @@ import '../../widgets/scroll_hairline.dart';
 import '../about_screen.dart';
 import 'settings_widgets.dart';
 import 'btc_price_settings_screen.dart';
+import 'graph_settings_screen.dart';
 import 'stacks_settings_screen.dart';
 import 'theme_settings_screen.dart';
 import 'widgets_settings_screen.dart';
@@ -19,6 +20,7 @@ import 'widgets_settings_screen.dart';
 // home_screen.dart, settings_screen_test.dart) can keep importing this single
 // file without caring how the package is laid out internally.
 export 'btc_price_settings_screen.dart' show BtcPriceSettingsScreen;
+export 'graph_settings_screen.dart' show GraphSettingsScreen;
 export 'currency_picker_screen.dart' show CurrencyPickerScreen;
 export 'stacks_settings_screen.dart' show StacksSettingsScreen;
 export 'theme_settings_screen.dart' show ThemeSettingsScreen;
@@ -78,9 +80,15 @@ class SettingsScreen extends StatelessWidget {
             SettingsGroup(
               children: [
                 SettingsPickerTile(
-                  label: l10n.settingsBtcPrice,
+                  label: l10n.settingsPriceLabel,
                   value: '',
                   onTap: () => _openBtcPriceSettings(context),
+                  trailingIcon: Icons.chevron_right,
+                ),
+                SettingsPickerTile(
+                  label: l10n.settingsGraphLabel,
+                  value: '',
+                  onTap: () => _openGraphSettings(context),
                   trailingIcon: Icons.chevron_right,
                 ),
                 SettingsPickerTile(
@@ -168,6 +176,12 @@ class SettingsScreen extends StatelessWidget {
   void _openBtcPriceSettings(BuildContext context) {
     Navigator.of(context).push<void>(
       MaterialPageRoute<void>(builder: (_) => const BtcPriceSettingsScreen()),
+    );
+  }
+
+  void _openGraphSettings(BuildContext context) {
+    Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(builder: (_) => const GraphSettingsScreen()),
     );
   }
 

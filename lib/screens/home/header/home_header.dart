@@ -95,6 +95,7 @@ class HomeHeader extends StatefulWidget {
     required this.rangeAbsDiff,
     required this.rollDirection,
     required this.onPriceTap,
+    required this.onGraphSettingsTap,
     required this.onCurrencySwipe,
     required this.chartData,
     required this.chartWindowStartMs,
@@ -124,6 +125,9 @@ class HomeHeader extends StatefulWidget {
   final double? rangeAbsDiff;
   final int rollDirection;
   final VoidCallback onPriceTap;
+  // Tapped when the trailing settings (sliders) button on the range bar is
+  // pressed. Opens the graph settings page (the range bar sits under the chart).
+  final VoidCallback onGraphSettingsTap;
   final ValueChanged<int> onCurrencySwipe;
   final List<PricePoint> chartData;
   final int chartWindowStartMs;
@@ -214,6 +218,7 @@ class _HomeHeaderState extends State<HomeHeader> {
             range: widget.range,
             chartColor: widget.chartColor,
             onRange: widget.onRange,
+            onSettings: widget.onGraphSettingsTap,
           ),
           _buildChipHint(context),
         ],

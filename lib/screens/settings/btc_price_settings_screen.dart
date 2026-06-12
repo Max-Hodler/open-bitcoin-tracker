@@ -28,7 +28,7 @@ class BtcPriceSettingsScreen extends StatelessWidget {
         leading: BackButton(color: cs.onSurfaceVariant),
         centerTitle: true,
         title: Text(
-          l10n.settingsBtcPriceTitle,
+          l10n.settingsPriceTitle,
           style: AppTypography.title.copyWith(
             color: cs.onSurfaceVariant,
             fontWeight: FontWeight.w500,
@@ -44,7 +44,6 @@ class BtcPriceSettingsScreen extends StatelessWidget {
             AppSpacing.xl * 2,
           ),
           children: [
-            _SectionHeader(label: l10n.settingsPriceTickerSection),
             SettingsGroup(
               children: [
                 SettingsPickerTile(
@@ -64,37 +63,6 @@ class BtcPriceSettingsScreen extends StatelessWidget {
                   value: app.showPriceDelta,
                   enabled: true,
                   onChanged: app.setShowPriceDelta,
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            _SectionHeader(label: l10n.settingsChartSection),
-            SettingsGroup(
-              children: [
-                SettingsToggleTile(
-                  label: l10n.settingsChart,
-                  value: app.showChart,
-                  enabled: true,
-                  onChanged: app.setShowChart,
-                ),
-                SettingsSegmentedTile(
-                  label: l10n.settingsChartHeight,
-                  options: [
-                    l10n.settingsChartHeightCompact,
-                    l10n.settingsChartHeightNormal,
-                    l10n.settingsChartHeightTall,
-                    l10n.settingsChartHeightXl,
-                  ],
-                  selectedIndex: app.chartHeight.index,
-                  enabled: app.showChart,
-                  onChanged: (i) => app.setChartHeight(ChartHeight.values[i]),
-                ),
-                SettingsSegmentedTile(
-                  label: l10n.settingsScale,
-                  options: [l10n.settingsScaleLinear, l10n.settingsScaleLog],
-                  selectedIndex: app.logScale ? 1 : 0,
-                  enabled: app.showChart,
-                  onChanged: (i) => app.setLogScale(i == 1),
                 ),
               ],
             ),
@@ -168,26 +136,4 @@ Future<LivePriceCadence?> _showLivePriceCadencePicker(
       );
     },
   );
-}
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.only(left: 4, bottom: AppSpacing.sm),
-      child: Text(
-        label,
-        style: AppTypography.body.copyWith(
-          fontSize: 16,
-          color: cs.onSurfaceVariant,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
 }
