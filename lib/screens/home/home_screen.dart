@@ -26,7 +26,7 @@ import 'widgets/locked_stacks_skeleton.dart';
 import 'widgets/mempool_card.dart';
 import 'widgets/stacks_widget.dart';
 
-enum _TotalMenuAction { hide, settings, add }
+enum _TotalMenuAction { hide, settings }
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -429,17 +429,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacing.md),
-                MenuActionGroup(
-                  children: [
-                    MenuActionTile(
-                      leading: const Icon(Icons.add),
-                      label: l10n.homeAddStack,
-                      onTap: () =>
-                          Navigator.of(ctx).pop(_TotalMenuAction.add),
-                    ),
-                  ],
-                ),
+
               ],
             ),
           ),
@@ -454,10 +444,7 @@ class _HomeScreenState extends State<HomeScreen> {
         await Navigator.of(iconContext).push(MaterialPageRoute<void>(
           builder: (_) => const StacksSettingsScreen(),
         ));
-      case _TotalMenuAction.add:
-        await Navigator.of(iconContext).push(MaterialPageRoute<void>(
-          builder: (_) => const NewStackAmountScreen(),
-        ));
+
       case null:
         break;
     }
