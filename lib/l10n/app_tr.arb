@@ -149,7 +149,6 @@
   "homeAddAStack": "Bir stack ekle",
   "homeChangePillsHint": "Bir stack'i sağa kaydırarak değerinin zaman içinde nasıl değiştiğini görebilirsin.",
   "homeChangePillsHintDismiss": "Anladım",
-  "homeAddStackHint": "Başka bir stack eklemek için bir stack'e dokun.",
   "homeRangeChipHint": "Değiştirmek için bir aralığa dokunup basılı tut.",
   "homeSwipeChipHint": "Aralığı değiştirmek için yukarı veya aşağı da kaydırabilirsin.",
   "homeConverter": "Dönüştürücü",

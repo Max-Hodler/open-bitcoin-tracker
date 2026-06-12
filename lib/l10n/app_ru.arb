@@ -149,7 +149,6 @@
   "homeAddAStack": "Добавить Stack",
   "homeChangePillsHint": "Проведите по стеку вправо, чтобы увидеть, как менялась его стоимость со временем.",
   "homeChangePillsHintDismiss": "Понятно",
-  "homeAddStackHint": "Нажмите на стек, чтобы добавить ещё один.",
   "homeRangeChipHint": "Удерживайте диапазон, чтобы изменить его.",
   "homeSwipeChipHint": "Также можно провести вверх или вниз по диапазону, чтобы его изменить.",
   "homeConverter": "Конвертер",

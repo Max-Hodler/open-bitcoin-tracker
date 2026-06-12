@@ -149,7 +149,6 @@
   "homeAddAStack": "Stack を追加",
   "homeChangePillsHint": "スタックを右にスワイプすると、価値の推移を確認できます。",
   "homeChangePillsHintDismiss": "OK",
-  "homeAddStackHint": "スタックをタップすると、別のスタックを追加できます。",
   "homeRangeChipHint": "期間を長押しすると変更できます。",
   "homeSwipeChipHint": "期間を上下にスワイプして変更することもできます。",
   "homeConverter": "コンバーター",

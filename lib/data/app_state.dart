@@ -43,7 +43,6 @@ class AppState {
     this.totalImageData,
     this.totalColorKey,
     this.changePillsHintDismissed = false,
-    this.addStackHintDismissed = false,
     this.rangeChipHintDismissed = false,
     this.swipeChipHintDismissed = false,
     this.showPriceDelta = false,
@@ -128,10 +127,6 @@ class AppState {
   // range/change pills by swiping a stack card aside. Persisted so the hint
   // never reappears on later launches, even after more stacks are added.
   final bool changePillsHintDismissed;
-  // True once the user dismisses the one-time hint that explains adding another
-  // stack by tapping an existing one to open its menu. Shown only after
-  // [changePillsHintDismissed] so the two hints teach in sequence, not at once.
-  final bool addStackHintDismissed;
   // True once the user long-presses any range chip for the first time, or the
   // hint text is dismissed. The hint sits below the chip row and teaches that
   // long-pressing opens the range picker for that chip slot.
@@ -181,7 +176,6 @@ class AppState {
     String? totalColorKey,
     bool clearTotalColor = false,
     bool? changePillsHintDismissed,
-    bool? addStackHintDismissed,
     bool? rangeChipHintDismissed,
     bool? swipeChipHintDismissed,
     bool? showPriceDelta,
@@ -233,8 +227,6 @@ class AppState {
           : (totalColorKey ?? this.totalColorKey),
       changePillsHintDismissed:
           changePillsHintDismissed ?? this.changePillsHintDismissed,
-      addStackHintDismissed:
-          addStackHintDismissed ?? this.addStackHintDismissed,
       rangeChipHintDismissed:
           rangeChipHintDismissed ?? this.rangeChipHintDismissed,
       swipeChipHintDismissed:
@@ -283,7 +275,6 @@ class AppState {
         if (totalImageData != null) 'totalImageData': totalImageData,
         if (totalColorKey != null) 'totalColorKey': totalColorKey,
         'changePillsHintDismissed': changePillsHintDismissed,
-        'addStackHintDismissed': addStackHintDismissed,
         'rangeChipHintDismissed': rangeChipHintDismissed,
         'swipeChipHintDismissed': swipeChipHintDismissed,
         'showPriceDelta': showPriceDelta,
@@ -385,7 +376,6 @@ class AppState {
           : null,
       changePillsHintDismissed:
           json['changePillsHintDismissed'] as bool? ?? false,
-      addStackHintDismissed: json['addStackHintDismissed'] as bool? ?? false,
       rangeChipHintDismissed:
           json['rangeChipHintDismissed'] as bool? ?? false,
       swipeChipHintDismissed:

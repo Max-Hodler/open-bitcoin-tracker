@@ -78,7 +78,6 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
   List<Currency> get selectedCurrencies => _state.selectedCurrencies;
   bool get showPortfolio => _state.showPortfolio;
   bool get changePillsHintDismissed => _state.changePillsHintDismissed;
-  bool get addStackHintDismissed => _state.addStackHintDismissed;
   bool get rangeChipHintDismissed => _state.rangeChipHintDismissed;
   bool get swipeChipHintDismissed => _state.swipeChipHintDismissed;
   bool get showMempool => _state.showMempool;
@@ -189,8 +188,6 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
   void setShowPortfolio(bool value) => _update((s) => s.copyWith(showPortfolio: value));
   void dismissChangePillsHint() =>
       _update((s) => s.copyWith(changePillsHintDismissed: true));
-  void dismissAddStackHint() =>
-      _update((s) => s.copyWith(addStackHintDismissed: true));
   void dismissRangeChipHint() =>
       _update((s) => s.copyWith(rangeChipHintDismissed: true));
   void dismissSwipeChipHint() =>

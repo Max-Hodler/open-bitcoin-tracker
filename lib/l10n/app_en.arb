@@ -576,10 +576,6 @@
   "@homeChangePillsHintDismiss": {
     "description": "Button that permanently dismisses the home-screen hint about swiping a stack to reveal its change pills."
   },
-  "homeAddStackHint": "Tap on a stack to add another one.",
-  "@homeAddStackHint": {
-    "description": "One-time hint shown below the stack list on home (after the swipe hint is dismissed), explaining that tapping an existing stack opens a menu from which another stack can be added. Dismissed permanently with the shared Got it button."
-  },
   "homeRangeChipHint": "Tap and hold a range to change it.",
   "@homeRangeChipHint": {
     "description": "One-time hint shown below the chart range buttons, teaching that long-pressing a range button opens a picker to change which range it shows. Disappears permanently after the user long-presses any range button for the first time."

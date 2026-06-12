@@ -315,10 +315,9 @@ class _HomeScreenState extends State<HomeScreen> {
               : null,
           totalSats: showTotal ? totalSats : null,
         ),
-      // Two one-time hints below the stack list, shown in sequence so only
-      // one is visible at a time: first the swipe-to-reveal-pills gesture,
-      // then (once that's dismissed) how to add another stack. Each stays
-      // until dismissed (persisted), regardless of how many stacks exist.
+      // One-time hint below the stack list: the swipe-to-reveal-pills
+      // gesture. Stays until dismissed (persisted), regardless of how many
+      // stacks exist.
       if (stacks.isNotEmpty && !app.changePillsHintDismissed) ...[
         const SizedBox(height: AppSpacing.sm),
         Padding(
@@ -327,16 +326,6 @@ class _HomeScreenState extends State<HomeScreen> {
             message: l10n.homeChangePillsHint,
             onDismiss: () =>
                 context.read<AppStateNotifier>().dismissChangePillsHint(),
-          ),
-        ),
-      ] else if (stacks.isNotEmpty && !app.addStackHintDismissed) ...[
-        const SizedBox(height: AppSpacing.sm),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: HomeHintCard(
-            message: l10n.homeAddStackHint,
-            onDismiss: () =>
-                context.read<AppStateNotifier>().dismissAddStackHint(),
           ),
         ),
       ],
