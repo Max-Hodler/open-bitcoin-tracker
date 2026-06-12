@@ -498,9 +498,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _onAddStackTap() async {
     final app = context.read<AppStateNotifier>();
-    final picked = await showBitcoinUnitDialog(context, app.btcDisplayMode);
-    if (!mounted || picked == null) return;
-    app.setBitcoinDisplayMode(picked);
+    if (app.stacks.isEmpty) {
+      final picked = await showBitcoinUnitDialog(context, app.btcDisplayMode);
+      if (!mounted || picked == null) return;
+      app.setBitcoinDisplayMode(picked);
+    }
     widget.onAddStack?.call();
   }
 
