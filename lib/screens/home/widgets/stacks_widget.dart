@@ -18,7 +18,7 @@ import '../../settings/reorder_stacks_screen.dart';
 import '../../settings/stacks_settings_screen.dart';
 import 'range_pills_row.dart';
 
-enum _StackMenuAction { edit, rename, add, settings, delete }
+enum _StackMenuAction { edit, rename, settings, delete }
 
 class HomeStackList extends StatelessWidget {
   const HomeStackList({
@@ -189,17 +189,7 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacing.md),
-                MenuActionGroup(
-                  children: [
-                    MenuActionTile(
-                      leading: const Icon(Icons.add),
-                      label: l10n.homeAddStack,
-                      onTap: () =>
-                          Navigator.of(ctx).pop(_StackMenuAction.add),
-                    ),
-                  ],
-                ),
+
               ],
             ),
           ),
@@ -216,10 +206,7 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
         await Navigator.of(iconContext).push(MaterialPageRoute<void>(
           builder: (_) => EditStackNameScreen(stackId: widget.stack.id),
         ));
-      case _StackMenuAction.add:
-        await Navigator.of(iconContext).push(MaterialPageRoute<void>(
-          builder: (_) => const NewStackAmountScreen(),
-        ));
+
       case _StackMenuAction.settings:
         // Pushed onto the home navigator (not the settings stack), so the
         // Stacks settings page's back button returns straight to home.
