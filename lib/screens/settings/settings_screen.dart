@@ -14,7 +14,6 @@ import 'btc_price_settings_screen.dart';
 import 'graph_settings_screen.dart';
 import 'stacks_settings_screen.dart';
 import 'theme_settings_screen.dart';
-import 'widgets_settings_screen.dart';
 
 // Re-export the public sub-screen classes so external callers (main.dart,
 // home_screen.dart, settings_screen_test.dart) can keep importing this single
@@ -24,7 +23,6 @@ export 'graph_settings_screen.dart' show GraphSettingsScreen;
 export 'currency_picker_screen.dart' show CurrencyPickerScreen;
 export 'stacks_settings_screen.dart' show StacksSettingsScreen;
 export 'theme_settings_screen.dart' show ThemeSettingsScreen;
-export 'widgets_settings_screen.dart' show WidgetsSettingsScreen;
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -89,12 +87,6 @@ class SettingsScreen extends StatelessWidget {
                   label: l10n.settingsGroupPrivacy,
                   value: '',
                   onTap: () => _openStacksSettings(context),
-                  trailingIcon: Icons.chevron_right,
-                ),
-                SettingsPickerTile(
-                  label: l10n.settingsWidgets,
-                  value: '',
-                  onTap: () => _openWidgetsSettings(context),
                   trailingIcon: Icons.chevron_right,
                 ),
               ],
@@ -176,14 +168,6 @@ class SettingsScreen extends StatelessWidget {
   void _openStacksSettings(BuildContext context) {
     Navigator.of(context).push<void>(
       MaterialPageRoute<void>(builder: (_) => const StacksSettingsScreen()),
-    );
-  }
-
-  void _openWidgetsSettings(BuildContext context) {
-    Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
-        builder: (_) => const WidgetsSettingsScreen(),
-      ),
     );
   }
 

@@ -19,11 +19,9 @@ import '../settings/settings_dialogs.dart';
 import '../settings/stacks_settings_screen.dart';
 import 'header/home_header.dart';
 import 'header/home_header_section.dart';
-import 'widgets/hashrate_card.dart';
 import 'widgets/home_buttons.dart';
 import 'widgets/home_hint_card.dart';
 import 'widgets/locked_stacks_skeleton.dart';
-import 'widgets/mempool_card.dart';
 import 'widgets/stacks_widget.dart';
 
 enum _TotalMenuAction { hide, settings }
@@ -174,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // edge) so it shares the slab's transform during overscroll. Drawing it
     // as a fixed-Y overlay outside the scroll view caused it to stay put
     // while the rest of the header drifted up on overscroll bounce — the
-    // line then cut through the mempool pills below.
+    // line then cut through the widget area below.
     final measuredHeader = MeasureSize(
       onChange: _onHeaderMeasured,
       // Vertical swipes that start on the header slab must not drive the
@@ -282,10 +280,6 @@ class _HomeScreenState extends State<HomeScreen> {
       switch (hw) {
         case HomeWidget.stacks:
           children = _stacksBlock(context, app);
-        case HomeWidget.mempoolFees:
-          children = app.showMempool ? const [MempoolCard()] : const [];
-        case HomeWidget.networkHashrate:
-          children = app.showHashrate ? const [HashrateCard()] : const [];
       }
       if (children.isEmpty) continue;
       if (result.isNotEmpty) {

@@ -25,7 +25,7 @@ class AreaChart extends StatefulWidget {
   final bool logScale;
   // Opaque identity used only to trigger the zoom tween when the caller
   // switches what time window is being displayed (e.g. 1M → 3M on the price
-  // card, or `m1` → `y1` on the hashrate card). Compared via `!=` in
+  // card). Compared via `!=` in
   // didUpdateWidget; the chart never reads any semantics off it.
   final Object rangeKey;
   final ValueChanged<PricePoint?> onHover;
@@ -209,8 +209,7 @@ class _AreaChartState extends State<AreaChart>
     // the nearest data point, and drives the indicator via showingIndicators.
     // The no-op drag recognizer pair below stays purely as an arena spoiler:
     // it claims drags that start on the chart so ancestor scrollables (the
-    // vertical CustomScrollView; on the hashrate card also a horizontal
-    // SingleChildScrollView) don't scroll the page while the user scrubs.
+    // vertical CustomScrollView) don't scroll the page while the user scrubs.
     // fl_chart itself registers no recognizers here because lineTouchData
     // has enabled: false and no touchCallback.
     return Listener(

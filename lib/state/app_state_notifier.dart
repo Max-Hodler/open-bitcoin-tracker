@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart'
     show AppLifecycleState, WidgetsBinding, WidgetsBindingObserver;
 
-import '../api/hashrate_client.dart';
 import '../data/data.dart';
 
 class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
@@ -80,9 +79,6 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
   bool get changePillsHintDismissed => _state.changePillsHintDismissed;
   bool get rangeChipHintDismissed => _state.rangeChipHintDismissed;
   bool get swipeChipHintDismissed => _state.swipeChipHintDismissed;
-  bool get showMempool => _state.showMempool;
-  bool get mempoolBlocksReversed => _state.mempoolBlocksReversed;
-  bool get showHashrate => _state.showHashrate;
   bool get showChart => _state.showChart;
   bool get showPriceDelta => _state.showPriceDelta;
   ChartHeight get chartHeight => _state.chartHeight;
@@ -94,7 +90,6 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
   BtcRange get weeksOverflowQuickRange => _state.weeksOverflowQuickRange;
   BtcRange get overflowQuickRange => _state.overflowQuickRange;
   BtcRange get monthsOverflowQuickRange => _state.monthsOverflowQuickRange;
-  HashrateRange get hashrateRange => _state.hashrateRange;
   bool get logScale => _state.logScale;
   BtcDisplayMode get btcDisplayMode => _state.btcDisplayMode;
   StacksAuthMode get stacksAuthMode => _state.stacksAuthMode;
@@ -192,10 +187,6 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
       _update((s) => s.copyWith(rangeChipHintDismissed: true));
   void dismissSwipeChipHint() =>
       _update((s) => s.copyWith(swipeChipHintDismissed: true));
-  void setShowMempool(bool value) => _update((s) => s.copyWith(showMempool: value));
-  void setMempoolBlocksReversed(bool value) =>
-      _update((s) => s.copyWith(mempoolBlocksReversed: value));
-  void setShowHashrate(bool value) => _update((s) => s.copyWith(showHashrate: value));
   void setShowChart(bool value) => _update((s) => s.copyWith(showChart: value));
   void setShowPriceDelta(bool value) => _update((s) => s.copyWith(showPriceDelta: value));
   void setChartHeight(ChartHeight value) => _update((s) => s.copyWith(chartHeight: value));
@@ -213,8 +204,6 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
       _update((s) => s.copyWith(overflowQuickRange: value));
   void setMonthsOverflowQuickRange(BtcRange value) =>
       _update((s) => s.copyWith(monthsOverflowQuickRange: value));
-  void setHashrateRange(HashrateRange value) =>
-      _update((s) => s.copyWith(hashrateRange: value));
   void setLogScale(bool value) => _update((s) => s.copyWith(logScale: value));
   void setBitcoinDisplayMode(BtcDisplayMode value) =>
       _update((s) => s.copyWith(btcDisplayMode: value));

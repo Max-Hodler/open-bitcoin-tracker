@@ -44,8 +44,8 @@ class AppPalette extends ThemeExtension<AppPalette> {
   final Color priceUp;
   final Color priceDown;
   // One step *below* the scaffold's lifted button surfaces — used for
-  // elements that should read as recessed in dark mode (mempool projected
-  // blocks, range pills showing past prices). Null in light mode; callers
+  // elements that should read as recessed in dark mode (e.g. range pills
+  // showing past prices). Null in light mode; callers
   // fall back to `cs.surfaceContainer` there.
   final Color? recessedSurface;
 

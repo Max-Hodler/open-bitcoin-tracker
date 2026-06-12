@@ -22,7 +22,7 @@ enum Currency {
 
 // Whether Bitcoin amounts are rendered as integer satoshis (the canonical
 // storage unit) or as BTC with up to 8 decimal places. Affects every amount
-// readout in the UI — stack cards, portfolio total, mempool total-fees row.
+// readout in the UI — stack cards, portfolio total.
 enum BtcDisplayMode {
   sats,
   btc;
@@ -332,9 +332,7 @@ enum ChartHeight {
 // Home-screen widgets that participate in user-defined ordering. The price
 // header / chart are structurally fixed and not represented here.
 enum HomeWidget {
-  stacks('stacks'),
-  mempoolFees('mempoolFees'),
-  networkHashrate('networkHashrate');
+  stacks('stacks');
 
   const HomeWidget(this.code);
   final String code;

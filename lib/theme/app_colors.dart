@@ -26,7 +26,7 @@ class AppColors {
   static const Color mutedSurfaceDark = Color(0xFF1A1A1A);
   static const Color surfaceDark = Color(0xFF1F1F1F);
   // One step *below* mutedSurfaceDark — used for elements that read as
-  // recessed against the now-lifted button surfaces (mempool mined blocks,
+  // recessed against the now-lifted button surfaces (e.g.
   // range pills showing past prices). No Material 3 ColorScheme slot fits
   // because surfaceContainerLow is taken by the pure-black scaffold.
   static const Color recessedSurfaceDark = Color(0xFF141414);

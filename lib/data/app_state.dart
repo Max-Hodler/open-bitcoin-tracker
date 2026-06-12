@@ -1,4 +1,3 @@
-import '../api/hashrate_client.dart';
 import 'app_enums.dart';
 import 'stack.dart';
 
@@ -8,9 +7,6 @@ class AppState {
     this.currency = Currency.usd,
     this.selectedCurrencies = const [Currency.usd, Currency.eur, Currency.gbp],
     this.showPortfolio = true,
-    this.showMempool = false,
-    this.mempoolBlocksReversed = false,
-    this.showHashrate = false,
     this.showChart = true,
     this.chartHeight = ChartHeight.xl,
     this.theme = AppTheme.system,
@@ -21,7 +17,6 @@ class AppState {
     this.weeksOverflowQuickRange = BtcRange.w1,
     this.overflowQuickRange = BtcRange.y10,
     this.monthsOverflowQuickRange = BtcRange.m6,
-    this.hashrateRange = HashrateRange.d3,
     this.logScale = true,
     this.btcDisplayMode = BtcDisplayMode.sats,
     this.stacksAuthMode = StacksAuthMode.off,
@@ -36,8 +31,6 @@ class AppState {
     this.converterSatsModeRaw,
     this.converterSatsModeActiveSlot,
     this.homeWidgetOrder = const [
-      HomeWidget.mempoolFees,
-      HomeWidget.networkHashrate,
       HomeWidget.stacks,
     ],
     this.totalImageData,
@@ -55,13 +48,6 @@ class AppState {
   // gesture cycles through. Always contains [currency].
   final List<Currency> selectedCurrencies;
   final bool showPortfolio;
-  final bool showMempool;
-  // When true, mirror the mempool block strip so mined blocks appear on the
-  // left and projected blocks on the right (default has projected on the
-  // left and mined on the right). Order within each group is also reversed
-  // so the time arrow flows consistently across the divider.
-  final bool mempoolBlocksReversed;
-  final bool showHashrate;
   final bool showChart;
   final ChartHeight chartHeight;
   final AppTheme theme;
@@ -80,7 +66,6 @@ class AppState {
   final BtcRange overflowQuickRange;
   // Same idea for the months-overflow chip (1M..12M).
   final BtcRange monthsOverflowQuickRange;
-  final HashrateRange hashrateRange;
   final bool logScale;
   // Render satoshi counts as integer sats (default — preserves the unit users
   // entered) or as BTC with up to 8 decimal places. Storage is always sats.
@@ -143,9 +128,6 @@ class AppState {
     Currency? currency,
     List<Currency>? selectedCurrencies,
     bool? showPortfolio,
-    bool? showMempool,
-    bool? mempoolBlocksReversed,
-    bool? showHashrate,
     bool? showChart,
     ChartHeight? chartHeight,
     AppTheme? theme,
@@ -156,7 +138,6 @@ class AppState {
     BtcRange? weeksOverflowQuickRange,
     BtcRange? overflowQuickRange,
     BtcRange? monthsOverflowQuickRange,
-    HashrateRange? hashrateRange,
     bool? logScale,
     BtcDisplayMode? btcDisplayMode,
     StacksAuthMode? stacksAuthMode,
@@ -185,10 +166,6 @@ class AppState {
       currency: currency ?? this.currency,
       selectedCurrencies: selectedCurrencies ?? this.selectedCurrencies,
       showPortfolio: showPortfolio ?? this.showPortfolio,
-      showMempool: showMempool ?? this.showMempool,
-      mempoolBlocksReversed:
-          mempoolBlocksReversed ?? this.mempoolBlocksReversed,
-      showHashrate: showHashrate ?? this.showHashrate,
       showChart: showChart ?? this.showChart,
       chartHeight: chartHeight ?? this.chartHeight,
       theme: theme ?? this.theme,
@@ -202,7 +179,6 @@ class AppState {
       overflowQuickRange: overflowQuickRange ?? this.overflowQuickRange,
       monthsOverflowQuickRange:
           monthsOverflowQuickRange ?? this.monthsOverflowQuickRange,
-      hashrateRange: hashrateRange ?? this.hashrateRange,
       logScale: logScale ?? this.logScale,
       btcDisplayMode: btcDisplayMode ?? this.btcDisplayMode,
       stacksAuthMode: stacksAuthMode ?? this.stacksAuthMode,
@@ -240,9 +216,6 @@ class AppState {
         'currency': currency.code,
         'selectedCurrencies': [for (final c in selectedCurrencies) c.code],
         'showPortfolio': showPortfolio,
-        'showMempool': showMempool,
-        'mempoolBlocksReversed': mempoolBlocksReversed,
-        'showHashrate': showHashrate,
         'showChart': showChart,
         'chartHeight': chartHeight.code,
         'theme': theme.code,
@@ -253,7 +226,6 @@ class AppState {
         'weeksOverflowQuickRange': weeksOverflowQuickRange.code,
         'overflowQuickRange': overflowQuickRange.code,
         'monthsOverflowQuickRange': monthsOverflowQuickRange.code,
-        'hashrateRange': hashrateRange.code,
         'logScale': logScale,
         'bitcoinDisplayMode': btcDisplayMode.code,
         'stacksAuthMode': stacksAuthMode.code,
@@ -301,9 +273,6 @@ class AppState {
       currency: currency,
       selectedCurrencies: selectedCurrencies,
       showPortfolio: json['showPortfolio'] as bool? ?? true,
-      showMempool: json['showMempool'] as bool? ?? true,
-      mempoolBlocksReversed: json['mempoolBlocksReversed'] as bool? ?? false,
-      showHashrate: json['showHashrate'] as bool? ?? false,
       showChart: json['showChart'] as bool? ?? true,
       chartHeight: ChartHeight.fromCode(json['chartHeight'] as String?),
       theme: fromCode('theme', AppTheme.fromCode),
@@ -330,7 +299,6 @@ class AppState {
       monthsOverflowQuickRange: json['monthsOverflowQuickRange'] is String
           ? BtcRange.fromCode(json['monthsOverflowQuickRange'] as String)
           : BtcRange.m6,
-      hashrateRange: fromCode('hashrateRange', HashrateRange.fromCode),
       logScale: json['logScale'] as bool? ?? true,
       btcDisplayMode:
           fromCode('bitcoinDisplayMode', BtcDisplayMode.fromCode),
@@ -422,8 +390,6 @@ class AppState {
   // Newly-added values are appended at the end.
   static List<HomeWidget> _parseHomeWidgetOrder(Object? raw) {
     const fallback = [
-      HomeWidget.mempoolFees,
-      HomeWidget.networkHashrate,
       HomeWidget.stacks,
     ];
     if (raw is! List) return fallback;

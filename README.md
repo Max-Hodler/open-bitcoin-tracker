@@ -17,8 +17,6 @@ Download the latest APK from the [Releases](https://github.com/Max-Hodler/open-b
 - **Live BTC price**: Updated in real time.
 - **Stacks**: Organize your Bitcoin into multiple labeled portfolios (e.g. "My Wallet", "Kids", "Mum").
 - **Converter**: Instantly convert between satoshis and any supported fiat currency with a full numeric keypad.
-- **Mempool**: Live feed of the next pending blocks to keep an eye on the current median fee.
-- **Hashrate**: Network hashrate chart so you can track Bitcoin's network security.
 - **Themes**: Light and Dark modes with 4 themes in total.
 - **Languages**: Available in Deutsch, English, Español, Français, Italiano, Português, Türkçe, Tiếng Việt, Русский, and 日本語.
 

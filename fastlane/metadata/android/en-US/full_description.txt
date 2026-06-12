@@ -8,4 +8,3 @@ Features:
 - Light and Dark modes.
 - PIN and biometric lock for your stacks.
 - Historical price charts.
-- Mempool fee tracker and network hashrate chart.

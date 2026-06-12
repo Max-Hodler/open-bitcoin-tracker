@@ -102,8 +102,6 @@ class OpenBitcoinTrackerApp extends StatelessWidget {
             return controller;
           },
         ),
-        ChangeNotifierProvider(create: (_) => MempoolController()..start()),
-        ChangeNotifierProvider(create: (_) => HashrateController()),
       ],
       // Selecting just the theme/locale fields keeps unrelated state changes
       // (price ranges, stack edits, converter entries…) from re-running the

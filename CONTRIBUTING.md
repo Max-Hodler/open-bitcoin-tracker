@@ -113,8 +113,6 @@ The AAB must be ARM-only — building without `--target-platform` includes an x8
   - `KrakenStreamService` — Kraken WebSocket v2 real-time price feed
   - `KrakenOhlcClient` — Kraken REST OHLC chart history endpoint
   - `LivePriceController` — Reactive wrapper over the Kraken stream
-  - `MempoolClient` / `MempoolController` — mempool.space REST projected-blocks fetch
-  - `HashrateClient` / `HashrateController` — mempool.space mining hashrate fetch
 
 ### State management
 
@@ -142,7 +140,7 @@ The AAB must be ARM-only — building without `--target-platform` includes an x8
 ├── android/           # Android native scaffolding (Kotlin, AndroidManifest.xml)
 ├── assets/            # Bundled data (Bitcoin history CSV, fonts, launcher icons)
 ├── lib/
-│   ├── api/           # API clients (Kraken WS/REST, mempool.space REST)
+│   ├── api/           # API clients (Kraken WS/REST)
 │   ├── data/          # State, persistence, encryption
 │   ├── format/        # Display formatters (fiat, etc.)
 │   ├── l10n/          # Localization (10 languages — see Localization section)
@@ -167,7 +165,7 @@ Key packages:
 - **`flutter_secure_storage`** — Secure key/value storage
 - **`cryptography`** — AES-GCM + PBKDF2 crypto primitives
 - **`web_socket_channel`** — Kraken WS connection
-- **`http`** — REST calls (Kraken OHLC, mempool.space)
+- **`http`** — REST calls (Kraken OHLC)
 - **`shared_preferences`** — Persistent settings
 - **`path_provider`** — Filesystem paths for cached data
 - **`url_launcher`** — Opening external links
