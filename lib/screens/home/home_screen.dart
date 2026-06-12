@@ -205,6 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: cs.surfaceContainerLow,
+      floatingActionButton: AddStackButton(onTap: _onAddStackTap),
       bottomNavigationBar: stacksLocked
           ? SafeArea(
               child: Padding(
@@ -248,24 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
               else
                 SliverToBoxAdapter(child: measuredHeader),
               if (stacks.isEmpty && !stacksLocked)
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: SafeArea(
-                    top: false,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.md,
-                      ),
-                      // Bias upward: the fill region extends to the very bottom
-                      // edge, so true-center reads low. Lift it into the visual
-                      // middle of the gap below the chart.
-                      child: Align(
-                        alignment: const Alignment(0, -0.25),
-                        child: AddStackButton(onTap: _onAddStackTap),
-                      ),
-                    ),
-                  ),
-                )
+                const SliverFillRemaining(hasScrollBody: false)
               else if (stacksLocked)
                 SliverToBoxAdapter(
                   child: LockedStacksSkeleton(

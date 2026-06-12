@@ -63,6 +63,8 @@ class HomeButton extends StatelessWidget {
   }
 }
 
+/// Floating, bottom-right "+" button for adding a stack. Solid bitcoin-orange
+/// FAB with elevation, in the standard Material style.
 class AddStackButton extends StatelessWidget {
   const AddStackButton({super.key, this.onTap});
 
@@ -70,11 +72,16 @@ class AddStackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OrangeOutlineButton(
-      isValid: true,
-      onTap: onTap ?? () {},
-      label: AppLocalizations.of(context).homeAddAStack,
-      fullWidth: false,
+    final p = context.palette;
+    return FloatingActionButton(
+      onPressed: () {
+        AppHaptics.medium();
+        onTap?.call();
+      },
+      backgroundColor: p.bitcoinOrange,
+      foregroundColor: Colors.white,
+      tooltip: AppLocalizations.of(context).homeAddAStack,
+      child: const Icon(Icons.add, size: 24),
     );
   }
 }
