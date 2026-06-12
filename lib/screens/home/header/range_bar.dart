@@ -19,20 +19,203 @@ final List<BtcRange> _overflowWeeksRanges = btcRangeWeeks;
 final List<BtcRange> _overflowMonthsRanges = btcRangeMonths;
 final List<BtcRange> _overflowMenuRanges = btcRangeYears;
 
-class RangeBar extends StatelessWidget {
+class RangeBar extends StatefulWidget {
   const RangeBar({
     super.key,
     required this.range,
     required this.onRange,
     required this.chartColor,
+    this.onSettings,
   });
 
   final BtcRange range;
   final ValueChanged<BtcRange> onRange;
   final Color chartColor;
+  // Tapped when the trailing settings (sliders) button is pressed. Opens the
+  // graph settings. Null hides the button.
+  final VoidCallback? onSettings;
+
+  @override
+  State<RangeBar> createState() => _RangeBarState();
+}
+
+class _RangeBarState extends State<RangeBar>
+    with SingleTickerProviderStateMixin {
+  // One key per range chip (in row order) so we can measure the selected chip's
+  // laid-out rect and slide a single shared pill to it. The settings button is
+  // not a selectable chip, so it has no key.
+  static const int _rangeChipCount = 5;
+  final List<GlobalKey> _chipKeys =
+      List.generate(_rangeChipCount, (_) => GlobalKey());
+
+  // Drives the vertical "nudge" the pill makes when the user swipes up/down on
+  // it to cycle the range within a slot (1D→2D→…). The pill kicks a few pixels
+  // in the swipe direction and springs back, so the gesture has visible
+  // feedback. _nudgeDir is -1 for an up-swipe, +1 for down.
+  late final AnimationController _nudgeController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 220),
+  )..addListener(() => setState(() {}));
+  int _nudgeDir = 0;
+  // Peak vertical travel of the nudge, in logical pixels.
+  static const double _nudgeAmplitude = 6;
+
+  // Kicks the pill in [dir] (-1 up, +1 down) and springs it back. Called when a
+  // swipe cycles the slot's range; the slot itself doesn't move, so this is the
+  // only motion that signals the change.
+  void _nudgePill(int dir) {
+    _nudgeDir = dir;
+    _nudgeController.forward(from: 0);
+  }
+
+  // Current vertical offset of the nudge: a single up-then-back arc (sine) so it
+  // eases out and returns to rest, scaled by direction and amplitude.
+  double get _nudgeOffset =>
+      _nudgeDir * _nudgeAmplitude * math.sin(_nudgeController.value * math.pi);
+
+  @override
+  void dispose() {
+    _nudgeController.dispose();
+    super.dispose();
+  }
+  // Key for the Stack the pill is positioned within — its render box is the
+  // coordinate frame we resolve each chip's rect into.
+  final GlobalKey _stackKey = GlobalKey();
+
+  // Each range chip's rect, in the Stack's local coordinates, indexed by slot.
+  // Empty until the first post-frame measurement lands; the pill is hidden
+  // until then so it never flashes at the wrong spot. We measure every chip
+  // (not just the selected one) so a drag can map the finger position to a slot
+  // and snap to it.
+  List<Rect> _chipRects = const [];
+
+  // While the user is dragging the pill, this holds its free left edge (Stack
+  // coordinates); null when not dragging. During a drag the pill follows the
+  // finger un-animated; on release it snaps to the nearest slot.
+  double? _dragLeft;
+  // Slot the drag started on, and the slot the pill currently overlaps. The
+  // hovered slot's label is highlighted as the pill passes over it, and on
+  // release we commit that slot's range if it differs from where we started.
+  int _dragStartIndex = -1;
+  int _dragHoverIndex = -1;
+
+  bool get _dragging => _dragLeft != null;
+
+  // Re-measures every chip and, if any moved, updates [_chipRects] so the pill
+  // can slide to the selected slot (and a drag can resolve slot boundaries).
+  // Runs after every frame the bar lays out (selection change, label-width
+  // change, text-scale change). Skipped mid-drag so measurement churn doesn't
+  // fight the finger-driven position.
+  void _measureChips() {
+    if (_dragging) return;
+    final stackBox = _stackKey.currentContext?.findRenderObject() as RenderBox?;
+    if (stackBox == null || !stackBox.hasSize) return;
+    final rects = <Rect>[];
+    for (final key in _chipKeys) {
+      final chipBox = key.currentContext?.findRenderObject() as RenderBox?;
+      if (chipBox == null || !chipBox.hasSize) return; // not laid out yet
+      final topLeft = stackBox.globalToLocal(chipBox.localToGlobal(Offset.zero));
+      rects.add(topLeft & chipBox.size);
+    }
+    if (!_rectsEqual(rects, _chipRects)) {
+      setState(() => _chipRects = rects);
+    }
+  }
+
+  static bool _rectsEqual(List<Rect> a, List<Rect> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+
+  // Slot whose chip rect horizontally contains [centerX] (the dragged pill's
+  // center), falling back to the nearest slot center when the pill is between
+  // chips or past the ends. Used to highlight the hovered label and to pick the
+  // snap target on release.
+  int _slotForCenter(double centerX) {
+    if (_chipRects.isEmpty) return _dragStartIndex;
+    var best = 0;
+    var bestDist = double.infinity;
+    for (var i = 0; i < _chipRects.length; i++) {
+      final r = _chipRects[i];
+      if (centerX >= r.left && centerX <= r.right) return i;
+      final dist = (centerX - r.center.dx).abs();
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = i;
+      }
+    }
+    return best;
+  }
+
+  void _onPillDragStart(int selectedIndex, DragStartDetails _) {
+    if (_chipRects.isEmpty) return;
+    setState(() {
+      _dragStartIndex = selectedIndex;
+      _dragHoverIndex = selectedIndex;
+      _dragLeft = _chipRects[selectedIndex].left;
+    });
+  }
+
+  void _onPillDragUpdate(DragUpdateDetails d) {
+    final left = _dragLeft;
+    if (left == null || _chipRects.isEmpty) return;
+    final width = _chipRects[_dragStartIndex].width;
+    // Clamp the pill within the span of the first and last range chips so it
+    // can't be dragged off the track or under the settings button.
+    final minLeft = _chipRects.first.left;
+    final maxLeft = _chipRects.last.right - width;
+    final next = (left + d.delta.dx).clamp(minLeft, maxLeft);
+    final hover = _slotForCenter(next + width / 2);
+    setState(() {
+      _dragLeft = next;
+      if (hover != _dragHoverIndex) {
+        _dragHoverIndex = hover;
+        AppHaptics.selection();
+      }
+    });
+  }
+
+  void _onPillDragEnd(DragEndDetails _) {
+    final landedIndex = _dragHoverIndex;
+    final startIndex = _dragStartIndex;
+    setState(() {
+      _dragLeft = null;
+      _dragStartIndex = -1;
+      _dragHoverIndex = -1;
+    });
+    // Commit the new range only if the pill ended on a different slot. The
+    // AnimatedPositioned then snaps the pill onto that slot's measured rect.
+    if (landedIndex >= 0 && landedIndex != startIndex) {
+      AppHaptics.light();
+      _selectSlot(landedIndex);
+    }
+  }
+
+  // Activates the range mounted in slot [index] (row order: days, weeks,
+  // months, years overflow slots, then All). Reads each overflow slot's current
+  // value from the notifier so a drag selects exactly what tapping that chip
+  // would.
+  void _selectSlot(int index) {
+    final app = context.read<AppStateNotifier>();
+    final range = switch (index) {
+      0 => app.daysOverflowQuickRange,
+      1 => app.weeksOverflowQuickRange,
+      2 => app.monthsOverflowQuickRange,
+      3 => app.overflowQuickRange,
+      _ => BtcRange.all,
+    };
+    widget.onRange(range);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final range = widget.range;
+    final onRange = widget.onRange;
+    final chartColor = widget.chartColor;
+    final onSettings = widget.onSettings;
     // Select just the four overflow slots instead of watching the whole
     // notifier — the bar sits in the per-tick header subtree, so an app-state
     // notification (converter keystroke, hint dismissal, …) must not drag it
@@ -56,7 +239,11 @@ class RangeBar extends StatelessWidget {
     // the row height when system text is small, so we floor on it — without
     // that, the icon overflows the column by ~0.4px at textScale=1.0.
     final labelRow = math.max<double>(textScaler.scale(14) * 1.4, 24);
-    final chipHeight = labelRow + 16 + 4;
+    // Inner padding of the recessed track around the chip row (see build of the
+    // track below). Added into the bar height so the track doesn't squeeze the
+    // chips into an overflow.
+    const trackPadding = 4.0;
+    final chipHeight = labelRow + 16 + 4 + trackPadding * 2;
     // Width floor for each chip's label. Two reasons we need this:
     //   1. Selecting a chip flips its weight to w600, which is wider than the
     //      regular weight — so without a floor the chip grows on selection
@@ -117,94 +304,254 @@ class RangeBar extends StatelessWidget {
     // spaceBetween, but when natural chip widths exceed the screen (large
     // system text), it scrolls horizontally so every chip stays reachable.
     const horizontalPadding = AppSpacing.md;
+    // The whole row sits inside a recessed, pill-shaped track (segmented-control
+    // look). The track's inner padding (trackPadding, above) keeps the selected
+    // pill and the first/last labels off its rounded edge.
+    final cs = Theme.of(context).colorScheme;
+    final trackFill = context.palette.recessedSurface ?? cs.surfaceContainer;
+
+    // Which of the five range chips is selected (row order: days, weeks,
+    // months, years, All); -1 if none, which hides the sliding pill.
+    final selectedIndex = range == daysOverflowSlot
+        ? 0
+        : range == weeksOverflowSlot
+            ? 1
+            : range == monthsOverflowSlot
+                ? 2
+                : range == overflowSlot
+                    ? 3
+                    : range == BtcRange.all
+                        ? 4
+                        : -1;
+
+    // Build each range chip wrapped in an Expanded slot. The measurement key
+    // goes on the chip itself (not the slot), so the pill hugs the chip's
+    // label-sized box rather than the full slot width.
+    Widget rangeSlot(int index, Widget chip) => Expanded(
+          child: Center(child: KeyedSubtree(key: _chipKeys[index], child: chip)),
+        );
+
+    // Pill geometry: while dragging it follows the finger (free left, fixed at
+    // the start slot's width); otherwise it sits on the selected chip's rect.
+    // A vertical nudge (from a swipe that cycles the slot's range) shifts top by
+    // _nudgeOffset; it's not applied while dragging.
+    final selectedRect = (selectedIndex >= 0 && selectedIndex < _chipRects.length)
+        ? _chipRects[selectedIndex]
+        : null;
+    final Rect? pillRect;
+    if (_dragging && _dragStartIndex >= 0 &&
+        _dragStartIndex < _chipRects.length) {
+      final base = _chipRects[_dragStartIndex];
+      pillRect = Rect.fromLTWH(_dragLeft!, base.top, base.width, base.height);
+    } else if (selectedRect != null) {
+      pillRect = selectedRect.translate(0, _nudgeOffset);
+    } else {
+      pillRect = null;
+    }
+    // The hovered slot's label is highlighted while dragging; otherwise the
+    // selected slot is. Drives each chip's selected styling so the bold/orange
+    // label tracks the pill as it's dragged.
+    final highlightIndex = _dragging ? _dragHoverIndex : selectedIndex;
+    bool slotSelected(int index) => index == highlightIndex;
     return SizedBox(
       height: chipHeight,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final innerWidth = constraints.maxWidth - horizontalPadding * 2;
+          final innerWidth = constraints.maxWidth -
+              horizontalPadding * 2 -
+              trackPadding * 2;
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) => _measureChips(),
+          );
           return Padding(
             padding: const EdgeInsets.fromLTRB(
               horizontalPadding, 0, horizontalPadding, 0,
             ),
-            child: SizedBox(
-              width: innerWidth,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Expanded(
-                    child: Center(
-                      child: _RangeChipWithPct(
-                        label: _btcRangeLabel(context, daysOverflowSlot),
-                        selected: range == daysOverflowSlot,
-                        onTap: () => onRange(daysOverflowSlot),
-                        onLongPress: () => _showDaysOverflowSlotPicker(context),
-                        onSwipeUp: () => _stepDaysOverflowSlot(context, 1),
-                        onSwipeDown: () => _stepDaysOverflowSlot(context, -1),
-                        chartColor: chartColor,
-                        showChevron: true,
-                        minLabelWidth: daysOverflowLabelWidth,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: trackFill,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: trackPadding,
+                  vertical: trackPadding,
+                ),
+                child: SizedBox(
+                  width: innerWidth,
+                  child: Stack(
+                    key: _stackKey,
+                    children: [
+                      // The single sliding pill, behind the chips. When idle it
+                      // animates its left/top/width/height between the previous
+                      // and new selected-chip rects, so selecting a range glides
+                      // the pill over. While dragging — or while a swipe-nudge is
+                      // running — the duration is zero so the pill tracks the
+                      // finger / nudge curve 1:1 instead of lagging behind the
+                      // implicit tween.
+                      if (pillRect != null)
+                        AnimatedPositioned(
+                          duration: (_dragging || _nudgeController.isAnimating)
+                              ? Duration.zero
+                              : const Duration(milliseconds: 260),
+                          curve: Curves.easeOutCubic,
+                          left: pillRect.left,
+                          top: pillRect.top,
+                          width: pillRect.width,
+                          height: pillRect.height,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: cs.surface,
+                              borderRadius: BorderRadius.circular(999),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(
+                                    alpha: _dragging ? 0.20 : 0.12,
+                                  ),
+                                  offset: const Offset(0, 1),
+                                  blurRadius: _dragging ? 6 : 3,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          rangeSlot(
+                            0,
+                            _RangeChipWithPct(
+                              label: _btcRangeLabel(context, daysOverflowSlot),
+                              selected: slotSelected(0),
+                              onTap: () => onRange(daysOverflowSlot),
+                              onLongPress: () =>
+                                  _showDaysOverflowSlotPicker(context),
+                              onSwipeUp: () {
+                                _nudgePill(-1);
+                                _stepDaysOverflowSlot(context, 1);
+                              },
+                              onSwipeDown: () {
+                                _nudgePill(1);
+                                _stepDaysOverflowSlot(context, -1);
+                              },
+                              chartColor: chartColor,
+                              minLabelWidth: daysOverflowLabelWidth,
+                            ),
+                          ),
+                          rangeSlot(
+                            1,
+                            _RangeChipWithPct(
+                              label: _btcRangeLabel(context, weeksOverflowSlot),
+                              selected: slotSelected(1),
+                              onTap: () => onRange(weeksOverflowSlot),
+                              onLongPress: () =>
+                                  _showWeeksOverflowSlotPicker(context),
+                              onSwipeUp: () {
+                                _nudgePill(-1);
+                                _stepWeeksOverflowSlot(context, 1);
+                              },
+                              onSwipeDown: () {
+                                _nudgePill(1);
+                                _stepWeeksOverflowSlot(context, -1);
+                              },
+                              chartColor: chartColor,
+                              minLabelWidth: weeksOverflowLabelWidth,
+                            ),
+                          ),
+                          rangeSlot(
+                            2,
+                            _RangeChipWithPct(
+                              label:
+                                  _btcRangeLabel(context, monthsOverflowSlot),
+                              selected: slotSelected(2),
+                              onTap: () => onRange(monthsOverflowSlot),
+                              onLongPress: () =>
+                                  _showMonthsOverflowSlotPicker(context),
+                              onSwipeUp: () {
+                                _nudgePill(-1);
+                                _stepMonthsOverflowSlot(context, 1);
+                              },
+                              onSwipeDown: () {
+                                _nudgePill(1);
+                                _stepMonthsOverflowSlot(context, -1);
+                              },
+                              chartColor: chartColor,
+                              minLabelWidth: monthsOverflowLabelWidth,
+                            ),
+                          ),
+                          rangeSlot(
+                            3,
+                            _RangeChipWithPct(
+                              label: _btcRangeLabel(context, overflowSlot),
+                              selected: slotSelected(3),
+                              onTap: () => onRange(overflowSlot),
+                              onLongPress: () =>
+                                  _showOverflowSlotPicker(context),
+                              onSwipeUp: () {
+                                _nudgePill(-1);
+                                _stepOverflowSlot(context, 1);
+                              },
+                              onSwipeDown: () {
+                                _nudgePill(1);
+                                _stepOverflowSlot(context, -1);
+                              },
+                              chartColor: chartColor,
+                              minLabelWidth: overflowLabelWidth,
+                            ),
+                          ),
+                          rangeSlot(
+                            4,
+                            _RangeChipWithPct(
+                              label: _btcRangeLabel(context, BtcRange.all),
+                              selected: slotSelected(4),
+                              onTap: () => onRange(BtcRange.all),
+                              chartColor: chartColor,
+                              minLabelWidth: labelWidth(
+                                    _btcRangeLabel(context, BtcRange.all),
+                                  ) +
+                                  18,
+                            ),
+                          ),
+                          if (onSettings != null) ...[
+                            // Hairline separating the range options from the
+                            // trailing settings button, matching the
+                            // segmented-control look.
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 6),
+                              child: VerticalDivider(
+                                width: 1,
+                                thickness: 1,
+                                color: cs.outlineVariant,
+                              ),
+                            ),
+                            _SettingsButton(
+                              onTap: onSettings,
+                              color: cs.onSurfaceVariant,
+                            ),
+                          ],
+                        ],
                       ),
-                    ),
+                      // Transparent drag handle on top of the pill. Sized and
+                      // positioned to the pill so a horizontal drag starting on
+                      // it slides the pill; it's translucent, so plain taps fall
+                      // through to the chips underneath (which handle selection
+                      // and the swipe-to-cycle gesture). Sits last in the Stack
+                      // so it wins the horizontal-drag arena over the chips.
+                      if (selectedRect != null)
+                        Positioned.fromRect(
+                          rect: pillRect ?? selectedRect,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onHorizontalDragStart: (d) =>
+                                _onPillDragStart(selectedIndex, d),
+                            onHorizontalDragUpdate: _onPillDragUpdate,
+                            onHorizontalDragEnd: _onPillDragEnd,
+                          ),
+                        ),
+                    ],
                   ),
-                  Expanded(
-                    child: Center(
-                      child: _RangeChipWithPct(
-                        label: _btcRangeLabel(context, weeksOverflowSlot),
-                        selected: range == weeksOverflowSlot,
-                        onTap: () => onRange(weeksOverflowSlot),
-                        onLongPress: () => _showWeeksOverflowSlotPicker(context),
-                        onSwipeUp: () => _stepWeeksOverflowSlot(context, 1),
-                        onSwipeDown: () => _stepWeeksOverflowSlot(context, -1),
-                        chartColor: chartColor,
-                        showChevron: true,
-                        minLabelWidth: weeksOverflowLabelWidth,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: _RangeChipWithPct(
-                        label: _btcRangeLabel(context, monthsOverflowSlot),
-                        selected: range == monthsOverflowSlot,
-                        onTap: () => onRange(monthsOverflowSlot),
-                        onLongPress: () => _showMonthsOverflowSlotPicker(context),
-                        onSwipeUp: () => _stepMonthsOverflowSlot(context, 1),
-                        onSwipeDown: () => _stepMonthsOverflowSlot(context, -1),
-                        chartColor: chartColor,
-                        showChevron: true,
-                        minLabelWidth: monthsOverflowLabelWidth,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: _RangeChipWithPct(
-                        label: _btcRangeLabel(context, overflowSlot),
-                        selected: range == overflowSlot,
-                        onTap: () => onRange(overflowSlot),
-                        onLongPress: () => _showOverflowSlotPicker(context),
-                        onSwipeUp: () => _stepOverflowSlot(context, 1),
-                        onSwipeDown: () => _stepOverflowSlot(context, -1),
-                        chartColor: chartColor,
-                        showChevron: true,
-                        minLabelWidth: overflowLabelWidth,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: _RangeChipWithPct(
-                        label: _btcRangeLabel(context, BtcRange.all),
-                        selected: range == BtcRange.all,
-                        onTap: () => onRange(BtcRange.all),
-                        chartColor: chartColor,
-                        minLabelWidth:
-                            labelWidth(_btcRangeLabel(context, BtcRange.all)) +
-                            18,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           );
@@ -350,7 +697,7 @@ class RangeBar extends StatelessWidget {
     );
     if (picked != null) {
       setCurrent(app, picked);
-      onRange(picked);
+      widget.onRange(picked);
     }
   }
 
@@ -372,7 +719,31 @@ class RangeBar extends StatelessWidget {
     final next = ranges[(base + step) % ranges.length];
     if (next == current) return;
     setCurrent(app, next);
-    onRange(next);
+    widget.onRange(next);
+  }
+}
+
+// Trailing settings button on the range track: a sliders/tune icon that opens
+// the graph settings. Sits after a hairline divider, hugging its icon.
+class _SettingsButton extends StatelessWidget {
+  const _SettingsButton({required this.onTap, required this.color});
+
+  final VoidCallback onTap;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        AppHaptics.light();
+        onTap();
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Icon(Icons.tune, size: 18, color: color),
+      ),
+    );
   }
 }
 
@@ -385,7 +756,6 @@ class _RangeChipWithPct extends StatelessWidget {
     this.onLongPress,
     this.onSwipeUp,
     this.onSwipeDown,
-    this.showChevron = false,
     this.minLabelWidth,
   });
 
@@ -396,7 +766,6 @@ class _RangeChipWithPct extends StatelessWidget {
   final VoidCallback? onLongPress;
   final VoidCallback? onSwipeUp;
   final VoidCallback? onSwipeDown;
-  final bool showChevron;
   final double? minLabelWidth;
 
   @override
@@ -409,7 +778,6 @@ class _RangeChipWithPct extends StatelessWidget {
       onSwipeUp: onSwipeUp,
       onSwipeDown: onSwipeDown,
       compact: true,
-      showChevron: showChevron,
       selectedColor: chartColor,
       minLabelWidth: minLabelWidth,
     );
@@ -425,7 +793,6 @@ class _Chip extends StatefulWidget {
     this.onSwipeUp,
     this.onSwipeDown,
     this.compact = false,
-    this.showChevron = false,
     this.selectedColor,
     this.minLabelWidth,
   });
@@ -440,10 +807,6 @@ class _Chip extends StatefulWidget {
   final VoidCallback? onSwipeUp;
   final VoidCallback? onSwipeDown;
   final bool compact;
-  // Renders a small downward chevron next to the label to signal "tap opens a
-  // menu." Used on the overflow range slot so the picker affordance is
-  // visible.
-  final bool showChevron;
   // When set, overrides the selected-state text/icon color (defaults to
   // cs.onSurface). Used to tint the active chip orange to match the chart.
   final Color? selectedColor;
@@ -534,6 +897,9 @@ class _ChipState extends State<_Chip> {
           horizontal: widget.compact ? 10 : AppSpacing.md,
           vertical: 8,
         ),
+        // The selected-state pill background is drawn by the shared sliding
+        // pill behind the row (see _RangeBarState.build), not per-chip — so the
+        // chip itself is transparent and only styles its label.
         alignment: Alignment.center,
         child: IntrinsicWidth(
           child: Column(
@@ -558,30 +924,16 @@ class _ChipState extends State<_Chip> {
                           color: activeColor,
                         ),
                       ),
-                      if (widget.showChevron)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 2),
-                          child: Icon(
-                            Icons.unfold_more,
-                            size: 16,
-                            color: activeColor,
-                          ),
-                        ),
                     ],
                   );
                   final minW = widget.minLabelWidth;
                   if (minW == null) return row;
                   // Stable-width slot so cycling labels (1Y..15Y, 1M..12M) and
                   // bold↔regular weight changes don't reflow the row. The row
-                  // inside centers itself, so the chevron stays tight against
-                  // the label rather than floating to the slot's edge. For
-                  // chevron chips we add the chevron's own width (16px icon +
-                  // 2px gap) so the slot still fits the widest label + chevron
-                  // without overflow. SizedBox (not ConstrainedBox) because
-                  // IntrinsicWidth ignores min constraints; +1px slack absorbs
-                  // sub-pixel measurement differences.
-                  final slotWidth =
-                      minW + (widget.showChevron ? 18 : 0) + 1;
+                  // inside centers itself. SizedBox (not ConstrainedBox)
+                  // because IntrinsicWidth ignores min constraints; +1px slack
+                  // absorbs sub-pixel measurement differences.
+                  final slotWidth = minW + 1;
                   return SizedBox(width: slotWidth, child: row);
                 },
               ),
