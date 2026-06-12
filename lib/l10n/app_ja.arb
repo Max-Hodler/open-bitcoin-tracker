@@ -100,7 +100,7 @@
   "settingsBitcoinDisplayMode": "ビットコインの単位",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
-  "dialogBitcoinUnitTitle": "どのビットコイン単位を使いたいですか？",
+  "dialogBitcoinUnitTitle": "ビットコイン単位を選択",
   "dialogBitcoinUnitSubtitle": "後から設定で変更できます。",
   "settingsLivePriceCadence": "更新頻度",
   "livePriceCadencePickerTitle": "更新頻度",

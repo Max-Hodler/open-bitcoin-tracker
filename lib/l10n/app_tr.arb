@@ -100,7 +100,7 @@
   "settingsBitcoinDisplayMode": "Bitcoin birimi",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
-  "dialogBitcoinUnitTitle": "Hangi bitcoin birimini kullanmak istersin?",
+  "dialogBitcoinUnitTitle": "Bir bitcoin birimi seçin",
   "dialogBitcoinUnitSubtitle": "Bunu daha sonra Ayarlar'dan değiştirebilirsin.",
   "settingsLivePriceCadence": "Güncelleme sıklığı",
   "livePriceCadencePickerTitle": "Güncelleme sıklığı",
