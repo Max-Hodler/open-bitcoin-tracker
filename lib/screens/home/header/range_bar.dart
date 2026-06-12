@@ -973,11 +973,18 @@ class _ChipState extends State<_Chip> {
 // page. Crucially, it does NOT claim on pointer-down: the inner tap
 // recognizer needs to win plain taps, and would lose if this one accepted
 // eagerly on every touch.
+//
+// We only claim when the motion is predominantly vertical (|dy| > |dx|).
+// Without this check a real finger's horizontal pill-drag has enough vertical
+// jitter that dy != 0 fires first and this recognizer steals the arena,
+// preventing the pill from being dragged on physical devices.
 class _EagerVerticalDragRecognizer extends VerticalDragGestureRecognizer {
   @override
   void handleEvent(PointerEvent event) {
     super.handleEvent(event);
-    if (event is PointerMoveEvent && event.delta.dy != 0) {
+    if (event is PointerMoveEvent &&
+        event.delta.dy != 0 &&
+        event.delta.dy.abs() > event.delta.dx.abs()) {
       resolve(GestureDisposition.accepted);
     }
   }
