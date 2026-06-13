@@ -40,6 +40,7 @@ class AppState {
     this.showPriceDelta = false,
     this.totalAtTop = false,
     this.hasEverAddedStack = false,
+    this.stackSwipeHinted = false,
   });
 
   final List<Stack> stacks;
@@ -126,6 +127,10 @@ class AppState {
   // waves on the add button) stays gone after the user deletes all stacks.
   // They already know how; an empty list is now a choice, not confusion.
   final bool hasEverAddedStack;
+  // True once the user has swiped a stack card aside to reveal its range pills.
+  // Until then, the first stack card repeatedly nudges itself to the right to
+  // hint the gesture; this flag stops that nudge for good once they do it.
+  final bool stackSwipeHinted;
   AppState copyWith({
     List<Stack>? stacks,
     Currency? currency,
@@ -164,6 +169,7 @@ class AppState {
     bool? showPriceDelta,
     bool? totalAtTop,
     bool? hasEverAddedStack,
+    bool? stackSwipeHinted,
   }) {
     return AppState(
       stacks: stacks ?? this.stacks,
@@ -212,6 +218,7 @@ class AppState {
       showPriceDelta: showPriceDelta ?? this.showPriceDelta,
       totalAtTop: totalAtTop ?? this.totalAtTop,
       hasEverAddedStack: hasEverAddedStack ?? this.hasEverAddedStack,
+      stackSwipeHinted: stackSwipeHinted ?? this.stackSwipeHinted,
     );
   }
 
@@ -255,6 +262,7 @@ class AppState {
         'showPriceDelta': showPriceDelta,
         'totalAtTop': totalAtTop,
         'hasEverAddedStack': hasEverAddedStack,
+        'stackSwipeHinted': stackSwipeHinted,
       };
 
   factory AppState.fromJson(Map<String, dynamic> json) {
@@ -358,6 +366,11 @@ class AppState {
       // is absent rather than re-teaching them on the next launch.
       hasEverAddedStack:
           json['hasEverAddedStack'] as bool? ?? stacks.isNotEmpty,
+      // Migrate pre-flag installs the same way: anyone already holding stacks
+      // has had the chance to discover the swipe, so don't nudge them on the
+      // next launch. Fresh installs start false and get the one-time nudge.
+      stackSwipeHinted:
+          json['stackSwipeHinted'] as bool? ?? stacks.isNotEmpty,
     );
   }
 

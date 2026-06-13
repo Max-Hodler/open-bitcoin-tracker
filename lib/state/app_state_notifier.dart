@@ -80,6 +80,7 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
   bool get rangeChipHintDismissed => _state.rangeChipHintDismissed;
   bool get swipeChipHintDismissed => _state.swipeChipHintDismissed;
   bool get hasEverAddedStack => _state.hasEverAddedStack;
+  bool get stackSwipeHinted => _state.stackSwipeHinted;
   bool get showChart => _state.showChart;
   bool get showPriceDelta => _state.showPriceDelta;
   ChartHeight get chartHeight => _state.chartHeight;
@@ -187,6 +188,13 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
       _update((s) => s.copyWith(rangeChipHintDismissed: true));
   void dismissSwipeChipHint() =>
       _update((s) => s.copyWith(swipeChipHintDismissed: true));
+  // Records that the one-time "swipe a stack aside" nudge has happened — either
+  // because the first card auto-played it, or because the user swiped a card
+  // themselves. Idempotent; no-op (and no write) once already set.
+  void markStackSwipeHinted() {
+    if (_state.stackSwipeHinted) return;
+    _update((s) => s.copyWith(stackSwipeHinted: true));
+  }
   void setShowChart(bool value) => _update((s) => s.copyWith(showChart: value));
   void setShowPriceDelta(bool value) => _update((s) => s.copyWith(showPriceDelta: value));
   void setChartHeight(ChartHeight value) => _update((s) => s.copyWith(chartHeight: value));

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
@@ -19,6 +20,8 @@ class RangePillsRow extends StatefulWidget {
     required this.priceScale,
     required this.currency,
     this.position = StackCardPosition.only,
+    this.playHint = false,
+    this.onHintConsumed,
   });
 
   final Widget card;
@@ -29,6 +32,14 @@ class RangePillsRow extends StatefulWidget {
   // from the next (first/middle: yes; only/last: no — those are the bottom of
   // the group).
   final StackCardPosition position;
+  // When true, after first layout this row nudges itself to the right and back,
+  // repeating every couple seconds, hinting that the card can be swiped aside
+  // to reveal the range pills. A user-initiated swipe ends the loop.
+  final bool playHint;
+  // Fired once the user swipes the card themselves, ending the nudge loop. The
+  // parent persists this so the nudge never plays again. Called at most once
+  // per mounted row.
+  final VoidCallback? onHintConsumed;
 
   @override
   State<RangePillsRow> createState() => _RangePillsRowState();
@@ -70,10 +81,72 @@ class _RangePillsRowState extends State<RangePillsRow> {
   // Index of the last divider already crossed (so we fire once per crossing).
   int _lastCrossedDivider = 0;
 
+  // True once the user has swiped a card themselves — that ends the nudge loop
+  // for good and notifies the parent (which persists it) exactly once.
+  bool _hintConsumed = false;
+  // Pending timer for the next nudge in the repeating loop. Cancelled on
+  // consume and on dispose so a fired-then-unmounted row leaves nothing behind.
+  Timer? _hintTimer;
+
+  // How far the auto-nudge slides the card aside. Wide enough to reveal the
+  // leading edge of the first range pill (cells are >= _kRangePillMinWidth)
+  // without committing to a full pill, so it reads as "there's more here."
+  static const double _kHintPeekOffset = 56;
+
+  // Held off until the route transition back from the new-stack flow has
+  // settled — firing on the first frame buries the slide under the page
+  // animation, so the user lands on a still card and only then sees it move.
+  static const Duration _kHintStartDelay = Duration(milliseconds: 650);
+
+  // Gap between the end of one nudge and the start of the next. The loop keeps
+  // replaying until the user finally swipes a stack themselves.
+  static const Duration _kHintRepeatGap = Duration(seconds: 2);
+
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    if (widget.playHint) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _hintTimer = Timer(_kHintStartDelay, _maybePlayHint);
+      });
+    }
+  }
+
+  // Slides the card aside and back once, then — if the user still hasn't
+  // swiped — schedules the next nudge [_kHintRepeatGap] later, looping
+  // indefinitely. Skips if a user swipe already ended the loop, the row is
+  // gone, or the scroll view hasn't attached its position yet (retried next
+  // frame in that last case).
+  Future<void> _maybePlayHint() async {
+    if (_hintConsumed || !mounted) return;
+    if (!_scrollController.hasClients) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _maybePlayHint());
+      return;
+    }
+    await _scrollController.animateTo(
+      _kHintPeekOffset,
+      duration: const Duration(milliseconds: 420),
+      curve: Curves.easeOutCubic,
+    );
+    if (!mounted || _hintConsumed) return;
+    await _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 480),
+      curve: Curves.easeInOutCubic,
+    );
+    if (!mounted || _hintConsumed) return;
+    _hintTimer = Timer(_kHintRepeatGap, _maybePlayHint);
+  }
+
+  // Ends the nudge loop once the user swipes, and notifies the parent (which
+  // persists the flag) exactly once. Idempotent.
+  void _onHintConsumed() {
+    if (_hintConsumed) return;
+    _hintConsumed = true;
+    _hintTimer?.cancel();
+    _hintTimer = null;
+    widget.onHintConsumed?.call();
   }
 
   // Reads measured cell widths and computes the scroll offset at which each
@@ -127,6 +200,7 @@ class _RangePillsRowState extends State<RangePillsRow> {
 
   @override
   void dispose() {
+    _hintTimer?.cancel();
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
@@ -147,12 +221,20 @@ class _RangePillsRowState extends State<RangePillsRow> {
         final fullWidth = constraints.maxWidth;
         WidgetsBinding.instance
             .addPostFrameCallback((_) => _recomputeDividerOffsets());
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          physics: const BouncingScrollPhysics(),
-          controller: _scrollController,
-          reverse: true,
-          child: IntrinsicHeight(
+        return NotificationListener<ScrollStartNotification>(
+          // A user touch-drag carries dragDetails; the auto-nudge's
+          // programmatic animateTo does not. So this fires only on a real
+          // swipe — even one mid-nudge — ending the loop for good.
+          onNotification: (n) {
+            if (n.dragDetails != null) _onHintConsumed();
+            return false;
+          },
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            controller: _scrollController,
+            reverse: true,
+            child: IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -178,6 +260,7 @@ class _RangePillsRowState extends State<RangePillsRow> {
               ],
             ),
           ),
+        ),
         );
       },
     );

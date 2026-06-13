@@ -62,6 +62,15 @@ class HomeStackList extends StatelessWidget {
     );
     final hasTotal = totalCard != null;
 
+    // Play the one-time swipe nudge on the very first stack card, but only the
+    // moment the user is sitting on their freshly-added first stack and hasn't
+    // already been hinted (or swiped). Reading via select keeps this row in
+    // sync if the flag flips while mounted.
+    final notHinted = context.select<AppStateNotifier, bool>(
+      (a) => !a.stackSwipeHinted,
+    );
+    final playFirstStackHint = notHinted && stacks.length == 1;
+
     Widget totalRow(StackCardPosition position, bool isLast) => _GroupedCardRow(
           card: totalCard!,
           rangePillData: rangePillData,
@@ -94,6 +103,7 @@ class HomeStackList extends StatelessWidget {
             // when the total card sits below it.
             isLast: i == stacks.length - 1 && !(hasTotal && !totalAtTop),
             canReorder: stacks.length > 1,
+            playHint: playFirstStackHint && i == 0,
           ),
         if (hasTotal && !totalAtTop)
           totalRow(StackCardPosition.last, true),
@@ -113,6 +123,7 @@ class _SwipeableStackCard extends StatefulWidget {
     required this.isFirst,
     required this.isLast,
     required this.canReorder,
+    this.playHint = false,
   });
 
   final model.Stack stack;
@@ -125,6 +136,8 @@ class _SwipeableStackCard extends StatefulWidget {
   // Reordering is meaningless with a single stack, so the long-press gesture
   // that opens the reorder screen is suppressed unless there are >= 2 stacks.
   final bool canReorder;
+  // When true, this card plays the one-time swipe-to-reveal nudge after layout.
+  final bool playHint;
 
   @override
   State<_SwipeableStackCard> createState() => _SwipeableStackCardState();
@@ -353,6 +366,9 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
       currency: widget.currency,
       position: _position,
       isLast: widget.isLast,
+      playHint: widget.playHint,
+      onHintConsumed: () =>
+          context.read<AppStateNotifier>().markStackSwipeHinted(),
     );
   }
 }
@@ -369,6 +385,8 @@ class _GroupedCardRow extends StatelessWidget {
     required this.currency,
     required this.position,
     required this.isLast,
+    this.playHint = false,
+    this.onHintConsumed,
   });
 
   final Widget card;
@@ -377,6 +395,8 @@ class _GroupedCardRow extends StatelessWidget {
   final Currency currency;
   final StackCardPosition position;
   final bool isLast;
+  final bool playHint;
+  final VoidCallback? onHintConsumed;
 
   @override
   Widget build(BuildContext context) {
@@ -390,6 +410,8 @@ class _GroupedCardRow extends StatelessWidget {
           priceScale: priceScale,
           currency: currency,
           position: position,
+          playHint: playHint,
+          onHintConsumed: onHintConsumed,
         ),
         if (!isLast)
           Divider(
