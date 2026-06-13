@@ -243,7 +243,7 @@ class _RangeBarState extends State<RangeBar>
     // track below). Added into the bar height so the track doesn't squeeze the
     // chips into an overflow.
     const trackPadding = 4.0;
-    final chipHeight = labelRow + 16 + 4 + trackPadding * 2;
+    final chipHeight = labelRow + 16 + trackPadding * 2;
     // Width floor for each chip's label. Two reasons we need this:
     //   1. Selecting a chip flips its weight to w600, which is wider than the
     //      regular weight — so without a floor the chip grows on selection
