@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/data.dart' as model;
+import '../l10n/generated/app_localizations.dart';
 import '../services/app_haptics.dart';
 import '../theme/theme.dart';
 import '../widgets/stack_name/stack_name.dart';
@@ -80,6 +81,15 @@ mixin StackNameScreenMixin<T extends StatefulWidget> on State<T> {
                       controller: _controller,
                       focusNode: _focusNode,
                       onSubmitted: (_) => onSubmit(),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      AppLocalizations.of(context).stackNameHint,
+                      textAlign: TextAlign.center,
+                      style: AppTypography.body.copyWith(
+                        fontSize: 18,
+                        color: cs.onSurfaceVariant,
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     StackNameLimitLabel(visible: atLimit),

@@ -170,6 +170,7 @@ class _NewStackAmountScreenState extends State<NewStackAmountScreen> {
       zeroDisabled: mode == BtcDisplayMode.sats && _input.isEmpty,
       onZeroBlocked: _onZeroBlocked,
       showLeadingZeroWarning: _showLeadingZeroWarning,
+      title: AppLocalizations.of(context).newStackTitle,
       confirmLabel: AppLocalizations.of(context).buttonNext,
       onInputLongPressAt: (pos) => _onLongPressAt(pos, mode),
       onCaretAt: _onCaretAt,
@@ -205,7 +206,7 @@ class _NewStackNameScreenState extends State<NewStackNameScreen>
     return buildNameScaffold(
       context: context,
       cs: cs,
-      title: l10n.stackNameLabel,
+      title: l10n.newStackTitle,
       confirmLabel: l10n.homeAddStack,
       onSubmit: _submit,
     );
