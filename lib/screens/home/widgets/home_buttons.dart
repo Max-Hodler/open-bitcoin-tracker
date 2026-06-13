@@ -169,7 +169,7 @@ class OverflowButton extends StatelessWidget {
           width: 48,
           height: 47,
           child: Icon(
-            Icons.more_horiz,
+            Icons.more_vert,
             size: 24,
             color: cs.onSurfaceVariant,
           ),
