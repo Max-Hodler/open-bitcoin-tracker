@@ -219,9 +219,12 @@ class _HomeHeaderState extends State<HomeHeader> {
     final swipeHintDismissed = context.select<AppStateNotifier, bool>(
         (a) => a.swipeChipHintDismissed);
     final String? message;
-    if (!rangeHintDismissed) {
+    // Both hints stay hidden until the user moves off the default range —
+    // proof they engaged the range bar and might want to learn more.
+    final engagedRange = widget.range != BtcRange.all;
+    if (engagedRange && !rangeHintDismissed) {
       message = AppLocalizations.of(context).homeRangeChipHint;
-    } else if (!swipeHintDismissed) {
+    } else if (engagedRange && !swipeHintDismissed) {
       message = AppLocalizations.of(context).homeSwipeChipHint;
     } else {
       message = null;
