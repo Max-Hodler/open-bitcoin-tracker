@@ -596,7 +596,7 @@
   "@totalCardName": {
     "description": "Name shown on the portfolio total card and as the header of its options menu. Visible only when the user has 2+ stacks and the total card is enabled."
   },
-  "newStackTitle": "Add a stack",
+  "newStackTitle": "New stack",
   "@newStackTitle": {
     "description": "App bar title shown on both steps of the new-stack flow (amount and name screens)."
   },
