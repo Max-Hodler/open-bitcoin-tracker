@@ -136,12 +136,23 @@ class AddStackIconButton extends StatefulWidget {
 
 class _AddStackIconButtonState extends State<AddStackIconButton>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _pulse = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 2600),
-  );
+  late final AnimationController _pulse;
 
   bool _attention = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Construct eagerly in initState, not as a `late` initializer. The field
+    // is only read when attention toggles on; a user who already has stacks
+    // never trips that path, leaving a `late final` uninitialised until
+    // dispose() touches it — building a Ticker against a deactivated element
+    // and throwing. Eager construction keeps it inside a valid lifecycle.
+    _pulse = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2600),
+    );
+  }
 
   void _syncAttention(bool attention) {
     if (attention == _attention) return;
