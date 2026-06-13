@@ -535,10 +535,11 @@ class _RangeBarState extends State<RangeBar>
                           if (onSettings != null) ...[
                             // Hairline separating the range options from the
                             // trailing settings button, matching the
-                            // segmented-control look.
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 6),
+                            // segmented-control look. Pinned to the grey bar's
+                            // height so it spans the track, not the taller chip
+                            // row.
+                            SizedBox(
+                              height: greyBarHeight,
                               child: VerticalDivider(
                                 width: 1,
                                 thickness: 1,
