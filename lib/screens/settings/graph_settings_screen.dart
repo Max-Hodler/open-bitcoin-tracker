@@ -6,6 +6,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../state/state.dart';
 import '../../theme/theme.dart';
 import '../../widgets/scroll_hairline.dart';
+import 'range_config_bar.dart';
 import 'settings_widgets.dart';
 
 class GraphSettingsScreen extends StatelessWidget {
@@ -63,6 +64,7 @@ class GraphSettingsScreen extends StatelessWidget {
                   enabled: true,
                   onChanged: (i) => app.setLogScale(i == 1),
                 ),
+                SettingsRangesTile(label: l10n.settingsRanges),
               ],
             ),
           ],

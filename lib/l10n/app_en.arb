@@ -310,6 +310,10 @@
   "@settingsGraphTitle": {
     "description": "AppBar title of the graph settings sub-screen (chart display toggle, height, scale)."
   },
+  "settingsRanges": "Ranges",
+  "@settingsRanges": {
+    "description": "Section title above the range configuration bar in the graph settings sub-screen. Each slot on the bar opens a picker to choose which range that position shows on the home screen."
+  },
   "settingsReorderStacks": "Reorder stacks",
   "@settingsReorderStacks": {
     "description": "Row label inside the Stacks settings group that opens the stack-reorder sub-screen. Used as the AppBar title of that sub-screen as well. Disabled when the user has no stacks yet."
