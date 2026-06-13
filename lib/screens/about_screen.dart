@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../data/app_enums.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../services/app_haptics.dart';
+import '../state/state.dart';
 import '../theme/theme.dart';
 import '../widgets/scroll_hairline.dart';
 import 'settings/settings_widgets.dart';
@@ -34,6 +38,95 @@ class _AboutScreenState extends State<AboutScreen> {
     PackageInfo.fromPlatform().then((info) {
       if (mounted) setState(() => _appVersion = info.version);
     });
+  }
+
+  Future<void> _confirmReset(BuildContext context) async {
+    final app = context.read<AppStateNotifier>();
+    final l10n = AppLocalizations.of(context);
+    final body = app.stacksAuthMode == StacksAuthMode.off
+        ? l10n.dialogResetBody
+        : l10n.dialogResetBodyWithLock;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      barrierColor: appDialogBarrierColor(context),
+      builder: (ctx) {
+        final cs = Theme.of(ctx).colorScheme;
+        return Dialog(
+          backgroundColor: cs.surface,
+          elevation: 24,
+          shadowColor: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSpacing.radius),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.md,
+              AppSpacing.lg,
+              AppSpacing.lg,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  l10n.dialogResetTitle,
+                  textAlign: TextAlign.center,
+                  style: AppTypography.title.copyWith(fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  body,
+                  textAlign: TextAlign.center,
+                  style: AppTypography.body.copyWith(color: cs.onSurfaceVariant),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                SizedBox(
+                  height: 52,
+                  child: FilledButton(
+                    onPressed: () {
+                      AppHaptics.light();
+                      Navigator.of(ctx).pop(true);
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: cs.outlineVariant,
+                      foregroundColor: cs.onSurface,
+                      textStyle: AppTypography.title.copyWith(fontWeight: FontWeight.w500),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppSpacing.radius),
+                      ),
+                    ),
+                    child: Text(l10n.dialogResetConfirm),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                SizedBox(
+                  height: 52,
+                  child: FilledButton(
+                    onPressed: () {
+                      AppHaptics.light();
+                      Navigator.of(ctx).pop(false);
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: cs.outlineVariant,
+                      foregroundColor: cs.onSurface,
+                      textStyle: AppTypography.title.copyWith(fontWeight: FontWeight.w500),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppSpacing.radius),
+                      ),
+                    ),
+                    child: Text(l10n.buttonCancel),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    if (confirmed == true && context.mounted) {
+      context.read<AppStateNotifier>().resetSettings();
+    }
   }
 
   @override
@@ -140,6 +233,15 @@ class _AboutScreenState extends State<AboutScreen> {
                     applicationName: l10n.aboutAppName,
                     applicationVersion: _appVersion,
                   ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            SettingsGroup(
+              children: [
+                SettingsActionTile(
+                  label: l10n.settingsResetAllOptions,
+                  onTap: () => _confirmReset(context),
                 ),
               ],
             ),
