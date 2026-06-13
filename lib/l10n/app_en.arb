@@ -370,7 +370,7 @@
   "@dialogBitcoinUnitTitle": {
     "description": "Title of the dialog shown when adding the first stack, asking the user to choose their preferred Bitcoin display unit (Sats or BTC)."
   },
-  "dialogBitcoinUnitSubtitle": "You can change it later in Settings.",
+  "dialogBitcoinUnitSubtitle": "You can change it later in settings.",
   "@dialogBitcoinUnitSubtitle": {
     "description": "Subtitle of the Bitcoin unit picker dialog shown when adding the first stack. Reassures the user the choice isn't permanent."
   },
