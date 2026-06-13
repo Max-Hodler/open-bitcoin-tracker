@@ -145,8 +145,6 @@ class _HomeScreenState extends State<HomeScreen> {
       currency: app.currency,
       selectedCurrencies: app.selectedCurrencies,
       showChart: app.showChart,
-      stacksLocked: stacksLocked,
-      stacksAuthMode: app.stacksAuthMode,
       onRange: (r) {
         app.setBtcRange(r);
         if (_needsData(app)) _maybeFetchIntraday(r);
@@ -158,13 +156,15 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       onOpenSettings: widget.onOpenSettings,
       onOpenConverter: widget.onOpenConverter,
+      onAddStack: _onAddStackTap,
     );
 
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ..._buildOrderedWidgets(context, app),
-        const SizedBox(height: 64),
+        if (app.stacksAuthMode != StacksAuthMode.off)
+          SizedBox(height: 88 + MediaQuery.of(context).viewPadding.bottom),
       ],
     );
 
@@ -203,22 +203,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: cs.surfaceContainerLow,
-      floatingActionButton: AddStackButton(onTap: _onAddStackTap),
-      bottomNavigationBar: stacksLocked
-          ? SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.md,
-                  AppSpacing.sm,
-                  AppSpacing.md,
-                  AppSpacing.lg,
-                ),
-                child: UnlockStacksButton(
-                  onTap: () => _attemptUnlock(context),
-                ),
-              ),
+      floatingActionButton: stacksLocked
+          ? HomeFab(
+              icon: Icons.lock_open_outlined,
+              tooltip: AppLocalizations.of(context).homeUnlockStacks,
+              onTap: () => _attemptUnlock(context),
             )
-          : null,
+          : app.stacksAuthMode != StacksAuthMode.off
+              ? HomeFab(
+                  icon: Icons.lock_outline,
+                  tooltip: AppLocalizations.of(context).settingsLockStacks,
+                  onTap: () => context.read<StacksLockController>().lockNow(),
+                )
+              : null,
       body: SafeArea(
         bottom: false,
         // Resync the hairline when the scrollable's extents change without a
@@ -250,9 +247,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SliverFillRemaining(hasScrollBody: false)
               else if (stacksLocked)
                 SliverToBoxAdapter(
-                  child: LockedStacksSkeleton(
-                    stackCount: app.lockedStackCount,
-                    showTotal: app.showPortfolio && app.lockedStackCount >= 2,
+                  child: Column(
+                    children: [
+                      LockedStacksSkeleton(
+                        stackCount: app.lockedStackCount,
+                        showTotal: app.showPortfolio && app.lockedStackCount >= 2,
+                      ),
+                      SizedBox(height: 88 + MediaQuery.of(context).viewPadding.bottom),
+                    ],
                   ),
                 )
               else

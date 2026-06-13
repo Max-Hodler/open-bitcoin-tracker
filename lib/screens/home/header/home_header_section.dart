@@ -22,24 +22,22 @@ class HomeHeaderSection extends StatefulWidget {
     required this.currency,
     required this.selectedCurrencies,
     required this.showChart,
-    required this.stacksLocked,
-    required this.stacksAuthMode,
     required this.onRange,
     required this.onRetry,
     this.onOpenSettings,
     this.onOpenConverter,
+    this.onAddStack,
   });
 
   final BtcRange range;
   final Currency currency;
   final List<Currency> selectedCurrencies;
   final bool showChart;
-  final bool stacksLocked;
-  final StacksAuthMode stacksAuthMode;
   final ValueChanged<BtcRange> onRange;
   final VoidCallback onRetry;
   final VoidCallback? onOpenSettings;
   final VoidCallback? onOpenConverter;
+  final VoidCallback? onAddStack;
 
   @override
   State<HomeHeaderSection> createState() => _HomeHeaderSectionState();
@@ -260,10 +258,9 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
         }
       },
       onRetry: widget.onRetry,
-      stacksLocked: widget.stacksLocked,
-      stacksAuthMode: widget.stacksAuthMode,
       onOpenSettings: widget.onOpenSettings,
       onOpenConverter: widget.onOpenConverter,
+      onAddStack: widget.onAddStack,
     );
   }
 }

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../l10n/generated/app_localizations.dart';
 import '../../../services/app_haptics.dart';
 import '../../../theme/theme.dart';
-import '../../../widgets/orange_outline_button.dart';
 
 class HomeButton extends StatelessWidget {
   const HomeButton({
@@ -63,11 +61,12 @@ class HomeButton extends StatelessWidget {
   }
 }
 
-/// Floating, bottom-right "+" button for adding a stack. Solid bitcoin-orange
-/// FAB with elevation, in the standard Material style.
-class AddStackButton extends StatelessWidget {
-  const AddStackButton({super.key, this.onTap});
+/// Solid bitcoin-orange FAB used for primary home-screen actions.
+class HomeFab extends StatelessWidget {
+  const HomeFab({super.key, required this.icon, required this.tooltip, this.onTap});
 
+  final IconData icon;
+  final String tooltip;
   final VoidCallback? onTap;
 
   @override
@@ -80,24 +79,8 @@ class AddStackButton extends StatelessWidget {
       },
       backgroundColor: p.bitcoinOrange,
       foregroundColor: Colors.white,
-      tooltip: AppLocalizations.of(context).homeAddAStack,
-      child: const Icon(Icons.add, size: 24),
-    );
-  }
-}
-
-class UnlockStacksButton extends StatelessWidget {
-  const UnlockStacksButton({super.key, required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return OrangeOutlineButton(
-      isValid: true,
-      onTap: onTap,
-      icon: Icons.lock_outline,
-      label: AppLocalizations.of(context).homeUnlockStacks,
+      tooltip: tooltip,
+      child: Icon(icon, size: 24),
     );
   }
 }
@@ -136,6 +119,36 @@ class ConverterIconButton extends StatelessWidget {
   }
 }
 
+class AddStackIconButton extends StatelessWidget {
+  const AddStackIconButton({super.key, required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          AppHaptics.light();
+          onTap();
+        },
+        customBorder: const CircleBorder(),
+        child: SizedBox(
+          width: 48,
+          height: 47,
+          child: Icon(
+            Icons.add,
+            size: 26,
+            color: cs.onSurfaceVariant,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class OverflowButton extends StatelessWidget {
   const OverflowButton({super.key, required this.onTap});
 
@@ -166,33 +179,3 @@ class OverflowButton extends StatelessWidget {
   }
 }
 
-class LockNowButton extends StatelessWidget {
-  const LockNowButton({super.key, required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          AppHaptics.light();
-          onTap();
-        },
-        customBorder: const CircleBorder(),
-        child: Container(
-          width: 48,
-          height: 47,
-          padding: const EdgeInsets.only(left: 3),
-          child: Icon(
-            Icons.lock_outline,
-            size: 22,
-            color: cs.onSurfaceVariant,
-          ),
-        ),
-      ),
-    );
-  }
-}

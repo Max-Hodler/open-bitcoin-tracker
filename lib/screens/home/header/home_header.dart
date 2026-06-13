@@ -106,10 +106,9 @@ class HomeHeader extends StatefulWidget {
     required this.onRange,
     required this.onHover,
     required this.onRetry,
-    required this.stacksLocked,
-    required this.stacksAuthMode,
     this.onOpenSettings,
     this.onOpenConverter,
+    this.onAddStack,
   });
 
   final bool failed;
@@ -138,10 +137,9 @@ class HomeHeader extends StatefulWidget {
   final ValueChanged<BtcRange> onRange;
   final ValueChanged<PricePoint?> onHover;
   final VoidCallback onRetry;
-  final bool stacksLocked;
-  final StacksAuthMode stacksAuthMode;
   final VoidCallback? onOpenSettings;
   final VoidCallback? onOpenConverter;
+  final VoidCallback? onAddStack;
 
   @override
   State<HomeHeader> createState() => _HomeHeaderState();
@@ -158,14 +156,10 @@ class _HomeHeaderState extends State<HomeHeader> {
         : Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (widget.stacksAuthMode != StacksAuthMode.off &&
-                  !widget.stacksLocked)
-                LockNowButton(
-                  onTap: () =>
-                      context.read<StacksLockController>().lockNow(),
-                ),
               if (widget.onOpenConverter != null)
                 ConverterIconButton(onTap: widget.onOpenConverter!),
+              if (widget.onAddStack != null)
+                AddStackIconButton(onTap: widget.onAddStack!),
               OverflowButton(onTap: widget.onOpenSettings!),
             ],
           );
