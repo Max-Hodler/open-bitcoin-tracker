@@ -10,21 +10,32 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<(Widget, AppStateNotifier)> _wrap(WidgetTester tester, {String? initialState}) async {
-  await tester.binding.setSurfaceSize(const Size(800, 1600));
-  addTearDown(() => tester.binding.setSurfaceSize(null));
+// The monolithic SettingsScreen page is gone — settings now live in per-topic
+// sub-screens reached from the home-header overflow menu. These tests mount
+// each sub-screen directly and assert the behaviour that used to be reached by
+// navigating through SettingsScreen.
+
+Future<AppStateNotifier> _notifier({String? initialState}) async {
   SharedPreferences.setMockInitialValues(
     initialState == null ? const {} : {'btc_tracker': initialState},
   );
   final prefs = await SharedPreferences.getInstance();
-  final app = AppStateNotifier(AppStateRepository(prefs));
-  // StacksSettingsScreen reads StacksLockController via Provider; supply it so
-  // tests that navigate into the Stacks sub-screen don't ProviderNotFound.
+  return AppStateNotifier(AppStateRepository(prefs));
+}
+
+// Wraps a sub-screen in the providers + MaterialApp scaffolding it needs to
+// build. Only the providers a given screen reads are required, but supplying
+// all of them keeps each test's setup uniform.
+Future<Widget> _host(
+  WidgetTester tester,
+  Widget child, {
+  required AppStateNotifier app,
+}) async {
+  await tester.binding.setSurfaceSize(const Size(800, 1600));
+  addTearDown(() => tester.binding.setSurfaceSize(null));
+  final prefs = await SharedPreferences.getInstance();
   final lock = StacksLockController(app: app);
   addTearDown(lock.dispose);
-  // The debug-only screenshot-mode toggle (kDebugMode is true under tests)
-  // reads LivePriceController via Provider. Supply one — never `.start()`ed, so
-  // it opens no network connections — so the settings screen builds.
   final live = LivePriceController(
     stream: KrakenStreamService(),
     ohlc: KrakenOhlcClient(),
@@ -32,14 +43,14 @@ Future<(Widget, AppStateNotifier)> _wrap(WidgetTester tester, {String? initialSt
     historyCache: BtcHistoryCache(),
   );
   addTearDown(live.dispose);
-  final widget = MultiProvider(
+  return MultiProvider(
     providers: [
       ChangeNotifierProvider.value(value: app),
       ChangeNotifierProvider.value(value: lock),
       ChangeNotifierProvider.value(value: live),
     ],
     child: MaterialApp(
-      home: const SettingsScreen(),
+      home: child,
       // Theme must be installed so widgets that read the AppPalette extension
       // (`context.palette`) don't crash with "Null check operator used on a
       // null value" — the extension is registered by AppThemes.light().
@@ -54,23 +65,50 @@ Future<(Widget, AppStateNotifier)> _wrap(WidgetTester tester, {String? initialSt
       ],
     ),
   );
-  return (widget, app);
+}
+
+// Drives CurrencyPickerScreen the way the home screen does: push it, let the
+// user toggle, then adopt whatever it returns on back into the notifier — so
+// the snapping logic in setSelectedCurrencies is exercised end to end.
+Future<void> _pumpCurrencyPicker(
+  WidgetTester tester,
+  AppStateNotifier app,
+) async {
+  final host = await _host(
+    tester,
+    Builder(
+      builder: (context) => Center(
+        child: ElevatedButton(
+          onPressed: () async {
+            final picked = await Navigator.of(context).push<List<Currency>>(
+              MaterialPageRoute(
+                builder: (_) =>
+                    CurrencyPickerScreen(initial: app.selectedCurrencies),
+              ),
+            );
+            if (picked != null && context.mounted) {
+              app.setSelectedCurrencies(picked);
+            }
+          },
+          child: const Text('open'),
+        ),
+      ),
+    ),
+    app: app,
+  );
+  await tester.pumpWidget(host);
+  await tester.pump();
+  await tester.tap(find.text('open'));
+  await tester.pumpAndSettle();
 }
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('Currencies row inside BTC price opens the currency picker',
+  testWidgets('currency picker lists the available currencies',
       (tester) async {
-    final (w, _) = await _wrap(tester);
-    await tester.pumpWidget(w);
-    await tester.pump();
-
-    // Currencies now lives inside the BTC price sub-screen.
-    await tester.tap(find.text('Price'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Currencies'));
-    await tester.pumpAndSettle();
+    final app = await _notifier();
+    await _pumpCurrencyPicker(tester, app);
 
     // Picker tiles use ValueKey('currency-XXX') — proves the picker is mounted.
     expect(find.byKey(const ValueKey('currency-USD')), findsOneWidget);
@@ -79,17 +117,10 @@ void main() {
 
   testWidgets('adding EUR via picker extends selection without snapping current',
       (tester) async {
-    final (w, app) = await _wrap(
-      tester,
+    final app = await _notifier(
       initialState: '{"currency":"USD","selectedCurrencies":["USD"]}',
     );
-    await tester.pumpWidget(w);
-    await tester.pump();
-
-    await tester.tap(find.text('Price'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Currencies'));
-    await tester.pumpAndSettle();
+    await _pumpCurrencyPicker(tester, app);
 
     await tester.tap(find.byKey(const ValueKey('currency-EUR')));
     await tester.pump();
@@ -104,18 +135,10 @@ void main() {
 
   testWidgets('unchecking the active currency snaps current to first remaining',
       (tester) async {
-    final (w, app) = await _wrap(
-      tester,
-      initialState:
-          '{"currency":"EUR","selectedCurrencies":["USD","EUR"]}',
+    final app = await _notifier(
+      initialState: '{"currency":"EUR","selectedCurrencies":["USD","EUR"]}',
     );
-    await tester.pumpWidget(w);
-    await tester.pump();
-
-    await tester.tap(find.text('Price'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Currencies'));
-    await tester.pumpAndSettle();
+    await _pumpCurrencyPicker(tester, app);
 
     await tester.tap(find.byKey(const ValueKey('currency-EUR')));
     await tester.pump();
@@ -128,32 +151,25 @@ void main() {
 
   testWidgets('Portfolio total tile is hidden when fewer than 2 stacks',
       (tester) async {
-    final (w, _) = await _wrap(
-      tester,
+    final app = await _notifier(
       initialState: '{"stacks":[{"id":"s1","name":"A","sats":1}]}',
     );
-    await tester.pumpWidget(w);
+    final host = await _host(tester, const StacksSettingsScreen(), app: app);
+    await tester.pumpWidget(host);
     await tester.pump();
-
-    // Display total lives inside the Stacks sub-screen now — navigate in.
-    await tester.tap(find.text('Stacks'));
-    await tester.pumpAndSettle();
 
     expect(find.text('Display total'), findsNothing);
   });
 
   testWidgets('Portfolio total tile renders and toggles when 2+ stacks',
       (tester) async {
-    final (w, app) = await _wrap(
-      tester,
+    final app = await _notifier(
       initialState:
           '{"stacks":[{"id":"s1","name":"A","sats":1},{"id":"s2","name":"B","sats":2}]}',
     );
-    await tester.pumpWidget(w);
+    final host = await _host(tester, const StacksSettingsScreen(), app: app);
+    await tester.pumpWidget(host);
     await tester.pump();
-
-    await tester.tap(find.text('Stacks'));
-    await tester.pumpAndSettle();
 
     expect(find.text('Display total'), findsOneWidget);
     expect(app.showPortfolio, isTrue);
@@ -165,5 +181,4 @@ void main() {
     // Let the notifier's debounced settings save fire before teardown.
     await tester.pump(AppStateNotifier.saveDebounceWindow);
   });
-
 }
