@@ -242,8 +242,9 @@ class _RangeBarState extends State<RangeBar>
     // Inner padding of the recessed track around the chip row (see build of the
     // track below). Added into the bar height so the track doesn't squeeze the
     // chips into an overflow.
-    const trackPadding = 4.0;
+    const trackPadding = 2.0;
     final chipHeight = labelRow + 16 + trackPadding * 2;
+    const greyBarHeight = 28.0;
     // Width floor for each chip's label. Two reasons we need this:
     //   1. Selecting a chip flips its weight to w600, which is wider than the
     //      regular weight — so without a floor the chip grows on selection
@@ -353,8 +354,14 @@ class _RangeBarState extends State<RangeBar>
     // label tracks the pill as it's dragged.
     final highlightIndex = _dragging ? _dragHoverIndex : selectedIndex;
     bool slotSelected(int index) => index == highlightIndex;
+    // Room reserved above and below the chip row so the pill's drop-shadow
+    // (and its swipe-nudge travel) isn't clipped by the bar's box. The shadow
+    // falls downward (offset 0,1 + blur), so the bottom needs more than the top
+    // — the top only has to clear the upward nudge.
+    const shadowBleedTop = 7.0;
+    const shadowBleedBottom = 11.0;
     return SizedBox(
-      height: chipHeight,
+      height: chipHeight + shadowBleedTop + shadowBleedBottom,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final innerWidth = constraints.maxWidth -
@@ -363,25 +370,38 @@ class _RangeBarState extends State<RangeBar>
           WidgetsBinding.instance.addPostFrameCallback(
             (_) => _measureChips(),
           );
+          // Vertical inset that makes the grey track shorter than the chips.
+          final trackInset = (chipHeight - greyBarHeight) / 2;
           return Padding(
             padding: const EdgeInsets.fromLTRB(
-              horizontalPadding, 0, horizontalPadding, 0,
+              horizontalPadding,
+              shadowBleedTop,
+              horizontalPadding,
+              shadowBleedBottom,
             ),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: trackFill,
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: trackPadding,
-                  vertical: trackPadding,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // Grey track — inset vertically so it's shorter than the chip
+                // row, letting the pill overflow it top and bottom.
+                Positioned.fill(
+                  top: trackInset,
+                  bottom: trackInset,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: trackFill,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
                 ),
-                child: SizedBox(
-                  width: innerWidth,
-                  child: Stack(
-                    key: _stackKey,
-                    children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: trackPadding),
+                  child: SizedBox(
+                    width: innerWidth,
+                    child: Stack(
+                      key: _stackKey,
+                      clipBehavior: Clip.none,
+                      children: [
                       // The single sliding pill, behind the chips. When idle it
                       // animates its left/top/width/height between the previous
                       // and new selected-chip rects, so selecting a range glides
@@ -549,10 +569,11 @@ class _RangeBarState extends State<RangeBar>
                             onHorizontalDragEnd: _onPillDragEnd,
                           ),
                         ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           );
         },
