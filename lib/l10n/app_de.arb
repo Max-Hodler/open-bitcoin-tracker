@@ -186,5 +186,6 @@
   "currencyLabelChf": "Schweizer Franken",
   "currencyLabelJpy": "Japanischer Yen",
   "converterModeBtcFiat": "Fiat - BTC",
-  "converterModeBtcSats": "Sats - BTC"
+  "converterModeBtcSats": "Sats - BTC",
+  "homeEmptyStacksHint": "Tippe oben rechts auf @+, um einen Bitcoin-Stack hinzuzufügen"
 }

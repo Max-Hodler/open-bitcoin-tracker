@@ -186,5 +186,6 @@
   "currencyLabelChf": "Franc Thụy Sĩ",
   "currencyLabelJpy": "Yên Nhật",
   "converterModeBtcFiat": "Fiat - BTC",
-  "converterModeBtcSats": "Sats - BTC"
+  "converterModeBtcSats": "Sats - BTC",
+  "homeEmptyStacksHint": "Chạm @+ ở góc trên bên phải để thêm một stack bitcoin"
 }

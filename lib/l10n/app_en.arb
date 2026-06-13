@@ -829,5 +829,9 @@
   "converterModeBtcSats": "Sats - BTC",
   "@converterModeBtcSats": {
     "description": "Label for the segmented toggle option that switches the converter into BTC ↔ sats unit-conversion mode."
+  },
+  "homeEmptyStacksHint": "Tap @+ on the top right to add a bitcoin stack",
+  "@homeEmptyStacksHint": {
+    "description": "Centered placeholder shown in the empty space below the chart when the user has no stacks yet, teaching them to tap the + button to add one. The token @+ is replaced at runtime with the + icon and must be kept verbatim in translations."
   }
 }

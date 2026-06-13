@@ -186,5 +186,6 @@
   "currencyLabelChf": "İsviçre Frangı",
   "currencyLabelJpy": "Japon Yeni",
   "converterModeBtcFiat": "Fiat - BTC",
-  "converterModeBtcSats": "Sats - BTC"
+  "converterModeBtcSats": "Sats - BTC",
+  "homeEmptyStacksHint": "Bitcoin stack'i eklemek için sağ üstteki @+ simgesine dokunun"
 }

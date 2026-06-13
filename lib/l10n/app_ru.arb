@@ -186,5 +186,6 @@
   "currencyLabelChf": "Швейцарский франк",
   "currencyLabelJpy": "Японская иена",
   "converterModeBtcFiat": "Фиат - BTC",
-  "converterModeBtcSats": "Sats - BTC"
+  "converterModeBtcSats": "Sats - BTC",
+  "homeEmptyStacksHint": "Нажмите @+ в правом верхнем углу, чтобы добавить stack биткоина"
 }

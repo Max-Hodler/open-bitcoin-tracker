@@ -186,5 +186,6 @@
   "currencyLabelChf": "スイスフラン",
   "currencyLabelJpy": "日本円",
   "converterModeBtcFiat": "法定通貨 - BTC",
-  "converterModeBtcSats": "Sats - BTC"
+  "converterModeBtcSats": "Sats - BTC",
+  "homeEmptyStacksHint": "右上の @+ をタップして Bitcoin の stack を追加"
 }
