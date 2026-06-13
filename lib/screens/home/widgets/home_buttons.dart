@@ -164,10 +164,11 @@ class _AddStackIconButtonState extends State<AddStackIconButton>
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final p = context.palette;
-    // Pulse only when the user has no stacks yet — the waves teach them where
-    // to start. Once a stack exists the button is just a plain icon.
-    final attention =
-        context.select<AppStateNotifier, bool>((a) => a.stacks.isEmpty);
+    // Pulse only for a user who has never added a stack — the waves teach them
+    // where to start. Once they've added one (even if they later delete all),
+    // the button is just a plain icon; they already know how.
+    final attention = context.select<AppStateNotifier, bool>(
+        (a) => a.stacks.isEmpty && !a.hasEverAddedStack);
     _syncAttention(attention);
 
     return Material(

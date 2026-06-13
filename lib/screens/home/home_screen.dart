@@ -239,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               else
                 SliverToBoxAdapter(child: measuredHeader),
-              if (stacks.isEmpty && !stacksLocked)
+              if (stacks.isEmpty && !stacksLocked && !app.hasEverAddedStack)
                 SliverFillRemaining(
                   hasScrollBody: false,
                   child: Center(

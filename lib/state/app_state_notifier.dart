@@ -80,6 +80,7 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
   bool get changePillsHintDismissed => _state.changePillsHintDismissed;
   bool get rangeChipHintDismissed => _state.rangeChipHintDismissed;
   bool get swipeChipHintDismissed => _state.swipeChipHintDismissed;
+  bool get hasEverAddedStack => _state.hasEverAddedStack;
   bool get showChart => _state.showChart;
   bool get showPriceDelta => _state.showPriceDelta;
   ChartHeight get chartHeight => _state.chartHeight;
@@ -227,8 +228,10 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
       ? s.copyWith(clearTotalColor: true)
       : s.copyWith(totalColorKey: value));
 
-  void addStack(Stack stack) =>
-      _update((s) => s.copyWith(stacks: [...s.stacks, stack]));
+  void addStack(Stack stack) => _update((s) => s.copyWith(
+        stacks: [...s.stacks, stack],
+        hasEverAddedStack: true,
+      ));
 
   void updateStack(String id, Stack Function(Stack) mutate) {
     _update((s) => s.copyWith(
