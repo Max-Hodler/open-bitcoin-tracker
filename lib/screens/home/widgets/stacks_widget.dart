@@ -13,7 +13,6 @@ import '../../../widgets/avatar_sheet.dart';
 import '../../../widgets/menu_action_tile.dart';
 import '../../../widgets/stack_card.dart' show StackCard, StackCardPosition;
 import '../../edit_stack_screens.dart';
-import '../../new_stack_screens.dart';
 import '../../settings/reorder_stacks_screen.dart';
 import 'range_pills_row.dart';
 
@@ -62,7 +61,6 @@ class HomeStackList extends StatelessWidget {
       usdToCurrencyFallback: usd > 0 ? current / usd : 1.0,
     );
     final hasTotal = totalCard != null;
-    final rowCount = stacks.length + (hasTotal ? 1 : 0);
 
     Widget totalRow(StackCardPosition position, bool isLast) => _GroupedCardRow(
           card: totalCard!,

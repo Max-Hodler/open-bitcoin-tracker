@@ -13,7 +13,6 @@ import '../../widgets/avatar_sheet.dart';
 import '../../widgets/menu_action_tile.dart';
 import '../../widgets/scroll_hairline.dart';
 import '../../widgets/stack_card.dart';
-import '../new_stack_screens.dart';
 import '../pin_entry_screen.dart';
 import '../settings/settings_dialogs.dart';
 import 'header/home_header.dart';
