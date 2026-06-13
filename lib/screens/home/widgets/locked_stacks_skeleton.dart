@@ -90,14 +90,27 @@ class _SkeletonRow extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                // Amount bar.
-                Container(
-                  height: 13,
-                  width: 140,
-                  decoration: BoxDecoration(
-                    color: shimmer,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
+                // Amounts row: btc bar left, fiat bar right.
+                Row(
+                  children: [
+                    Container(
+                      height: 13,
+                      width: 140,
+                      decoration: BoxDecoration(
+                        color: shimmer,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    const Spacer(),
+                    Container(
+                      height: 13,
+                      width: 72,
+                      decoration: BoxDecoration(
+                        color: shimmer,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
