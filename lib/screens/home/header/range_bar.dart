@@ -680,7 +680,6 @@ class _RangeBarState extends State<RangeBar>
       barrierColor: appDialogBarrierColor(context),
       builder: (ctx) {
         final l10n = AppLocalizations.of(ctx);
-        final cs = Theme.of(ctx).colorScheme;
         return RadioGroup<BtcRange>(
           groupValue: ranges.contains(current) ? current : null,
           onChanged: (v) {
@@ -690,27 +689,15 @@ class _RangeBarState extends State<RangeBar>
           child: SimpleDialog(
             elevation: 24,
             shadowColor: Colors.black,
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(l10n.rangePickerLongTitle),
-                const SizedBox(height: 4),
-                Text(
-                  l10n.homeSwipeChipHint,
-                  style: AppTypography.body.copyWith(
-                    fontSize: 14,
-                    color: cs.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
+            title: Text(l10n.rangePickerLongTitle),
             children: [
               for (final r in ranges)
                 RadioListTile<BtcRange>(
                   key: ValueKey('$keyPrefix-${r.name}'),
                   title: Text(longLabel(ctx, r)),
                   value: r,
+                  visualDensity: const VisualDensity(vertical: -4),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
                 ),
             ],
           ),
