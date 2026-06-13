@@ -12,7 +12,6 @@ import 'l10n/generated/app_localizations.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/converter_screen.dart';
 import 'screens/new_stack_screens.dart';
-import 'screens/settings_screen.dart';
 import 'services/route_observer.dart';
 import 'services/stacks_auth_service.dart';
 import 'services/stacks_crypto_service.dart';
@@ -45,9 +44,6 @@ class _HomeShell extends StatelessWidget {
       ),
       onOpenConverter: () => Navigator.of(context).push(
         MaterialPageRoute<void>(builder: (_) => const ConverterScreen()),
-      ),
-      onOpenSettings: () => Navigator.of(context).push(
-        MaterialPageRoute<void>(builder: (_) => const SettingsScreen()),
       ),
     );
   }

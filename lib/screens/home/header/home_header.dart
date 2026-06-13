@@ -106,7 +106,6 @@ class HomeHeader extends StatefulWidget {
     required this.onRange,
     required this.onHover,
     required this.onRetry,
-    this.onOpenSettings,
     this.onOpenConverter,
     this.onAddStack,
   });
@@ -137,7 +136,6 @@ class HomeHeader extends StatefulWidget {
   final ValueChanged<BtcRange> onRange;
   final ValueChanged<PricePoint?> onHover;
   final VoidCallback onRetry;
-  final VoidCallback? onOpenSettings;
   final VoidCallback? onOpenConverter;
   final VoidCallback? onAddStack;
 
@@ -150,19 +148,14 @@ class _HomeHeaderState extends State<HomeHeader> {
   Widget build(BuildContext context) {
     final logScale = context.select<AppStateNotifier, bool>((a) => a.logScale);
     final chartHeight = context.select<AppStateNotifier, ChartHeight>((a) => a.chartHeight);
-    final showButtons = widget.onOpenSettings != null;
-    final buttonsRow = !showButtons
-        ? null
-        : Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (widget.onOpenConverter != null)
-                ConverterIconButton(onTap: widget.onOpenConverter!),
-              if (widget.onAddStack != null)
-                AddStackIconButton(onTap: widget.onAddStack!),
-              OverflowButton(onTap: widget.onOpenSettings!),
-            ],
-          );
+    final buttonsRow = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (widget.onAddStack != null)
+          AddStackIconButton(onTap: widget.onAddStack!),
+        OverflowButton(onOpenConverter: widget.onOpenConverter),
+      ],
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -193,7 +186,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                   showChart: widget.showChart,
                 ),
               ),
-              ?buttonsRow,
+              buttonsRow,
             ],
           ),
         ),

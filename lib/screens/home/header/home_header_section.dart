@@ -24,7 +24,6 @@ class HomeHeaderSection extends StatefulWidget {
     required this.showChart,
     required this.onRange,
     required this.onRetry,
-    this.onOpenSettings,
     this.onOpenConverter,
     this.onAddStack,
   });
@@ -35,7 +34,6 @@ class HomeHeaderSection extends StatefulWidget {
   final bool showChart;
   final ValueChanged<BtcRange> onRange;
   final VoidCallback onRetry;
-  final VoidCallback? onOpenSettings;
   final VoidCallback? onOpenConverter;
   final VoidCallback? onAddStack;
 
@@ -258,7 +256,6 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
         }
       },
       onRetry: widget.onRetry,
-      onOpenSettings: widget.onOpenSettings,
       onOpenConverter: widget.onOpenConverter,
       onAddStack: widget.onAddStack,
     );
