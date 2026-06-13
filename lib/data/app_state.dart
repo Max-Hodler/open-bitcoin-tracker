@@ -35,7 +35,6 @@ class AppState {
     ],
     this.totalImageData,
     this.totalColorKey,
-    this.changePillsHintDismissed = false,
     this.rangeChipHintDismissed = false,
     this.swipeChipHintDismissed = false,
     this.showPriceDelta = false,
@@ -110,10 +109,6 @@ class AppState {
   // default initial-letter circle in the theme's bitcoinOrange.
   final String? totalImageData;
   final String? totalColorKey;
-  // True once the user dismisses the one-time hint that explains revealing the
-  // range/change pills by swiping a stack card aside. Persisted so the hint
-  // never reappears on later launches, even after more stacks are added.
-  final bool changePillsHintDismissed;
   // True once the user long-presses any range chip for the first time, or the
   // hint text is dismissed. The hint sits below the chip row and teaches that
   // long-pressing opens the range picker for that chip slot.
@@ -164,7 +159,6 @@ class AppState {
     bool clearTotalImage = false,
     String? totalColorKey,
     bool clearTotalColor = false,
-    bool? changePillsHintDismissed,
     bool? rangeChipHintDismissed,
     bool? swipeChipHintDismissed,
     bool? showPriceDelta,
@@ -211,8 +205,6 @@ class AppState {
       totalColorKey: clearTotalColor
           ? null
           : (totalColorKey ?? this.totalColorKey),
-      changePillsHintDismissed:
-          changePillsHintDismissed ?? this.changePillsHintDismissed,
       rangeChipHintDismissed:
           rangeChipHintDismissed ?? this.rangeChipHintDismissed,
       swipeChipHintDismissed:
@@ -258,7 +250,6 @@ class AppState {
         'homeWidgetOrder': [for (final w in homeWidgetOrder) w.code],
         if (totalImageData != null) 'totalImageData': totalImageData,
         if (totalColorKey != null) 'totalColorKey': totalColorKey,
-        'changePillsHintDismissed': changePillsHintDismissed,
         'rangeChipHintDismissed': rangeChipHintDismissed,
         'swipeChipHintDismissed': swipeChipHintDismissed,
         'showPriceDelta': showPriceDelta,
@@ -356,8 +347,6 @@ class AppState {
       totalColorKey: json['totalColorKey'] is String
           ? json['totalColorKey'] as String
           : null,
-      changePillsHintDismissed:
-          json['changePillsHintDismissed'] as bool? ?? false,
       rangeChipHintDismissed:
           json['rangeChipHintDismissed'] as bool? ?? false,
       swipeChipHintDismissed:

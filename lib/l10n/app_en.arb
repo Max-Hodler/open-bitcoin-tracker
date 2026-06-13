@@ -612,14 +612,6 @@
   "@homeAddAStack": {
     "description": "Label of the large standalone button shown in the empty state (no stacks yet) that starts adding the first stack. Uses the article ('a stack') because as a full-width empty-state button it reads more naturally than the terse menu form."
   },
-  "homeChangePillsHint": "Swipe a stack to the right to see how its value has changed over time.",
-  "@homeChangePillsHint": {
-    "description": "One-time hint shown below the stack list on home, explaining that swiping a stack card aside reveals the range/change pills with its past prices. Dismissed permanently with the adjacent button."
-  },
-  "homeChangePillsHintDismiss": "Got it",
-  "@homeChangePillsHintDismiss": {
-    "description": "Button that permanently dismisses the home-screen hint about swiping a stack to reveal its change pills."
-  },
   "homeRangeChipHint": "Tap and hold a range to change it.",
   "@homeRangeChipHint": {
     "description": "One-time hint shown below the chart range buttons, teaching that long-pressing a range button opens a picker to change which range it shows. Disappears permanently after the user long-presses any range button for the first time."

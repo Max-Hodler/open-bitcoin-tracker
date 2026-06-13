@@ -18,7 +18,6 @@ import '../settings/settings_dialogs.dart';
 import 'header/home_header.dart';
 import 'header/home_header_section.dart';
 import 'widgets/home_buttons.dart';
-import 'widgets/home_hint_card.dart';
 import 'widgets/locked_stacks_skeleton.dart';
 import 'widgets/stacks_widget.dart';
 
@@ -328,7 +327,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<Widget> _stacksBlock(BuildContext context, AppStateNotifier app) {
-    final l10n = AppLocalizations.of(context);
     final stacks = app.stacks;
     final currency = app.currency;
     final showTotal = app.showPortfolio && stacks.length >= 2;
@@ -345,20 +343,6 @@ class _HomeScreenState extends State<HomeScreen> {
           totalSats: showTotal ? totalSats : null,
           totalAtTop: app.totalAtTop,
         ),
-      // One-time hint below the stack list: the swipe-to-reveal-pills
-      // gesture. Stays until dismissed (persisted), regardless of how many
-      // stacks exist.
-      if (stacks.isNotEmpty && !app.changePillsHintDismissed) ...[
-        const SizedBox(height: AppSpacing.sm),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: HomeHintCard(
-            message: l10n.homeChangePillsHint,
-            onDismiss: () =>
-                context.read<AppStateNotifier>().dismissChangePillsHint(),
-          ),
-        ),
-      ],
     ];
   }
 

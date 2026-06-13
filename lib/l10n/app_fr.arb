@@ -143,8 +143,6 @@
   "newStackTitle": "Ajouter un Stack",
   "homeAddStack": "Ajouter un Stack",
   "homeAddAStack": "Ajouter un Stack",
-  "homeChangePillsHint": "Balayez un stack vers la droite pour voir l'évolution de sa valeur dans le temps.",
-  "homeChangePillsHintDismiss": "Compris",
   "homeRangeChipHint": "Appuyez longuement sur une plage pour la changer.",
   "homeSwipeChipHint": "Vous pouvez aussi glisser vers le haut ou le bas sur une période pour la changer.",
   "homeConverter": "Convertisseur",

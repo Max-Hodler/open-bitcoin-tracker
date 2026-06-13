@@ -143,8 +143,6 @@
   "newStackTitle": "Añadir un stack",
   "homeAddStack": "Añadir stack",
   "homeAddAStack": "Añadir un stack",
-  "homeChangePillsHint": "Desliza un stack hacia la derecha para ver cómo ha cambiado su valor con el tiempo.",
-  "homeChangePillsHintDismiss": "Entendido",
   "homeRangeChipHint": "Mantén pulsado un rango para cambiarlo.",
   "homeSwipeChipHint": "También puedes deslizar hacia arriba o abajo en un rango para cambiarlo.",
   "homeConverter": "Conversor",
