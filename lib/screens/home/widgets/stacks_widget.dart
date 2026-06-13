@@ -28,17 +28,19 @@ class HomeStackList extends StatelessWidget {
     required this.btcDisplayMode,
     this.totalCard,
     this.totalSats,
+    this.totalAtTop = false,
   });
 
   final List<model.Stack> stacks;
   final Currency currency;
   final BtcDisplayMode btcDisplayMode;
-  // When non-null, the portfolio total renders as the final row of the same
-  // group as the stack cards, sharing its divider and corner rounding so it
-  // reads as just another stack rather than a detached card. [totalSats]
-  // drives the row's range-pill price scaling.
+  // When non-null, the portfolio total renders as the first or last row of the
+  // same group as the stack cards (controlled by [totalAtTop]), sharing its
+  // divider and corner rounding. [totalSats] drives the row's range-pill price
+  // scaling.
   final Widget? totalCard;
   final int? totalSats;
+  final bool totalAtTop;
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +64,24 @@ class HomeStackList extends StatelessWidget {
     );
     final hasTotal = totalCard != null;
     final rowCount = stacks.length + (hasTotal ? 1 : 0);
+
+    Widget totalRow(StackCardPosition position, bool isLast) => _GroupedCardRow(
+          card: totalCard!,
+          rangePillData: rangePillData,
+          priceScale: (totalSats ?? 0) / Sats.perBtc,
+          currency: currency,
+          position: position,
+          isLast: isLast,
+        );
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        if (hasTotal && totalAtTop)
+          totalRow(
+            stacks.isEmpty ? StackCardPosition.only : StackCardPosition.first,
+            stacks.isEmpty,
+          ),
         for (var i = 0; i < stacks.length; i++)
           _SwipeableStackCard(
             key: ValueKey(stacks[i].id),
@@ -73,21 +90,16 @@ class HomeStackList extends StatelessWidget {
             btcDisplayMode: btcDisplayMode,
             rangePillData: rangePillData,
             priceScale: stacks[i].sats / Sats.perBtc,
-            isFirst: i == 0,
-            isLast: i == rowCount - 1,
+            // isFirst: true only when this stack is the very first row of the
+            // group — suppressed when the total card sits above it.
+            isFirst: i == 0 && !(hasTotal && totalAtTop),
+            // isLast: true only when this stack is the very last row — suppressed
+            // when the total card sits below it.
+            isLast: i == stacks.length - 1 && !(hasTotal && !totalAtTop),
             canReorder: stacks.length > 1,
           ),
-        if (hasTotal)
-          _GroupedCardRow(
-            card: totalCard!,
-            rangePillData: rangePillData,
-            priceScale: (totalSats ?? 0) / Sats.perBtc,
-            currency: currency,
-            // The total only renders alongside >= 2 stacks, so it is always
-            // the last row of a non-empty group, never a standalone card.
-            position: StackCardPosition.last,
-            isLast: true,
-          ),
+        if (hasTotal && !totalAtTop)
+          totalRow(StackCardPosition.last, true),
       ],
     );
   }

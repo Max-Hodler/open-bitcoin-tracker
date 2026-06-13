@@ -166,6 +166,8 @@
   "stackImageCropTitle": "Bild zuschneiden",
   "stackImageCropConfirm": "Fertig",
   "stackImageColorLabel": "Farbe",
+  "totalMenuMoveToTop": "Nach oben verschieben",
+  "totalMenuMoveToBottom": "Nach unten verschieben",
   "totalMenuHide": "Ausblenden",
   "dialogDeleteStackTitle": "Stack löschen?",
   "dialogDeleteStackBody": "Diese Aktion kann nicht rückgängig gemacht werden.",

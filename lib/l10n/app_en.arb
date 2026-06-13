@@ -720,6 +720,16 @@
   "@stackImageColorLabel": {
     "description": "Label above the row of color swatches in the avatar bottom sheet. The swatches set the tint of the default initial-letter avatar; the row is hidden when the stack already has a picked image."
   },
+  "totalMenuMoveToTop": "Move to top",
+  "@totalMenuMoveToTop": {
+    "description": "Total card menu action: move the portfolio total card above the individual stacks."
+  },
+
+  "totalMenuMoveToBottom": "Move to bottom",
+  "@totalMenuMoveToBottom": {
+    "description": "Total card menu action: move the portfolio total card below the individual stacks."
+  },
+
   "totalMenuHide": "Hide",
   "@totalMenuHide": {
     "description": "Total card menu action: hide the portfolio total card from home."

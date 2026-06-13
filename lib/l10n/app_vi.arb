@@ -166,6 +166,8 @@
   "stackImageCropTitle": "Cắt ảnh",
   "stackImageCropConfirm": "Xong",
   "stackImageColorLabel": "Màu",
+  "totalMenuMoveToTop": "Di chuyển lên đầu",
+  "totalMenuMoveToBottom": "Di chuyển xuống cuối",
   "totalMenuHide": "Ẩn",
   "dialogDeleteStackTitle": "Xóa Stack?",
   "dialogDeleteStackBody": "Thao tác này không thể hoàn tác.",

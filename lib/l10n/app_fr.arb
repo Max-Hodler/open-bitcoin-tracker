@@ -166,6 +166,8 @@
   "stackImageCropTitle": "Recadrer l'image",
   "stackImageCropConfirm": "Terminé",
   "stackImageColorLabel": "Couleur",
+  "totalMenuMoveToTop": "Déplacer en haut",
+  "totalMenuMoveToBottom": "Déplacer en bas",
   "totalMenuHide": "Masquer",
   "dialogDeleteStackTitle": "Supprimer le Stack ?",
   "dialogDeleteStackBody": "Cette action est irréversible.",

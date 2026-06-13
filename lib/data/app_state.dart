@@ -39,6 +39,7 @@ class AppState {
     this.rangeChipHintDismissed = false,
     this.swipeChipHintDismissed = false,
     this.showPriceDelta = false,
+    this.totalAtTop = false,
   });
 
   final List<Stack> stacks;
@@ -123,6 +124,7 @@ class AppState {
   // When true, show the signed tick-to-tick price delta as a subtitle below
   // the live price for ~2 s each time the price updates. Off by default.
   final bool showPriceDelta;
+  final bool totalAtTop;
   AppState copyWith({
     List<Stack>? stacks,
     Currency? currency,
@@ -160,6 +162,7 @@ class AppState {
     bool? rangeChipHintDismissed,
     bool? swipeChipHintDismissed,
     bool? showPriceDelta,
+    bool? totalAtTop,
   }) {
     return AppState(
       stacks: stacks ?? this.stacks,
@@ -208,6 +211,7 @@ class AppState {
       swipeChipHintDismissed:
           swipeChipHintDismissed ?? this.swipeChipHintDismissed,
       showPriceDelta: showPriceDelta ?? this.showPriceDelta,
+      totalAtTop: totalAtTop ?? this.totalAtTop,
     );
   }
 
@@ -250,6 +254,7 @@ class AppState {
         'rangeChipHintDismissed': rangeChipHintDismissed,
         'swipeChipHintDismissed': swipeChipHintDismissed,
         'showPriceDelta': showPriceDelta,
+        'totalAtTop': totalAtTop,
       };
 
   factory AppState.fromJson(Map<String, dynamic> json) {
@@ -349,6 +354,7 @@ class AppState {
       swipeChipHintDismissed:
           json['swipeChipHintDismissed'] as bool? ?? false,
       showPriceDelta: json['showPriceDelta'] as bool? ?? false,
+      totalAtTop: json['totalAtTop'] as bool? ?? false,
     );
   }
 

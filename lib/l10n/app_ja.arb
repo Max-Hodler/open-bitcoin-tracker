@@ -166,6 +166,8 @@
   "stackImageCropTitle": "画像を切り抜く",
   "stackImageCropConfirm": "完了",
   "stackImageColorLabel": "色",
+  "totalMenuMoveToTop": "上に移動",
+  "totalMenuMoveToBottom": "下に移動",
   "totalMenuHide": "非表示",
   "dialogDeleteStackTitle": "Stack を削除しますか?",
   "dialogDeleteStackBody": "この操作は取り消せません。",

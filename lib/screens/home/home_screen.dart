@@ -24,7 +24,7 @@ import 'widgets/home_hint_card.dart';
 import 'widgets/locked_stacks_skeleton.dart';
 import 'widgets/stacks_widget.dart';
 
-enum _TotalMenuAction { hide, settings }
+enum _TotalMenuAction { hide, settings, moveToTop, moveToBottom }
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -302,12 +302,11 @@ class _HomeScreenState extends State<HomeScreen> {
           stacks: stacks,
           currency: currency,
           btcDisplayMode: app.btcDisplayMode,
-          // showTotal already implies stacks.length >= 2, so the total is
-          // always the last row of a non-empty group.
           totalCard: showTotal
               ? _totalCard(context, app, totalSats, currency)
               : null,
           totalSats: showTotal ? totalSats : null,
+          totalAtTop: app.totalAtTop,
         ),
       // One-time hint below the stack list: the swipe-to-reveal-pills
       // gesture. Stays until dismissed (persisted), regardless of how many
@@ -378,6 +377,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _showTotalMenu(BuildContext iconContext, AppStateNotifier app) async {
     final theme = Theme.of(iconContext);
     final cs = theme.colorScheme;
+    final isAtTop = app.totalAtTop;
     final action = await showModalBottomSheet<_TotalMenuAction>(
       context: iconContext,
       backgroundColor: theme.brightness == Brightness.dark
@@ -405,6 +405,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 MenuActionGroup(
                   children: [
                     MenuActionTile(
+                      leading: Icon(isAtTop
+                          ? Icons.arrow_downward
+                          : Icons.arrow_upward),
+                      label: isAtTop
+                          ? l10n.totalMenuMoveToBottom
+                          : l10n.totalMenuMoveToTop,
+                      onTap: () => Navigator.of(ctx).pop(isAtTop
+                          ? _TotalMenuAction.moveToBottom
+                          : _TotalMenuAction.moveToTop),
+                    ),
+                    MenuActionTile(
                       leading: const Icon(Icons.visibility_off_outlined),
                       label: l10n.totalMenuHide,
                       onTap: () =>
@@ -423,7 +434,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-
               ],
             ),
           ),
@@ -432,13 +442,16 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     if (!iconContext.mounted) return;
     switch (action) {
+      case _TotalMenuAction.moveToTop:
+        app.setTotalAtTop(true);
+      case _TotalMenuAction.moveToBottom:
+        app.setTotalAtTop(false);
       case _TotalMenuAction.hide:
         app.setShowPortfolio(false);
       case _TotalMenuAction.settings:
         await Navigator.of(iconContext).push(MaterialPageRoute<void>(
           builder: (_) => const StacksSettingsScreen(),
         ));
-
       case null:
         break;
     }

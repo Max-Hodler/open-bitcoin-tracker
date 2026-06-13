@@ -166,6 +166,8 @@
   "stackImageCropTitle": "Görseli kırp",
   "stackImageCropConfirm": "Tamam",
   "stackImageColorLabel": "Renk",
+  "totalMenuMoveToTop": "Yukarı taşı",
+  "totalMenuMoveToBottom": "Aşağı taşı",
   "totalMenuHide": "Gizle",
   "dialogDeleteStackTitle": "Stack silinsin mi?",
   "dialogDeleteStackBody": "Bu işlem geri alınamaz.",

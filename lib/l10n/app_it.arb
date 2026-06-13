@@ -166,6 +166,8 @@
   "stackImageCropTitle": "Ritaglia immagine",
   "stackImageCropConfirm": "Fatto",
   "stackImageColorLabel": "Colore",
+  "totalMenuMoveToTop": "Sposta in cima",
+  "totalMenuMoveToBottom": "Sposta in fondo",
   "totalMenuHide": "Nascondi",
   "dialogDeleteStackTitle": "Eliminare Stack?",
   "dialogDeleteStackBody": "Questa azione non può essere annullata.",

@@ -166,6 +166,8 @@
   "stackImageCropTitle": "Recortar imagen",
   "stackImageCropConfirm": "Listo",
   "stackImageColorLabel": "Color",
+  "totalMenuMoveToTop": "Mover arriba",
+  "totalMenuMoveToBottom": "Mover abajo",
   "totalMenuHide": "Ocultar",
   "dialogDeleteStackTitle": "¿Eliminar stack?",
   "dialogDeleteStackBody": "Esta acción no se puede deshacer.",
