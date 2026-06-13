@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -260,7 +261,7 @@ class _AttentionWavePainter extends CustomPainter {
       old.progress != progress || old.color != color;
 }
 
-enum _OverflowAction { converter, language, currency, theme, stacks, about }
+enum _OverflowAction { converter, language, currency, theme, stacks, about, screenshot }
 
 class OverflowButton extends StatelessWidget {
   const OverflowButton({super.key, this.onOpenConverter});
@@ -338,6 +339,25 @@ class OverflowButton extends StatelessWidget {
             Text(l10n.settingsAbout, style: itemStyle),
           ]),
         ),
+        // Debug-only screenshot mode. Gated to debug builds — the tree-shaker
+        // drops this branch from release/profile binaries, so it never ships.
+        // Freezes the live price (hiding the delta badge) and swaps in the demo
+        // portfolio for clean marketing screenshots.
+        if (kDebugMode)
+          PopupMenuItem(
+            value: _OverflowAction.screenshot,
+            child: Row(children: [
+              Icon(
+                context.read<LivePriceController>().screenshotMode
+                    ? Icons.check_box
+                    : Icons.check_box_outline_blank,
+                size: 20,
+                color: cs.onSurfaceVariant,
+              ),
+              const SizedBox(width: 12),
+              Text('Screenshot mode', style: itemStyle),
+            ]),
+          ),
       ],
     );
   }
@@ -378,6 +398,14 @@ class OverflowButton extends StatelessWidget {
             MaterialPageRoute<void>(builder: (_) => const AboutScreen()),
           );
         }
+      case _OverflowAction.screenshot:
+        // Drive both controllers in lockstep: the live price freezes at the
+        // fixed figure and the stack list swaps to the demo set, so the whole
+        // home screen is camera-ready in one tap.
+        final live = context.read<LivePriceController>();
+        final next = !live.screenshotMode;
+        live.screenshotMode = next;
+        context.read<AppStateNotifier>().screenshotMode = next;
     }
   }
 }
