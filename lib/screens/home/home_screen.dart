@@ -30,12 +30,10 @@ class HomeScreen extends StatefulWidget {
     super.key,
     this.onAddStack,
     this.onOpenConverter,
-    this.onOpenSettings,
   });
 
   final VoidCallback? onAddStack;
   final VoidCallback? onOpenConverter;
-  final VoidCallback? onOpenSettings;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -153,9 +151,8 @@ class _HomeScreenState extends State<HomeScreen> {
         context.read<LivePriceController>().restartStream();
         _maybeFetchIntraday(app.btcRange, force: true);
       },
-      onOpenSettings: widget.onOpenSettings,
       onOpenConverter: widget.onOpenConverter,
-      onAddStack: _onAddStackTap,
+      onAddStack: stacksLocked ? null : _onAddStackTap,
     );
 
     final content = Column(
