@@ -125,34 +125,127 @@ class ConverterIconButton extends StatelessWidget {
   }
 }
 
-class AddStackIconButton extends StatelessWidget {
+class AddStackIconButton extends StatefulWidget {
   const AddStackIconButton({super.key, required this.onTap});
 
   final VoidCallback onTap;
 
   @override
+  State<AddStackIconButton> createState() => _AddStackIconButtonState();
+}
+
+class _AddStackIconButtonState extends State<AddStackIconButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulse = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 2600),
+  );
+
+  bool _attention = false;
+
+  void _syncAttention(bool attention) {
+    if (attention == _attention) return;
+    _attention = attention;
+    if (attention) {
+      _pulse.repeat();
+    } else {
+      _pulse.stop();
+      _pulse.value = 0;
+    }
+  }
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final p = context.palette;
+    // Pulse only when the user has no stacks yet — the waves teach them where
+    // to start. Once a stack exists the button is just a plain icon.
+    final attention =
+        context.select<AppStateNotifier, bool>((a) => a.stacks.isEmpty);
+    _syncAttention(attention);
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
           AppHaptics.light();
-          onTap();
+          widget.onTap();
         },
         customBorder: const CircleBorder(),
         child: SizedBox(
           width: 48,
           height: 47,
-          child: Icon(
-            Icons.add,
-            size: 26,
-            color: cs.onSurfaceVariant,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              if (attention)
+                RepaintBoundary(
+                  child: AnimatedBuilder(
+                    animation: _pulse,
+                    builder: (context, _) => CustomPaint(
+                      size: const Size(48, 47),
+                      painter: _AttentionWavePainter(
+                        progress: _pulse.value,
+                        color: p.bitcoinOrange,
+                      ),
+                    ),
+                  ),
+                ),
+              Icon(
+                Icons.add,
+                size: 26,
+                color: cs.onSurfaceVariant,
+              ),
+            ],
           ),
         ),
       ),
     );
   }
+}
+
+/// Two staggered expanding rings that fade as they grow, radiating from the
+/// centre of the add button to draw the eye when no stacks exist yet.
+class _AttentionWavePainter extends CustomPainter {
+  const _AttentionWavePainter({required this.progress, required this.color});
+
+  final double progress;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    const minRadius = 6.0;
+    final maxRadius = size.shortestSide / 2;
+
+    for (var i = 0; i < 2; i++) {
+      // Stagger the second ring half a cycle behind the first.
+      final t = (progress + i * 0.5) % 1.0;
+      final radius = minRadius + (maxRadius - minRadius) * t;
+      // Fade in over the first fifth of the cycle so rings emerge from the
+      // centre instead of popping into existence, hold at full orange, then
+      // fade out over the final stretch as they reach the edge.
+      final fadeIn = (t / 0.2).clamp(0.0, 1.0);
+      final fadeOut = ((1.0 - t) / 0.4).clamp(0.0, 1.0);
+      final opacity = fadeIn * fadeOut;
+      if (opacity <= 0) continue;
+      final paint = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5
+        ..color = color.withValues(alpha: opacity);
+      canvas.drawCircle(center, radius, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_AttentionWavePainter old) =>
+      old.progress != progress || old.color != color;
 }
 
 enum _OverflowAction { converter, language, currency, theme, stacks, about }
