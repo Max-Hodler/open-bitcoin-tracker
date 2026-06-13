@@ -41,6 +41,7 @@ class AppState {
     this.totalAtTop = false,
     this.hasEverAddedStack = false,
     this.stackSwipeHinted = false,
+    this.hopiumMode = false,
   });
 
   final List<Stack> stacks;
@@ -131,6 +132,11 @@ class AppState {
   // Until then, the first stack card repeatedly nudges itself to the right to
   // hint the gesture; this flag stops that nudge for good once they do it.
   final bool stackSwipeHinted;
+  // When true, stack cards can also be swiped the other way (to the left) to
+  // reveal price-milestone pills — what the stack would be worth at round BTC
+  // prices (100K, 200K … 1M, then 2M … 10M) in the active currency. The
+  // existing swipe-right historical pills are unaffected. Off by default.
+  final bool hopiumMode;
   AppState copyWith({
     List<Stack>? stacks,
     Currency? currency,
@@ -170,6 +176,7 @@ class AppState {
     bool? totalAtTop,
     bool? hasEverAddedStack,
     bool? stackSwipeHinted,
+    bool? hopiumMode,
   }) {
     return AppState(
       stacks: stacks ?? this.stacks,
@@ -219,6 +226,7 @@ class AppState {
       totalAtTop: totalAtTop ?? this.totalAtTop,
       hasEverAddedStack: hasEverAddedStack ?? this.hasEverAddedStack,
       stackSwipeHinted: stackSwipeHinted ?? this.stackSwipeHinted,
+      hopiumMode: hopiumMode ?? this.hopiumMode,
     );
   }
 
@@ -263,6 +271,7 @@ class AppState {
         'totalAtTop': totalAtTop,
         'hasEverAddedStack': hasEverAddedStack,
         'stackSwipeHinted': stackSwipeHinted,
+        'hopiumMode': hopiumMode,
       };
 
   factory AppState.fromJson(Map<String, dynamic> json) {
@@ -371,6 +380,7 @@ class AppState {
       // next launch. Fresh installs start false and get the one-time nudge.
       stackSwipeHinted:
           json['stackSwipeHinted'] as bool? ?? stacks.isNotEmpty,
+      hopiumMode: json['hopiumMode'] as bool? ?? false,
     );
   }
 

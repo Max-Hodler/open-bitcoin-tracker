@@ -70,6 +70,9 @@ class HomeStackList extends StatelessWidget {
       (a) => !a.stackSwipeHinted,
     );
     final playFirstStackHint = notHinted && stacks.length == 1;
+    final hopiumMode = context.select<AppStateNotifier, bool>(
+      (a) => a.hopiumMode,
+    );
 
     Widget totalRow(StackCardPosition position, bool isLast) => _GroupedCardRow(
           card: totalCard!,
@@ -78,6 +81,7 @@ class HomeStackList extends StatelessWidget {
           currency: currency,
           position: position,
           isLast: isLast,
+          hopiumMode: hopiumMode,
         );
 
     return Column(
@@ -104,6 +108,7 @@ class HomeStackList extends StatelessWidget {
             isLast: i == stacks.length - 1 && !(hasTotal && !totalAtTop),
             canReorder: stacks.length > 1,
             playHint: playFirstStackHint && i == 0,
+            hopiumMode: hopiumMode,
           ),
         if (hasTotal && !totalAtTop)
           totalRow(StackCardPosition.last, true),
@@ -124,6 +129,7 @@ class _SwipeableStackCard extends StatefulWidget {
     required this.isLast,
     required this.canReorder,
     this.playHint = false,
+    this.hopiumMode = false,
   });
 
   final model.Stack stack;
@@ -138,6 +144,8 @@ class _SwipeableStackCard extends StatefulWidget {
   final bool canReorder;
   // When true, this card plays the one-time swipe-to-reveal nudge after layout.
   final bool playHint;
+  // When true, the card can also be swiped left to reveal price-milestone pills.
+  final bool hopiumMode;
 
   @override
   State<_SwipeableStackCard> createState() => _SwipeableStackCardState();
@@ -367,6 +375,7 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
       position: _position,
       isLast: widget.isLast,
       playHint: widget.playHint,
+      hopiumMode: widget.hopiumMode,
       onHintConsumed: () =>
           context.read<AppStateNotifier>().markStackSwipeHinted(),
     );
@@ -386,6 +395,7 @@ class _GroupedCardRow extends StatelessWidget {
     required this.position,
     required this.isLast,
     this.playHint = false,
+    this.hopiumMode = false,
     this.onHintConsumed,
   });
 
@@ -396,6 +406,7 @@ class _GroupedCardRow extends StatelessWidget {
   final StackCardPosition position;
   final bool isLast;
   final bool playHint;
+  final bool hopiumMode;
   final VoidCallback? onHintConsumed;
 
   @override
@@ -411,6 +422,7 @@ class _GroupedCardRow extends StatelessWidget {
           currency: currency,
           position: position,
           playHint: playHint,
+          hopiumMode: hopiumMode,
           onHintConsumed: onHintConsumed,
         ),
         if (!isLast)

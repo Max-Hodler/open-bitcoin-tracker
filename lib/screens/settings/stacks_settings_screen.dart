@@ -85,6 +85,13 @@ class StacksSettingsScreen extends StatelessWidget {
                     enabled: true,
                     onChanged: (v) => app.setShowPortfolio(v),
                   ),
+                if (!lock.isLocked && app.stacks.isNotEmpty)
+                  SettingsToggleTile(
+                    label: l10n.settingsHopiumMode,
+                    value: app.hopiumMode,
+                    enabled: true,
+                    onChanged: (v) => app.setHopiumMode(v),
+                  ),
               ],
             ),
             const SizedBox(height: AppSpacing.lg),

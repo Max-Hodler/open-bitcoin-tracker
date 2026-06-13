@@ -358,6 +358,10 @@
   "@settingsPortfolioTotal": {
     "description": "Stacks settings toggle that shows or hides the portfolio total card on home (only visible with 2+ stacks)."
   },
+  "settingsHopiumMode": "Hopium mode",
+  "@settingsHopiumMode": {
+    "description": "Stacks settings toggle. When on, a stack card can be swiped to the left to reveal what it would be worth at round future BTC prices (100K, 200K … 1M, then 2M … 10M)."
+  },
   "settingsBitcoinDisplayMode": "Bitcoin unit",
   "@settingsBitcoinDisplayMode": {
     "description": "Settings row label for the segmented control that chooses how Bitcoin amounts are displayed across the app: as satoshi counts ('sats') or as BTC with up to 8 decimal places."
