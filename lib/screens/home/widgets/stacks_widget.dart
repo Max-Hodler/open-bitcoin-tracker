@@ -15,10 +15,9 @@ import '../../../widgets/stack_card.dart' show StackCard, StackCardPosition;
 import '../../edit_stack_screens.dart';
 import '../../new_stack_screens.dart';
 import '../../settings/reorder_stacks_screen.dart';
-import '../../settings/stacks_settings_screen.dart';
 import 'range_pills_row.dart';
 
-enum _StackMenuAction { edit, rename, settings, delete }
+enum _StackMenuAction { edit, rename, delete }
 
 class HomeStackList extends StatelessWidget {
   const HomeStackList({
@@ -190,17 +189,6 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacing.md),
-                MenuActionGroup(
-                  children: [
-                    MenuActionTile(
-                      leading: const Icon(Icons.settings_outlined),
-                      label: l10n.stackMenuStacksSettings,
-                      onTap: () =>
-                          Navigator.of(ctx).pop(_StackMenuAction.settings),
-                    ),
-                  ],
-                ),
 
               ],
             ),
@@ -219,12 +207,6 @@ class _SwipeableStackCardState extends State<_SwipeableStackCard> {
           builder: (_) => EditStackNameScreen(stackId: widget.stack.id),
         ));
 
-      case _StackMenuAction.settings:
-        // Pushed onto the home navigator (not the settings stack), so the
-        // Stacks settings page's back button returns straight to home.
-        await Navigator.of(iconContext).push(MaterialPageRoute<void>(
-          builder: (_) => const StacksSettingsScreen(),
-        ));
       case _StackMenuAction.delete:
         final confirm = await _showDeleteDialog(iconContext);
         if (confirm == true && iconContext.mounted) {

@@ -150,7 +150,6 @@
   "homeUnlockStacks": "Stacks entsperren",
   "stackMenuUpdateAmount": "Betrag aktualisieren",
   "stackMenuChangeName": "Namen ändern",
-  "stackMenuStacksSettings": "Stacks-Einstellungen",
   "rangePickerLongTitle": "Zeitraum wählen",
   "rangePickerYearsFull": "{count, plural, =1{1 Jahr} other{{count} Jahre}}",
   "rangePickerMonthsFull": "{count, plural, =1{1 Monat} other{{count} Monate}}",

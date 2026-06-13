@@ -150,7 +150,6 @@
   "homeUnlockStacks": "Mở khóa Stacks",
   "stackMenuUpdateAmount": "Cập nhật số lượng",
   "stackMenuChangeName": "Đổi tên",
-  "stackMenuStacksSettings": "Cài đặt Stacks",
   "rangePickerLongTitle": "Chọn khoảng",
   "rangePickerYearsFull": "{count, plural, =1{1 Năm} other{{count} Năm}}",
   "rangePickerMonthsFull": "{count, plural, =1{1 Tháng} other{{count} Tháng}}",

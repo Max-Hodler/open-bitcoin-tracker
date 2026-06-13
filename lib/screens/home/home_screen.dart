@@ -16,7 +16,6 @@ import '../../widgets/stack_card.dart';
 import '../new_stack_screens.dart';
 import '../pin_entry_screen.dart';
 import '../settings/settings_dialogs.dart';
-import '../settings/stacks_settings_screen.dart';
 import 'header/home_header.dart';
 import 'header/home_header_section.dart';
 import 'widgets/home_buttons.dart';
@@ -24,7 +23,7 @@ import 'widgets/home_hint_card.dart';
 import 'widgets/locked_stacks_skeleton.dart';
 import 'widgets/stacks_widget.dart';
 
-enum _TotalMenuAction { hide, settings, moveToTop, moveToBottom }
+enum _TotalMenuAction { hide, moveToTop, moveToBottom }
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -425,17 +424,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacing.md),
-                MenuActionGroup(
-                  children: [
-                    MenuActionTile(
-                      leading: const Icon(Icons.settings_outlined),
-                      label: l10n.stackMenuStacksSettings,
-                      onTap: () =>
-                          Navigator.of(ctx).pop(_TotalMenuAction.settings),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),
@@ -450,10 +438,6 @@ class _HomeScreenState extends State<HomeScreen> {
         app.setTotalAtTop(false);
       case _TotalMenuAction.hide:
         app.setShowPortfolio(false);
-      case _TotalMenuAction.settings:
-        await Navigator.of(iconContext).push(MaterialPageRoute<void>(
-          builder: (_) => const StacksSettingsScreen(),
-        ));
       case null:
         break;
     }
