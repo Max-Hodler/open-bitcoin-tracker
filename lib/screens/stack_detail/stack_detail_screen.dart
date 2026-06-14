@@ -333,11 +333,23 @@ class _PastValuesSectionState extends State<_PastValuesSection> {
         value: price * widget.btcAmount,
       ));
     }
-    // All-time: the very first data point.
+    // All-time: the very first data point. Label it with how many years ago
+    // that point falls, rounded to the nearest whole year.
+    final allTimeYears =
+        ((now.difference(firstT).inDays) / 365.25).round();
     allRows.add(_PastRow(
-      label: l10n.stackDetailAllTime,
+      label: l10n.stackDetailYearAgo(allTimeYears),
       sublabel: dateFmt.format(firstT),
       value: history.first.price * widget.btcAmount,
+    ));
+    // 2009: Bitcoin's genesis year, dated to the genesis block (Jan 3, 2009).
+    // No historic price data exists, so the stack was worth nothing in fiat
+    // terms — show a value of 0.
+    final genesis = DateTime(2009, 1, 3);
+    allRows.add(_PastRow(
+      label: l10n.stackDetailYearAgo(now.year - genesis.year),
+      sublabel: dateFmt.format(genesis),
+      value: 0,
     ));
 
     final needsToggle = allRows.length > _kDefaultRows;

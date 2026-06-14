@@ -194,7 +194,6 @@
   "homeEmptyStacksHint": "Tocca @+ in alto a destra per aggiungere uno stack di bitcoin",
   "stackDetailWorthBackThen": "Il valore allora",
   "stackDetailYearAgo": "{count, plural, =1{1 anno fa} other{{count} anni fa}}",
-  "stackDetailAllTime": "Dall'inizio",
   "stackDetailWhenBtcReaches": "Quando BTC raggiunge",
   "stackDetailWillBeWorth": "Questo stack varrà"
 }

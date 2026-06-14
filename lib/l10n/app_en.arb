@@ -840,10 +840,6 @@
       }
     }
   },
-  "stackDetailAllTime": "All-time",
-  "@stackDetailAllTime": {
-    "description": "Row label for the oldest available data point in the 'Worth back then' table on the stack detail screen."
-  },
   "stackDetailWhenBtcReaches": "When BTC reaches",
   "@stackDetailWhenBtcReaches": {
     "description": "Label on the left side of the future-value slider header row on the stack detail screen. The target BTC price is shown on the right."

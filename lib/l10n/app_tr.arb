@@ -194,7 +194,6 @@
   "homeEmptyStacksHint": "Bitcoin stack'i eklemek için sağ üstteki @+ simgesine dokunun",
   "stackDetailWorthBackThen": "O zamanki değeri",
   "stackDetailYearAgo": "{count, plural, =1{1 yıl önce} other{{count} yıl önce}}",
-  "stackDetailAllTime": "Başlangıçtan beri",
   "stackDetailWhenBtcReaches": "BTC ulaştığında",
   "stackDetailWillBeWorth": "Bu stack değeri olacak"
 }

@@ -194,7 +194,6 @@
   "homeEmptyStacksHint": "Chạm @+ ở góc trên bên phải để thêm một stack bitcoin",
   "stackDetailWorthBackThen": "Giá trị khi đó",
   "stackDetailYearAgo": "{count} năm trước",
-  "stackDetailAllTime": "Từ ban đầu",
   "stackDetailWhenBtcReaches": "Khi BTC đạt",
   "stackDetailWillBeWorth": "Stack này sẽ trị giá"
 }

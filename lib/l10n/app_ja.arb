@@ -194,7 +194,6 @@
   "homeEmptyStacksHint": "右上の @+ をタップして Bitcoin の stack を追加",
   "stackDetailWorthBackThen": "当時の価値",
   "stackDetailYearAgo": "{count}年前",
-  "stackDetailAllTime": "最初から",
   "stackDetailWhenBtcReaches": "BTCが達したとき",
   "stackDetailWillBeWorth": "このstackの価値"
 }

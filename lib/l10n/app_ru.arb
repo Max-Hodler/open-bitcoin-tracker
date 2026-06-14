@@ -194,7 +194,6 @@
   "homeEmptyStacksHint": "Нажмите @+ в правом верхнем углу, чтобы добавить stack биткоина",
   "stackDetailWorthBackThen": "Стоимость тогда",
   "stackDetailYearAgo": "{count, plural, =1{1 год назад} few{{count} года назад} other{{count} лет назад}}",
-  "stackDetailAllTime": "С самого начала",
   "stackDetailWhenBtcReaches": "Когда BTC достигнет",
   "stackDetailWillBeWorth": "Этот stack будет стоить"
 }
