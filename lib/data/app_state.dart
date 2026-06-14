@@ -6,7 +6,7 @@ class AppState {
     this.stacks = const [],
     this.currency = Currency.usd,
     this.selectedCurrencies = const [Currency.usd, Currency.eur, Currency.gbp],
-    this.showPortfolio = true,
+    this.showPortfolio = false,
     this.showChart = true,
     this.chartHeight = ChartHeight.xl,
     this.theme = AppTheme.system,
@@ -37,7 +37,7 @@ class AppState {
     this.totalColorKey,
     this.swipeChipHintDismissed = false,
     this.showPriceDelta = false,
-    this.totalAtTop = false,
+    this.totalAtTop = true,
     this.hasEverAddedStack = false,
   });
 
@@ -267,7 +267,7 @@ class AppState {
       stacks: stacks,
       currency: currency,
       selectedCurrencies: selectedCurrencies,
-      showPortfolio: json['showPortfolio'] as bool? ?? true,
+      showPortfolio: json['showPortfolio'] as bool? ?? false,
       showChart: json['showChart'] as bool? ?? true,
       chartHeight: ChartHeight.fromCode(json['chartHeight'] as String?),
       theme: fromCode('theme', AppTheme.fromCode),
@@ -340,7 +340,7 @@ class AppState {
       swipeChipHintDismissed:
           json['swipeChipHintDismissed'] as bool? ?? false,
       showPriceDelta: json['showPriceDelta'] as bool? ?? false,
-      totalAtTop: json['totalAtTop'] as bool? ?? false,
+      totalAtTop: json['totalAtTop'] as bool? ?? true,
       // Migrate pre-flag installs: anyone already holding stacks has obviously
       // added one before, so seed the flag from the loaded list when the key
       // is absent rather than re-teaching them on the next launch.
