@@ -340,7 +340,6 @@ class _HomeScreenState extends State<HomeScreen> {
           totalCard: showTotal
               ? _totalCard(context, app, totalSats, currency)
               : null,
-          totalSats: showTotal ? totalSats : null,
           totalAtTop: app.totalAtTop,
         ),
     ];
