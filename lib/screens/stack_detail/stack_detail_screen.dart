@@ -73,15 +73,29 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
             Navigator.of(context).maybePop();
           },
         ),
-        centerTitle: true,
-        title: Text(
-          stack.name,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: AppTypography.title.copyWith(
-            color: cs.onSurfaceVariant,
-            fontWeight: FontWeight.w500,
-          ),
+        centerTitle: false,
+        titleSpacing: AppSpacing.xs,
+        title: Row(
+          children: [
+            StackAvatar(
+              name: stack.name,
+              imageData: stack.imageData,
+              colorKey: stack.colorKey,
+              size: 36,
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                stack.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTypography.title.copyWith(
+                  color: cs.onSurface,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
         ),
         actions: [
           IconButton(
@@ -146,43 +160,29 @@ class _Header extends StatelessWidget {
         0;
     final value = Sats.toFiat(stack.sats, liveRate);
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        StackAvatar(
-          name: stack.name,
-          imageData: stack.imageData,
-          colorKey: stack.colorKey,
-          size: 56,
+        Text(
+          formatFiat(value, currency, decimalsUnder10: true).full,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: AppTypography.display.copyWith(
+            fontSize: 30,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.5,
+            color: cs.onSurface,
+            fontFeatures: const [ui.FontFeature.tabularFigures()],
+          ),
         ),
-        const SizedBox(width: AppSpacing.md),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                formatFiat(value, currency, decimalsUnder10: true).full,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTypography.display.copyWith(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: -0.5,
-                  color: cs.onSurface,
-                  fontFeatures: const [ui.FontFeature.tabularFigures()],
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                formatBtcAmount(stack.sats,
-                    hidden: stack.isHidden, mode: BtcDisplayMode.btc),
-                style: AppTypography.body.copyWith(
-                  fontSize: 15,
-                  color: cs.onSurfaceVariant,
-                  fontFeatures: const [ui.FontFeature.tabularFigures()],
-                ),
-              ),
-            ],
+        const SizedBox(height: 2),
+        Text(
+          formatBtcAmount(stack.sats,
+              hidden: stack.isHidden, mode: BtcDisplayMode.btc),
+          style: AppTypography.body.copyWith(
+            fontSize: 15,
+            color: cs.onSurfaceVariant,
+            fontFeatures: const [ui.FontFeature.tabularFigures()],
           ),
         ),
       ],
