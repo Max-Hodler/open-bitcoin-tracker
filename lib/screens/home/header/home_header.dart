@@ -252,8 +252,8 @@ class _HomeHeaderState extends State<HomeHeader> {
     if (loading) {
       return Center(
         child: SizedBox(
-          width: 20,
-          height: 20,
+          width: 40,
+          height: 40,
           child: CircularProgressIndicator(
             strokeWidth: 2,
             color: p.bitcoinOrange,
