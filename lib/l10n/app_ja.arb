@@ -192,5 +192,10 @@
   "currencyLabelJpy": "日本円",
   "converterModeBtcFiat": "法定通貨 - BTC",
   "converterModeBtcSats": "Sats - BTC",
-  "homeEmptyStacksHint": "右上の @+ をタップして Bitcoin の stack を追加"
+  "homeEmptyStacksHint": "右上の @+ をタップして Bitcoin の stack を追加",
+  "stackDetailWorthBackThen": "当時の価値",
+  "stackDetailYearAgo": "{count}年前",
+  "stackDetailAllTime": "最初から",
+  "stackDetailWhenBtcReaches": "BTCが達したとき",
+  "stackDetailWillBeWorth": "このstackの価値"
 }

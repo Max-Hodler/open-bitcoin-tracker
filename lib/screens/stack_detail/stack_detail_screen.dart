@@ -289,6 +289,7 @@ class _PastValuesSectionState extends State<_PastValuesSection> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     final controller = context.watch<LivePriceController>();
     final usdRate = controller.rates.usd ?? 0;
     final currentPrice = controller.rates.forCurrency(widget.currency) ?? 0;
@@ -312,14 +313,14 @@ class _PastValuesSectionState extends State<_PastValuesSection> {
       final price = _priceAt(history, at.millisecondsSinceEpoch);
       if (price == null) continue;
       allRows.add(_PastRow(
-        label: '$y ${y == 1 ? 'year' : 'years'} ago',
+        label: l10n.stackDetailYearAgo(y),
         sublabel: dateFmt.format(at),
         value: price * widget.btcAmount,
       ));
     }
     // All-time: the very first data point.
     allRows.add(_PastRow(
-      label: 'All-time',
+      label: l10n.stackDetailAllTime,
       sublabel: dateFmt.format(firstT),
       value: history.first.price * widget.btcAmount,
     ));
@@ -330,7 +331,7 @@ class _PastValuesSectionState extends State<_PastValuesSection> {
     final extraRows = needsToggle ? allRows.skip(_kDefaultRows).toList() : <_PastRow>[];
 
     return _Section(
-      title: 'Worth back then',
+      title: l10n.stackDetailWorthBackThen,
       child: Column(
         children: [
           for (var i = 0; i < alwaysRows.length; i++) ...[

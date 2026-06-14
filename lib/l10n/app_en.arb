@@ -829,5 +829,31 @@
   "homeEmptyStacksHint": "Tap @+ on the top right to add a bitcoin stack",
   "@homeEmptyStacksHint": {
     "description": "Centered placeholder shown in the empty space below the chart when the user has no stacks yet, teaching them to tap the + button to add one. The token @+ is replaced at runtime with the + icon and must be kept verbatim in translations."
+  },
+  "stackDetailWorthBackThen": "Worth back then",
+  "@stackDetailWorthBackThen": {
+    "description": "Section title on the stack detail screen above the table of past values (what the stack was worth 1 year ago, 2 years ago, etc.)."
+  },
+  "stackDetailYearAgo": "{count, plural, =1{1 year ago} other{{count} years ago}}",
+  "@stackDetailYearAgo": {
+    "description": "Row label in the 'Worth back then' table. count is the number of years ago (1, 2, 3…).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "stackDetailAllTime": "All-time",
+  "@stackDetailAllTime": {
+    "description": "Row label for the oldest available data point in the 'Worth back then' table on the stack detail screen."
+  },
+  "stackDetailWhenBtcReaches": "When BTC reaches",
+  "@stackDetailWhenBtcReaches": {
+    "description": "Label on the left side of the future-value slider header row on the stack detail screen. The target BTC price is shown on the right."
+  },
+  "stackDetailWillBeWorth": "This stack will be worth",
+  "@stackDetailWillBeWorth": {
+    "description": "Label above the projected fiat value on the future-value slider card on the stack detail screen."
   }
 }

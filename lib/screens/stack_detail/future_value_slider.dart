@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/app_enums.dart';
 import '../../data/fiat.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../services/app_haptics.dart';
 import '../../theme/theme.dart';
 
@@ -88,6 +89,7 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     final p = context.palette;
     final price = _price;
     final value = price * widget.btcAmount;
@@ -99,7 +101,7 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'When BTC reaches',
+              l10n.stackDetailWhenBtcReaches,
               style: AppTypography.body.copyWith(
                 fontSize: 16,
                 color: cs.onSurfaceVariant,
@@ -135,7 +137,7 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
         const SizedBox(height: AppSpacing.md),
         Center(
           child: Text(
-            'This stack will be worth',
+            l10n.stackDetailWillBeWorth,
             style: AppTypography.body.copyWith(
               fontSize: 16,
               color: cs.onSurfaceVariant,

@@ -192,5 +192,10 @@
   "currencyLabelJpy": "Yen japonés",
   "converterModeBtcFiat": "Fiat - BTC",
   "converterModeBtcSats": "Sats - BTC",
-  "homeEmptyStacksHint": "Toca @+ en la parte superior derecha para añadir un stack de bitcoin"
+  "homeEmptyStacksHint": "Toca @+ en la parte superior derecha para añadir un stack de bitcoin",
+  "stackDetailWorthBackThen": "Lo que valía entonces",
+  "stackDetailYearAgo": "{count, plural, =1{Hace 1 año} other{Hace {count} años}}",
+  "stackDetailAllTime": "Desde el principio",
+  "stackDetailWhenBtcReaches": "Cuando BTC alcance",
+  "stackDetailWillBeWorth": "Este stack valdrá"
 }
