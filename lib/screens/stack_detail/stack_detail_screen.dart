@@ -317,40 +317,23 @@ class _PastValuesSectionState extends State<_PastValuesSection> {
     if (history.length < 2) return const SizedBox.shrink();
 
     final now = DateTime.now();
-    final firstT = DateTime.fromMillisecondsSinceEpoch(history.first.t);
-    final yearsOfHistory = now.year - firstT.year;
     final locale = Localizations.localeOf(context).toString();
     final dateFmt = DateFormat.yMMMd(locale);
 
+    // One row per year, all the way back to Bitcoin's genesis year (2009),
+    // every row anchored to today's calendar day so the dates line up. Years
+    // before any price data existed (2009, and 2010 before mid-July) had no
+    // fiat price, so the stack was worth nothing then — show a value of 0.
     final allRows = <_PastRow>[];
-    for (var y = 1; y <= yearsOfHistory; y++) {
+    for (var y = 1; now.year - y >= 2009; y++) {
       final at = DateTime(now.year - y, now.month, now.day);
       final price = _priceAt(history, at.millisecondsSinceEpoch);
-      if (price == null) continue;
       allRows.add(_PastRow(
         label: l10n.stackDetailYearAgo(y),
         sublabel: dateFmt.format(at),
-        value: price * widget.btcAmount,
+        value: (price ?? 0) * widget.btcAmount,
       ));
     }
-    // All-time: the very first data point. Label it with how many years ago
-    // that point falls, rounded to the nearest whole year.
-    final allTimeYears =
-        ((now.difference(firstT).inDays) / 365.25).round();
-    allRows.add(_PastRow(
-      label: l10n.stackDetailYearAgo(allTimeYears),
-      sublabel: dateFmt.format(firstT),
-      value: history.first.price * widget.btcAmount,
-    ));
-    // 2009: Bitcoin's genesis year, dated to the genesis block (Jan 3, 2009).
-    // No historic price data exists, so the stack was worth nothing in fiat
-    // terms — show a value of 0.
-    final genesis = DateTime(2009, 1, 3);
-    allRows.add(_PastRow(
-      label: l10n.stackDetailYearAgo(now.year - genesis.year),
-      sublabel: dateFmt.format(genesis),
-      value: 0,
-    ));
 
     final needsToggle = allRows.length > _kDefaultRows;
     final alwaysRows =
