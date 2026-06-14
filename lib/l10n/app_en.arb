@@ -612,7 +612,7 @@
   "@homeAddAStack": {
     "description": "Label of the large standalone button shown in the empty state (no stacks yet) that starts adding the first stack. Uses the article ('a stack') because as a full-width empty-state button it reads more naturally than the terse menu form."
   },
-  "homeRangeChipHint": "Tap and hold a range to change it.",
+  "homeRangeChipHint": "Tap the selected range again to change it.",
   "@homeRangeChipHint": {
     "description": "One-time hint shown below the chart range buttons, teaching that long-pressing a range button opens a picker to change which range it shows. Disappears permanently after the user long-presses any range button for the first time."
   },

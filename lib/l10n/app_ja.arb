@@ -144,7 +144,7 @@
   "newStackTitle": "Stack を追加",
   "homeAddStack": "Stack を追加",
   "homeAddAStack": "Stack を追加",
-  "homeRangeChipHint": "期間を長押しすると変更できます。",
+  "homeRangeChipHint": "選択中の期間をもう一度タップすると変更できます。",
   "homeSwipeChipHint": "期間を上下にスワイプして変更することもできます。",
   "homeConverter": "コンバーター",
   "homeUnlockStacks": "Stacks のロックを解除",

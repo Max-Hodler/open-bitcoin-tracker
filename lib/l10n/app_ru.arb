@@ -144,7 +144,7 @@
   "newStackTitle": "Добавить Stack",
   "homeAddStack": "Добавить Stack",
   "homeAddAStack": "Добавить Stack",
-  "homeRangeChipHint": "Удерживайте диапазон, чтобы изменить его.",
+  "homeRangeChipHint": "Нажмите выбранный диапазон ещё раз, чтобы изменить его.",
   "homeSwipeChipHint": "Также можно провести вверх или вниз по диапазону, чтобы его изменить.",
   "homeConverter": "Конвертер",
   "homeUnlockStacks": "Разблокировать Stacks",
