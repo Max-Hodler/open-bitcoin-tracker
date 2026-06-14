@@ -61,7 +61,12 @@ class ReorderStacksScreen extends StatelessWidget {
                     padding: EdgeInsets.only(
                       bottom: index == stacks.length - 1 ? 0 : AppSpacing.xs,
                     ),
-                    child: ReorderRow(index: index, label: s.name),
+                    child: ReorderRow(
+                      index: index,
+                      label: s.name,
+                      imageData: s.imageData,
+                      colorKey: s.colorKey,
+                    ),
                   );
                 },
               ),

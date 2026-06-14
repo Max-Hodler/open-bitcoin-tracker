@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
+import 'stack_avatar.dart';
 
 /// A single draggable row used in reorder lists. [overflow] defaults to
 /// [TextOverflow.ellipsis]; pass [TextOverflow.visible] when the caller wants
@@ -10,11 +11,15 @@ class ReorderRow extends StatelessWidget {
     super.key,
     required this.index,
     required this.label,
+    this.imageData,
+    this.colorKey,
     this.overflow = TextOverflow.ellipsis,
   });
 
   final int index;
   final String label;
+  final String? imageData;
+  final String? colorKey;
   final TextOverflow overflow;
 
   @override
@@ -30,6 +35,13 @@ class ReorderRow extends StatelessWidget {
         ),
         child: Row(
           children: [
+            StackAvatar(
+              name: label,
+              imageData: imageData,
+              colorKey: colorKey,
+              size: 32,
+            ),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
                 label,
