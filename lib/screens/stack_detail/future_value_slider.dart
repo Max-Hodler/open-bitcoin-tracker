@@ -150,6 +150,7 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
             ),
           ),
         ),
+        const SizedBox(height: AppSpacing.xs),
         Center(
           child: Text(
             formatFiat(value, widget.currency, decimalsUnder10: false).full,
@@ -159,7 +160,7 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
               fontSize: 22,
               fontWeight: FontWeight.w600,
               letterSpacing: -0.5,
-              color: cs.onSurfaceVariant,
+              color: cs.onSurface,
               fontFeatures: const [ui.FontFeature.tabularFigures()],
             ),
           ),

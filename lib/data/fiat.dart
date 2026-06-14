@@ -160,6 +160,7 @@ String formatBtcAmount(
   int sats, {
   bool hidden = false,
   BtcDisplayMode mode = BtcDisplayMode.sats,
+  bool tight = false,
 }) {
   if (hidden) return '**** **** ****';
   final amount = switch (mode) {
@@ -167,7 +168,8 @@ String formatBtcAmount(
       NumberFormat.decimalPattern(Intl.defaultLocale).format(sats),
     BtcDisplayMode.btc => _formatBtcFromSats(sats),
   };
-  return symbolAfterAmount ? '$amount ₿' : '₿ $amount';
+  final gap = tight ? '' : ' ';
+  return symbolAfterAmount ? '$amount${gap}₿' : '₿$gap$amount';
 }
 
 /// Renders [sats] as a BTC amount in the active locale: thousands grouping on

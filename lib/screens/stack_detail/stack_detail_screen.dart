@@ -239,6 +239,9 @@ class _Header extends StatelessWidget {
           (c) => c.rates.forCurrency(currency),
         ) ??
         0;
+    final btcDisplayMode = context.select<AppStateNotifier, BtcDisplayMode>(
+      (app) => app.state.btcDisplayMode,
+    );
     final value = Sats.toFiat(stack.sats, liveRate);
 
     return Column(
@@ -250,7 +253,7 @@ class _Header extends StatelessWidget {
           )),
           child: Text(
             formatBtcAmount(stack.sats,
-                hidden: stack.isHidden, mode: BtcDisplayMode.btc),
+                hidden: stack.isHidden, mode: btcDisplayMode, tight: true),
             style: AppTypography.display.copyWith(
               fontSize: 30,
               fontWeight: FontWeight.w600,
@@ -262,7 +265,7 @@ class _Header extends StatelessWidget {
         ),
         const SizedBox(height: 2),
         Text(
-          formatFiat(value, currency, decimalsUnder10: true).full,
+          formatFiat(value, currency, decimalsUnder10: true).tight,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: AppTypography.body.copyWith(
