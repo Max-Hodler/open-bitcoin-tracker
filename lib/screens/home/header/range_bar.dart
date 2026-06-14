@@ -89,6 +89,12 @@ class _RangeBarState extends State<RangeBar>
   // and snap to it.
   List<Rect> _chipRects = const [];
 
+  // Per-slot width of just the label text (no chip padding), supplied by the
+  // build. Used to highlight a hovered slot only once the dragged pill's center
+  // is actually over the range's name — not as soon as it enters the padded
+  // chip box. Empty until the first build populates it.
+  List<double> _chipLabelWidths = const [];
+
   // While the user is dragging the pill, this holds its free left edge (Stack
   // coordinates); null when not dragging. During a drag the pill follows the
   // finger un-animated; on release it snaps to the nearest slot.
@@ -138,24 +144,33 @@ class _RangeBarState extends State<RangeBar>
     return true;
   }
 
-  // Slot whose chip rect horizontally contains [centerX] (the dragged pill's
-  // center), falling back to the nearest slot center when the pill is between
-  // chips or past the ends. Used to highlight the hovered label and to pick the
-  // snap target on release.
-  int _slotForCenter(double centerX) {
-    if (_chipRects.isEmpty) return _dragStartIndex;
-    var best = 0;
-    var bestDist = double.infinity;
+  // The label's horizontal span within slot [index]'s chip rect: the label is
+  // centered in the chip, so this is a [labelWidth]-wide band around the chip
+  // center. Used to decide when the dragged pill's center has "reached the name"
+  // and the slot should flip to its selected styling.
+  ({double left, double right})? _labelSpan(int index) {
+    if (index < 0 ||
+        index >= _chipRects.length ||
+        index >= _chipLabelWidths.length) {
+      return null;
+    }
+    final center = _chipRects[index].center.dx;
+    final half = _chipLabelWidths[index] / 2;
+    return (left: center - half, right: center + half);
+  }
+
+  // Slot whose label band horizontally contains [centerX], or -1 if the pill's
+  // center sits in the padding/gap between names. Drives the live hover
+  // highlight: a slot only goes "selected" once the pill center is over its
+  // name, not merely inside its (padded) chip box.
+  int _slotForLabel(double centerX) {
     for (var i = 0; i < _chipRects.length; i++) {
-      final r = _chipRects[i];
-      if (centerX >= r.left && centerX <= r.right) return i;
-      final dist = (centerX - r.center.dx).abs();
-      if (dist < bestDist) {
-        bestDist = dist;
-        best = i;
+      final span = _labelSpan(i);
+      if (span != null && centerX >= span.left && centerX <= span.right) {
+        return i;
       }
     }
-    return best;
+    return -1;
   }
 
   void _onPillDragStart(int selectedIndex, DragStartDetails _) {
@@ -176,7 +191,11 @@ class _RangeBarState extends State<RangeBar>
     final minLeft = _chipRects.first.left;
     final maxLeft = _chipRects.last.right - width;
     final next = (left + d.delta.dx).clamp(minLeft, maxLeft);
-    final hover = _slotForCenter(next + width / 2);
+    // Highlight a slot only once the pill's center is over that slot's name; in
+    // the padding/gap between names keep the last highlighted slot rather than
+    // flipping early or going blank.
+    final overLabel = _slotForLabel(next + width / 2);
+    final hover = overLabel >= 0 ? overLabel : _dragHoverIndex;
     setState(() {
       _dragLeft = next;
       if (hover != _dragHoverIndex) {
@@ -336,6 +355,19 @@ class _RangeBarState extends State<RangeBar>
                     : range == BtcRange.all
                         ? 4
                         : -1;
+
+    // Per-slot label-text widths (row order), so a drag highlights a slot only
+    // once the pill's center is over the name. The first four are each slot's
+    // cycling-label floor; the All slot uses its own label width (without the
+    // +18 chip padding the chip reserves for tap area).
+    final allLabelWidth = labelWidth(_btcRangeLabel(context, BtcRange.all));
+    _chipLabelWidths = [
+      daysOverflowLabelWidth,
+      weeksOverflowLabelWidth,
+      monthsOverflowLabelWidth,
+      overflowLabelWidth,
+      allLabelWidth,
+    ];
 
     // Build each range chip wrapped in an Expanded slot. The measurement key
     // goes on the chip itself (not the slot), so the pill hugs the chip's
@@ -573,10 +605,7 @@ class _RangeBarState extends State<RangeBar>
                               selected: slotSelected(4),
                               onTap: () => onRange(BtcRange.all),
                               chartColor: chartColor,
-                              minLabelWidth: labelWidth(
-                                    _btcRangeLabel(context, BtcRange.all),
-                                  ) +
-                                  18,
+                              minLabelWidth: allLabelWidth + 18,
                             ),
                           ),
                           if (onSettings != null) ...[
