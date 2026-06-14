@@ -164,23 +164,23 @@ class _Header extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          formatFiat(value, currency, decimalsUnder10: true).full,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+          formatBtcAmount(stack.sats,
+              hidden: stack.isHidden, mode: BtcDisplayMode.btc),
           style: AppTypography.display.copyWith(
             fontSize: 30,
             fontWeight: FontWeight.w600,
             letterSpacing: -0.5,
-            color: cs.onSurface,
+            color: context.palette.bitcoinOrange,
             fontFeatures: const [ui.FontFeature.tabularFigures()],
           ),
         ),
         const SizedBox(height: 2),
         Text(
-          formatBtcAmount(stack.sats,
-              hidden: stack.isHidden, mode: BtcDisplayMode.btc),
+          formatFiat(value, currency, decimalsUnder10: true).full,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: AppTypography.body.copyWith(
-            fontSize: 15,
+            fontSize: 30,
             color: cs.onSurfaceVariant,
             fontFeatures: const [ui.FontFeature.tabularFigures()],
           ),
