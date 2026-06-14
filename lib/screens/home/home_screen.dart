@@ -293,7 +293,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               else
                 SliverPadding(
-                  padding: const EdgeInsets.only(top: AppSpacing.md),
+                  padding: const EdgeInsets.only(top: AppSpacing.xs),
                   sliver: SliverToBoxAdapter(
                     child: content,
                   ),
