@@ -296,7 +296,7 @@ class _PastValuesSection extends StatefulWidget {
   State<_PastValuesSection> createState() => _PastValuesSectionState();
 }
 
-const int _kDefaultRows = 5;
+const int _kDefaultRows = 4;
 
 class _PastValuesSectionState extends State<_PastValuesSection> {
   bool _expanded = false;
