@@ -105,27 +105,31 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
         ),
         centerTitle: false,
         titleSpacing: AppSpacing.xs,
-        title: Row(
-          children: [
-            StackAvatar(
-              name: stack.name,
-              imageData: stack.imageData,
-              colorKey: stack.colorKey,
-              size: 36,
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Text(
-                stack.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTypography.title.copyWith(
-                  color: cs.onSurface,
-                  fontWeight: FontWeight.w500,
+        title: GestureDetector(
+          onTap: () => _handleAction(_StackAction.rename, stack),
+          behavior: HitTestBehavior.opaque,
+          child: Row(
+            children: [
+              StackAvatar(
+                name: stack.name,
+                imageData: stack.imageData,
+                colorKey: stack.colorKey,
+                size: 36,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  stack.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTypography.title.copyWith(
+                    color: cs.onSurface,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         actions: [
           Padding(
@@ -200,7 +204,7 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
           AppSpacing.xl * 2,
         ),
         children: [
-          _Header(stack: stack, currency: currency),
+          _Header(stack: stack, currency: currency, stackId: stack.id),
           const SizedBox(height: AppSpacing.xl),
           _PastValuesSection(currency: currency, btcAmount: btcAmount),
           const SizedBox(height: AppSpacing.xl),
@@ -213,10 +217,15 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
 
 /// Stack avatar + name + current fiat value and BTC amount.
 class _Header extends StatelessWidget {
-  const _Header({required this.stack, required this.currency});
+  const _Header({
+    required this.stack,
+    required this.currency,
+    required this.stackId,
+  });
 
   final model.Stack stack;
   final Currency currency;
+  final String stackId;
 
   @override
   Widget build(BuildContext context) {
@@ -230,15 +239,20 @@ class _Header extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          formatBtcAmount(stack.sats,
-              hidden: stack.isHidden, mode: BtcDisplayMode.btc),
-          style: AppTypography.display.copyWith(
-            fontSize: 30,
-            fontWeight: FontWeight.w600,
-            letterSpacing: -0.5,
-            color: context.palette.bitcoinOrange,
-            fontFeatures: const [ui.FontFeature.tabularFigures()],
+        GestureDetector(
+          onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(
+            builder: (_) => EditStackAmountScreen(stackId: stackId),
+          )),
+          child: Text(
+            formatBtcAmount(stack.sats,
+                hidden: stack.isHidden, mode: BtcDisplayMode.btc),
+            style: AppTypography.display.copyWith(
+              fontSize: 30,
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.5,
+              color: context.palette.bitcoinOrange,
+              fontFeatures: const [ui.FontFeature.tabularFigures()],
+            ),
           ),
         ),
         const SizedBox(height: 2),
