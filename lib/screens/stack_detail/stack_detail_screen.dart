@@ -9,6 +9,7 @@ import '../../data/fiat.dart';
 import '../../data/sats.dart';
 import '../../data/app_enums.dart';
 import '../../data/stack.dart' as model;
+import '../../l10n/generated/app_localizations.dart';
 import '../../services/app_haptics.dart';
 import '../../state/state.dart';
 import '../../theme/theme.dart';
@@ -32,7 +33,11 @@ class StackDetailScreen extends StatefulWidget {
   State<StackDetailScreen> createState() => _StackDetailScreenState();
 }
 
+enum _StackAction { edit, rename, delete }
+
 class _StackDetailScreenState extends State<StackDetailScreen> {
+  final _menuKey = GlobalKey<PopupMenuButtonState<_StackAction>>();
+
   // Resolve the live stack from the notifier so an amount/name/avatar edit made
   // from the overflow menu reflects here on return without a manual refresh.
   model.Stack? _stackOf(AppStateNotifier app) {
@@ -42,9 +47,29 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
     return null;
   }
 
+  Future<void> _handleAction(_StackAction action, model.Stack stack) async {
+    switch (action) {
+      case _StackAction.edit:
+        await Navigator.of(context).push(MaterialPageRoute<void>(
+          builder: (_) => EditStackAmountScreen(stackId: stack.id),
+        ));
+      case _StackAction.rename:
+        await Navigator.of(context).push(MaterialPageRoute<void>(
+          builder: (_) => EditStackNameScreen(stackId: stack.id),
+        ));
+      case _StackAction.delete:
+        final confirm = await showDeleteStackDialog(context);
+        if (confirm == true && context.mounted) {
+          context.read<AppStateNotifier>().removeStack(stack.id);
+          // The build's null-stack guard pops us back home.
+        }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     final app = context.watch<AppStateNotifier>();
     final stack = _stackOf(app);
 
@@ -59,6 +84,11 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
 
     final currency = app.currency;
     final btcAmount = stack.sats / Sats.perBtc;
+    final itemStyle = AppTypography.body.copyWith(
+      fontSize: 16,
+      fontWeight: FontWeight.w400,
+      color: cs.onSurface,
+    );
 
     return Scaffold(
       backgroundColor: cs.surfaceContainerLow,
@@ -100,22 +130,64 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: AppSpacing.sm),
-            child: IconButton(
-              icon: const Icon(Icons.more_vert),
-              iconSize: 22,
-              constraints: const BoxConstraints(),
-              style: IconButton.styleFrom(
-                backgroundColor: cs.surface,
-                foregroundColor: cs.onSurfaceVariant,
-                shadowColor: Colors.black.withValues(alpha: 0.12),
-                elevation: 1.5,
-                fixedSize: const Size(36, 36),
-                minimumSize: const Size(36, 36),
-                maximumSize: const Size(36, 36),
-                shape: const CircleBorder(),
-                padding: EdgeInsets.zero,
+            child: PopupMenuButton<_StackAction>(
+              key: _menuKey,
+              onOpened: AppHaptics.light,
+              onSelected: (action) => _handleAction(action, stack),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 48),
+              popUpAnimationStyle:
+                  const AnimationStyle(duration: Duration(milliseconds: 120)),
+              offset: const Offset(0, 56),
+              color: cs.surface,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
               ),
-              onPressed: () => _showStackMenu(context, stack),
+              child: IconButton(
+                onPressed: () => _menuKey.currentState?.showButtonMenu(),
+                icon: const Icon(Icons.more_vert),
+                iconSize: 22,
+                constraints: const BoxConstraints(),
+                style: IconButton.styleFrom(
+                  backgroundColor: cs.surface,
+                  foregroundColor: cs.onSurfaceVariant,
+                  shadowColor: Colors.black.withValues(alpha: 0.12),
+                  elevation: 1.5,
+                  fixedSize: const Size(36, 36),
+                  minimumSize: const Size(36, 36),
+                  maximumSize: const Size(36, 36),
+                  shape: const CircleBorder(),
+                  padding: EdgeInsets.zero,
+                ),
+              ),
+              itemBuilder: (ctx) => [
+                PopupMenuItem(
+                  value: _StackAction.edit,
+                  child: Row(children: [
+                    Icon(Icons.currency_bitcoin, size: 20, color: cs.onSurfaceVariant),
+                    const SizedBox(width: 12),
+                    Text(l10n.stackMenuUpdateAmount, style: itemStyle),
+                  ]),
+                ),
+                PopupMenuItem(
+                  value: _StackAction.rename,
+                  child: Row(children: [
+                    Icon(Icons.edit_outlined, size: 20, color: cs.onSurfaceVariant),
+                    const SizedBox(width: 12),
+                    Text(l10n.stackMenuChangeName, style: itemStyle),
+                  ]),
+                ),
+                const PopupMenuDivider(),
+                PopupMenuItem(
+                  value: _StackAction.delete,
+                  child: Row(children: [
+                    Icon(Icons.delete_outline, size: 20, color: cs.error),
+                    const SizedBox(width: 12),
+                    Text(l10n.stackMenuDelete,
+                        style: itemStyle.copyWith(color: cs.error)),
+                  ]),
+                ),
+              ],
             ),
           ),
         ],
@@ -136,27 +208,6 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
         ],
       ),
     );
-  }
-
-  Future<void> _showStackMenu(BuildContext context, model.Stack stack) async {
-    final action = await showStackActionsSheet(context, stack.name);
-    if (!context.mounted || action == null) return;
-    switch (action) {
-      case StackAction.edit:
-        await Navigator.of(context).push(MaterialPageRoute<void>(
-          builder: (_) => EditStackAmountScreen(stackId: stack.id),
-        ));
-      case StackAction.rename:
-        await Navigator.of(context).push(MaterialPageRoute<void>(
-          builder: (_) => EditStackNameScreen(stackId: stack.id),
-        ));
-      case StackAction.delete:
-        final confirm = await showDeleteStackDialog(context);
-        if (confirm == true && context.mounted) {
-          context.read<AppStateNotifier>().removeStack(stack.id);
-          // The build's null-stack guard pops us back home.
-        }
-    }
   }
 }
 
