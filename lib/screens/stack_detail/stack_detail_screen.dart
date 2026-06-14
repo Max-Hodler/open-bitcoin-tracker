@@ -98,9 +98,25 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
           ],
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.more_horiz, color: cs.onSurfaceVariant),
-            onPressed: () => _showStackMenu(context, stack),
+          Padding(
+            padding: const EdgeInsets.only(right: AppSpacing.sm),
+            child: IconButton(
+              icon: const Icon(Icons.more_vert),
+              iconSize: 22,
+              constraints: const BoxConstraints(),
+              style: IconButton.styleFrom(
+                backgroundColor: cs.surface,
+                foregroundColor: cs.onSurfaceVariant,
+                shadowColor: Colors.black.withValues(alpha: 0.12),
+                elevation: 1.5,
+                fixedSize: const Size(36, 36),
+                minimumSize: const Size(36, 36),
+                maximumSize: const Size(36, 36),
+                shape: const CircleBorder(),
+                padding: EdgeInsets.zero,
+              ),
+              onPressed: () => _showStackMenu(context, stack),
+            ),
           ),
         ],
       ),
