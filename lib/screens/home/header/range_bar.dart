@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
@@ -75,6 +76,7 @@ class _RangeBarState extends State<RangeBar>
 
   @override
   void dispose() {
+    _visualSelectTimer?.cancel();
     _nudgeController.dispose();
     super.dispose();
   }
@@ -109,11 +111,27 @@ class _RangeBarState extends State<RangeBar>
 
   // The slot whose label shows the selected styling (bold + chart color +
   // flick-hint chevrons). It lags the real selected slot: when a tap picks a
-  // new range, the pill starts gliding immediately but the label only "becomes
-  // selected" once the pill finishes arriving (see the pill's onEnd). -1 until
-  // the first build resolves the initial selection. Drags bypass this and
-  // highlight the hovered slot directly.
+  // new range, the pill starts gliding immediately and the label's selected
+  // styling fades in shortly after — partway through the glide, not only on
+  // arrival — so the highlight feels responsive while still trailing the pill.
+  // -1 until the first build resolves the initial selection. Drags bypass this
+  // and highlight the hovered slot directly.
   int _visualSelectedIndex = -1;
+
+  // Pending flip of [_visualSelectedIndex] onto a newly tapped slot. Fired a
+  // short way into the pill's glide so the label fade overlaps the pill's
+  // motion instead of waiting for it to finish (the old onEnd-only behavior
+  // left the highlight feeling late). The pill's onEnd is still a backstop in
+  // case the glide is interrupted before this fires.
+  Timer? _visualSelectTimer;
+  // The slot the pending [_visualSelectTimer] will flip to; -1 when no flip is
+  // scheduled. Lets a build detect when the tap target changed mid-glide and
+  // reschedule for the new slot instead of firing on a stale one.
+  int _visualSelectTarget = -1;
+  // How long after a tap the label starts adopting the selected styling. Kept
+  // well under the pill's 260ms glide so the fade and the slide finish at about
+  // the same time.
+  static const Duration _visualSelectLead = Duration(milliseconds: 90);
 
   // Re-measures every chip and, if any moved, updates [_chipRects] so the pill
   // can slide to the selected slot (and a drag can resolve slot boundaries).
@@ -175,6 +193,10 @@ class _RangeBarState extends State<RangeBar>
 
   void _onPillDragStart(int selectedIndex, DragStartDetails _) {
     if (_chipRects.isEmpty) return;
+    // Drop any pending tap-driven flip; the drag highlights the hovered slot
+    // directly and the timer would otherwise fire on the old tap target.
+    _visualSelectTimer?.cancel();
+    _visualSelectTarget = -1;
     setState(() {
       _dragStartIndex = selectedIndex;
       _dragHoverIndex = selectedIndex;
@@ -398,7 +420,25 @@ class _RangeBarState extends State<RangeBar>
     // initial paint (-1), or there's no rendered pill (rects not measured yet,
     // or nothing selected) so the pill's onEnd will never fire to catch it up.
     if (_visualSelectedIndex == -1 || pillRect == null) {
+      _visualSelectTimer?.cancel();
+      _visualSelectTarget = -1;
       _visualSelectedIndex = selectedIndex;
+    } else if (!_dragging && _visualSelectedIndex != selectedIndex) {
+      // A tap moved the selection and the pill is gliding to it. Flip the label
+      // to selected a short way into the glide so the fade overlaps the slide
+      // rather than starting only when the pill lands. Reschedule if the target
+      // changed (a second tap mid-glide) so the timer never fires on a stale
+      // slot.
+      if (_visualSelectTarget != selectedIndex) {
+        _visualSelectTimer?.cancel();
+        _visualSelectTarget = selectedIndex;
+        final target = selectedIndex;
+        _visualSelectTimer = Timer(_visualSelectLead, () {
+          _visualSelectTarget = -1;
+          if (!mounted || _dragging) return;
+          setState(() => _visualSelectedIndex = target);
+        });
+      }
     }
     // The hovered slot's label is highlighted while dragging; otherwise the
     // *visually* selected slot is — which lags the real selection until the
