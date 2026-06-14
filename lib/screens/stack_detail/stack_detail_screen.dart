@@ -18,8 +18,6 @@ import '../../widgets/stack_avatar.dart';
 import '../edit_stack_screens.dart';
 import 'future_value_slider.dart';
 
-// "Worth back then" lookbacks, in years. All-time is appended separately.
-const List<int> _kLookbackYears = [1, 3, 5];
 
 /// Per-stack detail view: what the stack was worth at past dates and an
 /// interactive "what if BTC reaches X" projection. Opened by tapping a stack
@@ -273,20 +271,30 @@ class _Header extends StatelessWidget {
 
 /// "Worth back then" — static rows mapping past dates to the stack's value
 /// then. Pulled from the full converted all-history series via binary search.
-class _PastValuesSection extends StatelessWidget {
+class _PastValuesSection extends StatefulWidget {
   const _PastValuesSection({required this.currency, required this.btcAmount});
 
   final Currency currency;
   final double btcAmount;
 
   @override
+  State<_PastValuesSection> createState() => _PastValuesSectionState();
+}
+
+const int _kDefaultRows = 5;
+
+class _PastValuesSectionState extends State<_PastValuesSection> {
+  bool _expanded = false;
+
+  @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final controller = context.watch<LivePriceController>();
     final usdRate = controller.rates.usd ?? 0;
-    final currentPrice = controller.rates.forCurrency(currency) ?? 0;
+    final currentPrice = controller.rates.forCurrency(widget.currency) ?? 0;
     final usdToCurrency = usdRate > 0 ? currentPrice / usdRate : 1.0;
     final history = controller.convertedAllHistory(
-      currency: currency,
+      currency: widget.currency,
       usdToCurrencyFallback: usdToCurrency,
     );
 
@@ -298,36 +306,68 @@ class _PastValuesSection extends StatelessWidget {
     final locale = Localizations.localeOf(context).toString();
     final dateFmt = DateFormat.yMMMd(locale);
 
-    final rows = <_PastRow>[];
-    for (final y in _kLookbackYears) {
-      if (y > yearsOfHistory) continue;
+    final allRows = <_PastRow>[];
+    for (var y = 1; y <= yearsOfHistory; y++) {
       final at = DateTime(now.year - y, now.month, now.day);
       final price = _priceAt(history, at.millisecondsSinceEpoch);
       if (price == null) continue;
-      rows.add(_PastRow(
+      allRows.add(_PastRow(
         label: '$y ${y == 1 ? 'year' : 'years'} ago',
         sublabel: dateFmt.format(at),
-        value: price * btcAmount,
+        value: price * widget.btcAmount,
       ));
     }
     // All-time: the very first data point.
-    rows.add(_PastRow(
+    allRows.add(_PastRow(
       label: 'All-time',
       sublabel: dateFmt.format(firstT),
-      value: history.first.price * btcAmount,
+      value: history.first.price * widget.btcAmount,
     ));
+
+    final needsToggle = allRows.length > _kDefaultRows;
+    final alwaysRows =
+        needsToggle ? allRows.take(_kDefaultRows).toList() : allRows;
+    final extraRows = needsToggle ? allRows.skip(_kDefaultRows).toList() : <_PastRow>[];
 
     return _Section(
       title: 'Worth back then',
       child: Column(
         children: [
-          for (var i = 0; i < rows.length; i++) ...[
+          for (var i = 0; i < alwaysRows.length; i++) ...[
             if (i > 0) const _RowDivider(),
             _ValueRow(
-              label: rows[i].label,
-              sublabel: rows[i].sublabel,
-              value: rows[i].value,
-              currency: currency,
+              label: alwaysRows[i].label,
+              sublabel: alwaysRows[i].sublabel,
+              value: alwaysRows[i].value,
+              currency: widget.currency,
+            ),
+          ],
+          if (needsToggle) ...[
+            _ExpandableRows(
+              expanded: _expanded,
+              rows: extraRows,
+              currency: widget.currency,
+            ),
+            const _RowDivider(),
+            InkWell(
+              onTap: () {
+                AppHaptics.light();
+                setState(() => _expanded = !_expanded);
+              },
+              borderRadius: BorderRadius.circular(AppSpacing.radius),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: AnimatedRotation(
+                  turns: _expanded ? 0.5 : 0.0,
+                  duration: const Duration(milliseconds: 280),
+                  curve: Curves.easeInOut,
+                  child: Icon(
+                    Icons.expand_more,
+                    size: 24,
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
+              ),
             ),
           ],
         ],
@@ -348,6 +388,73 @@ class _PastValuesSection extends StatelessWidget {
       }
     }
     return best >= 0 ? data[best].price : null;
+  }
+}
+
+class _ExpandableRows extends StatefulWidget {
+  const _ExpandableRows({
+    required this.expanded,
+    required this.rows,
+    required this.currency,
+  });
+
+  final bool expanded;
+  final List<_PastRow> rows;
+  final Currency currency;
+
+  @override
+  State<_ExpandableRows> createState() => _ExpandableRowsState();
+}
+
+class _ExpandableRowsState extends State<_ExpandableRows>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _size;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 280),
+      value: widget.expanded ? 1.0 : 0.0,
+    );
+    _size = CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut);
+  }
+
+  @override
+  void didUpdateWidget(_ExpandableRows old) {
+    super.didUpdateWidget(old);
+    if (widget.expanded != old.expanded) {
+      widget.expanded ? _ctrl.forward() : _ctrl.reverse();
+    }
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizeTransition(
+      sizeFactor: _size,
+      axisAlignment: -1,
+      child: Column(
+        children: [
+          for (var i = 0; i < widget.rows.length; i++) ...[
+            const _RowDivider(),
+            _ValueRow(
+              label: widget.rows[i].label,
+              sublabel: widget.rows[i].sublabel,
+              value: widget.rows[i].value,
+              currency: widget.currency,
+            ),
+          ],
+        ],
+      ),
+    );
   }
 }
 
