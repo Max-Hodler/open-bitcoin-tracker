@@ -24,6 +24,7 @@ class FutureValueSlider extends StatefulWidget {
     required this.minPrice,
     required this.maxPrice,
     required this.initialPrice,
+    this.onPriceSelected,
   });
 
   /// The stack's size in BTC (sats / 1e8). Projected value is price * this.
@@ -37,6 +38,10 @@ class FutureValueSlider extends StatefulWidget {
 
   /// Where the thumb starts — usually the next round number above today.
   final double initialPrice;
+
+  /// Fired once when the user finishes a drag, with the BTC price the thumb
+  /// landed on. Used to persist the projection so it's restored on revisit.
+  final ValueChanged<double>? onPriceSelected;
 
   @override
   State<FutureValueSlider> createState() => _FutureValueSliderState();
@@ -132,6 +137,7 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
           child: Slider(
             value: _t,
             onChanged: _setT,
+            onChangeEnd: (_) => widget.onPriceSelected?.call(_price),
           ),
         ),
         const SizedBox(height: AppSpacing.md),

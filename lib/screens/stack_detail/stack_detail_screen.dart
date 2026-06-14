@@ -206,7 +206,14 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
           const SizedBox(height: AppSpacing.xl),
           _PastValuesSection(currency: currency, btcAmount: btcAmount),
           const SizedBox(height: AppSpacing.xl),
-          _FutureSection(currency: currency, btcAmount: btcAmount),
+          _FutureSection(
+            stackId: stack.id,
+            currency: currency,
+            btcAmount: btcAmount,
+            savedPrice: stack.projectedPriceCurrency == currency.code
+                ? stack.projectedPrice
+                : null,
+          ),
         ],
       ),
     );
@@ -487,10 +494,20 @@ class _PastRow {
 
 /// "If Bitcoin reaches…" — the interactive future-value projection.
 class _FutureSection extends StatelessWidget {
-  const _FutureSection({required this.currency, required this.btcAmount});
+  const _FutureSection({
+    required this.stackId,
+    required this.currency,
+    required this.btcAmount,
+    required this.savedPrice,
+  });
 
+  final String stackId;
   final Currency currency;
   final double btcAmount;
+
+  /// The last BTC price the user parked the slider on for this stack in the
+  /// active currency, or null to fall back to the 1M default.
+  final double? savedPrice;
 
   @override
   Widget build(BuildContext context) {
@@ -498,16 +515,28 @@ class _FutureSection extends StatelessWidget {
     final currentPrice = controller.rates.forCurrency(currency) ?? 0;
     final floor = currentPrice > 0 ? currentPrice : 100000.0;
     final ceiling = _ceilingFor(floor);
-    final initial = _initialFor(floor, ceiling);
+    final initial = savedPrice ?? _initialFor(floor, ceiling, btcAmount);
 
     return _Section(
       verticalPadding: AppSpacing.lg,
+      // Rebuild the slider's initial position when the restored price or the
+      // bounds change (currency switch, amount edit) so it re-seeds correctly.
       child: FutureValueSlider(
+        key: ValueKey('$stackId|$initial|$floor|$ceiling'),
         btcAmount: btcAmount,
         currency: currency,
         minPrice: floor,
         maxPrice: ceiling,
         initialPrice: initial,
+        onPriceSelected: (price) {
+          context.read<AppStateNotifier>().updateStack(
+                stackId,
+                (s) => s.copyWith(
+                  projectedPrice: price,
+                  projectedPriceCurrency: currency.code,
+                ),
+              );
+        },
       ),
     );
   }
@@ -522,10 +551,12 @@ class _FutureSection extends StatelessWidget {
     return (target / mag).ceilToDouble() * mag;
   }
 
-  // Start the thumb a few× above today so the projection is immediately
-  // interesting rather than parked at break-even.
-  static double _initialFor(double floor, double ceiling) =>
-      (floor * 3).clamp(floor, ceiling);
+  // Start the thumb at the BTC price where this stack would be worth 1M of the
+  // selected fiat, clamped to the slider's bounds.
+  static double _initialFor(double floor, double ceiling, double btcAmount) =>
+      btcAmount > 0
+          ? (1000000.0 / btcAmount).clamp(floor, ceiling)
+          : (floor * 3).clamp(floor, ceiling);
 }
 
 // ---- shared building blocks ----

@@ -8,6 +8,8 @@ class Stack {
     this.isHidden = false,
     this.imageData,
     this.colorKey,
+    this.projectedPrice,
+    this.projectedPriceCurrency,
   });
 
   final String id;
@@ -20,6 +22,13 @@ class Stack {
   // Palette key for the default initial-letter avatar (e.g. "gold"). Null
   // means the theme's bitcoin orange. Ignored when an [imageData] is set.
   final String? colorKey;
+  // Last BTC price the user parked the future-value slider on, so the
+  // projection is restored on the next visit. Stored together with the
+  // currency it was set in ([projectedPriceCurrency], an ISO code) — a price
+  // is meaningless without its unit, so we only restore it when the active
+  // currency matches and otherwise fall back to the default. Null = never set.
+  final double? projectedPrice;
+  final String? projectedPriceCurrency;
 
   Stack copyWith({
     String? id,
@@ -30,6 +39,9 @@ class Stack {
     bool clearImage = false,
     String? colorKey,
     bool clearColor = false,
+    double? projectedPrice,
+    String? projectedPriceCurrency,
+    bool clearProjectedPrice = false,
   }) {
     return Stack(
       id: id ?? this.id,
@@ -38,6 +50,11 @@ class Stack {
       isHidden: isHidden ?? this.isHidden,
       imageData: clearImage ? null : (imageData ?? this.imageData),
       colorKey: clearColor ? null : (colorKey ?? this.colorKey),
+      projectedPrice:
+          clearProjectedPrice ? null : (projectedPrice ?? this.projectedPrice),
+      projectedPriceCurrency: clearProjectedPrice
+          ? null
+          : (projectedPriceCurrency ?? this.projectedPriceCurrency),
     );
   }
 
@@ -48,6 +65,9 @@ class Stack {
         if (isHidden) 'isHidden': true,
         if (imageData != null) 'imageData': imageData,
         if (colorKey != null) 'colorKey': colorKey,
+        if (projectedPrice != null) 'projectedPrice': projectedPrice,
+        if (projectedPriceCurrency != null)
+          'projectedPriceCurrency': projectedPriceCurrency,
       };
 
   static Stack? fromJson(Object? raw) {
@@ -58,6 +78,8 @@ class Stack {
     if (id is! String || name is! String || sats is! num) return null;
     final image = raw['imageData'];
     final color = raw['colorKey'];
+    final projected = raw['projectedPrice'];
+    final projectedCurrency = raw['projectedPriceCurrency'];
     return Stack(
       id: id,
       name: name,
@@ -65,6 +87,9 @@ class Stack {
       isHidden: raw['isHidden'] == true,
       imageData: image is String ? image : null,
       colorKey: color is String ? color : null,
+      projectedPrice: projected is num ? projected.toDouble() : null,
+      projectedPriceCurrency:
+          projectedCurrency is String ? projectedCurrency : null,
     );
   }
 }
