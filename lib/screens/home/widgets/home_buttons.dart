@@ -269,10 +269,17 @@ class _AttentionWavePainter extends CustomPainter {
 
 enum _OverflowAction { converter, language, currency, theme, stacks, about, screenshot }
 
-class OverflowButton extends StatelessWidget {
+class OverflowButton extends StatefulWidget {
   const OverflowButton({super.key, this.onOpenConverter});
 
   final VoidCallback? onOpenConverter;
+
+  @override
+  State<OverflowButton> createState() => _OverflowButtonState();
+}
+
+class _OverflowButtonState extends State<OverflowButton> {
+  final _menuKey = GlobalKey<PopupMenuButtonState<_OverflowAction>>();
 
   @override
   Widget build(BuildContext context) {
@@ -284,10 +291,8 @@ class OverflowButton extends StatelessWidget {
       color: cs.onSurface,
     );
 
-    final menuKey = GlobalKey<PopupMenuButtonState<_OverflowAction>>();
-
     return PopupMenuButton<_OverflowAction>(
-      key: menuKey,
+      key: _menuKey,
       onOpened: AppHaptics.light,
       onSelected: (action) => _handleAction(context, action),
       padding: EdgeInsets.zero,
@@ -300,7 +305,7 @@ class OverflowButton extends StatelessWidget {
       ),
       child: IconButton(
         onPressed: () {
-          menuKey.currentState?.showButtonMenu();
+          _menuKey.currentState?.showButtonMenu();
         },
         icon: const Icon(Icons.more_vert),
         iconSize: 22,
@@ -320,52 +325,52 @@ class OverflowButton extends StatelessWidget {
       itemBuilder: (ctx) => [
         PopupMenuItem(
           value: _OverflowAction.converter,
-          child: Row(children: [
+          child: IgnorePointer(child: Row(children: [
             Icon(Icons.swap_vert, size: 20, color: cs.onSurfaceVariant),
             const SizedBox(width: 12),
             Text(l10n.homeConverter, style: itemStyle),
-          ]),
+          ])),
         ),
         const PopupMenuDivider(),
         PopupMenuItem(
           value: _OverflowAction.language,
-          child: Row(children: [
+          child: IgnorePointer(child: Row(children: [
             Icon(Icons.language, size: 20, color: cs.onSurfaceVariant),
             const SizedBox(width: 12),
             Text(l10n.settingsLanguageLabel, style: itemStyle),
-          ]),
+          ])),
         ),
         PopupMenuItem(
           value: _OverflowAction.currency,
-          child: Row(children: [
+          child: IgnorePointer(child: Row(children: [
             Icon(Icons.currency_exchange, size: 20, color: cs.onSurfaceVariant),
             const SizedBox(width: 12),
             Text(l10n.settingsCurrencies, style: itemStyle),
-          ]),
+          ])),
         ),
         PopupMenuItem(
           value: _OverflowAction.theme,
-          child: Row(children: [
+          child: IgnorePointer(child: Row(children: [
             Icon(Icons.palette_outlined, size: 20, color: cs.onSurfaceVariant),
             const SizedBox(width: 12),
             Text(l10n.settingsThemeLabel, style: itemStyle),
-          ]),
+          ])),
         ),
         PopupMenuItem(
           value: _OverflowAction.stacks,
-          child: Row(children: [
+          child: IgnorePointer(child: Row(children: [
             Icon(Icons.reorder, size: 20, color: cs.onSurfaceVariant),
             const SizedBox(width: 12),
             Text(l10n.settingsGroupPrivacy, style: itemStyle),
-          ]),
+          ])),
         ),
         PopupMenuItem(
           value: _OverflowAction.about,
-          child: Row(children: [
+          child: IgnorePointer(child: Row(children: [
             Icon(Icons.info_outline, size: 20, color: cs.onSurfaceVariant),
             const SizedBox(width: 12),
             Text(l10n.settingsAbout, style: itemStyle),
-          ]),
+          ])),
         ),
         // Debug-only screenshot mode. Gated to debug builds — the tree-shaker
         // drops this branch from release/profile binaries, so it never ships.
@@ -374,7 +379,7 @@ class OverflowButton extends StatelessWidget {
         if (kDebugMode)
           PopupMenuItem(
             value: _OverflowAction.screenshot,
-            child: Row(children: [
+            child: IgnorePointer(child: Row(children: [
               Icon(
                 context.read<LivePriceController>().screenshotMode
                     ? Icons.check_box
@@ -384,7 +389,7 @@ class OverflowButton extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Text('Screenshot mode', style: itemStyle),
-            ]),
+            ])),
           ),
       ],
     );
@@ -393,7 +398,7 @@ class OverflowButton extends StatelessWidget {
   Future<void> _handleAction(BuildContext context, _OverflowAction action) async {
     switch (action) {
       case _OverflowAction.converter:
-        onOpenConverter?.call();
+        widget.onOpenConverter?.call();
       case _OverflowAction.language:
         final app = context.read<AppStateNotifier>();
         final picked = await _showLanguagePicker(context, app.language);
