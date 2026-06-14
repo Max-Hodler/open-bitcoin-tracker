@@ -331,9 +331,22 @@ class _PastValuesSectionState extends State<_PastValuesSection> {
     final extraRows = needsToggle ? allRows.skip(_kDefaultRows).toList() : <_PastRow>[];
 
     return _Section(
-      title: l10n.stackDetailWorthBackThen,
+      verticalPadding: AppSpacing.lg,
+      bottomPadding: AppSpacing.sm,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+            child: Text(
+              l10n.stackDetailWorthBackThen,
+              style: AppTypography.body.copyWith(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: cs.onSurfaceVariant,
+              ),
+            ),
+          ),
           for (var i = 0; i < alwaysRows.length; i++) ...[
             if (i > 0) const _RowDivider(),
             _ValueRow(
@@ -488,6 +501,7 @@ class _FutureSection extends StatelessWidget {
     final initial = _initialFor(floor, ceiling);
 
     return _Section(
+      verticalPadding: AppSpacing.lg,
       child: FutureValueSlider(
         btcAmount: btcAmount,
         currency: currency,
@@ -517,8 +531,15 @@ class _FutureSection extends StatelessWidget {
 // ---- shared building blocks ----
 
 class _Section extends StatelessWidget {
-  const _Section({this.title, required this.child});
+  const _Section({
+    this.title,
+    this.verticalPadding = AppSpacing.sm,
+    this.bottomPadding,
+    required this.child,
+  });
   final String? title;
+  final double verticalPadding;
+  final double? bottomPadding;
   final Widget child;
 
   @override
@@ -543,9 +564,11 @@ class _Section extends StatelessWidget {
             ),
           ),
         Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.sm,
+          padding: EdgeInsets.only(
+            left: AppSpacing.md,
+            right: AppSpacing.md,
+            top: verticalPadding,
+            bottom: bottomPadding ?? verticalPadding,
           ),
           decoration: BoxDecoration(
             color: cs.surfaceContainer,
