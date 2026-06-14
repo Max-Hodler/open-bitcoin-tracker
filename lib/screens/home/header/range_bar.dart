@@ -32,8 +32,8 @@ class RangeBar extends StatefulWidget {
   final BtcRange range;
   final ValueChanged<BtcRange> onRange;
   final Color chartColor;
-  // Tapped when the trailing settings (sliders) button is pressed. Opens the
-  // graph settings. Null hides the button.
+  // When non-null, a circular settings button is shown to the right of the
+  // grey track, vertically aligned with it. Null hides the button.
   final VoidCallback? onSettings;
 
   @override
@@ -456,36 +456,50 @@ class _RangeBarState extends State<RangeBar>
       height: chipHeight + shadowBleedTop + shadowBleedBottom,
       child: LayoutBuilder(
         builder: (context, constraints) {
+          // When a settings circle is shown it sits to the right of the track,
+          // separated by a small gap. Reserve that space so the track doesn't
+          // extend underneath it.
+          const settingsGap = 8.0;
+          final settingsReserve = onSettings != null
+              ? greyBarHeight + settingsGap
+              : 0.0;
+          final rightPadding = horizontalPadding + settingsReserve;
           final innerWidth = constraints.maxWidth -
-              horizontalPadding * 2 -
+              horizontalPadding -
+              rightPadding -
               trackPadding * 2;
           WidgetsBinding.instance.addPostFrameCallback(
             (_) => _measureChips(),
           );
           // Vertical inset that makes the grey track shorter than the chips.
           final trackInset = (chipHeight - greyBarHeight) / 2;
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(
-              horizontalPadding,
-              shadowBleedTop,
-              horizontalPadding,
-              shadowBleedBottom,
-            ),
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                // Grey track — inset vertically so it's shorter than the chip
-                // row, letting the pill overflow it top and bottom.
-                Positioned.fill(
-                  top: trackInset,
-                  bottom: trackInset,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: trackFill,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                  ),
+          // Vertical position of the circle's top edge within the LayoutBuilder
+          // — shadow bleed above + chip row's top inset to the grey bar.
+          final circleTop = shadowBleedTop + trackInset;
+          return Stack(
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  horizontalPadding,
+                  shadowBleedTop,
+                  rightPadding,
+                  shadowBleedBottom,
                 ),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    // Grey track — inset vertically so it's shorter than the chip
+                    // row, letting the pill overflow it top and bottom.
+                    Positioned.fill(
+                      top: trackInset,
+                      bottom: trackInset,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: trackFill,
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                      ),
+                    ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: trackPadding),
                   child: SizedBox(
@@ -690,25 +704,6 @@ class _RangeBarState extends State<RangeBar>
                               minLabelWidth: allLabelWidth + 18,
                             ),
                           ),
-                          if (onSettings != null) ...[
-                            // Hairline separating the range options from the
-                            // trailing settings button, matching the
-                            // segmented-control look. Pinned to the grey bar's
-                            // height so it spans the track, not the taller chip
-                            // row.
-                            SizedBox(
-                              height: greyBarHeight,
-                              child: VerticalDivider(
-                                width: 1,
-                                thickness: 1,
-                                color: cs.outlineVariant,
-                              ),
-                            ),
-                            _SettingsButton(
-                              onTap: onSettings,
-                              color: cs.onSurfaceVariant,
-                            ),
-                          ],
                         ],
                       ),
                       // Transparent drag handle on top of the pill. Sized and
@@ -734,6 +729,20 @@ class _RangeBarState extends State<RangeBar>
                 ),
               ],
             ),
+              ),
+              if (onSettings != null)
+                Positioned(
+                  right: horizontalPadding,
+                  top: circleTop,
+                  width: greyBarHeight,
+                  height: greyBarHeight,
+                  child: _SettingsCircle(
+                    onTap: onSettings,
+                    fill: trackFill,
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
+            ],
           );
         },
       ),
@@ -889,12 +898,15 @@ class _RangeBarState extends State<RangeBar>
   }
 }
 
-// Trailing settings button on the range track: a sliders/tune icon that opens
-// the graph settings. Sits after a hairline divider, hugging its icon.
-class _SettingsButton extends StatelessWidget {
-  const _SettingsButton({required this.onTap, required this.color});
+class _SettingsCircle extends StatelessWidget {
+  const _SettingsCircle({
+    required this.onTap,
+    required this.fill,
+    required this.color,
+  });
 
   final VoidCallback onTap;
+  final Color fill;
   final Color color;
 
   @override
@@ -905,9 +917,9 @@ class _SettingsButton extends StatelessWidget {
         AppHaptics.light();
         onTap();
       },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Icon(Icons.tune, size: 18, color: color),
+      child: DecoratedBox(
+        decoration: BoxDecoration(color: fill, shape: BoxShape.circle),
+        child: Icon(Icons.tune, size: 16, color: color),
       ),
     );
   }
