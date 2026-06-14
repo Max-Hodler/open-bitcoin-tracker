@@ -572,6 +572,22 @@ class _ValueRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final fmt = formatFiat(value, currency, decimalsUnder10: true);
+    final amountStyle = AppTypography.body.copyWith(
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      letterSpacing: -0.3,
+      color: cs.onSurface.withValues(alpha: 0.9),
+      fontFeatures: const [ui.FontFeature.tabularFigures()],
+    );
+    // The currency symbol sits in its own fixed-width, muted slot so the symbols
+    // line up vertically across rows and the digits run flush against them —
+    // turning a ragged column into a scannable one. Tabular figures (above)
+    // keep digit widths constant so the right-aligned amounts also align.
+    final symbol = Text(
+      fmt.symbol,
+      style: amountStyle.copyWith(color: cs.onSurfaceVariant),
+    );
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
@@ -598,16 +614,15 @@ class _ValueRow extends StatelessWidget {
               ],
             ),
           ),
-          Text(
-            formatFiat(value, currency, decimalsUnder10: true).full,
-            style: AppTypography.body.copyWith(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              letterSpacing: -0.3,
-              color: cs.onSurface.withValues(alpha: 0.9),
-              fontFeatures: const [ui.FontFeature.tabularFigures()],
-            ),
-          ),
+          if (symbolAfterAmount) ...[
+            Text(fmt.amount, textAlign: TextAlign.right, style: amountStyle),
+            const SizedBox(width: 4),
+            symbol,
+          ] else ...[
+            symbol,
+            const SizedBox(width: 4),
+            Text(fmt.amount, textAlign: TextAlign.right, style: amountStyle),
+          ],
         ],
       ),
     );
