@@ -522,20 +522,62 @@ class _RangeBarState extends State<RangeBar>
                           top: pillRect.top,
                           width: pillRect.width,
                           height: pillRect.height,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: cs.surface,
-                              borderRadius: BorderRadius.circular(999),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(
-                                    alpha: _dragging ? 0.20 : 0.12,
-                                  ),
-                                  offset: const Offset(0, 1),
-                                  blurRadius: _dragging ? 6 : 3,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: cs.surface,
+                                  borderRadius: BorderRadius.circular(999),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(
+                                        alpha: _dragging ? 0.20 : 0.12,
+                                      ),
+                                      offset: const Offset(0, 1),
+                                      blurRadius: _dragging ? 6 : 3,
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                                child: const SizedBox.expand(),
+                              ),
+                              // Chevrons are anchored to the pill so they always
+                              // travel with it, regardless of which slot is active.
+                              Positioned(
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                child: IgnorePointer(
+                                  child: AnimatedOpacity(
+                                    duration: const Duration(milliseconds: 150),
+                                    curve: Curves.easeOut,
+                                    opacity: selectedIndex < 4 ? 1 : 0,
+                                    child: Icon(
+                                      Icons.keyboard_arrow_up_rounded,
+                                      size: 16,
+                                      color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                child: IgnorePointer(
+                                  child: AnimatedOpacity(
+                                    duration: const Duration(milliseconds: 150),
+                                    curve: Curves.easeOut,
+                                    opacity: selectedIndex < 4 ? 1 : 0,
+                                    child: Icon(
+                                      Icons.keyboard_arrow_down_rounded,
+                                      size: 16,
+                                      color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       Row(
@@ -1022,9 +1064,6 @@ class _ChipState extends State<_Chip> {
         ? (widget.selectedColor ?? cs.onSurface)
         : cs.onSurfaceVariant;
     final hasSwipe = widget.onSwipeUp != null || widget.onSwipeDown != null;
-    // Chevrons hint the vertical-flick gesture, but only on the selected chip:
-    // a stack of up/down arrows around any other label would just be noise.
-    final showChevrons = widget.selected && hasSwipe;
     Widget core = GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
@@ -1126,41 +1165,6 @@ class _ChipState extends State<_Chip> {
                     return SizedBox(width: slotWidth, child: row);
                   },
                 ),
-                // Chevrons stay mounted whenever the chip can be flicked, so they
-                // can fade their opacity in/out with selection instead of popping.
-                // IgnorePointer keeps the faded-out copy from eating gestures.
-                if (hasSwipe) ...[
-                  Positioned(
-                    top: -12,
-                    child: IgnorePointer(
-                      child: AnimatedOpacity(
-                        duration: _selectFade,
-                        curve: Curves.easeOut,
-                        opacity: showChevrons ? 1 : 0,
-                        child: Icon(
-                          Icons.keyboard_arrow_up_rounded,
-                          size: 16,
-                          color: cs.onSurfaceVariant.withValues(alpha: 0.5),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: -12,
-                    child: IgnorePointer(
-                      child: AnimatedOpacity(
-                        duration: _selectFade,
-                        curve: Curves.easeOut,
-                        opacity: showChevrons ? 1 : 0,
-                        child: Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          size: 16,
-                          color: cs.onSurfaceVariant.withValues(alpha: 0.5),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
               ],
             ),
           ),
