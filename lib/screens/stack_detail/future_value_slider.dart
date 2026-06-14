@@ -91,19 +91,15 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
     final p = context.palette;
     final price = _price;
     final value = price * widget.btcAmount;
-    final multiple =
-        widget.minPrice > 0 ? price / widget.minPrice : 1.0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // "If BTC = $X" line.
         Row(
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'If BTC reaches ',
+              'When BTC reaches',
               style: AppTypography.body.copyWith(
                 fontSize: 16,
                 color: cs.onSurfaceVariant,
@@ -121,37 +117,6 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
           ],
         ),
         const SizedBox(height: AppSpacing.sm),
-        // Projected value — the payoff, biggest text on the row.
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Text(
-                formatFiat(value, widget.currency, decimalsUnder10: false).full,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTypography.title.copyWith(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: -0.5,
-                  color: p.bitcoinOrange,
-                  fontFeatures: const [ui.FontFeature.tabularFigures()],
-                ),
-              ),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            Text(
-              '${_formatMultiple(multiple)}×',
-              style: AppTypography.body.copyWith(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: cs.onSurfaceVariant,
-                fontFeatures: const [ui.FontFeature.tabularFigures()],
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.md),
         SliderTheme(
           data: SliderTheme.of(context).copyWith(
             trackHeight: 4,
@@ -167,49 +132,33 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
             onChanged: _setT,
           ),
         ),
-        // Track endpoints, so the user knows the range they're sweeping.
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                _compactPrice(widget.minPrice, widget.currency),
-                style: AppTypography.label.copyWith(
-                  color: cs.onSurfaceVariant,
-                ),
-              ),
-              Text(
-                _compactPrice(widget.maxPrice, widget.currency),
-                style: AppTypography.label.copyWith(
-                  color: cs.onSurfaceVariant,
-                ),
-              ),
-            ],
+        const SizedBox(height: AppSpacing.md),
+        Center(
+          child: Text(
+            'This stack will be worth',
+            style: AppTypography.body.copyWith(
+              fontSize: 16,
+              color: cs.onSurfaceVariant,
+            ),
+          ),
+        ),
+        Center(
+          child: Text(
+            formatFiat(value, widget.currency, decimalsUnder10: false).full,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTypography.title.copyWith(
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.5,
+              color: cs.onSurfaceVariant,
+              fontFeatures: const [ui.FontFeature.tabularFigures()],
+            ),
           ),
         ),
       ],
     );
   }
 
-  static String _formatMultiple(double m) {
-    if (m >= 100) return m.round().toString();
-    if (m >= 10) return m.toStringAsFixed(0);
-    return m.toStringAsFixed(1);
-  }
 }
 
-// Compact currency label for the slider's track endpoints, e.g. "$100K" /
-// "$10M". The bounds are always large round numbers, so no decimals are needed.
-String _compactPrice(double value, Currency currency) {
-  final symbol = currencySymbols[currency] ?? r'$';
-  final String n;
-  if (value >= 1000000) {
-    n = '${(value / 1000000).toStringAsFixed(value % 1000000 == 0 ? 0 : 1)}M';
-  } else if (value >= 1000) {
-    n = '${(value / 1000).toStringAsFixed(value % 1000 == 0 ? 0 : 1)}K';
-  } else {
-    n = value.round().toString();
-  }
-  return symbolAfterAmount ? '$n $symbol' : '$symbol$n';
-}

@@ -260,7 +260,7 @@ class _Header extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: AppTypography.body.copyWith(
             fontSize: 30,
-            color: cs.onSurfaceVariant,
+            color: cs.onSurface,
             fontFeatures: const [ui.FontFeature.tabularFigures()],
           ),
         ),
@@ -485,7 +485,6 @@ class _FutureSection extends StatelessWidget {
     final initial = _initialFor(floor, ceiling);
 
     return _Section(
-      title: 'If Bitcoin reaches…',
       child: FutureValueSlider(
         btcAmount: btcAmount,
         currency: currency,
@@ -515,8 +514,8 @@ class _FutureSection extends StatelessWidget {
 // ---- shared building blocks ----
 
 class _Section extends StatelessWidget {
-  const _Section({required this.title, required this.child});
-  final String title;
+  const _Section({this.title, required this.child});
+  final String? title;
   final Widget child;
 
   @override
@@ -525,20 +524,21 @@ class _Section extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(
-            left: AppSpacing.xs,
-            bottom: AppSpacing.sm,
-          ),
-          child: Text(
-            title,
-            style: AppTypography.body.copyWith(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: cs.onSurfaceVariant,
+        if (title != null)
+          Padding(
+            padding: const EdgeInsets.only(
+              left: AppSpacing.xs,
+              bottom: AppSpacing.sm,
+            ),
+            child: Text(
+              title!,
+              style: AppTypography.body.copyWith(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: cs.onSurfaceVariant,
+              ),
             ),
           ),
-        ),
         Container(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
