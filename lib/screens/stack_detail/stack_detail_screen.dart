@@ -356,7 +356,9 @@ class _PastValuesSectionState extends State<_PastValuesSection> {
                 setState(() => _expanded = !_expanded);
               },
               borderRadius: BorderRadius.circular(AppSpacing.radius),
-              child: Padding(
+              child: Container(
+                width: double.infinity,
+                alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: AnimatedRotation(
                   turns: _expanded ? 0.5 : 0.0,
