@@ -364,7 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         btcDisplayMode: app.btcDisplayMode,
         imageData: app.state.totalImageData,
-        colorKey: app.state.totalColorKey,
+        colorKey: app.state.totalColorKey ?? 'grey',
         position: StackCardPosition.last,
         onTap: () {
           AppHaptics.light();

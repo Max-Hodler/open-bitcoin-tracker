@@ -24,6 +24,7 @@ class StackAvatarColor {
     StackAvatarColor('plum', Color(0xFF8E4A6E)),
     StackAvatarColor('olive', Color(0xFF7A7A2E)),
     StackAvatarColor('teal', Color(0xFF2D7A7A)),
+    StackAvatarColor('grey', Color(0xFF8A8A8A)),
   ];
 
   /// Resolve a stored key to a color. Returns null when [key] is null or
