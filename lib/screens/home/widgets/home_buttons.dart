@@ -183,41 +183,47 @@ class _AddStackIconButtonState extends State<AddStackIconButton>
         (a) => a.stacks.isEmpty && !a.hasEverAddedStack);
     _syncAttention(attention);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          AppHaptics.light();
-          widget.onTap();
-        },
-        customBorder: const CircleBorder(),
-        child: SizedBox(
-          width: 48,
-          height: 47,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              if (attention)
-                RepaintBoundary(
-                  child: AnimatedBuilder(
-                    animation: _pulse,
-                    builder: (context, _) => CustomPaint(
-                      size: const Size(48, 47),
-                      painter: _AttentionWavePainter(
-                        progress: _pulse.value,
-                        color: p.bitcoinOrange,
-                      ),
-                    ),
+    return SizedBox(
+      width: 36,
+      height: 36,
+      child: Stack(
+        alignment: Alignment.center,
+        clipBehavior: Clip.none,
+        children: [
+          if (attention)
+            RepaintBoundary(
+              child: AnimatedBuilder(
+                animation: _pulse,
+                builder: (context, _) => CustomPaint(
+                  size: const Size(36, 36),
+                  painter: _AttentionWavePainter(
+                    progress: _pulse.value,
+                    color: p.bitcoinOrange,
                   ),
                 ),
-              Icon(
-                Icons.add,
-                size: 26,
-                color: cs.onSurfaceVariant,
               ),
-            ],
+            ),
+          IconButton(
+            onPressed: () {
+              AppHaptics.light();
+              widget.onTap();
+            },
+            icon: const Icon(Icons.add),
+            iconSize: 22,
+            constraints: const BoxConstraints(),
+            style: IconButton.styleFrom(
+              backgroundColor: cs.surface,
+              foregroundColor: cs.onSurfaceVariant,
+              shadowColor: Colors.black.withValues(alpha: 0.12),
+              elevation: 1.5,
+              fixedSize: const Size(36, 36),
+              minimumSize: const Size(36, 36),
+              maximumSize: const Size(36, 36),
+              shape: const CircleBorder(),
+              padding: EdgeInsets.zero,
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -234,8 +240,8 @@ class _AttentionWavePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    const minRadius = 6.0;
-    final maxRadius = size.shortestSide / 2;
+    const minRadius = 18.0;
+    const maxRadius = 32.0;
 
     for (var i = 0; i < 2; i++) {
       // Stagger the second ring half a cycle behind the first.
@@ -277,17 +283,39 @@ class OverflowButton extends StatelessWidget {
       fontWeight: FontWeight.w400,
       color: cs.onSurface,
     );
+
+    final menuKey = GlobalKey<PopupMenuButtonState<_OverflowAction>>();
+
     return PopupMenuButton<_OverflowAction>(
+      key: menuKey,
       onOpened: AppHaptics.light,
       onSelected: (action) => _handleAction(context, action),
-      icon: Icon(Icons.more_vert, size: 24, color: cs.onSurfaceVariant),
-      iconSize: 24,
+      padding: EdgeInsets.zero,
       constraints: const BoxConstraints(minWidth: 48),
       popUpAnimationStyle: const AnimationStyle(duration: Duration(milliseconds: 120)),
       offset: const Offset(0, 56),
       color: cs.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+      ),
+      child: IconButton(
+        onPressed: () {
+          menuKey.currentState?.showButtonMenu();
+        },
+        icon: const Icon(Icons.more_vert),
+        iconSize: 22,
+        constraints: const BoxConstraints(),
+        style: IconButton.styleFrom(
+          backgroundColor: cs.surface,
+          foregroundColor: cs.onSurfaceVariant,
+          shadowColor: Colors.black.withValues(alpha: 0.12),
+          elevation: 1.5,
+          fixedSize: const Size(36, 36),
+          minimumSize: const Size(36, 36),
+          maximumSize: const Size(36, 36),
+          shape: const CircleBorder(),
+          padding: EdgeInsets.zero,
+        ),
       ),
       itemBuilder: (ctx) => [
         PopupMenuItem(
