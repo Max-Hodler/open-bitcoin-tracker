@@ -443,7 +443,9 @@ class _RangeBarState extends State<RangeBar>
                             _RangeChipWithPct(
                               label: _btcRangeLabel(context, daysOverflowSlot),
                               selected: slotSelected(0),
-                              onTap: () => onRange(daysOverflowSlot),
+                              onTap: () => slotSelected(0)
+                                  ? _showDaysOverflowSlotPicker(context)
+                                  : onRange(daysOverflowSlot),
                               onLongPress: () =>
                                   _showDaysOverflowSlotPicker(context),
                               onSwipeUp: () {
@@ -463,7 +465,9 @@ class _RangeBarState extends State<RangeBar>
                             _RangeChipWithPct(
                               label: _btcRangeLabel(context, weeksOverflowSlot),
                               selected: slotSelected(1),
-                              onTap: () => onRange(weeksOverflowSlot),
+                              onTap: () => slotSelected(1)
+                                  ? _showWeeksOverflowSlotPicker(context)
+                                  : onRange(weeksOverflowSlot),
                               onLongPress: () =>
                                   _showWeeksOverflowSlotPicker(context),
                               onSwipeUp: () {
@@ -484,7 +488,9 @@ class _RangeBarState extends State<RangeBar>
                               label:
                                   _btcRangeLabel(context, monthsOverflowSlot),
                               selected: slotSelected(2),
-                              onTap: () => onRange(monthsOverflowSlot),
+                              onTap: () => slotSelected(2)
+                                  ? _showMonthsOverflowSlotPicker(context)
+                                  : onRange(monthsOverflowSlot),
                               onLongPress: () =>
                                   _showMonthsOverflowSlotPicker(context),
                               onSwipeUp: () {
@@ -504,7 +510,9 @@ class _RangeBarState extends State<RangeBar>
                             _RangeChipWithPct(
                               label: _btcRangeLabel(context, overflowSlot),
                               selected: slotSelected(3),
-                              onTap: () => onRange(overflowSlot),
+                              onTap: () => slotSelected(3)
+                                  ? _showOverflowSlotPicker(context)
+                                  : onRange(overflowSlot),
                               onLongPress: () =>
                                   _showOverflowSlotPicker(context),
                               onSwipeUp: () {
