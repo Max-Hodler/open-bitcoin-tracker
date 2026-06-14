@@ -1099,7 +1099,7 @@ class _ChipState extends State<_Chip> {
         // chip itself is transparent and only styles its label.
         alignment: Alignment.center,
         child: Transform.translate(
-            offset: Offset(0, widget.contentOffsetY),
+            offset: Offset(0, widget.contentOffsetY - 1),
             child: Stack(
               clipBehavior: Clip.none,
               alignment: Alignment.center,
