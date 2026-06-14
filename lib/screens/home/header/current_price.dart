@@ -483,3 +483,4 @@ String _formatHoverLabel(int ms, BtcRange range) {
       return _dateFormat('yMMMd', DateFormat.yMMMd).format(d);
   }
 }
+

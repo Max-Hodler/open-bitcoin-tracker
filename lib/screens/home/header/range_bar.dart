@@ -1047,12 +1047,7 @@ class _ChipState extends State<_Chip> {
         // pill behind the row (see _RangeBarState.build), not per-chip — so the
         // chip itself is transparent and only styles its label.
         alignment: Alignment.center,
-        child: IntrinsicWidth(
-          // Stack (not Column) so the flick-hint chevrons overflow above and
-          // below the label without adding height: the chip's measured rect
-          // stays label-sized, so the sliding pill keeps its height and the
-          // other chips don't reflow when selection moves.
-          child: Transform.translate(
+        child: Transform.translate(
             offset: Offset(0, widget.contentOffsetY),
             child: Stack(
               clipBehavior: Clip.none,
@@ -1170,8 +1165,7 @@ class _ChipState extends State<_Chip> {
             ),
           ),
         ),
-      ),
-    );
+      );
     if (!hasSwipe) return core;
     return RawGestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -1336,4 +1330,5 @@ String _btcRangeLongLabel(BuildContext context, BtcRange r) {
   if (years == null) return _btcRangeLabel(context, r);
   return AppLocalizations.of(context).rangePickerYearsFull(years);
 }
+
 
