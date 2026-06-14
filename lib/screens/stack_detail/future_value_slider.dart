@@ -13,16 +13,14 @@ import '../../theme/theme.dart';
 /// that projects the stack's value live as the user drags. Replaces the old
 /// fixed ladder of milestone pills: one control instead of nineteen rows.
 ///
-/// The track is log-scaled between [minPrice] and [maxPrice] so the cheap end
-/// (just above today's price) gets as much travel as the expensive end, rather
-/// than being crushed into the first few pixels.
+/// The thumb snaps through a fixed ladder of *round* prices — 100k, 200k … 1M
+/// in 100k steps, then 1M, 2M … 10M in 1M steps — so every stop is a number a
+/// person would actually pick (100k, 300k) instead of an arbitrary $137,492.
 class FutureValueSlider extends StatefulWidget {
   const FutureValueSlider({
     super.key,
     required this.btcAmount,
     required this.currency,
-    required this.minPrice,
-    required this.maxPrice,
     required this.initialPrice,
     this.onPriceSelected,
   });
@@ -31,12 +29,8 @@ class FutureValueSlider extends StatefulWidget {
   final double btcAmount;
   final Currency currency;
 
-  /// Track bounds, in the active currency. [minPrice] is typically today's
-  /// price (you can't go below where we already are); [maxPrice] is the dream.
-  final double minPrice;
-  final double maxPrice;
-
-  /// Where the thumb starts — usually the next round number above today.
+  /// Where the thumb starts — 100k by default, or a restored saved projection.
+  /// Snapped to the nearest ladder stop.
   final double initialPrice;
 
   /// Fired once when the user finishes a drag, with the BTC price the thumb
@@ -48,47 +42,43 @@ class FutureValueSlider extends StatefulWidget {
 }
 
 class _FutureValueSliderState extends State<FutureValueSlider> {
-  // Position along the track in [0, 1]; mapped to a price via the log curve.
-  late double _t;
-  int _lastHapticStep = -1;
+  /// Fixed ladder of round prices the thumb snaps through: 100k, 200k … 1M in
+  /// 100k steps, then 1M, 2M … 10M in 1M steps. Deliberately independent of
+  /// today's price — the projection always starts at 100k and runs to 10M.
+  static final List<double> _stops = [
+    for (var p = 100000.0; p < 1000000.0; p += 100000.0) p,
+    for (var p = 1000000.0; p <= 10000000.0; p += 1000000.0) p,
+  ];
+
+  late int _index;
 
   @override
   void initState() {
     super.initState();
-    _t = _priceToT(widget.initialPrice);
+    _index = _nearestStop(widget.initialPrice);
   }
 
-  @override
-  void didUpdateWidget(covariant FutureValueSlider old) {
-    super.didUpdateWidget(old);
-    // Currency switch / amount edit rescales the bounds; keep the thumb where it
-    // is proportionally rather than snapping it.
-    if (old.minPrice != widget.minPrice || old.maxPrice != widget.maxPrice) {
-      _t = _t.clamp(0.0, 1.0);
+  int _nearestStop(double price) {
+    var best = 0;
+    var bestDist = double.infinity;
+    for (var i = 0; i < _stops.length; i++) {
+      final d = (_stops[i] - price).abs();
+      if (d < bestDist) {
+        bestDist = d;
+        best = i;
+      }
     }
+    return best;
   }
 
-  double get _logMin => math.log(math.max(widget.minPrice, 1));
-  double get _logMax => math.log(math.max(widget.maxPrice, widget.minPrice + 1));
+  double get _price => _stops[_index];
 
-  double _priceToT(double price) {
-    final p = price.clamp(widget.minPrice, widget.maxPrice);
-    return ((math.log(p) - _logMin) / (_logMax - _logMin)).clamp(0.0, 1.0);
-  }
-
-  double get _price => math.exp(_logMin + _t * (_logMax - _logMin));
-
-  void _setT(double t) {
-    final clamped = t.clamp(0.0, 1.0);
-    if (clamped == _t) return;
-    setState(() => _t = clamped);
-    // A light tick every ~10% of travel so the drag has texture without
-    // buzzing continuously.
-    final step = (_t * 10).round();
-    if (step != _lastHapticStep) {
-      _lastHapticStep = step;
-      AppHaptics.selection();
-    }
+  void _setIndex(double raw) {
+    final i = raw.round().clamp(0, _stops.length - 1);
+    if (i == _index) return;
+    setState(() => _index = i);
+    // One tick per stop crossed — the snapping itself gives the drag texture.
+    AppHaptics.selection();
   }
 
   @override
@@ -135,8 +125,11 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
             overlayShape: const RoundSliderOverlayShape(overlayRadius: 20),
           ),
           child: Slider(
-            value: _t,
-            onChanged: _setT,
+            value: _index.toDouble(),
+            min: 0,
+            max: (_stops.length - 1).toDouble(),
+            divisions: math.max(_stops.length - 1, 1),
+            onChanged: _setIndex,
             onChangeEnd: (_) => widget.onPriceSelected?.call(_price),
           ),
         ),

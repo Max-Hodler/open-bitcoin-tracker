@@ -519,22 +519,18 @@ class _FutureSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.watch<LivePriceController>();
-    final currentPrice = controller.rates.forCurrency(currency) ?? 0;
-    final floor = currentPrice > 0 ? currentPrice : 100000.0;
-    final ceiling = _ceilingFor(floor);
-    final initial = savedPrice ?? _initialFor(floor, ceiling, btcAmount);
+    // The thumb starts at 100k by default, or the price the user last parked it
+    // on for this stack (in the active currency).
+    final initial = savedPrice ?? 100000.0;
 
     return _Section(
       verticalPadding: AppSpacing.lg,
-      // Rebuild the slider's initial position when the restored price or the
-      // bounds change (currency switch, amount edit) so it re-seeds correctly.
+      // Rebuild the slider's initial position when the restored price changes
+      // (currency switch restoring a different saved value) so it re-seeds.
       child: FutureValueSlider(
-        key: ValueKey('$stackId|$initial|$floor|$ceiling'),
+        key: ValueKey('$stackId|$initial'),
         btcAmount: btcAmount,
         currency: currency,
-        minPrice: floor,
-        maxPrice: ceiling,
         initialPrice: initial,
         onPriceSelected: (price) {
           context.read<AppStateNotifier>().updateStack(
@@ -548,23 +544,6 @@ class _FutureSection extends StatelessWidget {
       ),
     );
   }
-
-  // ~20× today's price, rounded up to a clean power-of-ten-ish number.
-  static double _ceilingFor(double floor) {
-    final target = floor * 20;
-    var mag = 1.0;
-    while (mag * 10 <= target) {
-      mag *= 10;
-    }
-    return (target / mag).ceilToDouble() * mag;
-  }
-
-  // Start the thumb at the BTC price where this stack would be worth 1M of the
-  // selected fiat, clamped to the slider's bounds.
-  static double _initialFor(double floor, double ceiling, double btcAmount) =>
-      btcAmount > 0
-          ? (1000000.0 / btcAmount).clamp(floor, ceiling)
-          : (floor * 3).clamp(floor, ceiling);
 }
 
 // ---- shared building blocks ----
