@@ -426,9 +426,8 @@ class _Section extends StatelessWidget {
           child: Text(
             title,
             style: AppTypography.body.copyWith(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.3,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
               color: cs.onSurfaceVariant,
             ),
           ),
