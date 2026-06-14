@@ -390,24 +390,32 @@ class _PastValuesSectionState extends State<_PastValuesSection> {
               currency: widget.currency,
             ),
             const _RowDivider(),
-            InkWell(
-              onTap: () {
-                AppHaptics.light();
-                setState(() => _expanded = !_expanded);
-              },
-              borderRadius: BorderRadius.circular(AppSpacing.radius),
-              child: Container(
-                width: double.infinity,
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(vertical: 10),
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 2),
+              child: Center(
                 child: AnimatedRotation(
                   turns: _expanded ? 0.5 : 0.0,
                   duration: const Duration(milliseconds: 280),
                   curve: Curves.easeInOut,
-                  child: Icon(
-                    Icons.expand_more,
-                    size: 24,
-                    color: cs.onSurfaceVariant,
+                  child: IconButton(
+                    onPressed: () {
+                      AppHaptics.light();
+                      setState(() => _expanded = !_expanded);
+                    },
+                    icon: const Icon(Icons.expand_more),
+                    iconSize: 22,
+                    constraints: const BoxConstraints(),
+                    style: IconButton.styleFrom(
+                      backgroundColor: cs.surface,
+                      foregroundColor: cs.onSurfaceVariant,
+                      shadowColor: Colors.black.withValues(alpha: 0.12),
+                      elevation: 1.5,
+                      fixedSize: const Size(36, 36),
+                      minimumSize: const Size(36, 36),
+                      maximumSize: const Size(36, 36),
+                      shape: const CircleBorder(),
+                      padding: EdgeInsets.zero,
+                    ),
                   ),
                 ),
               ),
