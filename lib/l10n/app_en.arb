@@ -612,11 +612,7 @@
   "@homeAddAStack": {
     "description": "Label of the large standalone button shown in the empty state (no stacks yet) that starts adding the first stack. Uses the article ('a stack') because as a full-width empty-state button it reads more naturally than the terse menu form."
   },
-  "homeRangeChipHint": "Tap the selected range again to change it.",
-  "@homeRangeChipHint": {
-    "description": "One-time hint shown below the chart range buttons, teaching that long-pressing a range button opens a picker to change which range it shows. Disappears permanently after the user long-presses any range button for the first time."
-  },
-  "homeSwipeChipHint": "You can also swipe up or down on a range to change it.",
+  "homeSwipeChipHint": "Swipe up or down on a range to change it.",
   "@homeSwipeChipHint": {
     "description": "One-time hint shown below the chart range chips after the long-press hint is dismissed, teaching the swipe-to-cycle shortcut. Disappears permanently after the user swipes any chip for the first time."
   },

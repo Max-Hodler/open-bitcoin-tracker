@@ -35,7 +35,6 @@ class AppState {
     ],
     this.totalImageData,
     this.totalColorKey,
-    this.rangeChipHintDismissed = false,
     this.swipeChipHintDismissed = false,
     this.showPriceDelta = false,
     this.totalAtTop = false,
@@ -109,13 +108,8 @@ class AppState {
   // default initial-letter circle in the theme's bitcoinOrange.
   final String? totalImageData;
   final String? totalColorKey;
-  // True once the user long-presses any range chip for the first time, or the
-  // hint text is dismissed. The hint sits below the chip row and teaches that
-  // long-pressing opens the range picker for that chip slot.
-  final bool rangeChipHintDismissed;
   // True once the user swipes up or down on any range chip for the first time.
-  // The hint (shown after [rangeChipHintDismissed]) teaches the swipe-to-cycle
-  // shortcut. Shown only after the long-press hint has been dismissed.
+  // The hint teaches the swipe-to-cycle shortcut.
   final bool swipeChipHintDismissed;
   // When true, show the signed tick-to-tick price delta as a subtitle below
   // the live price for ~2 s each time the price updates. Off by default.
@@ -159,7 +153,6 @@ class AppState {
     bool clearTotalImage = false,
     String? totalColorKey,
     bool clearTotalColor = false,
-    bool? rangeChipHintDismissed,
     bool? swipeChipHintDismissed,
     bool? showPriceDelta,
     bool? totalAtTop,
@@ -205,8 +198,6 @@ class AppState {
       totalColorKey: clearTotalColor
           ? null
           : (totalColorKey ?? this.totalColorKey),
-      rangeChipHintDismissed:
-          rangeChipHintDismissed ?? this.rangeChipHintDismissed,
       swipeChipHintDismissed:
           swipeChipHintDismissed ?? this.swipeChipHintDismissed,
       showPriceDelta: showPriceDelta ?? this.showPriceDelta,
@@ -250,7 +241,6 @@ class AppState {
         'homeWidgetOrder': [for (final w in homeWidgetOrder) w.code],
         if (totalImageData != null) 'totalImageData': totalImageData,
         if (totalColorKey != null) 'totalColorKey': totalColorKey,
-        'rangeChipHintDismissed': rangeChipHintDismissed,
         'swipeChipHintDismissed': swipeChipHintDismissed,
         'showPriceDelta': showPriceDelta,
         'totalAtTop': totalAtTop,
@@ -347,8 +337,6 @@ class AppState {
       totalColorKey: json['totalColorKey'] is String
           ? json['totalColorKey'] as String
           : null,
-      rangeChipHintDismissed:
-          json['rangeChipHintDismissed'] as bool? ?? false,
       swipeChipHintDismissed:
           json['swipeChipHintDismissed'] as bool? ?? false,
       showPriceDelta: json['showPriceDelta'] as bool? ?? false,

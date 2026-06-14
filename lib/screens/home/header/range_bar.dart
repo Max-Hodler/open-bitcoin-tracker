@@ -101,6 +101,14 @@ class _RangeBarState extends State<RangeBar>
 
   bool get _dragging => _dragLeft != null;
 
+  // The slot whose label shows the selected styling (bold + chart color +
+  // flick-hint chevrons). It lags the real selected slot: when a tap picks a
+  // new range, the pill starts gliding immediately but the label only "becomes
+  // selected" once the pill finishes arriving (see the pill's onEnd). -1 until
+  // the first build resolves the initial selection. Drags bypass this and
+  // highlight the hovered slot directly.
+  int _visualSelectedIndex = -1;
+
   // Re-measures every chip and, if any moved, updates [_chipRects] so the pill
   // can slide to the selected slot (and a drag can resolve slot boundaries).
   // Runs after every frame the bar lays out (selection change, label-width
@@ -185,6 +193,10 @@ class _RangeBarState extends State<RangeBar>
       _dragLeft = null;
       _dragStartIndex = -1;
       _dragHoverIndex = -1;
+      // The pill is already at the finger (the landed slot), so style that slot
+      // selected immediately — there's no glide to lag behind, and leaving the
+      // visual index on the start slot would flicker it bold during the snap.
+      if (landedIndex >= 0) _visualSelectedIndex = landedIndex;
     });
     // Commit the new range only if the pill ended on a different slot. The
     // AnimatedPositioned then snaps the pill onto that slot's measured rect.
@@ -349,10 +361,18 @@ class _RangeBarState extends State<RangeBar>
     } else {
       pillRect = null;
     }
+    // Seed the lagged visual index on the first build, and snap it straight to
+    // the selection whenever there's no pill glide to wait for — either the
+    // initial paint (-1), or there's no rendered pill (rects not measured yet,
+    // or nothing selected) so the pill's onEnd will never fire to catch it up.
+    if (_visualSelectedIndex == -1 || pillRect == null) {
+      _visualSelectedIndex = selectedIndex;
+    }
     // The hovered slot's label is highlighted while dragging; otherwise the
-    // selected slot is. Drives each chip's selected styling so the bold/orange
-    // label tracks the pill as it's dragged.
-    final highlightIndex = _dragging ? _dragHoverIndex : selectedIndex;
+    // *visually* selected slot is — which lags the real selection until the
+    // pill finishes gliding (the pill below tracks selectedIndex directly, so
+    // it moves first and the label flips bold/orange only on arrival).
+    final highlightIndex = _dragging ? _dragHoverIndex : _visualSelectedIndex;
     bool slotSelected(int index) => index == highlightIndex;
     // Room reserved above and below the chip row so the pill's drop-shadow
     // (and its swipe-nudge travel) isn't clipped by the bar's box. The shadow
@@ -415,6 +435,17 @@ class _RangeBarState extends State<RangeBar>
                               ? Duration.zero
                               : const Duration(milliseconds: 260),
                           curve: Curves.easeOutCubic,
+                          // Once the pill arrives at the newly selected slot,
+                          // flip that slot's label to its selected styling. Skip
+                          // while dragging — the hovered label is driven live by
+                          // _dragHoverIndex, not this lagged index.
+                          onEnd: () {
+                            if (!_dragging &&
+                                _visualSelectedIndex != selectedIndex) {
+                              setState(() =>
+                                  _visualSelectedIndex = selectedIndex);
+                            }
+                          },
                           left: pillRect.left,
                           top: pillRect.top,
                           width: pillRect.width,
@@ -681,7 +712,6 @@ class _RangeBarState extends State<RangeBar>
     required String Function(BuildContext, BtcRange) longLabel,
   }) async {
     final app = context.read<AppStateNotifier>();
-    app.dismissRangeChipHint();
     final current = getCurrent(app);
     final picked = await showDialog<BtcRange>(
       context: context,
@@ -838,6 +868,9 @@ class _Chip extends StatefulWidget {
 
 class _ChipState extends State<_Chip> {
   static const double _swipeStep = 24;
+  // How long the selected styling (label color/weight, flick-hint chevrons)
+  // takes to fade in or out when this chip gains or loses selection.
+  static const Duration _selectFade = Duration(milliseconds: 200);
   // Cumulative dy since drag-start. The chip uses a vertical-drag recognizer
   // so it wins the gesture arena against the enclosing scroll view — without
   // that, drags on the chip would also feed the outer scroll and trigger
@@ -896,6 +929,9 @@ class _ChipState extends State<_Chip> {
         ? (widget.selectedColor ?? cs.onSurface)
         : cs.onSurfaceVariant;
     final hasSwipe = widget.onSwipeUp != null || widget.onSwipeDown != null;
+    // Chevrons hint the vertical-flick gesture, but only on the selected chip:
+    // a stack of up/down arrows around any other label would just be noise.
+    final showChevrons = widget.selected && hasSwipe;
     Widget core = GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
@@ -919,9 +955,13 @@ class _ChipState extends State<_Chip> {
         // chip itself is transparent and only styles its label.
         alignment: Alignment.center,
         child: IntrinsicWidth(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          // Stack (not Column) so the flick-hint chevrons overflow above and
+          // below the label without adding height: the chip's measured rect
+          // stays label-sized, so the sliding pill keeps its height and the
+          // other chips don't reflow when selection moves.
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
             children: [
               Builder(
                 builder: (_) {
@@ -929,16 +969,24 @@ class _ChipState extends State<_Chip> {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        widget.label,
-                        textAlign: TextAlign.center,
-                        softWrap: false,
-                        overflow: TextOverflow.visible,
+                      // Fade the selected styling in/out instead of snapping it:
+                      // the color lerps over _selectFade; font weight can't be
+                      // interpolated by Flutter so it flips at the tween's
+                      // midpoint, under cover of the color fade.
+                      AnimatedDefaultTextStyle(
+                        duration: _selectFade,
+                        curve: Curves.easeOut,
                         style: AppTypography.body.copyWith(
                           fontSize: 14,
                           fontWeight:
                               widget.selected ? FontWeight.w600 : null,
                           color: activeColor,
+                        ),
+                        child: Text(
+                          widget.label,
+                          textAlign: TextAlign.center,
+                          softWrap: false,
+                          overflow: TextOverflow.visible,
                         ),
                       ),
                     ],
@@ -954,6 +1002,41 @@ class _ChipState extends State<_Chip> {
                   return SizedBox(width: slotWidth, child: row);
                 },
               ),
+              // Chevrons stay mounted whenever the chip can be flicked, so they
+              // can fade their opacity in/out with selection instead of popping.
+              // IgnorePointer keeps the faded-out copy from eating gestures.
+              if (hasSwipe) ...[
+                Positioned(
+                  top: -12,
+                  child: IgnorePointer(
+                    child: AnimatedOpacity(
+                      duration: _selectFade,
+                      curve: Curves.easeOut,
+                      opacity: showChevrons ? 1 : 0,
+                      child: Icon(
+                        Icons.keyboard_arrow_up_rounded,
+                        size: 16,
+                        color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: -12,
+                  child: IgnorePointer(
+                    child: AnimatedOpacity(
+                      duration: _selectFade,
+                      curve: Curves.easeOut,
+                      opacity: showChevrons ? 1 : 0,
+                      child: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        size: 16,
+                        color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),
