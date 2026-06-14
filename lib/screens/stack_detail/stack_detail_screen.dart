@@ -245,8 +245,9 @@ class _Header extends StatelessWidget {
     final value = Sats.toFiat(stack.sats, liveRate);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        const SizedBox(height: AppSpacing.sm),
         GestureDetector(
           onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(
             builder: (_) => EditStackAmountScreen(stackId: stackId),
@@ -254,23 +255,27 @@ class _Header extends StatelessWidget {
           child: Text(
             formatBtcAmount(stack.sats,
                 hidden: stack.isHidden, mode: btcDisplayMode, tight: true),
+            textAlign: TextAlign.center,
             style: AppTypography.display.copyWith(
-              fontSize: 30,
+              fontSize: 44,
               fontWeight: FontWeight.w600,
-              letterSpacing: -0.5,
+              letterSpacing: -1,
               color: context.palette.bitcoinOrange,
               fontFeatures: const [ui.FontFeature.tabularFigures()],
             ),
           ),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           formatFiat(value, currency, decimalsUnder10: true).tight,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
           style: AppTypography.body.copyWith(
-            fontSize: 30,
-            color: cs.onSurface,
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.3,
+            color: cs.onSurfaceVariant,
             fontFeatures: const [ui.FontFeature.tabularFigures()],
           ),
         ),
