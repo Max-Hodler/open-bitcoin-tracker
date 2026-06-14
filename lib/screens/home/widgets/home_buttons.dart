@@ -8,6 +8,7 @@ import '../../../services/app_haptics.dart';
 import '../../../state/state.dart';
 import '../../../theme/theme.dart';
 import '../../about_screen.dart';
+import '../../settings/settings_dialogs.dart';
 import '../../settings/settings_screen.dart';
 
 class HomeButton extends StatelessWidget {
@@ -267,7 +268,7 @@ class _AttentionWavePainter extends CustomPainter {
       old.progress != progress || old.color != color;
 }
 
-enum _OverflowAction { converter, language, currency, theme, stacks, about, screenshot }
+enum _OverflowAction { converter, language, currency, bitcoinUnit, theme, stacks, about, screenshot }
 
 class OverflowButton extends StatefulWidget {
   const OverflowButton({super.key, this.onOpenConverter});
@@ -349,11 +350,11 @@ class _OverflowButtonState extends State<OverflowButton> {
           ])),
         ),
         PopupMenuItem(
-          value: _OverflowAction.theme,
+          value: _OverflowAction.bitcoinUnit,
           child: IgnorePointer(child: Row(children: [
-            Icon(Icons.palette_outlined, size: 20, color: cs.onSurfaceVariant),
+            Icon(Icons.currency_bitcoin, size: 20, color: cs.onSurfaceVariant),
             const SizedBox(width: 12),
-            Text(l10n.settingsThemeLabel, style: itemStyle),
+            Text(l10n.settingsBitcoinDisplayMode, style: itemStyle),
           ])),
         ),
         PopupMenuItem(
@@ -362,6 +363,14 @@ class _OverflowButtonState extends State<OverflowButton> {
             Icon(Icons.reorder, size: 20, color: cs.onSurfaceVariant),
             const SizedBox(width: 12),
             Text(l10n.settingsGroupPrivacy, style: itemStyle),
+          ])),
+        ),
+        PopupMenuItem(
+          value: _OverflowAction.theme,
+          child: IgnorePointer(child: Row(children: [
+            Icon(Icons.palette_outlined, size: 20, color: cs.onSurfaceVariant),
+            const SizedBox(width: 12),
+            Text(l10n.settingsThemeLabel, style: itemStyle),
           ])),
         ),
         PopupMenuItem(
@@ -412,6 +421,12 @@ class _OverflowButtonState extends State<OverflowButton> {
         );
         if (picked != null && context.mounted) {
           context.read<AppStateNotifier>().setSelectedCurrencies(picked);
+        }
+      case _OverflowAction.bitcoinUnit:
+        final app = context.read<AppStateNotifier>();
+        final picked = await showBitcoinUnitDialog(context, app.btcDisplayMode);
+        if (picked != null && context.mounted) {
+          context.read<AppStateNotifier>().setBitcoinDisplayMode(picked);
         }
       case _OverflowAction.theme:
         if (context.mounted) {

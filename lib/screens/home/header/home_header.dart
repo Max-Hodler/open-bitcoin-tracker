@@ -153,7 +153,7 @@ class _HomeHeaderState extends State<HomeHeader> {
       children: [
         if (widget.onAddStack != null) ...[
           AddStackIconButton(onTap: widget.onAddStack!),
-          const SizedBox(width: 8),
+          const SizedBox(width: 16),
         ],
         OverflowButton(onOpenConverter: widget.onOpenConverter),
       ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/app_enums.dart';
+
 import '../../l10n/generated/app_localizations.dart';
 import '../../services/stacks_auth_service.dart';
 import '../../services/stacks_unlock_orchestrator.dart';
@@ -53,19 +54,6 @@ class StacksSettingsScreen extends StatelessWidget {
           children: [
             SettingsGroup(
               children: [
-                SettingsSegmentedTile(
-                  label: l10n.settingsBitcoinDisplayMode,
-                  options: [
-                    l10n.bitcoinDisplayModeSats,
-                    l10n.bitcoinDisplayModeBtc,
-                  ],
-                  selectedIndex:
-                      app.btcDisplayMode == BtcDisplayMode.btc ? 1 : 0,
-                  enabled: true,
-                  onChanged: (i) => app.setBitcoinDisplayMode(
-                    i == 1 ? BtcDisplayMode.btc : BtcDisplayMode.sats,
-                  ),
-                ),
                 if (!lock.isLocked && app.stacks.length > 1)
                   SettingsPickerTile(
                     label: l10n.settingsReorderStacks,
