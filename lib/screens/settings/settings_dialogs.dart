@@ -4,7 +4,7 @@ import '../../data/app_enums.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../services/app_haptics.dart';
 import '../../theme/theme.dart';
-import '../../widgets/orange_outline_button.dart';
+import '../../widgets/orange_primary_button.dart';
 
 String authModeLabel(AppLocalizations l10n, StacksAuthMode m) {
   switch (m) {
@@ -60,7 +60,7 @@ Future<StacksAuthMode?> showAuthModePicker(
               const SizedBox(height: 20),
               for (final m in StacksAuthMode.values)
                 if (m != StacksAuthMode.off) ...[
-                  OrangeOutlineButton(
+                  OrangePrimaryButton(
                     key: ValueKey('stacksAuthMode-${m.code}'),
                     isValid: true,
                     label: authModeLabel(l10n, m),
@@ -105,7 +105,7 @@ Future<StacksLockTimeout?> showTimeoutPicker(
               ),
               const SizedBox(height: 20),
               for (final t in StacksLockTimeout.values) ...[
-                OrangeOutlineButton(
+                OrangePrimaryButton(
                   key: ValueKey('stacksLockTimeout-${t.code}'),
                   isValid: true,
                   label: lockTimeoutLabel(l10n, t),
@@ -294,7 +294,7 @@ Future<BtcDisplayMode?> showBitcoinUnitDialog(
               Row(
                 children: [
                   Expanded(
-                    child: OrangeOutlineButton(
+                    child: OrangePrimaryButton(
                       isValid: true,
                       label: 'Bitcoin',
                       height: 52,
@@ -305,7 +305,7 @@ Future<BtcDisplayMode?> showBitcoinUnitDialog(
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: OrangeOutlineButton(
+                    child: OrangePrimaryButton(
                       isValid: true,
                       label: l10n.bitcoinDisplayModeSats,
                       height: 52,

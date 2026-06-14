@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../orange_outline_button.dart';
+import '../orange_primary_button.dart';
 
 /// Bitcoin-orange full-width confirm button used by the stack name flows.
 /// Renders either a check glyph (default) or the [label] text when supplied,
@@ -19,7 +19,7 @@ class StackNameConfirmButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OrangeOutlineButton(
+    return OrangePrimaryButton(
       isValid: isValid,
       onTap: onTap,
       label: label,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../services/app_haptics.dart';
 import '../theme/theme.dart';
-import 'orange_outline_button.dart';
+import 'orange_primary_button.dart';
 import 'soft_ink_splash.dart';
 
 Key numberPadKey(String label) => ValueKey('keypad-$label');
@@ -226,7 +226,7 @@ class _ConfirmButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
-      child: OrangeOutlineButton(
+      child: OrangePrimaryButton(
         isValid: isValid,
         onTap: onTap,
         label: label,

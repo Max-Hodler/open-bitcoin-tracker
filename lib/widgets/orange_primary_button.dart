@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import '../services/app_haptics.dart';
 import '../theme/theme.dart';
 
-/// Full-width button with the bitcoin-orange outline style used across the app.
-/// Renders [label] text when supplied, otherwise a check icon.
+/// Full-width primary button with the solid bitcoin-orange style used across
+/// the app. Renders [label] text when supplied, otherwise a check icon, in
+/// white on an orange fill.
 /// Dimmed and tap-blocked when [isValid] is false.
-class OrangeOutlineButton extends StatelessWidget {
-  const OrangeOutlineButton({
+class OrangePrimaryButton extends StatelessWidget {
+  const OrangePrimaryButton({
     super.key,
     required this.isValid,
     required this.onTap,
@@ -38,9 +39,8 @@ class OrangeOutlineButton extends StatelessWidget {
         width: fullWidth ? double.infinity : null,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: AppColors.bitcoinOrangeTint,
+            color: p.bitcoinOrange,
             borderRadius: radius,
-            border: Border.all(color: p.bitcoinOrange, width: 0.5),
           ),
           child: Material(
             color: Colors.transparent,
@@ -56,17 +56,17 @@ class OrangeOutlineButton extends StatelessWidget {
               child: Align(
                 widthFactor: fullWidth ? null : 1.0,
                 child: label == null && icon == null
-                    ? Icon(Icons.check, size: 28, color: p.bitcoinOrange)
+                    ? const Icon(Icons.check, size: 28, color: Colors.white)
                     : icon != null && label != null
                         ? Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(icon, size: 20, color: p.bitcoinOrange),
+                              Icon(icon, size: 20, color: Colors.white),
                               const SizedBox(width: 8),
                               Text(
                                 label!,
                                 style: AppTypography.title.copyWith(
-                                  color: p.bitcoinOrange,
+                                  color: Colors.white,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -79,7 +79,7 @@ class OrangeOutlineButton extends StatelessWidget {
                             child: Text(
                               label!,
                               style: AppTypography.title.copyWith(
-                                color: p.bitcoinOrange,
+                                color: Colors.white,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
