@@ -487,6 +487,8 @@ class _RangeBarState extends State<RangeBar>
                                 _nudgePill(1);
                                 _stepDaysOverflowSlot(context, -1);
                               },
+                              contentOffsetY: slotSelected(0) ? _nudgeOffset : 0,
+                              rollDirection: _nudgeDir == 0 ? 1 : _nudgeDir,
                               chartColor: chartColor,
                               minLabelWidth: daysOverflowLabelWidth,
                             ),
@@ -509,6 +511,8 @@ class _RangeBarState extends State<RangeBar>
                                 _nudgePill(1);
                                 _stepWeeksOverflowSlot(context, -1);
                               },
+                              contentOffsetY: slotSelected(1) ? _nudgeOffset : 0,
+                              rollDirection: _nudgeDir == 0 ? 1 : _nudgeDir,
                               chartColor: chartColor,
                               minLabelWidth: weeksOverflowLabelWidth,
                             ),
@@ -532,6 +536,8 @@ class _RangeBarState extends State<RangeBar>
                                 _nudgePill(1);
                                 _stepMonthsOverflowSlot(context, -1);
                               },
+                              contentOffsetY: slotSelected(2) ? _nudgeOffset : 0,
+                              rollDirection: _nudgeDir == 0 ? 1 : _nudgeDir,
                               chartColor: chartColor,
                               minLabelWidth: monthsOverflowLabelWidth,
                             ),
@@ -554,6 +560,8 @@ class _RangeBarState extends State<RangeBar>
                                 _nudgePill(1);
                                 _stepOverflowSlot(context, -1);
                               },
+                              contentOffsetY: slotSelected(3) ? _nudgeOffset : 0,
+                              rollDirection: _nudgeDir == 0 ? 1 : _nudgeDir,
                               chartColor: chartColor,
                               minLabelWidth: overflowLabelWidth,
                             ),
@@ -803,6 +811,8 @@ class _RangeChipWithPct extends StatelessWidget {
     this.onLongPress,
     this.onSwipeUp,
     this.onSwipeDown,
+    this.contentOffsetY = 0,
+    this.rollDirection = 1,
     this.minLabelWidth,
   });
 
@@ -813,6 +823,8 @@ class _RangeChipWithPct extends StatelessWidget {
   final VoidCallback? onLongPress;
   final VoidCallback? onSwipeUp;
   final VoidCallback? onSwipeDown;
+  final double contentOffsetY;
+  final int rollDirection;
   final double? minLabelWidth;
 
   @override
@@ -824,6 +836,8 @@ class _RangeChipWithPct extends StatelessWidget {
       onLongPress: onLongPress,
       onSwipeUp: onSwipeUp,
       onSwipeDown: onSwipeDown,
+      contentOffsetY: contentOffsetY,
+      rollDirection: rollDirection,
       compact: true,
       selectedColor: chartColor,
       minLabelWidth: minLabelWidth,
@@ -839,6 +853,8 @@ class _Chip extends StatefulWidget {
     this.onLongPress,
     this.onSwipeUp,
     this.onSwipeDown,
+    this.contentOffsetY = 0,
+    this.rollDirection = 1,
     this.compact = false,
     this.selectedColor,
     this.minLabelWidth,
@@ -853,6 +869,14 @@ class _Chip extends StatefulWidget {
   // overflow range slot to cycle through years without opening the picker.
   final VoidCallback? onSwipeUp;
   final VoidCallback? onSwipeDown;
+  // Vertical translation (logical px) applied to the chip's label + chevrons.
+  // The parent feeds the same swipe-nudge offset it applies to the sliding pill
+  // here, so the pill and its content move together while a swipe cycles ranges.
+  final double contentOffsetY;
+  // Direction the label slides in when it changes during a swipe: +1 for a
+  // down-swipe (new label enters from below), -1 for an up-swipe (enters from
+  // above). Mirrors the live-price RollingNumber direction, but vertical.
+  final int rollDirection;
   final bool compact;
   // When set, overrides the selected-state text/icon color (defaults to
   // cs.onSurface). Used to tint the active chip orange to match the chart.
@@ -959,85 +983,122 @@ class _ChipState extends State<_Chip> {
           // below the label without adding height: the chip's measured rect
           // stays label-sized, so the sliding pill keeps its height and the
           // other chips don't reflow when selection moves.
-          child: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.center,
-            children: [
-              Builder(
-                builder: (_) {
-                  final row = Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Fade the selected styling in/out instead of snapping it:
-                      // the color lerps over _selectFade; font weight can't be
-                      // interpolated by Flutter so it flips at the tween's
-                      // midpoint, under cover of the color fade.
-                      AnimatedDefaultTextStyle(
+          child: Transform.translate(
+            offset: Offset(0, widget.contentOffsetY),
+            child: Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                Builder(
+                  builder: (_) {
+                    final row = Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Fade the selected styling in/out instead of snapping it:
+                        // the color lerps over _selectFade; font weight can't be
+                        // interpolated by Flutter so it flips at the tween's
+                        // midpoint, under cover of the color fade.
+                        AnimatedDefaultTextStyle(
+                          duration: _selectFade,
+                          curve: Curves.easeOut,
+                          style: AppTypography.body.copyWith(
+                            fontSize: 14,
+                            fontWeight:
+                                widget.selected ? FontWeight.w600 : null,
+                            color: activeColor,
+                          ),
+                          // Roll the label vertically when a swipe cycles it to a
+                          // new range — the old value slides out and the new one
+                          // slides in from the swipe direction, mirroring the
+                          // live-price RollingNumber but on the vertical axis.
+                          child: AnimatedSwitcher(
+                            duration: AppSpacing.motionDuration,
+                            switchInCurve: Curves.easeOutCubic,
+                            switchOutCurve: Curves.easeInCubic,
+                            layoutBuilder: (current, previous) => Stack(
+                              alignment: Alignment.center,
+                              children: [...previous, ?current],
+                            ),
+                            transitionBuilder: (child, anim) {
+                              final isIncoming =
+                                  child.key == ValueKey(widget.label);
+                              final begin = Offset(
+                                0,
+                                (isIncoming ? 1.0 : -1.0) *
+                                    widget.rollDirection *
+                                    0.6,
+                              );
+                              return FadeTransition(
+                                opacity: anim,
+                                child: SlideTransition(
+                                  position: Tween<Offset>(
+                                    begin: begin,
+                                    end: Offset.zero,
+                                  ).animate(anim),
+                                  child: child,
+                                ),
+                              );
+                            },
+                            child: Text(
+                              widget.label,
+                              key: ValueKey(widget.label),
+                              textAlign: TextAlign.center,
+                              softWrap: false,
+                              overflow: TextOverflow.visible,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                    final minW = widget.minLabelWidth;
+                    if (minW == null) return row;
+                    // Stable-width slot so cycling labels (1Y..15Y, 1M..12M) and
+                    // bold↔regular weight changes don't reflow the row. The row
+                    // inside centers itself. SizedBox (not ConstrainedBox)
+                    // because IntrinsicWidth ignores min constraints; +1px slack
+                    // absorbs sub-pixel measurement differences.
+                    final slotWidth = minW + 1;
+                    return SizedBox(width: slotWidth, child: row);
+                  },
+                ),
+                // Chevrons stay mounted whenever the chip can be flicked, so they
+                // can fade their opacity in/out with selection instead of popping.
+                // IgnorePointer keeps the faded-out copy from eating gestures.
+                if (hasSwipe) ...[
+                  Positioned(
+                    top: -12,
+                    child: IgnorePointer(
+                      child: AnimatedOpacity(
                         duration: _selectFade,
                         curve: Curves.easeOut,
-                        style: AppTypography.body.copyWith(
-                          fontSize: 14,
-                          fontWeight:
-                              widget.selected ? FontWeight.w600 : null,
-                          color: activeColor,
+                        opacity: showChevrons ? 1 : 0,
+                        child: Icon(
+                          Icons.keyboard_arrow_up_rounded,
+                          size: 16,
+                          color: cs.onSurfaceVariant.withValues(alpha: 0.5),
                         ),
-                        child: Text(
-                          widget.label,
-                          textAlign: TextAlign.center,
-                          softWrap: false,
-                          overflow: TextOverflow.visible,
-                        ),
-                      ),
-                    ],
-                  );
-                  final minW = widget.minLabelWidth;
-                  if (minW == null) return row;
-                  // Stable-width slot so cycling labels (1Y..15Y, 1M..12M) and
-                  // bold↔regular weight changes don't reflow the row. The row
-                  // inside centers itself. SizedBox (not ConstrainedBox)
-                  // because IntrinsicWidth ignores min constraints; +1px slack
-                  // absorbs sub-pixel measurement differences.
-                  final slotWidth = minW + 1;
-                  return SizedBox(width: slotWidth, child: row);
-                },
-              ),
-              // Chevrons stay mounted whenever the chip can be flicked, so they
-              // can fade their opacity in/out with selection instead of popping.
-              // IgnorePointer keeps the faded-out copy from eating gestures.
-              if (hasSwipe) ...[
-                Positioned(
-                  top: -12,
-                  child: IgnorePointer(
-                    child: AnimatedOpacity(
-                      duration: _selectFade,
-                      curve: Curves.easeOut,
-                      opacity: showChevrons ? 1 : 0,
-                      child: Icon(
-                        Icons.keyboard_arrow_up_rounded,
-                        size: 16,
-                        color: cs.onSurfaceVariant.withValues(alpha: 0.5),
                       ),
                     ),
                   ),
-                ),
-                Positioned(
-                  bottom: -12,
-                  child: IgnorePointer(
-                    child: AnimatedOpacity(
-                      duration: _selectFade,
-                      curve: Curves.easeOut,
-                      opacity: showChevrons ? 1 : 0,
-                      child: Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        size: 16,
-                        color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+                  Positioned(
+                    bottom: -12,
+                    child: IgnorePointer(
+                      child: AnimatedOpacity(
+                        duration: _selectFade,
+                        curve: Curves.easeOut,
+                        opacity: showChevrons ? 1 : 0,
+                        child: Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          size: 16,
+                          color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
