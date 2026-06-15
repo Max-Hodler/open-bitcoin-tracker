@@ -258,7 +258,7 @@ class _HomeHeaderState extends State<HomeHeader> {
           width: 40,
           height: 40,
           child: CircularProgressIndicator(
-            strokeWidth: 2,
+            strokeWidth: 4,
             color: p.bitcoinOrange,
           ),
         ),
