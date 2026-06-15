@@ -199,7 +199,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (app.stacksAuthMode != StacksAuthMode.off) ...[
                     StackLockIconButton(
                       locked: stacksLocked,
-                      enabled: stacks.isNotEmpty,
+                      // Greyed out only in the unlocked, zero-stacks case where
+                      // there's nothing to lock. While locked the button must
+                      // always stay live — it's the sole way back in, and the
+                      // decrypted `stacks` list is empty under lock so checking
+                      // it here would trap the user out of their own data.
+                      enabled: stacksLocked || stacks.isNotEmpty,
                       tooltip: stacksLocked
                           ? AppLocalizations.of(context).homeUnlockStacks
                           : AppLocalizations.of(context).settingsLockStacks,
