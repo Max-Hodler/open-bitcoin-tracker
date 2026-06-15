@@ -133,8 +133,10 @@ class ConverterScreen extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.lg),
               Expanded(
-                child: SingleChildScrollView(
+                child: Align(
+                  alignment: const Alignment(0, -0.65),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _SlotView(
