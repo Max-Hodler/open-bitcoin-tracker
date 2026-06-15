@@ -4,7 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 import '../../../api/api.dart';
-import '../../../data/data.dart';
+import '../../../data/data.dart' hide Stack;
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../state/state.dart';
 import '../../../theme/theme.dart';
@@ -194,14 +194,25 @@ class _HomeHeaderState extends State<HomeHeader> {
         ),
         if (widget.showChart) ...[
           const SizedBox(height: 8),
-          SizedBox(
-            height: switch (chartHeight) {
-              ChartHeight.s => 136,
-              ChartHeight.m => 204,
-              ChartHeight.l => 272,
-              ChartHeight.xl => 340,
-            },
-            child: _buildChartArea(context, logScale: logScale),
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              SizedBox(
+                height: switch (chartHeight) {
+                  ChartHeight.s => 136,
+                  ChartHeight.m => 204,
+                  ChartHeight.l => 272,
+                  ChartHeight.xl => 340,
+                },
+                child: _buildChartArea(context, logScale: logScale),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: _buildChipHint(context),
+              ),
+            ],
           ),
           RangeBar(
             range: widget.range,
@@ -209,7 +220,6 @@ class _HomeHeaderState extends State<HomeHeader> {
             onRange: widget.onRange,
             onSettings: widget.onGraphSettingsTap,
           ),
-          _buildChipHint(context),
         ],
       ],
     );
@@ -230,7 +240,7 @@ class _HomeHeaderState extends State<HomeHeader> {
     if (message == null) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.fromLTRB(
-        AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.sm,
+        AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.md,
       ),
       child: Text(
         message,
