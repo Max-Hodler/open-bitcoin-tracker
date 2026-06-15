@@ -10,7 +10,6 @@ import '../../services/stacks_unlock_orchestrator.dart';
 import '../../state/state.dart';
 import '../../theme/theme.dart';
 import '../../widgets/avatar_sheet.dart';
-import '../../widgets/menu_action_tile.dart';
 import '../../widgets/scroll_hairline.dart';
 import '../../widgets/stack_card.dart';
 import '../pin_entry_screen.dart';
@@ -21,7 +20,6 @@ import 'widgets/home_buttons.dart';
 import 'widgets/locked_stacks_skeleton.dart';
 import 'widgets/stacks_widget.dart';
 
-enum _TotalMenuAction { hide, moveToTop, moveToBottom }
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -430,10 +428,6 @@ class _HomeScreenState extends State<HomeScreen> {
         imageData: app.state.totalImageData,
         colorKey: app.state.totalColorKey ?? 'grey',
         position: StackCardPosition.last,
-        onTap: () {
-          AppHaptics.light();
-          _showTotalMenu(cardContext, app);
-        },
         onAvatarTap: () {
           AppHaptics.light();
           _showTotalAvatarSheet(cardContext, app);
@@ -456,74 +450,6 @@ class _HomeScreenState extends State<HomeScreen> {
       onImageSet: app.setTotalImageData,
       onImageCleared: () => app.setTotalImageData(null),
     );
-  }
-
-  Future<void> _showTotalMenu(BuildContext iconContext, AppStateNotifier app) async {
-    final theme = Theme.of(iconContext);
-    final cs = theme.colorScheme;
-    final isAtTop = app.totalAtTop;
-    final action = await showModalBottomSheet<_TotalMenuAction>(
-      context: iconContext,
-      backgroundColor: theme.brightness == Brightness.dark
-          ? cs.surfaceContainerHigh
-          : cs.surfaceContainerLow,
-      showDragHandle: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      builder: (ctx) {
-        final l10n = AppLocalizations.of(ctx);
-        return SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md,
-              AppSpacing.sm,
-              AppSpacing.md,
-              AppSpacing.lg,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                MenuSheetHeader(l10n.totalCardName),
-                MenuActionGroup(
-                  children: [
-                    MenuActionTile(
-                      leading: Icon(isAtTop
-                          ? Icons.arrow_downward
-                          : Icons.arrow_upward),
-                      label: isAtTop
-                          ? l10n.totalMenuMoveToBottom
-                          : l10n.totalMenuMoveToTop,
-                      onTap: () => Navigator.of(ctx).pop(isAtTop
-                          ? _TotalMenuAction.moveToBottom
-                          : _TotalMenuAction.moveToTop),
-                    ),
-                    MenuActionTile(
-                      leading: const Icon(Icons.visibility_off_outlined),
-                      label: l10n.totalMenuHide,
-                      onTap: () =>
-                          Navigator.of(ctx).pop(_TotalMenuAction.hide),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-    if (!iconContext.mounted) return;
-    switch (action) {
-      case _TotalMenuAction.moveToTop:
-        app.setTotalAtTop(true);
-      case _TotalMenuAction.moveToBottom:
-        app.setTotalAtTop(false);
-      case _TotalMenuAction.hide:
-        app.setShowPortfolio(false);
-      case null:
-        break;
-    }
   }
 
   Future<void> _attemptUnlock(BuildContext context) async {
