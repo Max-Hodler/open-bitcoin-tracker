@@ -199,6 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (app.stacksAuthMode != StacksAuthMode.off) ...[
                     StackLockIconButton(
                       locked: stacksLocked,
+                      enabled: stacks.isNotEmpty,
                       tooltip: stacksLocked
                           ? AppLocalizations.of(context).homeUnlockStacks
                           : AppLocalizations.of(context).settingsLockStacks,

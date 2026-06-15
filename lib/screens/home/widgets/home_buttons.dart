@@ -81,6 +81,7 @@ class StackLockIconButton extends StatelessWidget {
     required this.locked,
     required this.onTap,
     required this.tooltip,
+    this.enabled = true,
   });
 
   /// When true the stacks are locked and the button offers to unlock them;
@@ -88,6 +89,7 @@ class StackLockIconButton extends StatelessWidget {
   final bool locked;
   final VoidCallback onTap;
   final String tooltip;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -96,17 +98,20 @@ class StackLockIconButton extends StatelessWidget {
       width: 36,
       height: 36,
       child: IconButton(
-        onPressed: () {
-          AppHaptics.light();
-          onTap();
-        },
+        onPressed: enabled
+            ? () {
+                AppHaptics.light();
+                onTap();
+              }
+            : null,
         tooltip: tooltip,
         icon: Icon(locked ? Icons.lock_open_outlined : Icons.lock_outline),
         iconSize: 22,
         constraints: const BoxConstraints(),
         style: IconButton.styleFrom(
           backgroundColor: cs.surface,
-          foregroundColor: cs.onSurfaceVariant,
+          foregroundColor: enabled ? cs.onSurfaceVariant : cs.onSurfaceVariant.withValues(alpha: 0.38),
+          disabledForegroundColor: cs.onSurfaceVariant.withValues(alpha: 0.38),
           shadowColor: Colors.black.withValues(alpha: 0.12),
           elevation: 1.5,
           fixedSize: const Size(36, 36),
