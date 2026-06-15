@@ -94,14 +94,18 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              l10n.stackDetailWhenBtcReaches,
-              style: AppTypography.body.copyWith(
-                fontSize: 16,
-                color: cs.onSurfaceVariant,
+            Flexible(
+              child: Text(
+                l10n.stackDetailWhenBtcReaches,
+                style: AppTypography.body.copyWith(
+                  fontSize: 16,
+                  color: cs.onSurfaceVariant,
+                ),
               ),
             ),
+            const SizedBox(width: AppSpacing.sm),
             Text(
               formatFiat(price, widget.currency, decimalsUnder10: false).full,
               style: AppTypography.body.copyWith(
