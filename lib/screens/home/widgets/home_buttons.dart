@@ -306,11 +306,15 @@ class StacksOverflowButton extends StatelessWidget {
           padding: EdgeInsets.zero,
         ),
         itemBuilder: (ctx) => [
-          if (canReorder)
-            PopupMenuItem(
-              value: _StacksMenuAction.reorder,
-              child: row(Icons.reorder, l10n.settingsReorderStacks),
+          PopupMenuItem(
+            value: _StacksMenuAction.lockStacks,
+            child: row(
+              Icons.lock_outline,
+              app.stacksEncryptedAtRest
+                  ? l10n.settingsLockStacksTitle
+                  : l10n.overflowBlockStacks,
             ),
+          ),
           if (canShowTotal)
             PopupMenuItem(
               // Disabled so a tap doesn't route through onSelected and pop the
@@ -324,15 +328,11 @@ class StacksOverflowButton extends StatelessWidget {
             value: _StacksMenuAction.bitcoinUnit,
             child: row(Icons.currency_bitcoin, l10n.settingsBitcoinDisplayMode),
           ),
-          PopupMenuItem(
-            value: _StacksMenuAction.lockStacks,
-            child: row(
-              Icons.lock_outline,
-              app.stacksEncryptedAtRest
-                  ? l10n.settingsLockStacksTitle
-                  : l10n.overflowBlockStacks,
+          if (canReorder)
+            PopupMenuItem(
+              value: _StacksMenuAction.reorder,
+              child: row(Icons.reorder, l10n.settingsReorderStacks),
             ),
-          ),
         ],
       ),
     );
