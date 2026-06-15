@@ -93,7 +93,6 @@
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
   "dialogBitcoinUnitTitle": "Seleziona un'unità bitcoin",
-  "dialogBitcoinUnitSubtitle": "Puoi cambiarlo in seguito nelle Impostazioni.",
   "settingsLivePriceCadence": "Frequenza di aggiornamento",
   "livePriceCadencePickerTitle": "Frequenza di aggiornamento",
   "livePriceCadenceLive": "Live",

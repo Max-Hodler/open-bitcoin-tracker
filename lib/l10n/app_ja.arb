@@ -93,7 +93,6 @@
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
   "dialogBitcoinUnitTitle": "ビットコイン単位を選択",
-  "dialogBitcoinUnitSubtitle": "後から設定で変更できます。",
   "settingsLivePriceCadence": "更新頻度",
   "livePriceCadencePickerTitle": "更新頻度",
   "livePriceCadenceLive": "リアルタイム",

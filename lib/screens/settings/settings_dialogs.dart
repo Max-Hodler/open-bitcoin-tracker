@@ -280,16 +280,6 @@ Future<BtcDisplayMode?> showBitcoinUnitDialog(
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
-              const SizedBox(height: 4),
-              Text(
-                l10n.dialogBitcoinUnitSubtitle,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                  color: cs.onSurfaceVariant,
-                ),
-              ),
               const SizedBox(height: 32),
               Row(
                 children: [

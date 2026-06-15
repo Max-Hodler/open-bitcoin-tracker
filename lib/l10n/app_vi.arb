@@ -93,7 +93,6 @@
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
   "dialogBitcoinUnitTitle": "Chọn đơn vị bitcoin",
-  "dialogBitcoinUnitSubtitle": "Bạn có thể thay đổi sau trong Cài đặt.",
   "settingsLivePriceCadence": "Tần suất cập nhật",
   "livePriceCadencePickerTitle": "Tần suất cập nhật",
   "livePriceCadenceLive": "Trực tiếp",
