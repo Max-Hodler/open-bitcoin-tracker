@@ -21,30 +21,27 @@ class LockedStacksSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final count = _rowCount;
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.md),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var i = 0; i < count; i++) ...[
-            _SkeletonRow(
-              position: count == 1
-                  ? StackCardPosition.only
-                  : i == 0
-                      ? StackCardPosition.first
-                      : i == count - 1
-                          ? StackCardPosition.last
-                          : StackCardPosition.middle,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < count; i++) ...[
+          _SkeletonRow(
+            position: count == 1
+                ? StackCardPosition.only
+                : i == 0
+                    ? StackCardPosition.first
+                    : i == count - 1
+                        ? StackCardPosition.last
+                        : StackCardPosition.middle,
+          ),
+          if (i < count - 1)
+            Divider(
+              height: 1,
+              thickness: 1,
+              color: cs.outlineVariant,
             ),
-            if (i < count - 1)
-              Divider(
-                height: 1,
-                thickness: 1,
-                color: cs.outlineVariant,
-              ),
-          ],
         ],
-      ),
+      ],
     );
   }
 }

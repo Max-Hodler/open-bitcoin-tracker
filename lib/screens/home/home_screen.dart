@@ -47,6 +47,14 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _prevNeedsData = true;
 
   double? _headerHeight;
+  double? _stacksTitleHeight;
+
+  void _onStacksTitleMeasured(Size size) {
+    if (size.height == _stacksTitleHeight) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) setState(() => _stacksTitleHeight = size.height);
+    });
+  }
 
   void _onHeaderMeasured(Size size) {
     if (size.height == _headerHeight) return;
@@ -150,23 +158,72 @@ class _HomeScreenState extends State<HomeScreen> {
         _maybeFetchIntraday(app.btcRange, force: true);
       },
       onOpenConverter: widget.onOpenConverter,
-      onAddStack: stacksLocked ? null : _onAddStackTap,
     );
 
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ..._buildOrderedWidgets(context, app),
-        if (app.stacksAuthMode != StacksAuthMode.off)
-          SizedBox(height: 88 + MediaQuery.of(context).viewPadding.bottom),
-      ],
+      children: _buildOrderedWidgets(context, app),
     );
 
-    // Hairline lives inside the pinned-header slab (anchored to its bottom
-    // edge) so it shares the slab's transform during overscroll. Drawing it
-    // as a fixed-Y overlay outside the scroll view caused it to stay put
-    // while the rest of the header drifted up on overscroll bounce — the
-    // line then cut through the widget area below.
+    // The "Stacks" section title pins below the header and stays put while the
+    // cards scroll underneath. Always shown — including the first-run empty
+    // state, where it sits above the "add a stack" hint.
+    final stacksTitle = MeasureSize(
+      onChange: _onStacksTitleMeasured,
+      child: ColoredBox(
+        color: cs.surfaceContainerLow,
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                left: AppSpacing.md,
+                right: AppSpacing.md,
+                top: AppSpacing.lg,
+                bottom: AppSpacing.sm,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Stacks',
+                      style: AppTypography.body.copyWith(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                  if (!stacksLocked)
+                    AddStackIconButton(onTap: _onAddStackTap),
+                ],
+              ),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: 1,
+              child: ScrollHairlinePainter(strength: _headerHairline),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    // Shared bottom padding for the stacks area, applied identically whether
+    // the stacks are locked or unlocked: the floating-action-button clearance
+    // (when stack-lock auth is enabled) plus the gap below the last card.
+    final stacksAreaPadding = EdgeInsets.only(
+      bottom: AppSpacing.xl +
+          (app.stacksAuthMode != StacksAuthMode.off
+              ? 88 + MediaQuery.of(context).viewPadding.bottom
+              : 0),
+    );
+
+    // The scroll hairline lives at the bottom edge of the pinned "Stacks"
+    // title (see below) — the lowest pinned element — so it reads as the
+    // divider between the title and the cards scrolling under it, not below
+    // the range-selector bar.
     final measuredHeader = MeasureSize(
       onChange: _onHeaderMeasured,
       // Vertical swipes that start on the header slab must not drive the
@@ -178,19 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onVerticalDragUpdate: (_) {},
         child: ColoredBox(
           color: cs.surfaceContainerLow,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              headerSection,
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                height: 1,
-                child: ScrollHairlinePainter(strength: _headerHairline),
-              ),
-            ],
-          ),
+          child: headerSection,
         ),
       ),
     );
@@ -237,6 +282,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               else
                 SliverToBoxAdapter(child: measuredHeader),
+              if (_stacksTitleHeight != null)
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: PinnedHeaderDelegate(
+                    height: _stacksTitleHeight!,
+                    child: stacksTitle,
+                  ),
+                )
+              else
+                SliverToBoxAdapter(child: stacksTitle),
               if (stacks.isEmpty && !stacksLocked && !app.hasEverAddedStack)
                 SliverFillRemaining(
                   hasScrollBody: false,
@@ -280,20 +335,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 )
               else if (stacksLocked)
-                SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      LockedStacksSkeleton(
-                        stackCount: app.lockedStackCount,
-                        showTotal: app.showPortfolio && app.lockedStackCount >= 2,
-                      ),
-                      SizedBox(height: 88 + MediaQuery.of(context).viewPadding.bottom),
-                    ],
+                SliverPadding(
+                  padding: stacksAreaPadding,
+                  sliver: SliverToBoxAdapter(
+                    child: LockedStacksSkeleton(
+                      stackCount: app.lockedStackCount,
+                      showTotal: app.showPortfolio && app.lockedStackCount >= 2,
+                    ),
                   ),
                 )
               else
                 SliverPadding(
-                  padding: const EdgeInsets.only(top: AppSpacing.xs),
+                  padding: stacksAreaPadding,
                   sliver: SliverToBoxAdapter(
                     child: content,
                   ),

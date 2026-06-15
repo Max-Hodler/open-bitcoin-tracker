@@ -25,7 +25,6 @@ class HomeHeaderSection extends StatefulWidget {
     required this.onRange,
     required this.onRetry,
     this.onOpenConverter,
-    this.onAddStack,
   });
 
   final BtcRange range;
@@ -35,7 +34,6 @@ class HomeHeaderSection extends StatefulWidget {
   final ValueChanged<BtcRange> onRange;
   final VoidCallback onRetry;
   final VoidCallback? onOpenConverter;
-  final VoidCallback? onAddStack;
 
   @override
   State<HomeHeaderSection> createState() => _HomeHeaderSectionState();
@@ -257,7 +255,6 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
       },
       onRetry: widget.onRetry,
       onOpenConverter: widget.onOpenConverter,
-      onAddStack: widget.onAddStack,
     );
   }
 }

@@ -107,7 +107,6 @@ class HomeHeader extends StatefulWidget {
     required this.onHover,
     required this.onRetry,
     this.onOpenConverter,
-    this.onAddStack,
   });
 
   final bool failed;
@@ -137,8 +136,6 @@ class HomeHeader extends StatefulWidget {
   final ValueChanged<PricePoint?> onHover;
   final VoidCallback onRetry;
   final VoidCallback? onOpenConverter;
-  final VoidCallback? onAddStack;
-
   @override
   State<HomeHeader> createState() => _HomeHeaderState();
 }
@@ -151,10 +148,6 @@ class _HomeHeaderState extends State<HomeHeader> {
     final buttonsRow = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (widget.onAddStack != null) ...[
-          AddStackIconButton(onTap: widget.onAddStack!),
-          const SizedBox(width: 16),
-        ],
         OverflowButton(onOpenConverter: widget.onOpenConverter),
       ],
     );
