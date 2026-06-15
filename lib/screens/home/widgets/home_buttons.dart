@@ -573,18 +573,6 @@ class _OverflowButtonState extends State<OverflowButton> {
           ),
         ),
         PopupMenuItem(
-          value: _OverflowAction.language,
-          child: IgnorePointer(
-            child: Row(
-              children: [
-                Icon(Icons.language, size: 20, color: cs.onSurfaceVariant),
-                const SizedBox(width: 12),
-                Text(l10n.settingsLanguageLabel, style: itemStyle),
-              ],
-            ),
-          ),
-        ),
-        PopupMenuItem(
           value: _OverflowAction.currency,
           child: IgnorePointer(
             child: Row(
@@ -599,6 +587,18 @@ class _OverflowButtonState extends State<OverflowButton> {
                 ),
                 const SizedBox(width: 12),
                 Text(l10n.settingsCurrencies, style: itemStyle),
+              ],
+            ),
+          ),
+        ),
+        PopupMenuItem(
+          value: _OverflowAction.language,
+          child: IgnorePointer(
+            child: Row(
+              children: [
+                Icon(Icons.language, size: 20, color: cs.onSurfaceVariant),
+                const SizedBox(width: 12),
+                Text(l10n.settingsLanguageLabel, style: itemStyle),
               ],
             ),
           ),
