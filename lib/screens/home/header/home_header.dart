@@ -148,7 +148,10 @@ class _HomeHeaderState extends State<HomeHeader> {
     final buttonsRow = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        OverflowButton(onOpenConverter: widget.onOpenConverter),
+        if (widget.onOpenConverter != null)
+          ConverterButton(onTap: widget.onOpenConverter!),
+        const SizedBox(width: 20),
+        const OverflowButton(),
       ],
     );
     return Column(

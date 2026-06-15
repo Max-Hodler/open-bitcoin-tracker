@@ -120,35 +120,6 @@ class StackLockIconButton extends StatelessWidget {
   }
 }
 
-class ConverterIconButton extends StatelessWidget {
-  const ConverterIconButton({super.key, required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          AppHaptics.light();
-          onTap();
-        },
-        customBorder: const CircleBorder(),
-        child: SizedBox(
-          width: 48,
-          height: 47,
-          child: Transform.flip(
-            flipX: true,
-            child: Icon(Icons.swap_vert, size: 26, color: cs.onSurfaceVariant),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class AddStackIconButton extends StatefulWidget {
   const AddStackIconButton({super.key, required this.onTap});
 
@@ -483,19 +454,53 @@ class StacksOverflowButton extends StatelessWidget {
 }
 
 enum _OverflowAction {
-  converter,
   language,
   currency,
   theme,
-  stacks,
   about,
   screenshot,
 }
 
-class OverflowButton extends StatefulWidget {
-  const OverflowButton({super.key, this.onOpenConverter});
+class ConverterButton extends StatelessWidget {
+  const ConverterButton({super.key, required this.onTap});
 
-  final VoidCallback? onOpenConverter;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return SizedBox(
+      width: 36,
+      height: 36,
+      child: IconButton(
+        onPressed: () {
+          AppHaptics.light();
+          onTap();
+        },
+        icon: Transform.flip(
+          flipX: true,
+          child: const Icon(Icons.swap_vert),
+        ),
+        iconSize: 22,
+        constraints: const BoxConstraints(),
+        style: IconButton.styleFrom(
+          backgroundColor: cs.surface,
+          foregroundColor: cs.onSurfaceVariant,
+          shadowColor: Colors.black.withValues(alpha: 0.12),
+          elevation: 1.5,
+          fixedSize: const Size(36, 36),
+          minimumSize: const Size(36, 36),
+          maximumSize: const Size(36, 36),
+          shape: const CircleBorder(),
+          padding: EdgeInsets.zero,
+        ),
+      ),
+    );
+  }
+}
+
+class OverflowButton extends StatefulWidget {
+  const OverflowButton({super.key});
 
   @override
   State<OverflowButton> createState() => _OverflowButtonState();
@@ -514,7 +519,10 @@ class _OverflowButtonState extends State<OverflowButton> {
       color: cs.onSurface,
     );
 
-    return PopupMenuButton<_OverflowAction>(
+    return SizedBox(
+      width: 36,
+      height: 36,
+      child: PopupMenuButton<_OverflowAction>(
       key: _menuKey,
       onOpened: AppHaptics.light,
       onSelected: (action) => _handleAction(context, action),
@@ -548,19 +556,6 @@ class _OverflowButtonState extends State<OverflowButton> {
         ),
       ),
       itemBuilder: (ctx) => [
-        PopupMenuItem(
-          value: _OverflowAction.converter,
-          child: IgnorePointer(
-            child: Row(
-              children: [
-                Icon(Icons.swap_vert, size: 20, color: cs.onSurfaceVariant),
-                const SizedBox(width: 12),
-                Text(l10n.homeConverter, style: itemStyle),
-              ],
-            ),
-          ),
-        ),
-        const PopupMenuDivider(),
         PopupMenuItem(
           value: _OverflowAction.theme,
           child: IgnorePointer(
@@ -609,18 +604,6 @@ class _OverflowButtonState extends State<OverflowButton> {
           ),
         ),
         PopupMenuItem(
-          value: _OverflowAction.stacks,
-          child: IgnorePointer(
-            child: Row(
-              children: [
-                Icon(Icons.reorder, size: 20, color: cs.onSurfaceVariant),
-                const SizedBox(width: 12),
-                Text(l10n.settingsGroupPrivacy, style: itemStyle),
-              ],
-            ),
-          ),
-        ),
-        PopupMenuItem(
           value: _OverflowAction.about,
           child: IgnorePointer(
             child: Row(
@@ -656,6 +639,7 @@ class _OverflowButtonState extends State<OverflowButton> {
             ),
           ),
       ],
+      ),
     );
   }
 
@@ -664,8 +648,6 @@ class _OverflowButtonState extends State<OverflowButton> {
     _OverflowAction action,
   ) async {
     switch (action) {
-      case _OverflowAction.converter:
-        widget.onOpenConverter?.call();
       case _OverflowAction.language:
         final app = context.read<AppStateNotifier>();
         final picked = await _showLanguagePicker(context, app.language);
@@ -686,14 +668,6 @@ class _OverflowButtonState extends State<OverflowButton> {
           Navigator.of(context).push<void>(
             MaterialPageRoute<void>(
               builder: (_) => const ThemeSettingsScreen(),
-            ),
-          );
-        }
-      case _OverflowAction.stacks:
-        if (context.mounted) {
-          Navigator.of(context).push<void>(
-            MaterialPageRoute<void>(
-              builder: (_) => const StacksSettingsScreen(),
             ),
           );
         }
