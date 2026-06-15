@@ -9,6 +9,7 @@ import '../services/app_haptics.dart';
 import '../services/stack_image_service.dart';
 import '../theme/theme.dart';
 import 'menu_action_tile.dart';
+import 'stack_avatar.dart';
 
 /// Open the avatar bottom sheet — used both by per-stack cards and by the
 /// portfolio-total card. The sheet doesn't know what it's editing; it just
@@ -34,6 +35,7 @@ Future<void> showAvatarSheet(
   final theme = Theme.of(context);
   final cs = theme.colorScheme;
   final hasImage = currentImageData != null;
+  String? selectedColorKey = currentColorKey;
   final action = await showModalBottomSheet<_AvatarSheetAction>(
     context: context,
     backgroundColor: theme.brightness == Brightness.dark
@@ -45,34 +47,37 @@ Future<void> showAvatarSheet(
     ),
     builder: (ctx) {
       final l10n = AppLocalizations.of(ctx);
-      return SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.md,
-            AppSpacing.sm,
-            AppSpacing.md,
-            AppSpacing.lg,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _AvatarSheetHeader(
-                title: title,
-                subtitle: hasImage ? null : l10n.stackImageSheetSubtitle,
-              ),
-              if (!hasImage) ...[
-                _AvatarColorRow(
-                  selectedKey: currentColorKey,
-                  onPick: (key) {
-                    Navigator.of(ctx).pop();
-                    AppHaptics.selection();
-                    onColorSet(key);
-                  },
+      return StatefulBuilder(
+        builder: (ctx, setState) => SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              AppSpacing.sm,
+              AppSpacing.md,
+              AppSpacing.lg,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _AvatarSheetHeader(
+                  title: title,
+                  subtitle: hasImage ? null : l10n.stackImageSheetSubtitle,
+                  imageData: currentImageData,
+                  colorKey: selectedColorKey,
                 ),
-                const SizedBox(height: AppSpacing.lg),
-              ],
+                if (!hasImage) ...[
+                  _AvatarColorRow(
+                    selectedKey: selectedColorKey,
+                    onPick: (key) {
+                      setState(() => selectedColorKey = key);
+                      AppHaptics.selection();
+                      onColorSet(key);
+                    },
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                ],
               _AvatarSectionLabel(l10n.stackImageSectionLabel),
               const SizedBox(height: AppSpacing.sm),
               MenuActionGroup(
@@ -98,7 +103,8 @@ Future<void> showAvatarSheet(
             ],
           ),
         ),
-      );
+      ),
+    );
     },
   );
   if (!context.mounted) return;
@@ -135,9 +141,16 @@ Future<void> showAvatarSheet(
 enum _AvatarSheetAction { pickFromGallery, remove }
 
 class _AvatarSheetHeader extends StatelessWidget {
-  const _AvatarSheetHeader({required this.title, this.subtitle});
+  const _AvatarSheetHeader({
+    required this.title,
+    required this.imageData,
+    required this.colorKey,
+    this.subtitle,
+  });
 
   final String title;
+  final String? imageData;
+  final String? colorKey;
   // Null hides the subtitle (e.g. when the swatch row is also hidden because
   // the user has set an image — the title-only header reads cleaner there).
   final String? subtitle;
@@ -147,35 +160,44 @@ class _AvatarSheetHeader extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Opacity(
-              opacity: 0.92,
-              child: Text(
-                title,
-                style: AppTypography.label.copyWith(
-                  fontSize: 18,
-                  color: cs.onSurface,
-                  fontWeight: FontWeight.w600,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          StackAvatar(
+            name: title,
+            imageData: imageData,
+            colorKey: colorKey,
+            size: 56,
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Opacity(
+                opacity: 0.92,
+                child: Text(
+                  title,
+                  style: AppTypography.label.copyWith(
+                    fontSize: 18,
+                    color: cs.onSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-            ),
-            if (subtitle != null) ...[
-              const SizedBox(height: 2),
-              Text(
-                subtitle!,
-                style: AppTypography.body.copyWith(
-                  fontSize: 13,
-                  color: cs.onSurfaceVariant,
+              if (subtitle != null) ...[
+                const SizedBox(height: 2),
+                Text(
+                  subtitle!,
+                  style: AppTypography.body.copyWith(
+                    fontSize: 13,
+                    color: cs.onSurfaceVariant,
+                  ),
                 ),
-              ),
+              ],
             ],
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
