@@ -17,17 +17,14 @@ class HomeStackList extends StatelessWidget {
     required this.currency,
     required this.btcDisplayMode,
     this.totalCard,
-    this.totalAtTop = false,
   });
 
   final List<model.Stack> stacks;
   final Currency currency;
   final BtcDisplayMode btcDisplayMode;
-  // When non-null, the portfolio total renders as the first or last row of the
-  // same group as the stack cards (controlled by [totalAtTop]), sharing its
-  // divider and corner rounding.
+  // When non-null, the portfolio total renders as the first row of the same
+  // group as the stack cards, sharing its divider and corner rounding.
   final Widget? totalCard;
-  final bool totalAtTop;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +33,7 @@ class HomeStackList extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (hasTotal && totalAtTop)
+        if (hasTotal)
           _GroupedCardRow(
             card: totalCard!,
             position: stacks.isEmpty
@@ -50,19 +47,9 @@ class HomeStackList extends StatelessWidget {
             stack: stacks[i],
             currency: currency,
             btcDisplayMode: btcDisplayMode,
-            // isFirst: true only when this stack is the very first row of the
-            // group — suppressed when the total card sits above it.
-            isFirst: i == 0 && !(hasTotal && totalAtTop),
-            // isLast: true only when this stack is the very last row —
-            // suppressed when the total card sits below it.
-            isLast: i == stacks.length - 1 && !(hasTotal && !totalAtTop),
+            isFirst: i == 0 && !hasTotal,
+            isLast: i == stacks.length - 1,
             canReorder: stacks.length > 1,
-          ),
-        if (hasTotal && !totalAtTop)
-          _GroupedCardRow(
-            card: totalCard!,
-            position: StackCardPosition.last,
-            isLast: true,
           ),
       ],
     );

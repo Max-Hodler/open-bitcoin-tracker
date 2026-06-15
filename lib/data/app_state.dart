@@ -39,7 +39,6 @@ class AppState {
     this.totalProjectedPriceCurrency,
     this.swipeChipHintDismissed = false,
     this.showPriceDelta = false,
-    this.totalAtTop = true,
     this.hasEverAddedStack = false,
   });
 
@@ -121,7 +120,6 @@ class AppState {
   // When true, show the signed tick-to-tick price delta as a subtitle below
   // the live price for ~2 s each time the price updates. Off by default.
   final bool showPriceDelta;
-  final bool totalAtTop;
   // True once the user has added their first stack. Never reverts — so the
   // empty-state teaching (the "tap + to add a stack" hint and the pulsing
   // waves on the add button) stays gone after the user deletes all stacks.
@@ -165,7 +163,6 @@ class AppState {
     String? totalProjectedPriceCurrency,
     bool? swipeChipHintDismissed,
     bool? showPriceDelta,
-    bool? totalAtTop,
     bool? hasEverAddedStack,
   }) {
     return AppState(
@@ -216,7 +213,6 @@ class AppState {
       swipeChipHintDismissed:
           swipeChipHintDismissed ?? this.swipeChipHintDismissed,
       showPriceDelta: showPriceDelta ?? this.showPriceDelta,
-      totalAtTop: totalAtTop ?? this.totalAtTop,
       hasEverAddedStack: hasEverAddedStack ?? this.hasEverAddedStack,
     );
   }
@@ -260,7 +256,6 @@ class AppState {
         if (totalProjectedPriceCurrency != null) 'totalProjectedPriceCurrency': totalProjectedPriceCurrency,
         'swipeChipHintDismissed': swipeChipHintDismissed,
         'showPriceDelta': showPriceDelta,
-        'totalAtTop': totalAtTop,
         'hasEverAddedStack': hasEverAddedStack,
       };
 
@@ -361,7 +356,6 @@ class AppState {
       swipeChipHintDismissed:
           json['swipeChipHintDismissed'] as bool? ?? false,
       showPriceDelta: json['showPriceDelta'] as bool? ?? false,
-      totalAtTop: json['totalAtTop'] as bool? ?? true,
       // Migrate pre-flag installs: anyone already holding stacks has obviously
       // added one before, so seed the flag from the loaded list when the key
       // is absent rather than re-teaching them on the next launch.

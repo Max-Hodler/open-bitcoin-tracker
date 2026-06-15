@@ -76,7 +76,6 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
   Currency get currency => _state.currency;
   List<Currency> get selectedCurrencies => _state.selectedCurrencies;
   bool get showPortfolio => _state.showPortfolio;
-  bool get totalAtTop => _state.totalAtTop;
   bool get swipeChipHintDismissed => _state.swipeChipHintDismissed;
   bool get hasEverAddedStack => _state.hasEverAddedStack;
   bool get showChart => _state.showChart;
@@ -181,7 +180,6 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
         ));
   }
   void setShowPortfolio(bool value) => _update((s) => s.copyWith(showPortfolio: value));
-  void setTotalAtTop(bool value) => _update((s) => s.copyWith(totalAtTop: value));
   void dismissSwipeChipHint() =>
       _update((s) => s.copyWith(swipeChipHintDismissed: true));
   void setShowChart(bool value) => _update((s) => s.copyWith(showChart: value));
