@@ -55,8 +55,10 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
           builder: (_) => EditStackNameScreen(stackId: stack.id),
         ));
       case _StackAction.delete:
+        if (!mounted) return;
         final confirm = await showDeleteStackDialog(context);
-        if (confirm == true && context.mounted) {
+        if (!mounted) return;
+        if (confirm == true) {
           context.read<AppStateNotifier>().removeStack(stack.id);
           // The build's null-stack guard pops us back home.
         }

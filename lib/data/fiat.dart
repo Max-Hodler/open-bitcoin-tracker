@@ -169,7 +169,7 @@ String formatBtcAmount(
     BtcDisplayMode.btc => _formatBtcFromSats(sats),
   };
   final gap = tight ? '' : ' ';
-  return symbolAfterAmount ? '$amount${gap}₿' : '₿$gap$amount';
+  return symbolAfterAmount ? '$amount$gap₿' : '₿$gap$amount';
 }
 
 /// Renders [sats] as a BTC amount in the active locale: thousands grouping on

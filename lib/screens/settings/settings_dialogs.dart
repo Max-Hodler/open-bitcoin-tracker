@@ -265,7 +265,6 @@ Future<BtcDisplayMode?> showBitcoinUnitDialog(
     barrierColor: appDialogBarrierColor(context),
     builder: (ctx) {
       final l10n = AppLocalizations.of(ctx);
-      final cs = Theme.of(ctx).colorScheme;
       return Dialog(
         elevation: 24,
         shadowColor: Colors.black,
