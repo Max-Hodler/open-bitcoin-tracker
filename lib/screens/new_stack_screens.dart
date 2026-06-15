@@ -118,10 +118,12 @@ class _NewStackAmountScreenState extends State<NewStackAmountScreen> {
     });
   }
 
+  int _enteredSats(BtcDisplayMode mode) => mode == BtcDisplayMode.btc
+      ? model.Sats.btcRawToSats(_input)
+      : (int.tryParse(_input) ?? 0);
+
   void _onConfirm(BtcDisplayMode mode) {
-    final sats = mode == BtcDisplayMode.btc
-        ? model.Sats.btcRawToSats(_input)
-        : (int.tryParse(_input) ?? 0);
+    final sats = _enteredSats(mode);
     if (sats == 0) return;
     Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -160,7 +162,7 @@ class _NewStackAmountScreenState extends State<NewStackAmountScreen> {
     return SatsInputScaffold(
       input: _input,
       caret: _caret,
-      isValid: _input.isNotEmpty && _input != '0' && _input != '0.',
+      isValid: _input.isNotEmpty && _enteredSats(mode) > 0,
       mode: mode,
       onInput: (ch) => _onInput(ch, mode),
       onDelete: _onDelete,

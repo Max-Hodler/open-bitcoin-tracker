@@ -181,7 +181,7 @@ class _EditStackAmountScreenState extends State<EditStackAmountScreen> {
       showUnitHint: false,
       input: _input,
       caret: _caret,
-      isValid: _input.isNotEmpty && _input != '0' && _input != '0.',
+      isValid: _input.isNotEmpty && _enteredSats(mode) > 0,
       mode: mode,
       onInput: (ch) => _onInput(ch, mode),
       onDelete: _onDelete,
