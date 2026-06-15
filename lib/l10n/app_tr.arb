@@ -98,6 +98,7 @@
   "livePriceCadence5s": "Her 5 saniyede",
   "livePriceCadence15s": "Her 15 saniyede",
   "settingsLockStacks": "Kilit",
+  "settingsLockStacksTitle": "Kilit ayarları",
   "settingsAuthType": "Kimlik doğrulama türü",
   "settingsLockEnabled": "Etkin",
   "settingsRelockAfter": "Şu süre sonra kilitle",

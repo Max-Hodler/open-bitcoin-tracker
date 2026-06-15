@@ -98,6 +98,7 @@
   "livePriceCadence5s": "Cada 5 segundos",
   "livePriceCadence15s": "Cada 15 segundos",
   "settingsLockStacks": "Bloqueo",
+  "settingsLockStacksTitle": "Ajustes de bloqueo",
   "settingsAuthType": "Tipo de autenticación",
   "settingsLockEnabled": "Activado",
   "settingsRelockAfter": "Volver a bloquear tras",

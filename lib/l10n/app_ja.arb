@@ -98,6 +98,7 @@
   "livePriceCadence5s": "5秒ごと",
   "livePriceCadence15s": "15秒ごと",
   "settingsLockStacks": "ロック",
+  "settingsLockStacksTitle": "ロック設定",
   "settingsAuthType": "認証タイプ",
   "settingsLockEnabled": "有効",
   "settingsRelockAfter": "再ロックまでの時間",

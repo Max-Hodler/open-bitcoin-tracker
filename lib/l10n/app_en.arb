@@ -394,7 +394,7 @@
   "@settingsLockStacks": {
     "description": "Section header above the stack lock controls (auth type, relock timeout, change/reset PIN) on the Stacks settings screen."
   },
-  "settingsLockStacksTitle": "Lock",
+  "settingsLockStacksTitle": "Lock settings",
   "@settingsLockStacksTitle": {
     "description": "Title of the dedicated stack-lock settings screen, and the row/menu entry that navigates to it."
   },

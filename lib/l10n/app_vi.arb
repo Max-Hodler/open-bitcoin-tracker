@@ -98,6 +98,7 @@
   "livePriceCadence5s": "Mỗi 5 giây",
   "livePriceCadence15s": "Mỗi 15 giây",
   "settingsLockStacks": "Khóa",
+  "settingsLockStacksTitle": "Cài đặt khóa",
   "settingsAuthType": "Loại xác thực",
   "settingsLockEnabled": "Đã bật",
   "settingsRelockAfter": "Khóa lại sau",
