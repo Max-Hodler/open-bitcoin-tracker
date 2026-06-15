@@ -111,7 +111,7 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
               style: AppTypography.body.copyWith(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: cs.onSurface,
+                color: cs.onSurfaceVariant,
                 fontFeatures: const [ui.FontFeature.tabularFigures()],
               ),
             ),
