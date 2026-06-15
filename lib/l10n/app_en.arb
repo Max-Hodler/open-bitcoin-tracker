@@ -232,10 +232,6 @@
   "@currencyPickerHint": {
     "description": "Hint shown at the top of the currency picker explaining the home-screen swipe gesture."
   },
-  "settingsGroupPrivacy": "Stacks",
-  "@settingsGroupPrivacy": {
-    "description": "Settings group header for the stacks section (lock mode, re-lock timeout, change/remove PIN)."
-  },
   "settingsAbout": "About",
   "@settingsAbout": {
     "description": "Settings row label that opens the About screen."

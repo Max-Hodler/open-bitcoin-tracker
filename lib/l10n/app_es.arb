@@ -58,7 +58,6 @@
   "snackAuthenticationFailed": "Autenticación fallida",
   "snackStacksCorrupted": "Tus datos de stacks están dañados. Abre Ajustes → Quitar bloqueo de stacks para recuperarlos.",
   "currencyPickerHint": "Desliza a la izquierda o a la derecha sobre el precio en la pantalla principal para cambiar entre estas divisas.",
-  "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "Acerca de",
   "aboutAppName": "Open Bitcoin Tracker",
   "aboutVersion": "Versión {version}",

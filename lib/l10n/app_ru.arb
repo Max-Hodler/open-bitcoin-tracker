@@ -58,7 +58,6 @@
   "snackAuthenticationFailed": "Ошибка аутентификации",
   "snackStacksCorrupted": "Данные Stacks повреждены. Откройте Настройки → Снять блокировку Stacks для восстановления.",
   "currencyPickerHint": "Проведите вправо или вправо по цене на главном экране, чтобы переключаться между валютами.",
-  "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "О приложении",
   "aboutAppName": "Open Bitcoin Tracker",
   "aboutVersion": "Версия {version}",

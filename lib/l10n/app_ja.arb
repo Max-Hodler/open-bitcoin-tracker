@@ -58,7 +58,6 @@
   "snackAuthenticationFailed": "認証に失敗しました",
   "snackStacksCorrupted": "Stacks のデータが破損しています。設定 → Stacks のロックを解除して復旧してください。",
   "currencyPickerHint": "ホーム画面で価格を左右にスワイプすると、これらの通貨を切り替えられます。",
-  "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "アプリについて",
   "aboutAppName": "Open Bitcoin Tracker",
   "aboutVersion": "バージョン {version}",

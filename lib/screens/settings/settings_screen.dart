@@ -6,5 +6,4 @@
 export 'btc_price_settings_screen.dart' show BtcPriceSettingsScreen;
 export 'graph_settings_screen.dart' show GraphSettingsScreen;
 export 'currency_picker_screen.dart' show CurrencyPickerScreen;
-export 'stacks_settings_screen.dart' show StacksSettingsScreen;
 export 'theme_settings_screen.dart' show ThemeSettingsScreen;

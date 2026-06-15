@@ -58,7 +58,6 @@
   "snackAuthenticationFailed": "Xác thực không thành công",
   "snackStacksCorrupted": "Dữ liệu Stacks của bạn bị hỏng. Mở Cài đặt → Gỡ khóa Stacks để khôi phục.",
   "currencyPickerHint": "Vuốt sang phải hoặc phải trên giá ở màn hình chính để chuyển đổi giữa các loại tiền tệ.",
-  "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "Giới thiệu",
   "aboutAppName": "Open Bitcoin Tracker",
   "aboutVersion": "Phiên bản {version}",

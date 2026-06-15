@@ -58,7 +58,6 @@
   "snackAuthenticationFailed": "Kimlik doğrulama başarısız",
   "snackStacksCorrupted": "Stacks verileriniz bozuk. Kurtarmak için Ayarlar → Stacks kilidini kaldır seçeneğine gidin.",
   "currencyPickerHint": "Para birimleri arasında geçiş yapmak için ana ekrandaki fiyatı sola veya sağa kaydırın.",
-  "settingsGroupPrivacy": "Stacks",
   "settingsAbout": "Hakkında",
   "aboutAppName": "Open Bitcoin Tracker",
   "aboutVersion": "Sürüm {version}",

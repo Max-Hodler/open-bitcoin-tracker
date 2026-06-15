@@ -149,36 +149,4 @@ void main() {
     expect(app.currency, Currency.usd);
   });
 
-  testWidgets('Portfolio total tile is hidden when fewer than 2 stacks',
-      (tester) async {
-    final app = await _notifier(
-      initialState: '{"stacks":[{"id":"s1","name":"A","sats":1}]}',
-    );
-    final host = await _host(tester, const StacksSettingsScreen(), app: app);
-    await tester.pumpWidget(host);
-    await tester.pump();
-
-    expect(find.text('Display total'), findsNothing);
-  });
-
-  testWidgets('Portfolio total tile renders and toggles when 2+ stacks',
-      (tester) async {
-    final app = await _notifier(
-      initialState:
-          '{"stacks":[{"id":"s1","name":"A","sats":1},{"id":"s2","name":"B","sats":2}]}',
-    );
-    final host = await _host(tester, const StacksSettingsScreen(), app: app);
-    await tester.pumpWidget(host);
-    await tester.pump();
-
-    expect(find.text('Display total'), findsOneWidget);
-    expect(app.showPortfolio, isTrue);
-
-    await tester.tap(find.text('Display total'));
-    await tester.pump();
-    expect(app.showPortfolio, isFalse);
-
-    // Let the notifier's debounced settings save fire before teardown.
-    await tester.pump(AppStateNotifier.saveDebounceWindow);
-  });
 }
