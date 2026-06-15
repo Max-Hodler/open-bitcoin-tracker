@@ -41,7 +41,7 @@ class RangeBar extends StatefulWidget {
 }
 
 class _RangeBarState extends State<RangeBar>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   // One key per range chip (in row order) so we can measure the selected chip's
   // laid-out rect and slide a single shared pill to it. The settings button is
   // not a selectable chip, so it has no key.
@@ -56,7 +56,13 @@ class _RangeBarState extends State<RangeBar>
   late final AnimationController _nudgeController = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 220),
-  )..addListener(() => setState(() {}));
+  )..addListener(() => setState(() {}))
+    ..addStatusListener((status) {
+      if (status == AnimationStatus.completed ||
+          status == AnimationStatus.dismissed) {
+        setState(() {}); // lets build() re-evaluate _syncHintBob
+      }
+    });
   int _nudgeDir = 0;
   // Peak vertical travel of the nudge, in logical pixels.
   static const double _nudgeAmplitude = 6;
@@ -65,6 +71,7 @@ class _RangeBarState extends State<RangeBar>
   // swipe cycles the slot's range; the slot itself doesn't move, so this is the
   // only motion that signals the change.
   void _nudgePill(int dir) {
+    _hintBobController.stop();
     _nudgeDir = dir;
     _nudgeController.forward(from: 0);
   }
@@ -74,10 +81,36 @@ class _RangeBarState extends State<RangeBar>
   double get _nudgeOffset =>
       _nudgeDir * _nudgeAmplitude * math.sin(_nudgeController.value * math.pi);
 
+  // Drives the idle hint animation that bobs the pill up and down while the
+  // swipe-chip tip is visible. Runs a slow repeating sine wave; paused when
+  // the hint is dismissed, the pill is being dragged, or a real nudge fires.
+  late final AnimationController _hintBobController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1400),
+  )..addListener(() => setState(() {}));
+
+  static const double _hintBobAmplitude = 5;
+
+  // Current vertical offset from the idle hint bob. Produces a full sine cycle
+  // (up → rest → down → rest) so the motion looks like a gentle invitation.
+  double get _hintBobOffset =>
+      _hintBobAmplitude * math.sin(_hintBobController.value * 2 * math.pi);
+
+  // Starts or stops the hint bob depending on whether the tip is currently
+  // visible. Called from build whenever the hint-dismissed flag changes.
+  void _syncHintBob({required bool hintVisible}) {
+    if (hintVisible && !_dragging && !_nudgeController.isAnimating) {
+      if (!_hintBobController.isAnimating) _hintBobController.repeat();
+    } else {
+      _hintBobController.stop();
+    }
+  }
+
   @override
   void dispose() {
     _visualSelectTimer?.cancel();
     _nudgeController.dispose();
+    _hintBobController.dispose();
     super.dispose();
   }
   // Key for the Stack the pill is positioned within — its render box is the
@@ -193,6 +226,7 @@ class _RangeBarState extends State<RangeBar>
 
   void _onPillDragStart(int selectedIndex, DragStartDetails _) {
     if (_chipRects.isEmpty) return;
+    _hintBobController.stop();
     // Drop any pending tap-driven flip; the drag highlights the hovered slot
     // directly and the timer would otherwise fire on the old tap target.
     _visualSelectTimer?.cancel();
@@ -273,6 +307,11 @@ class _RangeBarState extends State<RangeBar>
     // notifier — the bar sits in the per-tick header subtree, so an app-state
     // notification (converter keystroke, hint dismissal, …) must not drag it
     // into the rebuild.
+    final swipeHintDismissed = context.select<AppStateNotifier, bool>(
+      (a) => a.swipeChipHintDismissed,
+    );
+    final hintVisible = widget.range != BtcRange.all && !swipeHintDismissed;
+    _syncHintBob(hintVisible: hintVisible);
     final daysOverflowSlot = context.select<AppStateNotifier, BtcRange>(
       (a) => a.daysOverflowQuickRange,
     );
@@ -411,7 +450,11 @@ class _RangeBarState extends State<RangeBar>
       final base = _chipRects[_dragStartIndex];
       pillRect = Rect.fromLTWH(_dragLeft!, base.top, base.width, base.height);
     } else if (selectedRect != null) {
-      pillRect = selectedRect.translate(0, _nudgeOffset);
+      // Real nudge (user swipe) takes priority over the idle hint bob.
+      final verticalOffset = _nudgeController.isAnimating
+          ? _nudgeOffset
+          : _hintBobOffset;
+      pillRect = selectedRect.translate(0, verticalOffset);
     } else {
       pillRect = null;
     }
@@ -446,6 +489,11 @@ class _RangeBarState extends State<RangeBar>
     // it moves first and the label flips bold/orange only on arrival).
     final highlightIndex = _dragging ? _dragHoverIndex : _visualSelectedIndex;
     bool slotSelected(int index) => index == highlightIndex;
+    // Combined vertical offset for the selected chip's content (label +
+    // chevrons). Real nudge wins; idle hint bob fills in when nudge is at rest.
+    final chipContentOffsetY = _nudgeController.isAnimating
+        ? _nudgeOffset
+        : _hintBobOffset;
     // Room reserved above and below the chip row so the pill's drop-shadow
     // (and its swipe-nudge travel) isn't clipped by the bar's box. The shadow
     // falls downward (offset 0,1 + blur), so the bottom needs more than the top
@@ -517,7 +565,9 @@ class _RangeBarState extends State<RangeBar>
                       // implicit tween.
                       if (pillRect != null)
                         AnimatedPositioned(
-                          duration: (_dragging || _nudgeController.isAnimating)
+                          duration: (_dragging ||
+                                  _nudgeController.isAnimating ||
+                                  _hintBobController.isAnimating)
                               ? Duration.zero
                               : const Duration(milliseconds: 260),
                           curve: Curves.easeOutCubic,
@@ -615,7 +665,7 @@ class _RangeBarState extends State<RangeBar>
                                 _nudgePill(1);
                                 _stepDaysOverflowSlot(context, -1);
                               },
-                              contentOffsetY: slotSelected(0) ? _nudgeOffset : 0,
+                              contentOffsetY: slotSelected(0) ? chipContentOffsetY : 0,
                               rollDirection: _nudgeDir == 0 ? 1 : _nudgeDir,
                               chartColor: chartColor,
                               minLabelWidth: daysOverflowLabelWidth,
@@ -639,7 +689,7 @@ class _RangeBarState extends State<RangeBar>
                                 _nudgePill(1);
                                 _stepWeeksOverflowSlot(context, -1);
                               },
-                              contentOffsetY: slotSelected(1) ? _nudgeOffset : 0,
+                              contentOffsetY: slotSelected(1) ? chipContentOffsetY : 0,
                               rollDirection: _nudgeDir == 0 ? 1 : _nudgeDir,
                               chartColor: chartColor,
                               minLabelWidth: weeksOverflowLabelWidth,
@@ -664,7 +714,7 @@ class _RangeBarState extends State<RangeBar>
                                 _nudgePill(1);
                                 _stepMonthsOverflowSlot(context, -1);
                               },
-                              contentOffsetY: slotSelected(2) ? _nudgeOffset : 0,
+                              contentOffsetY: slotSelected(2) ? chipContentOffsetY : 0,
                               rollDirection: _nudgeDir == 0 ? 1 : _nudgeDir,
                               chartColor: chartColor,
                               minLabelWidth: monthsOverflowLabelWidth,
@@ -688,7 +738,7 @@ class _RangeBarState extends State<RangeBar>
                                 _nudgePill(1);
                                 _stepOverflowSlot(context, -1);
                               },
-                              contentOffsetY: slotSelected(3) ? _nudgeOffset : 0,
+                              contentOffsetY: slotSelected(3) ? chipContentOffsetY : 0,
                               rollDirection: _nudgeDir == 0 ? 1 : _nudgeDir,
                               chartColor: chartColor,
                               minLabelWidth: overflowLabelWidth,
