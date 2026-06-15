@@ -209,13 +209,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                 .read<StacksLockController>()
                                 .lockNow(),
                     ),
-                    if (!stacksLocked) const SizedBox(width: 20),
-                  ],
-                  if (!stacksLocked) ...[
-                    AddStackIconButton(onTap: _onAddStackTap),
                     const SizedBox(width: 20),
-                    const StacksOverflowButton(),
                   ],
+                  IgnorePointer(
+                    ignoring: stacksLocked,
+                    child: Opacity(
+                      opacity: stacksLocked ? 0.35 : 1.0,
+                      child: Row(
+                        children: [
+                          AddStackIconButton(onTap: _onAddStackTap),
+                          const SizedBox(width: 20),
+                          const StacksOverflowButton(),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -443,8 +451,8 @@ class _HomeScreenState extends State<HomeScreen> {
       iconContext,
       title: l10n.totalCardName,
       currentImageData: app.state.totalImageData,
-      currentColorKey: app.state.totalColorKey,
-      onColorSet: app.setTotalColorKey,
+      currentColorKey: app.state.totalColorKey ?? 'grey',
+      onColorSet: (key) => app.setTotalColorKey(key ?? 'orange'),
       onImageSet: app.setTotalImageData,
       onImageCleared: () => app.setTotalImageData(null),
     );
