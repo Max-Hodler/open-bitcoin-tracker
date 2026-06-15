@@ -342,9 +342,8 @@ class _PriceSubtitle extends StatelessWidget {
       final color = isPositive ? p.priceUp : p.priceDown;
       final symbol = currencySymbols[currency] ?? r'$';
       final amount = _numberFormat('#,##0.00').format(deltaValue!.abs());
-      const sp = ' ';
       final body = '${isPositive ? '+' : '-'}'
-          '${symbolAfterAmount ? '$amount$sp$symbol' : '$symbol$sp$amount'}';
+          '${symbolAfterAmount ? '$amount$symbol' : '$symbol$amount'}';
       deltaWidget = AnimatedBuilder(
         animation: fade,
         builder: (context, _) {
@@ -402,13 +401,12 @@ DateFormat _dateFormat(String skeleton, DateFormat Function() create) =>
     _dateFormats[(skeleton, Intl.defaultLocale)] ??= create();
 
 String _formatRangeAbsDiff(double diff, Currency currency) {
-  const sp = ' ';
   final sign = diff >= 0 ? '+' : '-';
   final abs = diff.abs();
   final symbol = currencySymbols[currency] ?? r'$';
   final formatted = _numberFormat('#,##0').format(abs.round());
   final after = symbolAfterAmount;
-  return '$sign${after ? '$formatted$sp$symbol' : '$symbol$sp$formatted'}';
+  return '$sign${after ? '$formatted$symbol' : '$symbol$formatted'}';
 }
 
 String _formatRangePct(double pct) {
