@@ -56,6 +56,23 @@ abstract final class StacksSettingsActions {
     await _applyModeChange(context, app, app.stacksAuthMode, StacksAuthMode.off);
   }
 
+  /// Auto-disable the lock once the user has deleted their last stack, leaving
+  /// the app in exactly the state it would be if they'd turned the lock off
+  /// from settings. Unlike [turnOffLock] this skips re-auth: reaching the
+  /// delete UI requires being unlocked, so the DEK is already in memory and the
+  /// decrypt-back in [StacksUnlockOrchestrator.switchToOff] can run as-is.
+  /// Asking the user to authenticate just to delete their final stack would be
+  /// nonsensical. No-op unless the lock is currently active.
+  static Future<void> disableLockForEmptyStacks(
+    BuildContext context,
+    AppStateNotifier app,
+  ) async {
+    if (app.stacksAuthMode == StacksAuthMode.off) return;
+    final orch = context.read<StacksUnlockOrchestrator>();
+    await orch.switchToOff();
+    app.setStacksAuthMode(StacksAuthMode.off);
+  }
+
   /// Coordinates an auth-mode transition: re-auth where needed, swap wraps via
   /// the orchestrator, and update the notifier on success. Each branch covers
   /// one (current → next) pair so a misroute simply does nothing.

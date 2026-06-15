@@ -8,6 +8,7 @@ import '../../data/sats.dart';
 import '../../data/app_enums.dart';
 import '../../data/stack.dart' as model;
 import '../../l10n/generated/app_localizations.dart';
+import '../../screens/settings/stacks_settings_actions.dart';
 import '../../services/app_haptics.dart';
 import '../../state/state.dart';
 import '../../theme/theme.dart';
@@ -59,7 +60,15 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
         final confirm = await showDeleteStackDialog(context);
         if (!mounted) return;
         if (confirm == true) {
-          context.read<AppStateNotifier>().removeStack(stack.id);
+          final app = context.read<AppStateNotifier>();
+          final wasLast = app.stacks.length == 1;
+          app.removeStack(stack.id);
+          // Deleting the final stack auto-disables the lock, mirroring a manual
+          // turn-off — there's nothing left to protect, and the user shouldn't
+          // be greeted by a lock screen guarding an empty list next launch.
+          if (wasLast && mounted) {
+            await StacksSettingsActions.disableLockForEmptyStacks(context, app);
+          }
           // The build's null-stack guard pops us back home.
         }
     }
