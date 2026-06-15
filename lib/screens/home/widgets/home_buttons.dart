@@ -243,6 +243,7 @@ class StacksOverflowButton extends StatelessWidget {
                     const SizedBox(width: 12),
                     SizedBox(
                       height: 24,
+                      width: 36,
                       child: FittedBox(
                         fit: BoxFit.contain,
                         child: Switch(
