@@ -10,6 +10,7 @@ import '../../../theme/theme.dart';
 import '../../about_screen.dart';
 import '../../settings/settings_dialogs.dart';
 import '../../settings/settings_screen.dart';
+import '../../settings/stacks_settings_actions.dart';
 
 class HomeButton extends StatelessWidget {
   const HomeButton({
@@ -36,10 +37,12 @@ class HomeButton extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
         child: InkWell(
-          onTap: onTap == null ? null : () {
-            AppHaptics.light();
-            onTap!();
-          },
+          onTap: onTap == null
+              ? null
+              : () {
+                  AppHaptics.light();
+                  onTap!();
+                },
           child: Container(
             constraints: BoxConstraints(minHeight: height),
             padding: const EdgeInsets.symmetric(
@@ -71,7 +74,12 @@ class HomeButton extends StatelessWidget {
 
 /// Solid bitcoin-orange FAB used for primary home-screen actions.
 class HomeFab extends StatelessWidget {
-  const HomeFab({super.key, required this.icon, required this.tooltip, this.onTap});
+  const HomeFab({
+    super.key,
+    required this.icon,
+    required this.tooltip,
+    this.onTap,
+  });
 
   final IconData icon;
   final String tooltip;
@@ -92,7 +100,6 @@ class HomeFab extends StatelessWidget {
     );
   }
 }
-
 
 class ConverterIconButton extends StatelessWidget {
   const ConverterIconButton({super.key, required this.onTap});
@@ -115,11 +122,7 @@ class ConverterIconButton extends StatelessWidget {
           height: 47,
           child: Transform.flip(
             flipX: true,
-            child: Icon(
-              Icons.swap_vert,
-              size: 26,
-              color: cs.onSurfaceVariant,
-            ),
+            child: Icon(Icons.swap_vert, size: 26, color: cs.onSurfaceVariant),
           ),
         ),
       ),
@@ -181,7 +184,8 @@ class _AddStackIconButtonState extends State<AddStackIconButton>
     // where to start. Once they've added one (even if they later delete all),
     // the button is just a plain icon; they already know how.
     final attention = context.select<AppStateNotifier, bool>(
-        (a) => a.stacks.isEmpty && !a.hasEverAddedStack);
+      (a) => a.stacks.isEmpty && !a.hasEverAddedStack,
+    );
     _syncAttention(attention);
 
     return SizedBox(
@@ -268,7 +272,186 @@ class _AttentionWavePainter extends CustomPainter {
       old.progress != progress || old.color != color;
 }
 
-enum _OverflowAction { converter, language, currency, bitcoinUnit, theme, stacks, about, screenshot }
+enum _StacksMenuAction { reorder, lockStacks }
+
+/// Overflow menu pinned beside the "Stacks" section title. Lets the user reorder
+/// stacks, toggle the portfolio total, and jump to the stack-lock screen without
+/// leaving the home screen. All actions delegate to [StacksSettingsActions] so
+/// the encryption-sensitive auth-mode transitions stay in one place.
+class StacksOverflowButton extends StatelessWidget {
+  const StacksOverflowButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
+    final app = context.watch<AppStateNotifier>();
+    final canShowTotal = app.stacks.length >= 2;
+    final canReorder = app.stacks.length > 1;
+
+    final itemStyle = AppTypography.body.copyWith(
+      fontSize: 16,
+      fontWeight: FontWeight.w400,
+      color: cs.onSurface,
+    );
+
+    Widget row(IconData icon, String label, {Widget? trailing}) {
+      return IgnorePointer(
+        child: Row(
+          children: [
+            Icon(icon, size: 20, color: cs.onSurfaceVariant),
+            const SizedBox(width: 12),
+            Expanded(child: Text(label, style: itemStyle)),
+            if (trailing != null) ...[const SizedBox(width: 12), trailing],
+          ],
+        ),
+      );
+    }
+
+    final p = context.palette;
+    // The "Display total" row carries a live switch. Its PopupMenuItem is
+    // disabled so a tap never routes through onSelected (which would pop the
+    // menu); instead a StatefulBuilder owns the switch state so toggling
+    // animates in place and leaves the menu open. Each flip mirrors out to
+    // app.setShowPortfolio so the home screen updates underneath.
+    Widget portfolioToggleRow() => StatefulBuilder(
+      builder: (ctx, setLocal) {
+        void flip() {
+          AppHaptics.light();
+          final next = !app.showPortfolio;
+          app.setShowPortfolio(next);
+          setLocal(() {});
+        }
+
+        // The PopupMenuItem is disabled (to swallow the tap), which dims its
+        // subtree via a faded IconTheme/DefaultTextStyle. Re-assert full
+        // strength here so the row reads as active, not greyed out.
+        return IconTheme.merge(
+          data: IconThemeData(color: cs.onSurfaceVariant, opacity: 1),
+          child: DefaultTextStyle.merge(
+            style: itemStyle,
+            child: InkWell(
+              onTap: flip,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.calculate_outlined,
+                      size: 20,
+                      color: cs.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        l10n.settingsPortfolioTotal,
+                        style: itemStyle,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    SizedBox(
+                      height: 24,
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Switch(
+                          value: app.showPortfolio,
+                          onChanged: (_) => flip(),
+                          trackColor: WidgetStateProperty.resolveWith(
+                            (states) => states.contains(WidgetState.selected)
+                                ? p.bitcoinOrange.withValues(alpha: 0.5)
+                                : null,
+                          ),
+                          thumbColor: WidgetStateProperty.resolveWith(
+                            (states) => states.contains(WidgetState.selected)
+                                ? p.bitcoinOrange
+                                : null,
+                          ),
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    return PopupMenuButton<_StacksMenuAction>(
+      onOpened: AppHaptics.light,
+      onSelected: (action) => _handleAction(context, action),
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(minWidth: 220),
+      popUpAnimationStyle: const AnimationStyle(
+        duration: Duration(milliseconds: 120),
+      ),
+      offset: const Offset(0, 52),
+      color: cs.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+      ),
+      icon: const Icon(Icons.more_vert),
+      iconSize: 22,
+      style: IconButton.styleFrom(
+        backgroundColor: cs.surface,
+        foregroundColor: cs.onSurfaceVariant,
+        shadowColor: Colors.black.withValues(alpha: 0.12),
+        elevation: 1.5,
+        fixedSize: const Size(36, 36),
+        minimumSize: const Size(36, 36),
+        maximumSize: const Size(36, 36),
+        shape: const CircleBorder(),
+        padding: EdgeInsets.zero,
+      ),
+      itemBuilder: (ctx) => [
+        if (canReorder)
+          PopupMenuItem(
+            value: _StacksMenuAction.reorder,
+            child: row(Icons.reorder, l10n.settingsReorderStacks),
+          ),
+        if (canShowTotal)
+          PopupMenuItem(
+            // Disabled so a tap doesn't route through onSelected and pop the
+            // menu — the embedded switch handles its own taps and keeps the
+            // menu open.
+            enabled: false,
+            padding: EdgeInsets.zero,
+            child: portfolioToggleRow(),
+          ),
+        PopupMenuItem(
+          value: _StacksMenuAction.lockStacks,
+          child: row(Icons.lock_outline, l10n.settingsLockStacksTitle),
+        ),
+      ],
+    );
+  }
+
+  void _handleAction(BuildContext context, _StacksMenuAction action) {
+    switch (action) {
+      case _StacksMenuAction.reorder:
+        StacksSettingsActions.openReorder(context);
+      case _StacksMenuAction.lockStacks:
+        StacksSettingsActions.openLockSettings(context);
+    }
+  }
+}
+
+enum _OverflowAction {
+  converter,
+  language,
+  currency,
+  bitcoinUnit,
+  theme,
+  stacks,
+  about,
+  screenshot,
+}
 
 class OverflowButton extends StatefulWidget {
   const OverflowButton({super.key, this.onOpenConverter});
@@ -298,7 +481,9 @@ class _OverflowButtonState extends State<OverflowButton> {
       onSelected: (action) => _handleAction(context, action),
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints(minWidth: 48),
-      popUpAnimationStyle: const AnimationStyle(duration: Duration(milliseconds: 120)),
+      popUpAnimationStyle: const AnimationStyle(
+        duration: Duration(milliseconds: 120),
+      ),
       offset: const Offset(0, 56),
       color: cs.surface,
       shape: RoundedRectangleBorder(
@@ -326,60 +511,106 @@ class _OverflowButtonState extends State<OverflowButton> {
       itemBuilder: (ctx) => [
         PopupMenuItem(
           value: _OverflowAction.converter,
-          child: IgnorePointer(child: Row(children: [
-            Icon(Icons.swap_vert, size: 20, color: cs.onSurfaceVariant),
-            const SizedBox(width: 12),
-            Text(l10n.homeConverter, style: itemStyle),
-          ])),
+          child: IgnorePointer(
+            child: Row(
+              children: [
+                Icon(Icons.swap_vert, size: 20, color: cs.onSurfaceVariant),
+                const SizedBox(width: 12),
+                Text(l10n.homeConverter, style: itemStyle),
+              ],
+            ),
+          ),
         ),
         const PopupMenuDivider(),
         PopupMenuItem(
           value: _OverflowAction.theme,
-          child: IgnorePointer(child: Row(children: [
-            Icon(Icons.palette_outlined, size: 20, color: cs.onSurfaceVariant),
-            const SizedBox(width: 12),
-            Text(l10n.settingsThemeLabel, style: itemStyle),
-          ])),
+          child: IgnorePointer(
+            child: Row(
+              children: [
+                Icon(
+                  Icons.palette_outlined,
+                  size: 20,
+                  color: cs.onSurfaceVariant,
+                ),
+                const SizedBox(width: 12),
+                Text(l10n.settingsThemeLabel, style: itemStyle),
+              ],
+            ),
+          ),
         ),
         PopupMenuItem(
           value: _OverflowAction.language,
-          child: IgnorePointer(child: Row(children: [
-            Icon(Icons.language, size: 20, color: cs.onSurfaceVariant),
-            const SizedBox(width: 12),
-            Text(l10n.settingsLanguageLabel, style: itemStyle),
-          ])),
+          child: IgnorePointer(
+            child: Row(
+              children: [
+                Icon(Icons.language, size: 20, color: cs.onSurfaceVariant),
+                const SizedBox(width: 12),
+                Text(l10n.settingsLanguageLabel, style: itemStyle),
+              ],
+            ),
+          ),
         ),
         PopupMenuItem(
           value: _OverflowAction.currency,
-          child: IgnorePointer(child: Row(children: [
-            Transform.translate(offset: const Offset(-1.5, 0), child: Icon(Icons.attach_money, size: 22, color: cs.onSurfaceVariant)),
-            const SizedBox(width: 12),
-            Text(l10n.settingsCurrencies, style: itemStyle),
-          ])),
+          child: IgnorePointer(
+            child: Row(
+              children: [
+                Transform.translate(
+                  offset: const Offset(-1.5, 0),
+                  child: Icon(
+                    Icons.attach_money,
+                    size: 22,
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(l10n.settingsCurrencies, style: itemStyle),
+              ],
+            ),
+          ),
         ),
         PopupMenuItem(
           value: _OverflowAction.bitcoinUnit,
-          child: IgnorePointer(child: Row(children: [
-            Transform.translate(offset: const Offset(-2.5, 0), child: Icon(Icons.currency_bitcoin, size: 22, color: cs.onSurfaceVariant)),
-            const SizedBox(width: 12),
-            Text(l10n.settingsBitcoinDisplayMode, style: itemStyle),
-          ])),
+          child: IgnorePointer(
+            child: Row(
+              children: [
+                Transform.translate(
+                  offset: const Offset(-2.5, 0),
+                  child: Icon(
+                    Icons.currency_bitcoin,
+                    size: 22,
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(l10n.settingsBitcoinDisplayMode, style: itemStyle),
+              ],
+            ),
+          ),
         ),
         PopupMenuItem(
           value: _OverflowAction.stacks,
-          child: IgnorePointer(child: Row(children: [
-            Icon(Icons.reorder, size: 20, color: cs.onSurfaceVariant),
-            const SizedBox(width: 12),
-            Text(l10n.settingsGroupPrivacy, style: itemStyle),
-          ])),
+          child: IgnorePointer(
+            child: Row(
+              children: [
+                Icon(Icons.reorder, size: 20, color: cs.onSurfaceVariant),
+                const SizedBox(width: 12),
+                Text(l10n.settingsGroupPrivacy, style: itemStyle),
+              ],
+            ),
+          ),
         ),
         PopupMenuItem(
           value: _OverflowAction.about,
-          child: IgnorePointer(child: Row(children: [
-            Icon(Icons.info_outline, size: 20, color: cs.onSurfaceVariant),
-            const SizedBox(width: 12),
-            Text(l10n.settingsAbout, style: itemStyle),
-          ])),
+          child: IgnorePointer(
+            child: Row(
+              children: [
+                Icon(Icons.info_outline, size: 20, color: cs.onSurfaceVariant),
+                const SizedBox(width: 12),
+                Text(l10n.settingsAbout, style: itemStyle),
+              ],
+            ),
+          ),
         ),
         // Debug-only screenshot mode. Gated to debug builds — the tree-shaker
         // drops this branch from release/profile binaries, so it never ships.
@@ -388,23 +619,30 @@ class _OverflowButtonState extends State<OverflowButton> {
         if (kDebugMode)
           PopupMenuItem(
             value: _OverflowAction.screenshot,
-            child: IgnorePointer(child: Row(children: [
-              Icon(
-                context.read<LivePriceController>().screenshotMode
-                    ? Icons.check_box
-                    : Icons.check_box_outline_blank,
-                size: 20,
-                color: cs.onSurfaceVariant,
+            child: IgnorePointer(
+              child: Row(
+                children: [
+                  Icon(
+                    context.read<LivePriceController>().screenshotMode
+                        ? Icons.check_box
+                        : Icons.check_box_outline_blank,
+                    size: 20,
+                    color: cs.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 12),
+                  Text('Screenshot mode', style: itemStyle),
+                ],
               ),
-              const SizedBox(width: 12),
-              Text('Screenshot mode', style: itemStyle),
-            ])),
+            ),
           ),
       ],
     );
   }
 
-  Future<void> _handleAction(BuildContext context, _OverflowAction action) async {
+  Future<void> _handleAction(
+    BuildContext context,
+    _OverflowAction action,
+  ) async {
     switch (action) {
       case _OverflowAction.converter:
         widget.onOpenConverter?.call();
@@ -416,7 +654,8 @@ class _OverflowButtonState extends State<OverflowButton> {
         final app = context.read<AppStateNotifier>();
         final picked = await Navigator.of(context).push<List<Currency>>(
           MaterialPageRoute(
-            builder: (_) => CurrencyPickerScreen(initial: app.selectedCurrencies),
+            builder: (_) =>
+                CurrencyPickerScreen(initial: app.selectedCurrencies),
           ),
         );
         if (picked != null && context.mounted) {
@@ -431,13 +670,17 @@ class _OverflowButtonState extends State<OverflowButton> {
       case _OverflowAction.theme:
         if (context.mounted) {
           Navigator.of(context).push<void>(
-            MaterialPageRoute<void>(builder: (_) => const ThemeSettingsScreen()),
+            MaterialPageRoute<void>(
+              builder: (_) => const ThemeSettingsScreen(),
+            ),
           );
         }
       case _OverflowAction.stacks:
         if (context.mounted) {
           Navigator.of(context).push<void>(
-            MaterialPageRoute<void>(builder: (_) => const StacksSettingsScreen()),
+            MaterialPageRoute<void>(
+              builder: (_) => const StacksSettingsScreen(),
+            ),
           );
         }
       case _OverflowAction.about:
@@ -486,11 +729,13 @@ String _languageOptionLabel(BuildContext context, LanguagePref pref) {
 }
 
 List<LanguagePref> _sortedLanguageOptions(BuildContext context) {
-  final rest = LanguagePref.values
-      .where((l) => l != LanguagePref.system)
-      .toList()
-    ..sort((a, b) => _languageOptionLabel(context, a)
-        .compareTo(_languageOptionLabel(context, b)));
+  final rest =
+      LanguagePref.values.where((l) => l != LanguagePref.system).toList()..sort(
+        (a, b) => _languageOptionLabel(
+          context,
+          a,
+        ).compareTo(_languageOptionLabel(context, b)),
+      );
   return [LanguagePref.system, ...rest];
 }
 
@@ -523,4 +768,3 @@ Future<LanguagePref?> _showLanguagePicker(
     ),
   );
 }
-

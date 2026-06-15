@@ -398,6 +398,10 @@
   "@settingsLockStacks": {
     "description": "Section header above the stack lock controls (auth type, relock timeout, change/reset PIN) on the Stacks settings screen."
   },
+  "settingsLockStacksTitle": "Lock",
+  "@settingsLockStacksTitle": {
+    "description": "Title of the dedicated stack-lock settings screen, and the row/menu entry that navigates to it."
+  },
   "settingsAuthType": "Authentication type",
   "@settingsAuthType": {
     "description": "Lock stacks screen row label for the auth-mode picker (Off / Device / PIN), and the picker dialog title."

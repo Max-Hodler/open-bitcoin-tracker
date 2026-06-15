@@ -193,8 +193,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  if (!stacksLocked)
+                  if (!stacksLocked) ...[
                     AddStackIconButton(onTap: _onAddStackTap),
+                    const SizedBox(width: AppSpacing.sm),
+                    const StacksOverflowButton(),
+                  ],
                 ],
               ),
             ),
