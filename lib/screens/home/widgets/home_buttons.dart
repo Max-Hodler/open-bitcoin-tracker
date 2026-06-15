@@ -291,7 +291,7 @@ class _AttentionWavePainter extends CustomPainter {
       old.progress != progress || old.color != color;
 }
 
-enum _StacksMenuAction { reorder, lockStacks }
+enum _StacksMenuAction { reorder, bitcoinUnit, lockStacks }
 
 /// Overflow menu pinned beside the "Stacks" section title. Lets the user reorder
 /// stacks, toggle the portfolio total, and jump to the stack-lock screen without
@@ -451,6 +451,10 @@ class StacksOverflowButton extends StatelessWidget {
               child: portfolioToggleRow(),
             ),
           PopupMenuItem(
+            value: _StacksMenuAction.bitcoinUnit,
+            child: row(Icons.currency_bitcoin, l10n.settingsBitcoinDisplayMode),
+          ),
+          PopupMenuItem(
             value: _StacksMenuAction.lockStacks,
             child: row(Icons.lock_outline, l10n.settingsLockStacksTitle),
           ),
@@ -459,10 +463,19 @@ class StacksOverflowButton extends StatelessWidget {
     );
   }
 
-  void _handleAction(BuildContext context, _StacksMenuAction action) {
+  Future<void> _handleAction(
+    BuildContext context,
+    _StacksMenuAction action,
+  ) async {
     switch (action) {
       case _StacksMenuAction.reorder:
         StacksSettingsActions.openReorder(context);
+      case _StacksMenuAction.bitcoinUnit:
+        final app = context.read<AppStateNotifier>();
+        final picked = await showBitcoinUnitDialog(context, app.btcDisplayMode);
+        if (picked != null && context.mounted) {
+          context.read<AppStateNotifier>().setBitcoinDisplayMode(picked);
+        }
       case _StacksMenuAction.lockStacks:
         StacksSettingsActions.openLockSettings(context);
     }
@@ -473,7 +486,6 @@ enum _OverflowAction {
   converter,
   language,
   currency,
-  bitcoinUnit,
   theme,
   stacks,
   about,
@@ -597,25 +609,6 @@ class _OverflowButtonState extends State<OverflowButton> {
           ),
         ),
         PopupMenuItem(
-          value: _OverflowAction.bitcoinUnit,
-          child: IgnorePointer(
-            child: Row(
-              children: [
-                Transform.translate(
-                  offset: const Offset(-2.5, 0),
-                  child: Icon(
-                    Icons.currency_bitcoin,
-                    size: 22,
-                    color: cs.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(l10n.settingsBitcoinDisplayMode, style: itemStyle),
-              ],
-            ),
-          ),
-        ),
-        PopupMenuItem(
           value: _OverflowAction.stacks,
           child: IgnorePointer(
             child: Row(
@@ -687,12 +680,6 @@ class _OverflowButtonState extends State<OverflowButton> {
         );
         if (picked != null && context.mounted) {
           context.read<AppStateNotifier>().setSelectedCurrencies(picked);
-        }
-      case _OverflowAction.bitcoinUnit:
-        final app = context.read<AppStateNotifier>();
-        final picked = await showBitcoinUnitDialog(context, app.btcDisplayMode);
-        if (picked != null && context.mounted) {
-          context.read<AppStateNotifier>().setBitcoinDisplayMode(picked);
         }
       case _OverflowAction.theme:
         if (context.mounted) {
