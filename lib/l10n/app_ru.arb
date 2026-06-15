@@ -98,6 +98,7 @@
   "livePriceCadence5s": "Каждые 5 секунд",
   "livePriceCadence15s": "Каждые 15 секунд",
   "settingsLockStacks": "Блокировка",
+  "overflowBlockStacks": "Заблокировать Stacks",
   "settingsLockStacksTitle": "Настройки блокировки",
   "settingsAuthType": "Тип аутентификации",
   "settingsLockEnabled": "Включено",

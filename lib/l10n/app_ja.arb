@@ -98,6 +98,7 @@
   "livePriceCadence5s": "5秒ごと",
   "livePriceCadence15s": "15秒ごと",
   "settingsLockStacks": "ロック",
+  "overflowBlockStacks": "Stacks をロック",
   "settingsLockStacksTitle": "ロック設定",
   "settingsAuthType": "認証タイプ",
   "settingsLockEnabled": "有効",

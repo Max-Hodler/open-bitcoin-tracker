@@ -326,7 +326,12 @@ class StacksOverflowButton extends StatelessWidget {
           ),
           PopupMenuItem(
             value: _StacksMenuAction.lockStacks,
-            child: row(Icons.lock_outline, l10n.settingsLockStacksTitle),
+            child: row(
+              Icons.lock_outline,
+              app.stacksEncryptedAtRest
+                  ? l10n.settingsLockStacksTitle
+                  : l10n.overflowBlockStacks,
+            ),
           ),
         ],
       ),

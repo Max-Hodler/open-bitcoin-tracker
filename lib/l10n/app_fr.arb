@@ -98,6 +98,7 @@
   "livePriceCadence5s": "Toutes les 5 secondes",
   "livePriceCadence15s": "Toutes les 15 secondes",
   "settingsLockStacks": "Verrouillage",
+  "overflowBlockStacks": "Verrouiller les Stacks",
   "settingsLockStacksTitle": "Paramètres de verrouillage",
   "settingsAuthType": "Type d'authentification",
   "settingsLockEnabled": "Activé",

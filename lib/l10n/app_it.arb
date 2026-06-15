@@ -98,6 +98,7 @@
   "livePriceCadence5s": "Ogni 5 secondi",
   "livePriceCadence15s": "Ogni 15 secondi",
   "settingsLockStacks": "Blocco",
+  "overflowBlockStacks": "Blocca Stacks",
   "settingsLockStacksTitle": "Impostazioni di blocco",
   "settingsAuthType": "Tipo di autenticazione",
   "settingsLockEnabled": "Attivato",
