@@ -352,7 +352,7 @@ class _OverflowButtonState extends State<OverflowButton> {
         PopupMenuItem(
           value: _OverflowAction.bitcoinUnit,
           child: IgnorePointer(child: Row(children: [
-            Icon(Icons.currency_bitcoin, size: 20, color: cs.onSurfaceVariant),
+            Icon(Icons.currency_bitcoin, size: 24, color: cs.onSurfaceVariant),
             const SizedBox(width: 12),
             Text(l10n.settingsBitcoinDisplayMode, style: itemStyle),
           ])),
