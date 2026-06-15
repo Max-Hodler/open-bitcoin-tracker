@@ -39,7 +39,6 @@ class AppState {
     this.totalProjectedPriceCurrency,
     this.swipeChipHintDismissed = false,
     this.showPriceDelta = false,
-    this.hasEverAddedStack = false,
   });
 
 
@@ -120,11 +119,6 @@ class AppState {
   // When true, show the signed tick-to-tick price delta as a subtitle below
   // the live price for ~2 s each time the price updates. Off by default.
   final bool showPriceDelta;
-  // True once the user has added their first stack. Never reverts — so the
-  // empty-state teaching (the "tap + to add a stack" hint and the pulsing
-  // waves on the add button) stays gone after the user deletes all stacks.
-  // They already know how; an empty list is now a choice, not confusion.
-  final bool hasEverAddedStack;
   AppState copyWith({
     List<Stack>? stacks,
     Currency? currency,
@@ -163,7 +157,6 @@ class AppState {
     String? totalProjectedPriceCurrency,
     bool? swipeChipHintDismissed,
     bool? showPriceDelta,
-    bool? hasEverAddedStack,
   }) {
     return AppState(
       stacks: stacks ?? this.stacks,
@@ -213,7 +206,6 @@ class AppState {
       swipeChipHintDismissed:
           swipeChipHintDismissed ?? this.swipeChipHintDismissed,
       showPriceDelta: showPriceDelta ?? this.showPriceDelta,
-      hasEverAddedStack: hasEverAddedStack ?? this.hasEverAddedStack,
     );
   }
 
@@ -256,7 +248,6 @@ class AppState {
         if (totalProjectedPriceCurrency != null) 'totalProjectedPriceCurrency': totalProjectedPriceCurrency,
         'swipeChipHintDismissed': swipeChipHintDismissed,
         'showPriceDelta': showPriceDelta,
-        'hasEverAddedStack': hasEverAddedStack,
       };
 
   factory AppState.fromJson(Map<String, dynamic> json) {
@@ -356,11 +347,6 @@ class AppState {
       swipeChipHintDismissed:
           json['swipeChipHintDismissed'] as bool? ?? false,
       showPriceDelta: json['showPriceDelta'] as bool? ?? false,
-      // Migrate pre-flag installs: anyone already holding stacks has obviously
-      // added one before, so seed the flag from the loaded list when the key
-      // is absent rather than re-teaching them on the next launch.
-      hasEverAddedStack:
-          json['hasEverAddedStack'] as bool? ?? stacks.isNotEmpty,
     );
   }
 

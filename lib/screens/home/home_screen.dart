@@ -308,49 +308,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               else
                 SliverToBoxAdapter(child: stacksTitle),
-              if (stacks.isEmpty && !stacksLocked && !app.hasEverAddedStack)
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.xl,
-                      ),
-                      child: Builder(
-                        builder: (context) {
-                          final cs = Theme.of(context).colorScheme;
-                          final style = AppTypography.body.copyWith(
-                            fontSize: 15,
-                            color: cs.onSurfaceVariant,
-                          );
-                          final parts = AppLocalizations.of(context)
-                              .homeEmptyStacksHint
-                              .split('@+');
-                          return Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(text: parts.first),
-                                WidgetSpan(
-                                  alignment: PlaceholderAlignment.middle,
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 26,
-                                    color: cs.onSurfaceVariant,
-                                  ),
-                                ),
-                                if (parts.length > 1)
-                                  TextSpan(text: parts[1]),
-                              ],
-                            ),
-                            textAlign: TextAlign.center,
-                            style: style,
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                )
-              else if (stacksLocked && app.lockedStackCount > 0)
+              if (stacksLocked && app.lockedStackCount > 0)
                 SliverPadding(
                   padding: stacksAreaPadding,
                   sliver: SliverToBoxAdapter(

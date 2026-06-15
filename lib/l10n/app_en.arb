@@ -602,11 +602,7 @@
   },
   "homeAddStack": "Add stack",
   "@homeAddStack": {
-    "description": "Terse 'Add stack' action label used in the per-stack overflow menu and the new-stack flow's confirm button. The standalone empty-state button uses the more natural homeAddAStack instead."
-  },
-  "homeAddAStack": "Add a stack",
-  "@homeAddAStack": {
-    "description": "Label of the large standalone button shown in the empty state (no stacks yet) that starts adding the first stack. Uses the article ('a stack') because as a full-width empty-state button it reads more naturally than the terse menu form."
+    "description": "Terse 'Add stack' action label used in the per-stack overflow menu and the new-stack flow's confirm button."
   },
   "homeSwipeChipHint": "Swipe up or down on a range to change it.",
   "@homeSwipeChipHint": {
@@ -803,10 +799,6 @@
   "converterModeBtcSats": "Sats - BTC",
   "@converterModeBtcSats": {
     "description": "Label for the segmented toggle option that switches the converter into BTC ↔ sats unit-conversion mode."
-  },
-  "homeEmptyStacksHint": "Tap @+ on the top right to add a bitcoin stack",
-  "@homeEmptyStacksHint": {
-    "description": "Centered placeholder shown in the empty space below the chart when the user has no stacks yet, teaching them to tap the + button to add one. The token @+ is replaced at runtime with the + icon and must be kept verbatim in translations."
   },
   "stackDetailWorthBackThen": "Worth back then",
   "@stackDetailWorthBackThen": {

@@ -77,7 +77,6 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
   List<Currency> get selectedCurrencies => _state.selectedCurrencies;
   bool get showPortfolio => _state.showPortfolio;
   bool get swipeChipHintDismissed => _state.swipeChipHintDismissed;
-  bool get hasEverAddedStack => _state.hasEverAddedStack;
   bool get showChart => _state.showChart;
   bool get showPriceDelta => _state.showPriceDelta;
   ChartHeight get chartHeight => _state.chartHeight;
@@ -229,7 +228,6 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
 
   void addStack(Stack stack) => _update((s) => s.copyWith(
         stacks: [...s.stacks, stack],
-        hasEverAddedStack: true,
       ));
 
   void updateStack(String id, Stack Function(Stack) mutate) {

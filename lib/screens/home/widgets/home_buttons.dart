@@ -125,146 +125,40 @@ class StackLockIconButton extends StatelessWidget {
   }
 }
 
-class AddStackIconButton extends StatefulWidget {
+class AddStackIconButton extends StatelessWidget {
   const AddStackIconButton({super.key, required this.onTap});
 
   final VoidCallback onTap;
 
   @override
-  State<AddStackIconButton> createState() => _AddStackIconButtonState();
-}
-
-class _AddStackIconButtonState extends State<AddStackIconButton>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _pulse;
-
-  bool _attention = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // Construct eagerly in initState, not as a `late` initializer. The field
-    // is only read when attention toggles on; a user who already has stacks
-    // never trips that path, leaving a `late final` uninitialised until
-    // dispose() touches it — building a Ticker against a deactivated element
-    // and throwing. Eager construction keeps it inside a valid lifecycle.
-    _pulse = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2600),
-    );
-  }
-
-  void _syncAttention(bool attention) {
-    if (attention == _attention) return;
-    _attention = attention;
-    if (attention) {
-      _pulse.repeat();
-    } else {
-      _pulse.stop();
-      _pulse.value = 0;
-    }
-  }
-
-  @override
-  void dispose() {
-    _pulse.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final p = context.palette;
-    // Pulse only for a user who has never added a stack — the waves teach them
-    // where to start. Once they've added one (even if they later delete all),
-    // the button is just a plain icon; they already know how.
-    final attention = context.select<AppStateNotifier, bool>(
-      (a) => a.stacks.isEmpty && !a.hasEverAddedStack,
-    );
-    _syncAttention(attention);
 
     return SizedBox(
       width: 36,
       height: 36,
-      child: Stack(
-        alignment: Alignment.center,
-        clipBehavior: Clip.none,
-        children: [
-          if (attention)
-            RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _pulse,
-                builder: (context, _) => CustomPaint(
-                  size: const Size(36, 36),
-                  painter: _AttentionWavePainter(
-                    progress: _pulse.value,
-                    color: p.bitcoinOrange,
-                  ),
-                ),
-              ),
-            ),
-          IconButton(
-            onPressed: () {
-              AppHaptics.light();
-              widget.onTap();
-            },
-            icon: const Icon(Icons.add),
-            iconSize: 22,
-            constraints: const BoxConstraints(),
-            style: IconButton.styleFrom(
-              backgroundColor: cs.surface,
-              foregroundColor: cs.onSurfaceVariant,
-              shadowColor: Colors.black.withValues(alpha: 0.12),
-              elevation: 1.5,
-              fixedSize: const Size(36, 36),
-              minimumSize: const Size(36, 36),
-              maximumSize: const Size(36, 36),
-              shape: const CircleBorder(),
-              padding: EdgeInsets.zero,
-            ),
-          ),
-        ],
+      child: IconButton(
+        onPressed: () {
+          AppHaptics.light();
+          onTap();
+        },
+        icon: const Icon(Icons.add),
+        iconSize: 22,
+        constraints: const BoxConstraints(),
+        style: IconButton.styleFrom(
+          backgroundColor: cs.surface,
+          foregroundColor: cs.onSurfaceVariant,
+          shadowColor: Colors.black.withValues(alpha: 0.12),
+          elevation: 1.5,
+          fixedSize: const Size(36, 36),
+          minimumSize: const Size(36, 36),
+          maximumSize: const Size(36, 36),
+          shape: const CircleBorder(),
+          padding: EdgeInsets.zero,
+        ),
       ),
     );
   }
-}
-
-/// Two staggered expanding rings that fade as they grow, radiating from the
-/// centre of the add button to draw the eye when no stacks exist yet.
-class _AttentionWavePainter extends CustomPainter {
-  const _AttentionWavePainter({required this.progress, required this.color});
-
-  final double progress;
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    const minRadius = 18.0;
-    const maxRadius = 32.0;
-
-    for (var i = 0; i < 2; i++) {
-      // Stagger the second ring half a cycle behind the first.
-      final t = (progress + i * 0.5) % 1.0;
-      final radius = minRadius + (maxRadius - minRadius) * t;
-      // Fade in over the first fifth of the cycle so rings emerge from the
-      // centre instead of popping into existence, hold at full orange, then
-      // fade out over the final stretch as they reach the edge.
-      final fadeIn = (t / 0.2).clamp(0.0, 1.0);
-      final fadeOut = ((1.0 - t) / 0.4).clamp(0.0, 1.0);
-      final opacity = fadeIn * fadeOut;
-      if (opacity <= 0) continue;
-      final paint = Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5
-        ..color = color.withValues(alpha: opacity);
-      canvas.drawCircle(center, radius, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(_AttentionWavePainter old) =>
-      old.progress != progress || old.color != color;
 }
 
 enum _StacksMenuAction { reorder, bitcoinUnit, lockStacks }
