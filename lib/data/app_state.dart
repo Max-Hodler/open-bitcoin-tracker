@@ -35,11 +35,14 @@ class AppState {
     ],
     this.totalImageData,
     this.totalColorKey,
+    this.totalProjectedPrice,
+    this.totalProjectedPriceCurrency,
     this.swipeChipHintDismissed = false,
     this.showPriceDelta = false,
     this.totalAtTop = true,
     this.hasEverAddedStack = false,
   });
+
 
   final List<Stack> stacks;
   final Currency currency;
@@ -108,6 +111,10 @@ class AppState {
   // default initial-letter circle in the theme's bitcoinOrange.
   final String? totalImageData;
   final String? totalColorKey;
+  // Persisted slider position for the total-portfolio future-value projection.
+  // Same semantics as Stack.projectedPrice / projectedPriceCurrency.
+  final double? totalProjectedPrice;
+  final String? totalProjectedPriceCurrency;
   // True once the user swipes up or down on any range chip for the first time.
   // The hint teaches the swipe-to-cycle shortcut.
   final bool swipeChipHintDismissed;
@@ -153,6 +160,9 @@ class AppState {
     bool clearTotalImage = false,
     String? totalColorKey,
     bool clearTotalColor = false,
+    double? totalProjectedPrice,
+    bool clearTotalProjectedPrice = false,
+    String? totalProjectedPriceCurrency,
     bool? swipeChipHintDismissed,
     bool? showPriceDelta,
     bool? totalAtTop,
@@ -198,6 +208,11 @@ class AppState {
       totalColorKey: clearTotalColor
           ? null
           : (totalColorKey ?? this.totalColorKey),
+      totalProjectedPrice: clearTotalProjectedPrice
+          ? null
+          : (totalProjectedPrice ?? this.totalProjectedPrice),
+      totalProjectedPriceCurrency:
+          clearTotalProjectedPrice ? null : (totalProjectedPriceCurrency ?? this.totalProjectedPriceCurrency),
       swipeChipHintDismissed:
           swipeChipHintDismissed ?? this.swipeChipHintDismissed,
       showPriceDelta: showPriceDelta ?? this.showPriceDelta,
@@ -241,6 +256,8 @@ class AppState {
         'homeWidgetOrder': [for (final w in homeWidgetOrder) w.code],
         if (totalImageData != null) 'totalImageData': totalImageData,
         if (totalColorKey != null) 'totalColorKey': totalColorKey,
+        if (totalProjectedPrice != null) 'totalProjectedPrice': totalProjectedPrice,
+        if (totalProjectedPriceCurrency != null) 'totalProjectedPriceCurrency': totalProjectedPriceCurrency,
         'swipeChipHintDismissed': swipeChipHintDismissed,
         'showPriceDelta': showPriceDelta,
         'totalAtTop': totalAtTop,
@@ -337,6 +354,10 @@ class AppState {
       totalColorKey: json['totalColorKey'] is String
           ? json['totalColorKey'] as String
           : null,
+      totalProjectedPrice: json['totalProjectedPrice'] is num
+          ? (json['totalProjectedPrice'] as num).toDouble()
+          : null,
+      totalProjectedPriceCurrency: json['totalProjectedPriceCurrency'] as String?,
       swipeChipHintDismissed:
           json['swipeChipHintDismissed'] as bool? ?? false,
       showPriceDelta: json['showPriceDelta'] as bool? ?? false,

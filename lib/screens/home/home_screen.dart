@@ -19,6 +19,7 @@ import 'header/home_header_section.dart';
 import 'widgets/home_buttons.dart';
 import 'widgets/locked_stacks_skeleton.dart';
 import 'widgets/stacks_widget.dart';
+import '../stack_detail/total_detail_screen.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -428,6 +429,14 @@ class _HomeScreenState extends State<HomeScreen> {
         imageData: app.state.totalImageData,
         colorKey: app.state.totalColorKey ?? 'grey',
         position: StackCardPosition.last,
+        onTap: () {
+          AppHaptics.light();
+          Navigator.of(context).push<void>(
+            MaterialPageRoute<void>(
+              builder: (_) => const TotalDetailScreen(),
+            ),
+          );
+        },
         onAvatarTap: () {
           AppHaptics.light();
           _showTotalAvatarSheet(cardContext, app);

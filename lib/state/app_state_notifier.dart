@@ -221,6 +221,13 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
   void setTotalColorKey(String? value) => _update((s) => value == null
       ? s.copyWith(clearTotalColor: true)
       : s.copyWith(totalColorKey: value));
+  void setTotalProjectedPrice(double? price, String currencyCode) =>
+      _update((s) => price == null
+          ? s.copyWith(clearTotalProjectedPrice: true)
+          : s.copyWith(
+              totalProjectedPrice: price,
+              totalProjectedPriceCurrency: currencyCode,
+            ));
 
   void addStack(Stack stack) => _update((s) => s.copyWith(
         stacks: [...s.stacks, stack],
