@@ -193,9 +193,27 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
+                  // The lock/unlock control sits to the left of the add button
+                  // and shares its styling. It appears only when stack-lock
+                  // auth is enabled; when locked, it's the sole control (add and
+                  // the overflow menu are hidden until the stacks are unlocked).
+                  if (app.stacksAuthMode != StacksAuthMode.off) ...[
+                    StackLockIconButton(
+                      locked: stacksLocked,
+                      tooltip: stacksLocked
+                          ? AppLocalizations.of(context).homeUnlockStacks
+                          : AppLocalizations.of(context).settingsLockStacks,
+                      onTap: stacksLocked
+                          ? () => _attemptUnlock(context)
+                          : () => context
+                                .read<StacksLockController>()
+                                .lockNow(),
+                    ),
+                    if (!stacksLocked) const SizedBox(width: 20),
+                  ],
                   if (!stacksLocked) ...[
                     AddStackIconButton(onTap: _onAddStackTap),
-                    const SizedBox(width: AppSpacing.sm),
+                    const SizedBox(width: 20),
                     const StacksOverflowButton(),
                   ],
                 ],
@@ -213,15 +231,10 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    // Shared bottom padding for the stacks area, applied identically whether
-    // the stacks are locked or unlocked: the floating-action-button clearance
-    // (when stack-lock auth is enabled) plus the gap below the last card.
-    final stacksAreaPadding = EdgeInsets.only(
-      bottom: AppSpacing.xl +
-          (app.stacksAuthMode != StacksAuthMode.off
-              ? 88 + MediaQuery.of(context).viewPadding.bottom
-              : 0),
-    );
+    // Bottom padding for the stacks area — just the gap below the last card.
+    // (The lock/unlock control now lives in the title row, so no
+    // floating-action-button clearance is reserved here anymore.)
+    const stacksAreaPadding = EdgeInsets.only(bottom: AppSpacing.xl);
 
     // The scroll hairline lives at the bottom edge of the pinned "Stacks"
     // title (see below) — the lowest pinned element — so it reads as the
@@ -245,19 +258,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: cs.surfaceContainerLow,
-      floatingActionButton: stacksLocked
-          ? HomeFab(
-              icon: Icons.lock_open_outlined,
-              tooltip: AppLocalizations.of(context).homeUnlockStacks,
-              onTap: () => _attemptUnlock(context),
-            )
-          : app.stacksAuthMode != StacksAuthMode.off
-              ? HomeFab(
-                  icon: Icons.lock_outline,
-                  tooltip: AppLocalizations.of(context).settingsLockStacks,
-                  onTap: () => context.read<StacksLockController>().lockNow(),
-                )
-              : null,
       body: SafeArea(
         bottom: false,
         // Resync the hairline when the scrollable's extents change without a

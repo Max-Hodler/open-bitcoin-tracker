@@ -72,31 +72,50 @@ class HomeButton extends StatelessWidget {
   }
 }
 
-/// Solid bitcoin-orange FAB used for primary home-screen actions.
-class HomeFab extends StatelessWidget {
-  const HomeFab({
+/// Circular icon button that locks or unlocks the stacks. Sits to the left of
+/// [AddStackIconButton] in the "Stacks" title row and shares its 36×36 surface
+/// styling, so the lock and add affordances read as a matched pair.
+class StackLockIconButton extends StatelessWidget {
+  const StackLockIconButton({
     super.key,
-    required this.icon,
+    required this.locked,
+    required this.onTap,
     required this.tooltip,
-    this.onTap,
   });
 
-  final IconData icon;
+  /// When true the stacks are locked and the button offers to unlock them;
+  /// otherwise it offers to lock them.
+  final bool locked;
+  final VoidCallback onTap;
   final String tooltip;
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final p = context.palette;
-    return FloatingActionButton(
-      onPressed: () {
-        AppHaptics.medium();
-        onTap?.call();
-      },
-      backgroundColor: p.bitcoinOrange,
-      foregroundColor: Colors.white,
-      tooltip: tooltip,
-      child: Icon(icon, size: 24),
+    final cs = Theme.of(context).colorScheme;
+    return SizedBox(
+      width: 36,
+      height: 36,
+      child: IconButton(
+        onPressed: () {
+          AppHaptics.light();
+          onTap();
+        },
+        tooltip: tooltip,
+        icon: Icon(locked ? Icons.lock_open_outlined : Icons.lock_outline),
+        iconSize: 22,
+        constraints: const BoxConstraints(),
+        style: IconButton.styleFrom(
+          backgroundColor: cs.surface,
+          foregroundColor: cs.onSurfaceVariant,
+          shadowColor: Colors.black.withValues(alpha: 0.12),
+          elevation: 1.5,
+          fixedSize: const Size(36, 36),
+          minimumSize: const Size(36, 36),
+          maximumSize: const Size(36, 36),
+          shape: const CircleBorder(),
+          padding: EdgeInsets.zero,
+        ),
+      ),
     );
   }
 }
@@ -383,52 +402,60 @@ class StacksOverflowButton extends StatelessWidget {
       },
     );
 
-    return PopupMenuButton<_StacksMenuAction>(
-      onOpened: AppHaptics.light,
-      onSelected: (action) => _handleAction(context, action),
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(minWidth: 220),
-      popUpAnimationStyle: const AnimationStyle(
-        duration: Duration(milliseconds: 120),
-      ),
-      offset: const Offset(0, 52),
-      color: cs.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-      ),
-      icon: const Icon(Icons.more_vert),
-      iconSize: 22,
-      style: IconButton.styleFrom(
-        backgroundColor: cs.surface,
-        foregroundColor: cs.onSurfaceVariant,
-        shadowColor: Colors.black.withValues(alpha: 0.12),
-        elevation: 1.5,
-        fixedSize: const Size(36, 36),
-        minimumSize: const Size(36, 36),
-        maximumSize: const Size(36, 36),
-        shape: const CircleBorder(),
+    // Wrap in a tight 36×36 box so the button's default tap-target padding
+    // (which pads an IconButton out toward a 48px minimum) is clamped to the
+    // visible circle — matching AddStackIconButton so the gap to its left reads
+    // identically to the gap on the add button's other side.
+    return SizedBox(
+      width: 36,
+      height: 36,
+      child: PopupMenuButton<_StacksMenuAction>(
+        onOpened: AppHaptics.light,
+        onSelected: (action) => _handleAction(context, action),
         padding: EdgeInsets.zero,
-      ),
-      itemBuilder: (ctx) => [
-        if (canReorder)
-          PopupMenuItem(
-            value: _StacksMenuAction.reorder,
-            child: row(Icons.reorder, l10n.settingsReorderStacks),
-          ),
-        if (canShowTotal)
-          PopupMenuItem(
-            // Disabled so a tap doesn't route through onSelected and pop the
-            // menu — the embedded switch handles its own taps and keeps the
-            // menu open.
-            enabled: false,
-            padding: EdgeInsets.zero,
-            child: portfolioToggleRow(),
-          ),
-        PopupMenuItem(
-          value: _StacksMenuAction.lockStacks,
-          child: row(Icons.lock_outline, l10n.settingsLockStacksTitle),
+        constraints: const BoxConstraints(minWidth: 220),
+        popUpAnimationStyle: const AnimationStyle(
+          duration: Duration(milliseconds: 120),
         ),
-      ],
+        offset: const Offset(0, 52),
+        color: cs.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+        ),
+        icon: const Icon(Icons.more_vert),
+        iconSize: 22,
+        style: IconButton.styleFrom(
+          backgroundColor: cs.surface,
+          foregroundColor: cs.onSurfaceVariant,
+          shadowColor: Colors.black.withValues(alpha: 0.12),
+          elevation: 1.5,
+          fixedSize: const Size(36, 36),
+          minimumSize: const Size(36, 36),
+          maximumSize: const Size(36, 36),
+          shape: const CircleBorder(),
+          padding: EdgeInsets.zero,
+        ),
+        itemBuilder: (ctx) => [
+          if (canReorder)
+            PopupMenuItem(
+              value: _StacksMenuAction.reorder,
+              child: row(Icons.reorder, l10n.settingsReorderStacks),
+            ),
+          if (canShowTotal)
+            PopupMenuItem(
+              // Disabled so a tap doesn't route through onSelected and pop the
+              // menu — the embedded switch handles its own taps and keeps the
+              // menu open.
+              enabled: false,
+              padding: EdgeInsets.zero,
+              child: portfolioToggleRow(),
+            ),
+          PopupMenuItem(
+            value: _StacksMenuAction.lockStacks,
+            child: row(Icons.lock_outline, l10n.settingsLockStacksTitle),
+          ),
+        ],
+      ),
     );
   }
 
