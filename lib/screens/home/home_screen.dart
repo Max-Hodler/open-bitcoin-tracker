@@ -344,7 +344,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 )
-              else if (stacksLocked)
+              else if (stacksLocked && app.lockedStackCount > 0)
                 SliverPadding(
                   padding: stacksAreaPadding,
                   sliver: SliverToBoxAdapter(
