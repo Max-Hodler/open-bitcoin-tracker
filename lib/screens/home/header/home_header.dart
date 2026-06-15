@@ -294,7 +294,16 @@ class _HomeHeaderState extends State<HomeHeader> {
       switchInCurve: Curves.easeOut,
       switchOutCurve: Curves.easeIn,
       child: AreaChart(
-        key: ValueKey(widget.usesAllHistory ? 'long' : widget.range.name),
+        // Two stable buckets — 'long' (all-history camera) and 'short'
+        // (intraday) — rather than a per-range key. Keeping the key stable
+        // *within* a bucket means switching between short ranges (2D → 3D,
+        // 1W → 2W) reuses the same AreaChart instance, so its didUpdateWidget
+        // zoom tween fires and the window animates exactly like the long-range
+        // ranges do, instead of the AnimatedSwitcher hard-swapping a fresh
+        // chart with no "from" state. Long↔short still swaps (different bucket)
+        // since those datasets live on different scales and a fade reads better
+        // there than a cross-scale pan.
+        key: ValueKey(widget.usesAllHistory ? 'long' : 'short'),
         data: widget.chartData,
         windowStartMs: widget.chartWindowStartMs,
         windowEndMs: widget.chartWindowEndMs,

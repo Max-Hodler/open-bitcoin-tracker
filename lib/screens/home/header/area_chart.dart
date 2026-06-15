@@ -40,13 +40,32 @@ class _AreaChartState extends State<AreaChart>
   bool _spotsForLogScale = false;
   late List<FlSpot> _spots;
 
+  // The curve that was on screen when the current zoom tween started. On a
+  // zoom-IN (3D → 2D) the incoming dataset is shorter than the outgoing
+  // window, so painting the new (short) curve while the window is still wide
+  // shows an empty/cropped left edge until the window catches up. To match the
+  // all-history ranges — which never swap the curve, only the window — we keep
+  // painting this outgoing curve for the duration of a zoom-in and only adopt
+  // the new spots when the tween settles. Null when no tween is mid-flight or
+  // the transition is a zoom-out (the new curve already spans the window).
+  List<FlSpot>? _prevSpots;
+  bool _zoomingIn = false;
+
   // Animated window endpoints. When the parent changes windowStartMs/End,
   // we tween from the last-shown values to the new targets so the chart
   // feels like a camera zoom instead of a data morph.
   late final AnimationController _zoom = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 450),
-  );
+  )..addStatusListener((status) {
+      // Once the zoom-in window has finished narrowing onto the new range,
+      // drop the held outgoing curve so the new (shorter) curve takes over.
+      // No setState needed: the controller already drives a rebuild via the
+      // AnimatedBuilder on the completing frame, and this fires within it.
+      if (status == AnimationStatus.completed && _prevSpots != null) {
+        _prevSpots = null;
+      }
+    });
   double? _animFromStartX;
   double? _animFromEndX;
   double? _animFromMinY;
@@ -169,6 +188,18 @@ class _AreaChartState extends State<AreaChart>
         _animFromMinY = _targetMinY;
         _animFromMaxY = _targetMaxY;
       }
+      // A zoom-in is a narrowing window (new span < the window we're starting
+      // from). Only then do we need to hold the outgoing curve: on a zoom-out
+      // the incoming curve already covers the whole animating window, so the
+      // normal path (paint the new spots immediately) shows no crop. _spots
+      // still holds the outgoing curve here — build() rebuilds it for the new
+      // data on the next frame — so snapshot it now.
+      final newSpan = widget.windowEndMs - widget.windowStartMs;
+      final fromSpan = (_animFromEndX! - _animFromStartX!).abs();
+      _zoomingIn = newSpan < fromSpan;
+      _prevSpots = _zoomingIn && !identical(_spotsForData, widget.data)
+          ? _spots
+          : null;
       _zoom.forward(from: 0);
     }
   }
@@ -180,7 +211,7 @@ class _AreaChartState extends State<AreaChart>
       _rebuildSpots();
     }
     final cs = Theme.of(context).colorScheme;
-    final spots = _spots;
+    final newSpots = _spots;
     final color = widget.color;
 
     final newTargetStart = widget.windowStartMs.toDouble();
@@ -248,6 +279,14 @@ class _AreaChartState extends State<AreaChart>
         final maxX = fromEnd + (newTargetEnd - fromEnd) * t;
         final minY = fromMinY + (newTargetMinY - fromMinY) * t;
         final maxY = fromMaxY + (newTargetMaxY - fromMaxY) * t;
+        // Hold the outgoing (wider) curve while a zoom-in window is still
+        // narrowing; once _prevSpots is cleared on completion we draw the new
+        // curve. See _prevSpots. The scrub indicator is suppressed mid-zoom
+        // (_handleTouch bails while animating), so indexing stays consistent.
+        final spots =
+            _prevSpots != null && _zoom.status != AnimationStatus.completed
+                ? _prevSpots!
+                : newSpots;
         return LineChart(
           duration: Duration.zero,
           LineChartData(
