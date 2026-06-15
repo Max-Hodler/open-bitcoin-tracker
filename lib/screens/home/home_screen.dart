@@ -220,15 +220,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ignoring: stacksLocked,
                     child: Opacity(
                       opacity: stacksLocked ? 0.35 : 1.0,
-                      child: Row(
-                        children: [
-                          AddStackIconButton(onTap: _onAddStackTap),
-                          const SizedBox(width: 20),
-                          const StacksOverflowButton(),
-                        ],
-                      ),
+                      child: AddStackIconButton(onTap: _onAddStackTap),
                     ),
                   ),
+                  const SizedBox(width: 20),
+                  const StacksOverflowButton(),
                 ],
               ),
             ),
