@@ -334,6 +334,14 @@ class _OverflowButtonState extends State<OverflowButton> {
         ),
         const PopupMenuDivider(),
         PopupMenuItem(
+          value: _OverflowAction.theme,
+          child: IgnorePointer(child: Row(children: [
+            Icon(Icons.palette_outlined, size: 20, color: cs.onSurfaceVariant),
+            const SizedBox(width: 12),
+            Text(l10n.settingsThemeLabel, style: itemStyle),
+          ])),
+        ),
+        PopupMenuItem(
           value: _OverflowAction.language,
           child: IgnorePointer(child: Row(children: [
             Icon(Icons.language, size: 20, color: cs.onSurfaceVariant),
@@ -344,7 +352,7 @@ class _OverflowButtonState extends State<OverflowButton> {
         PopupMenuItem(
           value: _OverflowAction.currency,
           child: IgnorePointer(child: Row(children: [
-            Icon(Icons.currency_exchange, size: 20, color: cs.onSurfaceVariant),
+            Transform.translate(offset: const Offset(-1.5, 0), child: Icon(Icons.attach_money, size: 22, color: cs.onSurfaceVariant)),
             const SizedBox(width: 12),
             Text(l10n.settingsCurrencies, style: itemStyle),
           ])),
@@ -352,7 +360,7 @@ class _OverflowButtonState extends State<OverflowButton> {
         PopupMenuItem(
           value: _OverflowAction.bitcoinUnit,
           child: IgnorePointer(child: Row(children: [
-            Icon(Icons.currency_bitcoin, size: 24, color: cs.onSurfaceVariant),
+            Transform.translate(offset: const Offset(-2.5, 0), child: Icon(Icons.currency_bitcoin, size: 22, color: cs.onSurfaceVariant)),
             const SizedBox(width: 12),
             Text(l10n.settingsBitcoinDisplayMode, style: itemStyle),
           ])),
@@ -363,14 +371,6 @@ class _OverflowButtonState extends State<OverflowButton> {
             Icon(Icons.reorder, size: 20, color: cs.onSurfaceVariant),
             const SizedBox(width: 12),
             Text(l10n.settingsGroupPrivacy, style: itemStyle),
-          ])),
-        ),
-        PopupMenuItem(
-          value: _OverflowAction.theme,
-          child: IgnorePointer(child: Row(children: [
-            Icon(Icons.palette_outlined, size: 20, color: cs.onSurfaceVariant),
-            const SizedBox(width: 12),
-            Text(l10n.settingsThemeLabel, style: itemStyle),
           ])),
         ),
         PopupMenuItem(
