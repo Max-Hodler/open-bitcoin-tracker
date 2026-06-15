@@ -30,12 +30,18 @@ class KrakenOhlcClient {
   /// the span the chart will draw — Kraken always sends the most recent 720
   /// candles regardless of the interval.
   ///
-  /// All day ranges share Kraken's 5-min candle feed (288 candles = 1 day).
+  /// All day ranges share Kraken's 15-min candle feed (96 candles = 1 day).
   /// All week ranges share the 1-hour feed (168 candles = 1 week).
+  ///
+  /// 15-min (not 5-min) candles for the day ranges because Kraken caps every
+  /// OHLC response at the most recent 720 candles regardless of interval. At
+  /// 5-min that ceiling is only 720 × 5 min = 2.5 days, so 3D–7D would all
+  /// collapse onto the same ~2.5-day window. 15-min candles put 7 days
+  /// (7 × 96 = 672 candles) comfortably under the cap.
   Future<List<HistoryPoint>?> intraday(BtcRange range) {
     final days = range.days;
     if (days != null) {
-      return _fetch(intervalMinutes: 5, takeLast: days * 288);
+      return _fetch(intervalMinutes: 15, takeLast: days * 96);
     }
     final weeks = range.weeks;
     if (weeks != null) {

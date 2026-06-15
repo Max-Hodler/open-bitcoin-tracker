@@ -79,12 +79,12 @@ void main() {
   });
 
   group('KrakenOhlcClient.intraday', () {
-    test('1D uses interval=5 and trims to last 288 candles', () async {
+    test('1D uses interval=15 and trims to last 96 candles', () async {
       late Uri captured;
-      // Send 720 rows; the client should trim down to 288.
+      // Send 720 rows; the client should trim down to 96.
       final rows = [
         for (var i = 0; i < 720; i++)
-          [1700000000 + i * 300, '0', '0', '0', '${100.0 + i}', '0', '0', 0],
+          [1700000000 + i * 900, '0', '0', '0', '${100.0 + i}', '0', '0', 0],
       ];
       final client = KrakenOhlcClient(
         httpClient: MockClient((req) async {
@@ -93,11 +93,27 @@ void main() {
         }),
       );
       final points = await client.intraday(BtcRange.d1);
-      expect(captured.queryParameters['interval'], '5');
-      expect(points, hasLength(288));
-      // Trim takes the trailing 288 — so the first kept row corresponds to index 432.
-      expect(points!.first.priceUsd, 100.0 + 432);
+      expect(captured.queryParameters['interval'], '15');
+      expect(points, hasLength(96));
+      // Trim takes the trailing 96 — so the first kept row corresponds to index 624.
+      expect(points!.first.priceUsd, 100.0 + 624);
       expect(points.last.priceUsd, 100.0 + 719);
+    });
+
+    test('7D trims to last 672 candles', () async {
+      // 7 × 96 = 672 candles fit under Kraken's 720-candle response cap, so
+      // 7D draws a genuinely wider window than 3D (288 candles) rather than
+      // collapsing onto the same ~2.5-day slice the 5-min feed used to give.
+      final rows = [
+        for (var i = 0; i < 720; i++)
+          [1700000000 + i * 900, '0', '0', '0', '${100.0 + i}', '0', '0', 0],
+      ];
+      final client = KrakenOhlcClient(
+        httpClient: MockClient((_) async => http.Response(jsonEncode(_payload(rows)), 200)),
+      );
+      final points = await client.intraday(BtcRange.d7);
+      expect(points, hasLength(672));
+      expect(points!.first.priceUsd, 100.0 + 48);
     });
 
     test('1W uses interval=60 and trims to last 168 candles', () async {
