@@ -178,13 +178,10 @@ class _HomeHeaderState extends State<HomeHeader> {
           Stack(
             clipBehavior: Clip.none,
             children: [
-              SizedBox(
-                height: switch (chartHeight) {
-                  ChartHeight.s => 136,
-                  ChartHeight.m => 204,
-                  ChartHeight.l => 272,
-                  ChartHeight.xl => 340,
-                },
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 280),
+                curve: Curves.easeInOutCubic,
+                height: chartHeight.px,
                 child: _buildChartArea(context, logScale: logScale),
               ),
               Positioned(

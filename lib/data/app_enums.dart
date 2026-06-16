@@ -310,13 +310,16 @@ enum StacksLockTimeout {
 }
 
 enum ChartHeight {
-  s('s'),
-  m('m'),
-  l('l'),
-  xl('xl');
+  s('s', 136),
+  m('m', 204),
+  l('l', 272),
+  xl('xl', 340);
 
-  const ChartHeight(this.code);
+  const ChartHeight(this.code, this.px);
   final String code;
+
+  /// Rendered pixel height of the chart area for this setting.
+  final double px;
 
   static ChartHeight fromCode(String? code) {
     // Legacy codes written by older builds.

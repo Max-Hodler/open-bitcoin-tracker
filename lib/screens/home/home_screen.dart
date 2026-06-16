@@ -46,6 +46,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   double? _headerHeight;
   double? _stacksTitleHeight;
+  // Header height minus the chart area's current pixel height — i.e. the price
+  // row, spacers and range bar, which never change height. Derived from each
+  // measurement so the pinned-header box can be sized as chrome + the *target*
+  // chart height instantly, instead of chasing the chart's animated size one
+  // frame behind. Without this the box lagged the growing chart by a frame,
+  // which clipped the range bar (and shuffled the price) mid-animation.
+  double? _headerChrome;
 
   void _onStacksTitleMeasured(Size size) {
     if (size.height == _stacksTitleHeight) return;
@@ -58,7 +65,14 @@ class _HomeScreenState extends State<HomeScreen> {
     if (size.height == _headerHeight) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      setState(() => _headerHeight = size.height);
+      final chartPx = context.read<AppStateNotifier>().chartHeight.px;
+      setState(() {
+        _headerHeight = size.height;
+        // Capture the non-chart chrome so the build can reserve the box at
+        // chrome + target chart height without waiting for the chart's
+        // animation to finish.
+        _headerChrome = size.height - chartPx;
+      });
       // A header-height change (e.g. toggling the chart in settings) can
       // shrink the scrollable's max extent and clamp the scroll offset
       // without firing the controller's listener in time, leaving the
@@ -287,7 +301,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 SliverPersistentHeader(
                   pinned: true,
                   delegate: PinnedHeaderDelegate(
-                    height: _headerHeight!,
+                    // Reserve the box at chrome + the *target* chart height so
+                    // it's already full-size when the chart starts animating —
+                    // the chart grows/shrinks within a fixed box, keeping the
+                    // price pinned at the top and the range bar unclipped.
+                    height: _headerChrome != null
+                        ? _headerChrome! + app.chartHeight.px
+                        : _headerHeight!,
                     child: measuredHeader,
                   ),
                 )
