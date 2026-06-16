@@ -6,9 +6,11 @@ import '../../../data/app_enums.dart';
 import '../../../services/app_haptics.dart';
 import '../../../state/state.dart';
 import '../../../theme/theme.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../settings/btc_price_settings_screen.dart';
-import '../../settings/graph_settings_screen.dart';
 import '../../settings/currency_picker_screen.dart';
+import '../../settings/range_config_bar.dart';
+import '../../settings/settings_widgets.dart';
 import '../chart_slice.dart';
 import 'home_header.dart';
 
@@ -209,11 +211,71 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
           builder: (_) => const BtcPriceSettingsScreen(),
         ),
       ),
-      onGraphSettingsTap: () => Navigator.of(context).push<void>(
-        MaterialPageRoute<void>(
-          builder: (_) => const GraphSettingsScreen(),
-        ),
-      ),
+      onGraphSettingsTap: () {
+        AppHaptics.light();
+        final theme = Theme.of(context);
+        final cs = theme.colorScheme;
+        showModalBottomSheet<void>(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: theme.brightness == Brightness.dark
+              ? cs.surfaceContainerHigh
+              : cs.surfaceContainerLow,
+          showDragHandle: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+          builder: (ctx) {
+            final l10n = AppLocalizations.of(ctx);
+            return Consumer<AppStateNotifier>(
+              builder: (ctx, app, _) => SafeArea(
+                top: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.md,
+                        0,
+                        AppSpacing.md,
+                        AppSpacing.xl,
+                      ),
+                      child: SettingsGroup(
+                        children: [
+                          SettingsSegmentedTile(
+                            label: l10n.settingsChartHeight,
+                            options: [
+                              l10n.settingsChartHeightCompact,
+                              l10n.settingsChartHeightNormal,
+                              l10n.settingsChartHeightTall,
+                              l10n.settingsChartHeightXl,
+                            ],
+                            selectedIndex: app.chartHeight.index,
+                            enabled: true,
+                            onChanged: (i) =>
+                                app.setChartHeight(ChartHeight.values[i]),
+                          ),
+                          SettingsSegmentedTile(
+                            label: l10n.settingsScale,
+                            options: [
+                              l10n.settingsScaleLinear,
+                              l10n.settingsScaleLog,
+                            ],
+                            selectedIndex: app.logScale ? 1 : 0,
+                            enabled: true,
+                            onChanged: (i) => app.setLogScale(i == 1),
+                          ),
+                          SettingsRangesTile(label: l10n.settingsRanges),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
       onCurrencySwipe: (direction) async {
         final notifier = context.read<AppStateNotifier>();
         if (notifier.cycleCurrency(direction)) {
