@@ -162,14 +162,13 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
           ));
 
   /// Replace the user's picked currencies. Order matters — it's the order the
-  /// home-screen swipe gesture cycles through. The list is normalized to 1–3
-  /// unique entries; if the currently displayed currency isn't in [next], the
-  /// active currency snaps to the first entry.
+  /// home-screen swipe gesture cycles through. The list is deduplicated; if the
+  /// currently displayed currency isn't in [next], the active currency snaps to
+  /// the first entry.
   void setSelectedCurrencies(List<Currency> next) {
     final unique = <Currency>[];
     for (final c in next) {
       if (!unique.contains(c)) unique.add(c);
-      if (unique.length == 3) break;
     }
     if (unique.isEmpty) return;
     final shouldSnap = !unique.contains(_state.currency);

@@ -44,9 +44,9 @@ class AppState {
 
   final List<Stack> stacks;
   final Currency currency;
-  // Currencies the user has opted into via the picker. Length 1–3, in the
-  // order the user checked them — that order is what the home-screen swipe
-  // gesture cycles through. Always contains [currency].
+  // Currencies the user has opted into via the picker, in the order the user
+  // checked them — that order is what the home-screen swipe gesture cycles
+  // through. Always contains [currency]. Minimum length: 1.
   final List<Currency> selectedCurrencies;
   final bool showPortfolio;
   final bool showChart;
@@ -370,13 +370,11 @@ class AppState {
           .firstWhere((_) => true, orElse: () => null);
       if (match == null) continue;
       if (!out.contains(match)) out.add(match);
-      if (out.length == 3) break;
     }
     if (out.isEmpty) return [fallbackCurrent];
     if (!out.contains(fallbackCurrent)) {
       // The persisted current currency must be in the cycle list so the swipe
-      // gesture can find it. Drop the last entry to make room if needed.
-      if (out.length == 3) out.removeLast();
+      // gesture can find it.
       out.insert(0, fallbackCurrent);
     }
     return out;
