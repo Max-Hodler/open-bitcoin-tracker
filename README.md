@@ -14,9 +14,12 @@ Download the latest APK from the [Releases](https://github.com/Max-Hodler/open-b
 
 ## Features
 
-- **Live BTC price**: Updated in real time.
-- **Stacks**: Organize your Bitcoin into multiple labeled portfolios (e.g. "My Wallet", "Kids", "Mum").
-- **Converter**: Instantly convert between satoshis and any supported fiat currency with a full numeric keypad.
+- **Live BTC price**: Updated in real time via Kraken WebSocket.
+- **Stacks**: Organize your Bitcoin into multiple labeled portfolios (e.g. "My Wallet", "Kids", "Mum"). Tap a stack to see its historical value and a future-value projection.
+- **Portfolio total**: See the combined value of all your stacks at a glance. Tap it to open the portfolio detail view.
+- **Converter**: Dedicated icon button that instantly converts between BTC, satoshis, and any supported fiat currency using a full numeric keypad.
+- **Bitcoin unit toggle**: Switch between BTC and satoshis display directly from the stacks overflow menu.
+- **Lock**: Protect your holdings with a PIN or device biometrics. Lock and unlock from the stacks title row without leaving the home screen.
 - **Themes**: Light and Dark modes with 4 themes in total.
 - **Languages**: Available in Deutsch, English, Español, Français, Italiano, Português, Türkçe, Tiếng Việt, Русский, and 日本語.
 
