@@ -227,17 +227,30 @@ class _HomeHeaderState extends State<HomeHeader> {
       message = null;
     }
     if (message == null) return const SizedBox.shrink();
+    final cs = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.md,
       ),
-      child: Text(
-        message,
-        textAlign: TextAlign.center,
-        maxLines: 2,
-        style: AppTypography.body.copyWith(
-          fontSize: 13,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
+          decoration: BoxDecoration(
+            color: cs.surface.withValues(alpha: 0.95),
+            borderRadius: BorderRadius.circular(AppSpacing.md),
+          ),
+          child: Text(
+            message,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            style: AppTypography.body.copyWith(
+              fontSize: 13,
+              color: cs.onSurfaceVariant,
+            ),
+          ),
         ),
       ),
     );
