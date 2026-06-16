@@ -35,7 +35,7 @@ class AreaChart extends StatefulWidget {
 }
 
 class _AreaChartState extends State<AreaChart>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   List<PricePoint>? _spotsForData;
   bool _spotsForLogScale = false;
   late List<FlSpot> _spots;
@@ -81,9 +81,23 @@ class _AreaChartState extends State<AreaChart>
   // touch pipeline — see the comment in build().
   int? _touchedIndex;
 
+  // Drives the orange ripple that radiates out of the selected-point circle.
+  // Repeats for as long as a point is touched; stopped (and reset) on release
+  // so it isn't burning frames while idle.
+  // Duration of one ring's full 0→1 expansion. Set on the controller in
+  // _handleTouch (not only here) so hot reload picks up tweaks — a late final
+  // field initializer runs once and won't re-read a changed constant.
+  static const Duration _rippleDuration = Duration(milliseconds: 4200);
+
+  late final AnimationController _ripple = AnimationController(
+    vsync: this,
+    duration: _rippleDuration,
+  );
+
   @override
   void dispose() {
     _zoom.dispose();
+    _ripple.dispose();
     super.dispose();
   }
 
@@ -146,12 +160,18 @@ class _AreaChartState extends State<AreaChart>
       }
     }
     final i = (lo > 0 && x - _spots[lo - 1].x < _spots[lo].x - x) ? lo - 1 : lo;
+    if (!_ripple.isAnimating) {
+      _ripple.duration = _rippleDuration;
+      _ripple.repeat();
+    }
     if (i == _touchedIndex) return;
     setState(() => _touchedIndex = i);
     if (i < widget.data.length) widget.onHover(widget.data[i]);
   }
 
   void _clearTouch() {
+    _ripple.stop();
+    _ripple.reset();
     if (_touchedIndex == null) return;
     setState(() => _touchedIndex = null);
     widget.onHover(null);
@@ -287,7 +307,14 @@ class _AreaChartState extends State<AreaChart>
             _prevSpots != null && _zoom.status != AnimationStatus.completed
                 ? _prevSpots!
                 : newSpots;
-        return LineChart(
+        // Value-space coordinates of the dot fl_chart is painting for the
+        // touched point, used to position the ripple overlay. Null when not
+        // scrubbing or the index is out of range for the current curve.
+        final touched = switch (_touchedIndex) {
+          final i? when i < spots.length => spots[i],
+          _ => null,
+        };
+        final chart = LineChart(
           duration: Duration.zero,
           LineChartData(
             minX: minX,
@@ -366,10 +393,125 @@ class _AreaChartState extends State<AreaChart>
         ],
       ),
     );
+        // The ripple needs both the value→pixel mapping (this frame's
+        // min/max, the box size) and a clock independent of the zoom tween,
+        // so it rides on _ripple via its own AnimatedBuilder and paints on
+        // top of the chart. RepaintBoundary keeps the pulsing repaints from
+        // dirtying the chart layer.
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            chart,
+            if (touched != null)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: RepaintBoundary(
+                    child: AnimatedBuilder(
+                      animation: _ripple,
+                      builder: (context, _) => CustomPaint(
+                        painter: _RipplePainter(
+                          spotX: touched.x,
+                          spotY: touched.y,
+                          minX: minX,
+                          maxX: maxX,
+                          minY: minY,
+                          maxY: maxY,
+                          progress: _ripple.value,
+                          color: cs.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
       },
     ),
     ),
     );
   }
 
+}
+
+// Concentric orange rings expanding out of the selected point on the chart.
+// progress is one 0→1 sweep of the repeating ripple controller; we stagger a
+// few rings across that phase so there's always a wave mid-flight.
+class _RipplePainter extends CustomPainter {
+  _RipplePainter({
+    required this.spotX,
+    required this.spotY,
+    required this.minX,
+    required this.maxX,
+    required this.minY,
+    required this.maxY,
+    required this.progress,
+    required this.color,
+  });
+
+  // Value-space position of the dot and the visible value window, used to map
+  // the spot to a pixel offset the same way fl_chart lays out the plot area
+  // (the whole box, since all titles/borders are hidden).
+  final double spotX;
+  final double spotY;
+  final double minX;
+  final double maxX;
+  final double minY;
+  final double maxY;
+  final double progress;
+  final Color color;
+
+  static const int _ringCount = 3;
+  static const double _maxRadius = 26;
+  // Matches the FlDotCirclePainter radius the chart paints for the selected
+  // point. Rings are clipped outside this disc so none of the ripple shows on
+  // top of the black dot.
+  static const double _dotRadius = 5;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final spanX = maxX - minX;
+    final spanY = maxY - minY;
+    if (spanX == 0 || spanY == 0) return;
+    final dx = (spotX - minX) / spanX * size.width;
+    // y is inverted: high value sits near the top of the box.
+    final dy = (1 - (spotY - minY) / spanY) * size.height;
+    final center = Offset(dx, dy);
+
+    // Clip out the dot so the rings only ever appear around it, never over it.
+    canvas.save();
+    canvas.clipPath(
+      Path()
+        ..addRect(Offset.zero & size)
+        ..addOval(Rect.fromCircle(center: center, radius: _dotRadius))
+        ..fillType = PathFillType.evenOdd,
+    );
+
+    for (var i = 0; i < _ringCount; i++) {
+      // Each ring is offset in phase so they trail one another; wrap into 0..1.
+      final t = (progress + i / _ringCount) % 1.0;
+      final radius = t * _maxRadius;
+      // Fade out as the ring grows; ease the alpha so it lingers small and
+      // dies off gently at the rim.
+      final alpha = (1 - t) * (1 - t);
+      if (alpha <= 0.01) continue;
+      final paint = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2 * (1 - t) + 0.5
+        ..color = color.withValues(alpha: alpha * 0.55);
+      canvas.drawCircle(center, radius, paint);
+    }
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_RipplePainter old) =>
+      old.progress != progress ||
+      old.spotX != spotX ||
+      old.spotY != spotY ||
+      old.minX != minX ||
+      old.maxX != maxX ||
+      old.minY != minY ||
+      old.maxY != maxY ||
+      old.color != color;
 }
