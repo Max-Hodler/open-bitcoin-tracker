@@ -43,8 +43,9 @@ class SatsInputDisplay extends StatelessWidget {
             ? formatFiatRaw(input)
             : intFormatter.format(int.parse(input)));
 
+    const fontSize = 56.0;
     final digitStyle = AppTypography.title.copyWith(
-      fontSize: 28,
+      fontSize: fontSize,
       fontWeight: FontWeight.w600,
       letterSpacing: -0.3,
       color: cs.onSurface,
@@ -55,13 +56,13 @@ class SatsInputDisplay extends StatelessWidget {
     // OverflowBox lets it paint outside its 0-width slot.
     final caretWidget = SizedBox(
       width: 0,
-      height: 28 * 1.2,
+      height: fontSize * 1.2,
       child: OverflowBox(
         maxWidth: 2,
         alignment: Alignment.centerLeft,
         child: BlinkingCaret(
           color: cs.onSurface,
-          height: 28 * 1.2,
+          height: fontSize * 1.2,
           // Reset blink on input change AND on caret moves so it's always
           // visible immediately after a tap.
           keystrokeSignal: '$input|$caret',
@@ -119,36 +120,39 @@ class SatsInputDisplay extends StatelessWidget {
           bottom: BorderSide(color: p.bitcoinOrange),
         ),
       ),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (!symbolAfterAmount) ...[
-              Text(
-                '₿',
-                style: AppTypography.title.copyWith(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                  color: p.bitcoinOrange,
+      child: SizedBox(
+        height: fontSize * 1.2,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (!symbolAfterAmount) ...[
+                Text(
+                  '₿',
+                  style: AppTypography.title.copyWith(
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.w700,
+                    color: p.bitcoinOrange,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 4),
-            ],
-            ...children,
-            if (symbolAfterAmount) ...[
-              const SizedBox(width: 4),
-              Text(
-                '₿',
-                style: AppTypography.title.copyWith(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                  color: p.bitcoinOrange,
+                const SizedBox(width: 4),
+              ],
+              ...children,
+              if (symbolAfterAmount) ...[
+                const SizedBox(width: 4),
+                Text(
+                  '₿',
+                  style: AppTypography.title.copyWith(
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.w700,
+                    color: p.bitcoinOrange,
+                  ),
                 ),
-              ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
