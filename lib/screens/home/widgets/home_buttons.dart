@@ -8,7 +8,6 @@ import '../../../services/app_haptics.dart';
 import '../../../state/state.dart';
 import '../../../theme/theme.dart';
 import '../../about_screen.dart';
-import '../../settings/settings_dialogs.dart';
 import '../../settings/settings_screen.dart';
 import '../../settings/stacks_settings_actions.dart';
 
@@ -161,7 +160,7 @@ class AddStackIconButton extends StatelessWidget {
   }
 }
 
-enum _StacksMenuAction { reorder, bitcoinUnit, lockStacks }
+enum _StacksMenuAction { reorder, lockStacks }
 
 /// Overflow menu pinned beside the "Stacks" section title. Lets the user reorder
 /// stacks, toggle the portfolio total, and jump to the stack-lock screen without
@@ -273,6 +272,74 @@ class StacksOverflowButton extends StatelessWidget {
       },
     );
 
+    // The "Bitcoin unit" row is an inline toggle between BTC and Sats. Like the
+    // portfolio total row it lives in a disabled PopupMenuItem so taps stay
+    // within the menu; a StatefulBuilder drives the local repaint while
+    // app.setBitcoinDisplayMode persists the choice.
+    Widget bitcoinUnitToggleRow() => StatefulBuilder(
+      builder: (ctx, setLocal) {
+        final mode = app.btcDisplayMode;
+
+        void toggle() {
+          AppHaptics.light();
+          final next = mode == BtcDisplayMode.sats
+              ? BtcDisplayMode.btc
+              : BtcDisplayMode.sats;
+          app.setBitcoinDisplayMode(next);
+          setLocal(() {});
+        }
+
+        Color unitColor(BtcDisplayMode unit) =>
+            mode == unit ? p.bitcoinOrange : cs.onSurfaceVariant;
+
+        return IconTheme.merge(
+          data: IconThemeData(color: cs.onSurfaceVariant, opacity: 1),
+          child: DefaultTextStyle.merge(
+            style: itemStyle,
+            child: InkWell(
+              onTap: toggle,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.currency_bitcoin,
+                      size: 20,
+                      color: cs.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 12),
+                    Text('Unit: ', style: itemStyle),
+                    Text(
+                      l10n.bitcoinDisplayModeBtc,
+                      style: itemStyle.copyWith(
+                        color: unitColor(BtcDisplayMode.btc),
+                        fontWeight: mode == BtcDisplayMode.btc
+                            ? FontWeight.w600
+                            : FontWeight.w400,
+                      ),
+                    ),
+                    Text(' / ', style: itemStyle),
+                    Text(
+                      l10n.bitcoinDisplayModeSats,
+                      style: itemStyle.copyWith(
+                        color: unitColor(BtcDisplayMode.sats),
+                        fontWeight: mode == BtcDisplayMode.sats
+                            ? FontWeight.w600
+                            : FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
     // Wrap in a tight 36×36 box so the button's default tap-target padding
     // (which pads an IconButton out toward a 48px minimum) is clamped to the
     // visible circle — matching AddStackIconButton so the gap to its left reads
@@ -326,8 +393,9 @@ class StacksOverflowButton extends StatelessWidget {
               child: portfolioToggleRow(),
             ),
           PopupMenuItem(
-            value: _StacksMenuAction.bitcoinUnit,
-            child: row(Icons.currency_bitcoin, l10n.settingsBitcoinDisplayMode),
+            enabled: false,
+            padding: EdgeInsets.zero,
+            child: bitcoinUnitToggleRow(),
           ),
           if (canReorder)
             PopupMenuItem(
@@ -339,19 +407,10 @@ class StacksOverflowButton extends StatelessWidget {
     );
   }
 
-  Future<void> _handleAction(
-    BuildContext context,
-    _StacksMenuAction action,
-  ) async {
+  void _handleAction(BuildContext context, _StacksMenuAction action) {
     switch (action) {
       case _StacksMenuAction.reorder:
         StacksSettingsActions.openReorder(context);
-      case _StacksMenuAction.bitcoinUnit:
-        final app = context.read<AppStateNotifier>();
-        final picked = await showBitcoinUnitDialog(context, app.btcDisplayMode);
-        if (picked != null && context.mounted) {
-          context.read<AppStateNotifier>().setBitcoinDisplayMode(picked);
-        }
       case _StacksMenuAction.lockStacks:
         StacksSettingsActions.openLockSettings(context);
     }
