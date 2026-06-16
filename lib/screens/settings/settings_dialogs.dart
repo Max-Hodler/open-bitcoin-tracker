@@ -256,63 +256,6 @@ Future<void> showDeviceUnavailableDialog(BuildContext context) {
   );
 }
 
-Future<BtcDisplayMode?> showBitcoinUnitDialog(
-  BuildContext context,
-  BtcDisplayMode current,
-) {
-  return showDialog<BtcDisplayMode>(
-    context: context,
-    barrierColor: appDialogBarrierColor(context),
-    builder: (ctx) {
-      final l10n = AppLocalizations.of(ctx);
-      return Dialog(
-        elevation: 24,
-        shadowColor: Colors.black,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                l10n.dialogBitcoinUnitTitle,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 32),
-              Row(
-                children: [
-                  Expanded(
-                    child: OrangePrimaryButton(
-                      isValid: true,
-                      label: 'Bitcoin',
-                      height: 52,
-                      onTap: () {
-                        Navigator.of(ctx).pop(BtcDisplayMode.btc);
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: OrangePrimaryButton(
-                      isValid: true,
-                      label: l10n.bitcoinDisplayModeSats,
-                      height: 52,
-                      onTap: () {
-                        Navigator.of(ctx).pop(BtcDisplayMode.sats);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
-
 Future<bool?> showForgetPinDialog(BuildContext context) {
   return showDialog<bool>(
     context: context,

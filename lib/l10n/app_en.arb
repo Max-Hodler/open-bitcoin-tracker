@@ -366,10 +366,6 @@
   "@bitcoinDisplayModeBtc": {
     "description": "Segment label for the BTC display mode. Renders amounts like 0.00339288 with the ₿ symbol."
   },
-  "dialogBitcoinUnitTitle": "Select a bitcoin unit",
-  "@dialogBitcoinUnitTitle": {
-    "description": "Title of the dialog shown when adding the first stack, asking the user to choose their preferred Bitcoin display unit (Sats or BTC)."
-  },
   "settingsLivePriceCadence": "Update cadence",
   "@settingsLivePriceCadence": {
     "description": "Settings row label that opens the cadence picker (Live / 5s / 15s / Off)."

@@ -13,7 +13,6 @@ import '../../widgets/avatar_sheet.dart';
 import '../../widgets/scroll_hairline.dart';
 import '../../widgets/stack_card.dart';
 import '../pin_entry_screen.dart';
-import '../settings/settings_dialogs.dart';
 import 'header/home_header.dart';
 import 'header/home_header_section.dart';
 import 'widgets/home_buttons.dart';
@@ -466,13 +465,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // the home screen updates during the pop animation. Nothing to do here.
   }
 
-  Future<void> _onAddStackTap() async {
-    final app = context.read<AppStateNotifier>();
-    if (app.stacks.isEmpty) {
-      final picked = await showBitcoinUnitDialog(context, app.btcDisplayMode);
-      if (!mounted || picked == null) return;
-      app.setBitcoinDisplayMode(picked);
-    }
+  void _onAddStackTap() {
     widget.onAddStack?.call();
   }
 
