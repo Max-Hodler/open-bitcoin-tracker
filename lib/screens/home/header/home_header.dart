@@ -145,15 +145,7 @@ class _HomeHeaderState extends State<HomeHeader> {
   Widget build(BuildContext context) {
     final logScale = context.select<AppStateNotifier, bool>((a) => a.logScale);
     final chartHeight = context.select<AppStateNotifier, ChartHeight>((a) => a.chartHeight);
-    final buttonsRow = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (widget.onOpenConverter != null)
-          ConverterButton(onTap: widget.onOpenConverter!),
-        const SizedBox(width: 20),
-        const OverflowButton(),
-      ],
-    );
+    final buttonsRow = OverflowButton(onOpenConverter: widget.onOpenConverter);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [

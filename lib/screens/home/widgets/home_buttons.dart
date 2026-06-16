@@ -418,6 +418,7 @@ class StacksOverflowButton extends StatelessWidget {
 }
 
 enum _OverflowAction {
+  converter,
   language,
   currency,
   theme,
@@ -425,46 +426,11 @@ enum _OverflowAction {
   screenshot,
 }
 
-class ConverterButton extends StatelessWidget {
-  const ConverterButton({super.key, required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return SizedBox(
-      width: 36,
-      height: 36,
-      child: IconButton(
-        onPressed: () {
-          AppHaptics.light();
-          onTap();
-        },
-        icon: Transform.flip(
-          flipX: true,
-          child: const Icon(Icons.swap_vert),
-        ),
-        iconSize: 22,
-        constraints: const BoxConstraints(),
-        style: IconButton.styleFrom(
-          backgroundColor: cs.surface,
-          foregroundColor: cs.onSurfaceVariant,
-          shadowColor: Colors.black.withValues(alpha: 0.12),
-          elevation: 1.5,
-          fixedSize: const Size(36, 36),
-          minimumSize: const Size(36, 36),
-          maximumSize: const Size(36, 36),
-          shape: const CircleBorder(),
-          padding: EdgeInsets.zero,
-        ),
-      ),
-    );
-  }
-}
 
 class OverflowButton extends StatefulWidget {
-  const OverflowButton({super.key});
+  const OverflowButton({super.key, this.onOpenConverter});
+
+  final VoidCallback? onOpenConverter;
 
   @override
   State<OverflowButton> createState() => _OverflowButtonState();
@@ -520,6 +486,26 @@ class _OverflowButtonState extends State<OverflowButton> {
         ),
       ),
       itemBuilder: (ctx) => [
+        if (widget.onOpenConverter != null)
+          PopupMenuItem(
+            value: _OverflowAction.converter,
+            child: IgnorePointer(
+              child: Row(
+                children: [
+                  Transform.flip(
+                    flipX: true,
+                    child: Icon(
+                      Icons.swap_vert,
+                      size: 20,
+                      color: cs.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(l10n.homeConverter, style: itemStyle),
+                ],
+              ),
+            ),
+          ),
         PopupMenuItem(
           value: _OverflowAction.theme,
           child: IgnorePointer(
@@ -612,6 +598,8 @@ class _OverflowButtonState extends State<OverflowButton> {
     _OverflowAction action,
   ) async {
     switch (action) {
+      case _OverflowAction.converter:
+        widget.onOpenConverter?.call();
       case _OverflowAction.language:
         final app = context.read<AppStateNotifier>();
         final picked = await _showLanguagePicker(context, app.language);
