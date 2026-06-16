@@ -100,7 +100,10 @@ class _RangeBarState extends State<RangeBar>
   // visible. Called from build whenever the hint-dismissed flag changes.
   void _syncHintBob({required bool hintVisible}) {
     if (hintVisible && !_dragging && !_nudgeController.isAnimating) {
-      if (!_hintBobController.isAnimating) _hintBobController.repeat();
+      if (!_hintBobController.isAnimating) {
+        _hintBobController.value = 0;
+        _hintBobController.repeat();
+      }
     } else {
       _hintBobController.stop();
     }
@@ -453,7 +456,7 @@ class _RangeBarState extends State<RangeBar>
       // Real nudge (user swipe) takes priority over the idle hint bob.
       final verticalOffset = _nudgeController.isAnimating
           ? _nudgeOffset
-          : _hintBobOffset;
+          : (_hintBobController.isAnimating ? _hintBobOffset : 0.0);
       pillRect = selectedRect.translate(0, verticalOffset);
     } else {
       pillRect = null;
@@ -490,10 +493,10 @@ class _RangeBarState extends State<RangeBar>
     final highlightIndex = _dragging ? _dragHoverIndex : _visualSelectedIndex;
     bool slotSelected(int index) => index == highlightIndex;
     // Combined vertical offset for the selected chip's content (label +
-    // chevrons). Real nudge wins; idle hint bob fills in when nudge is at rest.
+    // chevrons). Real nudge wins; idle hint bob fills in when actively running.
     final chipContentOffsetY = _nudgeController.isAnimating
         ? _nudgeOffset
-        : _hintBobOffset;
+        : (_hintBobController.isAnimating ? _hintBobOffset : 0.0);
     // Room reserved above and below the chip row so the pill's drop-shadow
     // (and its swipe-nudge travel) isn't clipped by the bar's box. The shadow
     // falls downward (offset 0,1 + blur), so the bottom needs more than the top
