@@ -9,13 +9,57 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../services/app_haptics.dart';
 import '../../theme/theme.dart';
 
+/// Per-currency stop ladders. Each list contains round BTC prices in the
+/// named currency. Steps are chosen so:
+///  - The finest step feels natural in that currency (100k for major Western
+///    currencies, 10M for JPY which is ~150× the USD face value).
+///  - The ceiling is roughly 10–15× today's BTC price, giving room to dream.
+///  - CAD and AUD ceilings are 15M (BTC trades ~40% higher there than in USD).
+const Map<Currency, List<double>> _ladders = {
+  Currency.usd: [
+    100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000,
+    1000000, 2000000, 3000000, 4000000, 5000000, 6000000, 7000000, 8000000,
+    9000000, 10000000,
+  ],
+  Currency.eur: [
+    100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000,
+    1000000, 2000000, 3000000, 4000000, 5000000, 6000000, 7000000, 8000000,
+    9000000, 10000000,
+  ],
+  Currency.gbp: [
+    100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000,
+    1000000, 2000000, 3000000, 4000000, 5000000, 6000000, 7000000, 8000000,
+    9000000, 10000000,
+  ],
+  Currency.chf: [
+    100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000,
+    1000000, 2000000, 3000000, 4000000, 5000000, 6000000, 7000000, 8000000,
+    9000000, 10000000,
+  ],
+  Currency.cad: [
+    100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000,
+    1000000, 2000000, 3000000, 4000000, 5000000, 6000000, 7000000, 8000000,
+    9000000, 10000000, 11000000, 12000000, 13000000, 14000000, 15000000,
+  ],
+  Currency.aud: [
+    100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000,
+    1000000, 2000000, 3000000, 4000000, 5000000, 6000000, 7000000, 8000000,
+    9000000, 10000000, 11000000, 12000000, 13000000, 14000000, 15000000,
+  ],
+  Currency.jpy: [
+    10000000, 20000000, 30000000, 40000000, 50000000, 60000000, 70000000,
+    80000000, 90000000,
+    100000000, 200000000, 300000000, 400000000, 500000000, 600000000,
+    700000000, 800000000, 900000000, 1000000000, 1100000000, 1200000000,
+    1300000000, 1400000000, 1500000000,
+  ],
+};
+
 /// "If Bitcoin reaches X, this stack is worth Y" — a draggable BTC-price slider
-/// that projects the stack's value live as the user drags. Replaces the old
-/// fixed ladder of milestone pills: one control instead of nineteen rows.
+/// that projects the stack's value live as the user drags.
 ///
-/// The thumb snaps through a fixed ladder of *round* prices — 100k, 200k … 1M
-/// in 100k steps, then 1M, 2M … 10M in 1M steps — so every stop is a number a
-/// person would actually pick (100k, 300k) instead of an arbitrary $137,492.
+/// The thumb snaps through a per-currency ladder of round prices so every stop
+/// feels like a number a person would actually name in that currency.
 class FutureValueSlider extends StatefulWidget {
   const FutureValueSlider({
     super.key,
@@ -29,8 +73,8 @@ class FutureValueSlider extends StatefulWidget {
   final double btcAmount;
   final Currency currency;
 
-  /// Where the thumb starts — 100k by default, or a restored saved projection.
-  /// Snapped to the nearest ladder stop.
+  /// Where the thumb starts — first stop by default, or a restored saved
+  /// projection. Snapped to the nearest ladder stop.
   final double initialPrice;
 
   /// Fired once when the user finishes a drag, with the BTC price the thumb
@@ -42,13 +86,7 @@ class FutureValueSlider extends StatefulWidget {
 }
 
 class _FutureValueSliderState extends State<FutureValueSlider> {
-  /// Fixed ladder of round prices the thumb snaps through: 100k, 200k … 1M in
-  /// 100k steps, then 1M, 2M … 10M in 1M steps. Deliberately independent of
-  /// today's price — the projection always starts at 100k and runs to 10M.
-  static final List<double> _stops = [
-    for (var p = 100000.0; p < 1000000.0; p += 100000.0) p,
-    for (var p = 1000000.0; p <= 10000000.0; p += 1000000.0) p,
-  ];
+  List<double> get _stops => _ladders[widget.currency] ?? _ladders[Currency.usd]!;
 
   late int _index;
 
@@ -58,11 +96,20 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
     _index = _nearestStop(widget.initialPrice);
   }
 
+  @override
+  void didUpdateWidget(FutureValueSlider old) {
+    super.didUpdateWidget(old);
+    if (old.currency != widget.currency || old.initialPrice != widget.initialPrice) {
+      _index = _nearestStop(widget.initialPrice);
+    }
+  }
+
   int _nearestStop(double price) {
+    final stops = _stops;
     var best = 0;
     var bestDist = double.infinity;
-    for (var i = 0; i < _stops.length; i++) {
-      final d = (_stops[i] - price).abs();
+    for (var i = 0; i < stops.length; i++) {
+      final d = (stops[i] - price).abs();
       if (d < bestDist) {
         bestDist = d;
         best = i;
@@ -77,7 +124,6 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
     final i = raw.round().clamp(0, _stops.length - 1);
     if (i == _index) return;
     setState(() => _index = i);
-    // One tick per stop crossed — the snapping itself gives the drag texture.
     AppHaptics.selection();
   }
 
@@ -86,6 +132,7 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
     final p = context.palette;
+    final stops = _stops;
     final price = _price;
     final value = price * widget.btcAmount;
 
@@ -131,8 +178,8 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
           child: Slider(
             value: _index.toDouble(),
             min: 0,
-            max: (_stops.length - 1).toDouble(),
-            divisions: math.max(_stops.length - 1, 1),
+            max: (stops.length - 1).toDouble(),
+            divisions: math.max(stops.length - 1, 1),
             onChanged: _setIndex,
             onChangeEnd: (_) => widget.onPriceSelected?.call(_price),
           ),
@@ -165,6 +212,4 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
       ],
     );
   }
-
 }
-
