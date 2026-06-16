@@ -187,7 +187,7 @@ class StacksOverflowButton extends StatelessWidget {
       return IgnorePointer(
         child: Row(
           children: [
-            Icon(icon, size: 20, color: cs.onSurfaceVariant),
+            Icon(icon, size: 22, color: cs.onSurfaceVariant),
             const SizedBox(width: 12),
             Expanded(child: Text(label, style: itemStyle)),
             if (trailing != null) ...[const SizedBox(width: 12), trailing],
@@ -229,7 +229,7 @@ class StacksOverflowButton extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.calculate_outlined,
-                      size: 20,
+                      size: 22,
                       color: cs.onSurfaceVariant,
                     ),
                     const SizedBox(width: 12),
@@ -411,7 +411,7 @@ class _OverflowButtonState extends State<OverflowButton> {
                   children: [
                     Icon(
                       Icons.currency_bitcoin,
-                      size: 20,
+                      size: 22,
                       color: cs.onSurfaceVariant,
                     ),
                     const SizedBox(width: 12),
@@ -491,7 +491,7 @@ class _OverflowButtonState extends State<OverflowButton> {
                     flipX: true,
                     child: Icon(
                       Icons.swap_vert,
-                      size: 20,
+                      size: 22,
                       color: cs.onSurfaceVariant,
                     ),
                   ),
@@ -508,7 +508,7 @@ class _OverflowButtonState extends State<OverflowButton> {
               children: [
                 Icon(
                   Icons.palette_outlined,
-                  size: 20,
+                  size: 22,
                   color: cs.onSurfaceVariant,
                 ),
                 const SizedBox(width: 12),
@@ -522,13 +522,10 @@ class _OverflowButtonState extends State<OverflowButton> {
           child: IgnorePointer(
             child: Row(
               children: [
-                Transform.translate(
-                  offset: const Offset(-1.5, 0),
-                  child: Icon(
-                    Icons.attach_money,
-                    size: 22,
-                    color: cs.onSurfaceVariant,
-                  ),
+                Icon(
+                  Icons.attach_money,
+                  size: 22,
+                  color: cs.onSurfaceVariant,
                 ),
                 const SizedBox(width: 12),
                 Text(l10n.settingsCurrencies, style: itemStyle),
@@ -546,7 +543,7 @@ class _OverflowButtonState extends State<OverflowButton> {
           child: IgnorePointer(
             child: Row(
               children: [
-                Icon(Icons.language, size: 20, color: cs.onSurfaceVariant),
+                Icon(Icons.language, size: 22, color: cs.onSurfaceVariant),
                 const SizedBox(width: 12),
                 Text(l10n.settingsLanguageLabel, style: itemStyle),
               ],
@@ -558,7 +555,7 @@ class _OverflowButtonState extends State<OverflowButton> {
           child: IgnorePointer(
             child: Row(
               children: [
-                Icon(Icons.info_outline, size: 20, color: cs.onSurfaceVariant),
+                Icon(Icons.info_outline, size: 22, color: cs.onSurfaceVariant),
                 const SizedBox(width: 12),
                 Text(l10n.settingsAbout, style: itemStyle),
               ],
@@ -579,7 +576,7 @@ class _OverflowButtonState extends State<OverflowButton> {
                     context.read<LivePriceController>().screenshotMode
                         ? Icons.check_box
                         : Icons.check_box_outline_blank,
-                    size: 20,
+                    size: 22,
                     color: cs.onSurfaceVariant,
                   ),
                   const SizedBox(width: 12),

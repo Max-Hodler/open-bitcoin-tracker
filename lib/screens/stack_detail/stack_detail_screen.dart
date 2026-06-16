@@ -176,7 +176,7 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
                 PopupMenuItem(
                   value: _StackAction.edit,
                   child: Row(children: [
-                    Icon(Icons.currency_bitcoin, size: 20, color: cs.onSurfaceVariant),
+                    Icon(Icons.currency_bitcoin, size: 22, color: cs.onSurfaceVariant),
                     const SizedBox(width: 12),
                     Text(l10n.stackMenuUpdateAmount, style: itemStyle),
                   ]),
@@ -184,7 +184,7 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
                 PopupMenuItem(
                   value: _StackAction.rename,
                   child: Row(children: [
-                    Icon(Icons.edit_outlined, size: 20, color: cs.onSurfaceVariant),
+                    Icon(Icons.edit_outlined, size: 22, color: cs.onSurfaceVariant),
                     const SizedBox(width: 12),
                     Text(l10n.stackMenuChangeName, style: itemStyle),
                   ]),
@@ -193,7 +193,7 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
                 PopupMenuItem(
                   value: _StackAction.delete,
                   child: Row(children: [
-                    Icon(Icons.delete_outline, size: 20, color: cs.error),
+                    Icon(Icons.delete_outline, size: 22, color: cs.error),
                     const SizedBox(width: 12),
                     Text(l10n.stackMenuDelete,
                         style: itemStyle.copyWith(color: cs.error)),
