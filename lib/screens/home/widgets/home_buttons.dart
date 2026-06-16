@@ -272,10 +272,114 @@ class StacksOverflowButton extends StatelessWidget {
       },
     );
 
-    // The "Bitcoin unit" row is an inline toggle between BTC and Sats. Like the
-    // portfolio total row it lives in a disabled PopupMenuItem so taps stay
-    // within the menu; a StatefulBuilder drives the local repaint while
-    // app.setBitcoinDisplayMode persists the choice.
+    // Wrap in a tight 36×36 box so the button's default tap-target padding
+    // (which pads an IconButton out toward a 48px minimum) is clamped to the
+    // visible circle — matching AddStackIconButton so the gap to its left reads
+    // identically to the gap on the add button's other side.
+    return SizedBox(
+      width: 36,
+      height: 36,
+      child: PopupMenuButton<_StacksMenuAction>(
+        onOpened: AppHaptics.light,
+        onSelected: (action) => _handleAction(context, action),
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints(minWidth: 220),
+        popUpAnimationStyle: const AnimationStyle(
+          duration: Duration(milliseconds: 120),
+        ),
+        offset: const Offset(0, 52),
+        color: cs.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+        ),
+        icon: const Icon(Icons.more_vert),
+        iconSize: 22,
+        style: IconButton.styleFrom(
+          backgroundColor: cs.surface,
+          foregroundColor: cs.onSurfaceVariant,
+          shadowColor: Colors.black.withValues(alpha: 0.12),
+          elevation: 1.5,
+          fixedSize: const Size(36, 36),
+          minimumSize: const Size(36, 36),
+          maximumSize: const Size(36, 36),
+          shape: const CircleBorder(),
+          padding: EdgeInsets.zero,
+        ),
+        itemBuilder: (ctx) => [
+          PopupMenuItem(
+            value: _StacksMenuAction.lockStacks,
+            child: row(
+              Icons.lock_outline,
+              app.stacksEncryptedAtRest
+                  ? l10n.settingsLockStacksTitle
+                  : l10n.overflowBlockStacks,
+            ),
+          ),
+          if (canShowTotal)
+            PopupMenuItem(
+              // Disabled so a tap doesn't route through onSelected and pop the
+              // menu — the embedded switch handles its own taps and keeps the
+              // menu open.
+              enabled: false,
+              padding: EdgeInsets.zero,
+              child: portfolioToggleRow(),
+            ),
+          if (canReorder)
+            PopupMenuItem(
+              value: _StacksMenuAction.reorder,
+              child: row(Icons.reorder, l10n.settingsReorderStacks),
+            ),
+        ],
+      ),
+    );
+  }
+
+  void _handleAction(BuildContext context, _StacksMenuAction action) {
+    switch (action) {
+      case _StacksMenuAction.reorder:
+        StacksSettingsActions.openReorder(context);
+      case _StacksMenuAction.lockStacks:
+        StacksSettingsActions.openLockSettings(context);
+    }
+  }
+}
+
+enum _OverflowAction {
+  converter,
+  language,
+  currency,
+  theme,
+  bitcoinUnit,
+  about,
+  screenshot,
+}
+
+
+class OverflowButton extends StatefulWidget {
+  const OverflowButton({super.key, this.onOpenConverter});
+
+  final VoidCallback? onOpenConverter;
+
+  @override
+  State<OverflowButton> createState() => _OverflowButtonState();
+}
+
+class _OverflowButtonState extends State<OverflowButton> {
+  final _menuKey = GlobalKey<PopupMenuButtonState<_OverflowAction>>();
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
+    final itemStyle = AppTypography.body.copyWith(
+      fontSize: 16,
+      fontWeight: FontWeight.w400,
+      color: cs.onSurface,
+    );
+
+    final app = context.watch<AppStateNotifier>();
+    final p = context.palette;
+
     Widget bitcoinUnitToggleRow() => StatefulBuilder(
       builder: (ctx, setLocal) {
         final mode = app.btcDisplayMode;
@@ -338,115 +442,6 @@ class StacksOverflowButton extends StatelessWidget {
           ),
         );
       },
-    );
-
-    // Wrap in a tight 36×36 box so the button's default tap-target padding
-    // (which pads an IconButton out toward a 48px minimum) is clamped to the
-    // visible circle — matching AddStackIconButton so the gap to its left reads
-    // identically to the gap on the add button's other side.
-    return SizedBox(
-      width: 36,
-      height: 36,
-      child: PopupMenuButton<_StacksMenuAction>(
-        onOpened: AppHaptics.light,
-        onSelected: (action) => _handleAction(context, action),
-        padding: EdgeInsets.zero,
-        constraints: const BoxConstraints(minWidth: 220),
-        popUpAnimationStyle: const AnimationStyle(
-          duration: Duration(milliseconds: 120),
-        ),
-        offset: const Offset(0, 52),
-        color: cs.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-        ),
-        icon: const Icon(Icons.more_vert),
-        iconSize: 22,
-        style: IconButton.styleFrom(
-          backgroundColor: cs.surface,
-          foregroundColor: cs.onSurfaceVariant,
-          shadowColor: Colors.black.withValues(alpha: 0.12),
-          elevation: 1.5,
-          fixedSize: const Size(36, 36),
-          minimumSize: const Size(36, 36),
-          maximumSize: const Size(36, 36),
-          shape: const CircleBorder(),
-          padding: EdgeInsets.zero,
-        ),
-        itemBuilder: (ctx) => [
-          PopupMenuItem(
-            value: _StacksMenuAction.lockStacks,
-            child: row(
-              Icons.lock_outline,
-              app.stacksEncryptedAtRest
-                  ? l10n.settingsLockStacksTitle
-                  : l10n.overflowBlockStacks,
-            ),
-          ),
-          if (canShowTotal)
-            PopupMenuItem(
-              // Disabled so a tap doesn't route through onSelected and pop the
-              // menu — the embedded switch handles its own taps and keeps the
-              // menu open.
-              enabled: false,
-              padding: EdgeInsets.zero,
-              child: portfolioToggleRow(),
-            ),
-          PopupMenuItem(
-            enabled: false,
-            padding: EdgeInsets.zero,
-            child: bitcoinUnitToggleRow(),
-          ),
-          if (canReorder)
-            PopupMenuItem(
-              value: _StacksMenuAction.reorder,
-              child: row(Icons.reorder, l10n.settingsReorderStacks),
-            ),
-        ],
-      ),
-    );
-  }
-
-  void _handleAction(BuildContext context, _StacksMenuAction action) {
-    switch (action) {
-      case _StacksMenuAction.reorder:
-        StacksSettingsActions.openReorder(context);
-      case _StacksMenuAction.lockStacks:
-        StacksSettingsActions.openLockSettings(context);
-    }
-  }
-}
-
-enum _OverflowAction {
-  converter,
-  language,
-  currency,
-  theme,
-  about,
-  screenshot,
-}
-
-
-class OverflowButton extends StatefulWidget {
-  const OverflowButton({super.key, this.onOpenConverter});
-
-  final VoidCallback? onOpenConverter;
-
-  @override
-  State<OverflowButton> createState() => _OverflowButtonState();
-}
-
-class _OverflowButtonState extends State<OverflowButton> {
-  final _menuKey = GlobalKey<PopupMenuButtonState<_OverflowAction>>();
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final l10n = AppLocalizations.of(context);
-    final itemStyle = AppTypography.body.copyWith(
-      fontSize: 16,
-      fontWeight: FontWeight.w400,
-      color: cs.onSurface,
     );
 
     return SizedBox(
@@ -542,6 +537,11 @@ class _OverflowButtonState extends State<OverflowButton> {
           ),
         ),
         PopupMenuItem(
+          enabled: false,
+          padding: EdgeInsets.zero,
+          child: bitcoinUnitToggleRow(),
+        ),
+        PopupMenuItem(
           value: _OverflowAction.language,
           child: IgnorePointer(
             child: Row(
@@ -629,6 +629,8 @@ class _OverflowButtonState extends State<OverflowButton> {
             MaterialPageRoute<void>(builder: (_) => const AboutScreen()),
           );
         }
+      case _OverflowAction.bitcoinUnit:
+        break;
       case _OverflowAction.screenshot:
         // Drive both controllers in lockstep: the live price freezes at the
         // fixed figure and the stack list swaps to the demo set, so the whole
