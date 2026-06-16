@@ -313,9 +313,7 @@ class _FutureSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // The thumb starts at 100k by default, or the price the user last parked it
-    // on for this stack (in the active currency).
-    final initial = savedPrice ?? 100000.0;
+    final initial = savedPrice;
 
     return DetailSection(
       verticalPadding: AppSpacing.lg,

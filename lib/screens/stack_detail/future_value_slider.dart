@@ -73,9 +73,9 @@ class FutureValueSlider extends StatefulWidget {
   final double btcAmount;
   final Currency currency;
 
-  /// Where the thumb starts — first stop by default, or a restored saved
-  /// projection. Snapped to the nearest ladder stop.
-  final double initialPrice;
+  /// Where the thumb starts. Snapped to the nearest ladder stop.
+  /// Pass null to center the thumb (default when no saved projection exists).
+  final double? initialPrice;
 
   /// Fired once when the user finishes a drag, with the BTC price the thumb
   /// landed on. Used to persist the projection so it's restored on revisit.
@@ -93,15 +93,21 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
   @override
   void initState() {
     super.initState();
-    _index = _nearestStop(widget.initialPrice);
+    _index = _initialIndex();
   }
 
   @override
   void didUpdateWidget(FutureValueSlider old) {
     super.didUpdateWidget(old);
     if (old.currency != widget.currency || old.initialPrice != widget.initialPrice) {
-      _index = _nearestStop(widget.initialPrice);
+      _index = _initialIndex();
     }
+  }
+
+  int _initialIndex() {
+    final price = widget.initialPrice;
+    if (price == null) return _stops.length ~/ 2;
+    return _nearestStop(price);
   }
 
   int _nearestStop(double price) {

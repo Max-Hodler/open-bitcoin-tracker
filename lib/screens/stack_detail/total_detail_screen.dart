@@ -30,10 +30,9 @@ class TotalDetailScreen extends StatelessWidget {
     final btcAmount = totalSats / Sats.perBtc;
     final btcDisplayMode = app.btcDisplayMode;
 
-    final savedPrice = app.state.totalProjectedPriceCurrency == currency.code
+    final initial = app.state.totalProjectedPriceCurrency == currency.code
         ? app.state.totalProjectedPrice
         : null;
-    final initial = savedPrice ?? 100000.0;
 
     final liveRate = context.select<LivePriceController, double?>(
           (c) => c.rates.forCurrency(currency),
