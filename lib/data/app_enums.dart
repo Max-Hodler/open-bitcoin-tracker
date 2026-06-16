@@ -33,7 +33,7 @@ enum BtcDisplayMode {
     for (final m in BtcDisplayMode.values) {
       if (m.code == code) return m;
     }
-    return BtcDisplayMode.sats;
+    return BtcDisplayMode.btc;
   }
 }
 

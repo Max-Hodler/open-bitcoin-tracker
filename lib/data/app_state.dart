@@ -18,7 +18,7 @@ class AppState {
     this.overflowQuickRange = BtcRange.y10,
     this.monthsOverflowQuickRange = BtcRange.m6,
     this.logScale = true,
-    this.btcDisplayMode = BtcDisplayMode.sats,
+    this.btcDisplayMode = BtcDisplayMode.btc,
     this.stacksAuthMode = StacksAuthMode.off,
     this.stacksLockTimeout = StacksLockTimeout.m5,
     this.language = LanguagePref.system,
