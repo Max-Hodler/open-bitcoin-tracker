@@ -390,7 +390,7 @@
   "@settingsLockStacks": {
     "description": "Section header above the stack lock controls (auth type, relock timeout, change/reset PIN) on the Stacks settings screen."
   },
-  "overflowBlockStacks": "Block stacks",
+  "overflowBlockStacks": "Lock stacks",
   "@overflowBlockStacks": {
     "description": "Overflow menu entry shown when stack locking is not yet configured. Tapping it opens the lock settings screen."
   },
