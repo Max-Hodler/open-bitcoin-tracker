@@ -168,7 +168,6 @@
   "satsInputLabel": "Số lượng Bitcoin",
   "satsInputLeadingZeroWarning": "Không nhập số 0 ở đầu",
   "satsInputUnitHint": "Nhập số lượng bằng sats",
-  "satsInputUnitHintBtc": "Nhập số lượng bằng BTC",
   "satsInputActionCopy": "Sao chép",
   "satsInputActionPaste": "Dán",
   "snackSatsCopied": "Đã sao chép",

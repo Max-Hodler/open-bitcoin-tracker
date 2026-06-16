@@ -728,10 +728,6 @@
   "@satsInputUnitHint": {
     "description": "Hint shown below the sats input on the new-stack and edit-amount screens, in the slot the fiat conversion will fill once the user starts typing. Tells the user the unit is sats, not BTC."
   },
-  "satsInputUnitHintBtc": "Enter amount in BTC",
-  "@satsInputUnitHintBtc": {
-    "description": "BTC-mode counterpart of [satsInputUnitHint]. Shown in the new-stack and edit-amount screens' fiat-preview slot when the user has chosen BTC as the Bitcoin display unit."
-  },
   "satsInputActionCopy": "Copy",
   "@satsInputActionCopy": {
     "description": "Long-press selection toolbar action on the sats input that copies the current digit string to the clipboard."

@@ -44,10 +44,8 @@ class SatsFiatLabel extends StatelessWidget {
     final showHint = input.isEmpty && showUnitHint;
     final l10n = AppLocalizations.of(context);
     final label = input.isEmpty
-        ? (showHint
-            ? (mode == BtcDisplayMode.btc
-                ? l10n.satsInputUnitHintBtc
-                : l10n.satsInputUnitHint)
+        ? (showHint && mode != BtcDisplayMode.btc
+            ? l10n.satsInputUnitHint
             : '')
         : rate == 0
             ? ''

@@ -168,7 +168,6 @@
   "satsInputLabel": "Cantidad de Bitcoin",
   "satsInputLeadingZeroWarning": "No introduzcas ceros a la izquierda",
   "satsInputUnitHint": "Introduce la cantidad en sats",
-  "satsInputUnitHintBtc": "Introduce la cantidad en BTC",
   "satsInputActionCopy": "Copiar",
   "satsInputActionPaste": "Pegar",
   "snackSatsCopied": "Copiado",

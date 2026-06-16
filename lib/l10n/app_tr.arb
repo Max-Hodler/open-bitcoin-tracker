@@ -168,7 +168,6 @@
   "satsInputLabel": "Bitcoin miktarı",
   "satsInputLeadingZeroWarning": "Başına sıfır eklemeyin",
   "satsInputUnitHint": "Miktarı sats olarak girin",
-  "satsInputUnitHintBtc": "Miktarı BTC olarak girin",
   "satsInputActionCopy": "Kopyala",
   "satsInputActionPaste": "Yapıştır",
   "snackSatsCopied": "Kopyalandı",

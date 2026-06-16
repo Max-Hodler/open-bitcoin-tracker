@@ -168,7 +168,6 @@
   "satsInputLabel": "Количество Bitcoin",
   "satsInputLeadingZeroWarning": "Не вводите нули в начале",
   "satsInputUnitHint": "Введите количество в sats",
-  "satsInputUnitHintBtc": "Введите количество в BTC",
   "satsInputActionCopy": "Копировать",
   "satsInputActionPaste": "Вставить",
   "snackSatsCopied": "Скопировано",

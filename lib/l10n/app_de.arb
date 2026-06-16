@@ -168,7 +168,6 @@
   "satsInputLabel": "Bitcoin-Betrag",
   "satsInputLeadingZeroWarning": "Keine führenden Nullen eingeben",
   "satsInputUnitHint": "Betrag in sats eingeben",
-  "satsInputUnitHintBtc": "Betrag in BTC eingeben",
   "satsInputActionCopy": "Kopieren",
   "satsInputActionPaste": "Einfügen",
   "snackSatsCopied": "Kopiert",

@@ -168,7 +168,6 @@
   "satsInputLabel": "Bitcoin の数量",
   "satsInputLeadingZeroWarning": "先頭に 0 を入力しないでください",
   "satsInputUnitHint": "数量を sats で入力してください",
-  "satsInputUnitHintBtc": "数量を BTC で入力してください",
   "satsInputActionCopy": "コピー",
   "satsInputActionPaste": "貼り付け",
   "snackSatsCopied": "コピーしました",
