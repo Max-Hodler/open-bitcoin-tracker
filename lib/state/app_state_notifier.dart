@@ -226,7 +226,7 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
             ));
 
   void addStack(Stack stack) => _update((s) => s.copyWith(
-        stacks: [...s.stacks, stack],
+        stacks: [stack, ...s.stacks],
       ));
 
   void updateStack(String id, Stack Function(Stack) mutate) {
