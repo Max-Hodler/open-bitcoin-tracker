@@ -314,8 +314,15 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
   /// state as plaintext. Used when the user disables the lock entirely.
   Future<void> clearEncryptionAndSave() async {
     _dek = null;
-    _repo.clearEncryptedStacks();
     _cancelPendingSave(); // this save carries the full latest state
+    // A stack mutation just before disabling the lock (e.g. deleting the last
+    // stack, which auto-disables) fires an un-awaited encrypting save. Let it
+    // land before clearing the cache — otherwise it runs *after*
+    // clearEncryptedStacks() and re-populates the envelope, so the plaintext
+    // save below re-emits `stacksEnc`; once the wraps are then wiped, that
+    // envelope is undecryptable and the stacks are effectively lost.
+    await _repo.drainPendingSaves();
+    _repo.clearEncryptedStacks();
     await _repo.save(_state);
   }
 

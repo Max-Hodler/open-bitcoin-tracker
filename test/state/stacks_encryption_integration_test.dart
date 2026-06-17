@@ -184,8 +184,9 @@ void main() {
       expect(blob['stacksEnc'], isNot(envBefore));
       expect(blob['lockedStackCount'], 2);
 
+      // New stacks are prepended to the top of the list.
       final stacks = await h.repo.decryptStacks(dek);
-      expect(stacks!.map((s) => s.name), ['Cold', 'Hot']);
+      expect(stacks!.map((s) => s.name), ['Hot', 'Cold']);
     });
   });
 
@@ -227,6 +228,34 @@ void main() {
       final raw = h.prefs.getString('btc_tracker')!;
       expect(raw, contains('"name":"Cold"'));
       expect(raw, isNot(contains('stacksEnc')));
+    });
+
+    test(
+        'disable-lock immediately after a stack mutation does not leave an '
+        'orphan envelope (write-chain race)', () async {
+      final h = await build(initialPrefs: const {
+        'btc_tracker':
+            '{"currency":"USD","stacks":[{"id":"a","name":"Cold","sats":100}]}',
+      });
+      final dek = await h.crypto.initWithPin('pw');
+      await h.notifier.adoptDek(dek);
+
+      // Reproduce the delete-last-stack → auto-disable sequence: removeStack
+      // fires an un-awaited ENCRYPTING save, then clearEncryptionAndSave runs
+      // synchronously before that save drains. Without the drain-first fix, the
+      // in-flight encrypting save re-populates the envelope cache *after* it was
+      // cleared, so the final plaintext save re-emits stacksEnc — which, once
+      // the wraps are wiped, is undecryptable and the stacks are lost.
+      h.notifier.removeStack('a');
+      await h.notifier.clearEncryptionAndSave();
+      await pumpEventQueue();
+
+      final raw = h.prefs.getString('btc_tracker')!;
+      expect(raw, isNot(contains('stacksEnc')),
+          reason: 'no encrypted envelope should survive disabling the lock');
+      final blob = jsonDecode(raw) as Map<String, dynamic>;
+      expect(blob.containsKey('stacks'), isTrue);
+      expect(blob['stacks'], isEmpty);
     });
   });
 

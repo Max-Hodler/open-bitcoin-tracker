@@ -141,8 +141,19 @@ class AppStateRepository {
     }
   }
 
+  /// Await any in-flight or queued saves. The disable-lock path drains the
+  /// chain before clearing the envelope cache so a fire-and-forget encrypting
+  /// save (queued by an earlier stack mutation) can't run *after*
+  /// [clearEncryptedStacks] and silently re-populate [_lastStacksEnc] — which
+  /// would make the subsequent plaintext save re-emit `stacksEnc` instead, and
+  /// once the wraps are wiped that envelope is undecryptable.
+  Future<void> drainPendingSaves() => _writeChain;
+
   /// Drop the in-memory envelope cache. Used when the user disables the lock
   /// (decrypt-back path) and the next save must emit plaintext `stacks` again.
+  /// Callers that may have a fire-and-forget encrypting save outstanding must
+  /// [drainPendingSaves] first; otherwise that save re-populates the cache
+  /// after this clears it.
   void clearEncryptedStacks() {
     _lastStacksEnc = null;
     _lastEncryptedStacks = null;
