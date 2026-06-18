@@ -8,11 +8,15 @@ class LockedStacksSkeleton extends StatelessWidget {
     super.key,
     required this.stackCount,
     this.showTotal = false,
+    this.onTap,
   });
 
   final int stackCount;
   // When true, an extra ghost row is appended for the portfolio total card.
   final bool showTotal;
+  // Tapping anywhere on the skeleton triggers the unlock flow, the same as
+  // tapping the lock button.
+  final VoidCallback? onTap;
 
   // Shows at least one row so there's always something visible.
   int get _rowCount => stackCount.clamp(1, 20) + (showTotal ? 1 : 0);
@@ -21,7 +25,7 @@ class LockedStacksSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final count = _rowCount;
-    return Column(
+    final column = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         for (var i = 0; i < count; i++) ...[
@@ -42,6 +46,13 @@ class LockedStacksSkeleton extends StatelessWidget {
             ),
         ],
       ],
+    );
+    if (onTap == null) return column;
+    // Opaque so taps land on the row padding and the gaps between rows too.
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: column,
     );
   }
 }

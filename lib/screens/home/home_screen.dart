@@ -335,6 +335,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: LockedStacksSkeleton(
                       stackCount: app.lockedStackCount,
                       showTotal: app.showPortfolio && app.lockedStackCount >= 2,
+                      onTap: () => _attemptUnlock(context),
                     ),
                   ),
                 )
