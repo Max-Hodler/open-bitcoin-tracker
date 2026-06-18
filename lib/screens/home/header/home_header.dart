@@ -111,7 +111,7 @@ class HomeHeader extends StatefulWidget {
 
   final bool failed;
   final bool showChart;
-  final double currentPrice;
+  final double? currentPrice;
   final ValueListenable<PricePoint?> hover;
   final DateTime? lastFetchedAt;
   final BtcRange range;

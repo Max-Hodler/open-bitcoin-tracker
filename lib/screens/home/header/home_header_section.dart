@@ -93,13 +93,15 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
     final range = widget.range;
     final currency = widget.currency;
 
-    final currentPrice = context.select<LivePriceController, double>(
-      (c) => c.rates.forCurrency(currency) ?? 0,
+    final currentPrice = context.select<LivePriceController, double?>(
+      (c) => c.rates.forCurrency(currency),
     );
-    final usdRate = context.select<LivePriceController, double>(
-      (c) => c.rates.usd ?? 0,
+    final usdRate = context.select<LivePriceController, double?>(
+      (c) => c.rates.usd,
     );
-    final usdToCurrency = usdRate > 0 ? currentPrice / usdRate : 1.0;
+    final usdToCurrency = (usdRate != null && usdRate > 0 && currentPrice != null)
+        ? currentPrice / usdRate
+        : 1.0;
 
     final usesAllHistory = range.usesAllHistory;
     final allHistory = context.select<LivePriceController, List<HistoryPoint>>(
@@ -152,7 +154,7 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
       currency: currency,
       usdToCurrencyFallback: usdToCurrency,
       // A zero live price suppresses the appended point.
-      livePrice: intradayStale ? 0 : currentPrice,
+      livePrice: (intradayStale || currentPrice == null) ? 0 : currentPrice,
     );
 
     // Long-range chart rendering uses the full all-history curve so switching
@@ -160,7 +162,7 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
     final convertedAllHistory = priceController.convertedAllHistoryWithLive(
       currency: currency,
       usdToCurrencyFallback: usdToCurrency,
-      livePrice: currentPrice,
+      livePrice: currentPrice ?? 0,
     );
 
     // The price chart, delta text and range-pill percentages are always
