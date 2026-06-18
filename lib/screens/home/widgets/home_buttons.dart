@@ -457,7 +457,7 @@ class _OverflowButtonState extends State<OverflowButton> {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Text('Unit: ', style: itemStyle),
+                    Text(l10n.unitLabel, style: itemStyle),
                     Text(
                       l10n.bitcoinDisplayModeBtc,
                       style: itemStyle.copyWith(

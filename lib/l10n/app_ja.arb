@@ -89,6 +89,7 @@
   "settingsChartHeightXl": "XL",
   "settingsPortfolioTotal": "合計を表示",
   "settingsBitcoinDisplayMode": "ビットコインの単位",
+  "unitLabel": "単位: ",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
   "settingsLivePriceCadence": "更新頻度",

@@ -89,6 +89,7 @@
   "settingsChartHeightXl": "XL",
   "settingsPortfolioTotal": "Gesamtsumme anzeigen",
   "settingsBitcoinDisplayMode": "Bitcoin-Einheit",
+  "unitLabel": "Einheit: ",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
   "settingsLivePriceCadence": "Aktualisierungsfrequenz",
