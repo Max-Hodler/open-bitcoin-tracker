@@ -258,8 +258,11 @@ class _HomeHeaderState extends State<HomeHeader> {
     final p = context.palette;
     final loading =
         widget.usesAllHistory ? widget.allHistoryEmpty : widget.loading;
+
+    final Widget child;
     if (loading) {
-      return Center(
+      child = Center(
+        key: const ValueKey('loading'),
         child: SizedBox(
           width: 40,
           height: 40,
@@ -269,9 +272,9 @@ class _HomeHeaderState extends State<HomeHeader> {
           ),
         ),
       );
-    }
-    if (widget.failed) {
-      return Center(
+    } else if (widget.failed) {
+      child = Center(
+        key: const ValueKey('failed'),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -288,15 +291,10 @@ class _HomeHeaderState extends State<HomeHeader> {
           ],
         ),
       );
-    }
-    if (widget.chartData.length < 2) {
-      return const SizedBox.shrink();
-    }
-    return AnimatedSwitcher(
-      duration: AppSpacing.motionDuration,
-      switchInCurve: Curves.easeOut,
-      switchOutCurve: Curves.easeIn,
-      child: AreaChart(
+    } else if (widget.chartData.length < 2) {
+      child = const SizedBox.shrink(key: ValueKey('empty'));
+    } else {
+      child = AreaChart(
         // Two stable buckets — 'long' (all-history camera) and 'short'
         // (intraday) — rather than a per-range key. Keeping the key stable
         // *within* a bucket means switching between short ranges (2D → 3D,
@@ -315,6 +313,14 @@ class _HomeHeaderState extends State<HomeHeader> {
         rangeKey: widget.range,
         onHover: widget.onHover,
       ),
+    );
+    }
+
+    return AnimatedSwitcher(
+      duration: AppSpacing.motionDuration,
+      switchInCurve: Curves.easeOut,
+      switchOutCurve: Curves.easeIn,
+      child: child,
     );
   }
 }
