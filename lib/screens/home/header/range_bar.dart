@@ -634,7 +634,7 @@ class _RangeBarState extends State<RangeBar>
                                     // performs a vertical swipe on the pill.
                                     // Tapping another range or navigating
                                     // away must not hide them.
-                                    opacity: hintVisible && selectedIndex < 4 ? 1 : 0,
+                                    opacity: hintVisible ? 1 : 0,
                                     child: Icon(
                                       Icons.keyboard_arrow_up_rounded,
                                       size: 16,
@@ -652,7 +652,7 @@ class _RangeBarState extends State<RangeBar>
                                     duration: const Duration(milliseconds: 150),
                                     curve: Curves.easeOut,
                                     // Same logic as the up-chevron above.
-                                    opacity: hintVisible && selectedIndex < 4 ? 1 : 0,
+                                    opacity: hintVisible ? 1 : 0,
                                     child: Icon(
                                       Icons.keyboard_arrow_down_rounded,
                                       size: 16,
