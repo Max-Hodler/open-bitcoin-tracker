@@ -187,5 +187,6 @@
   "stackDetailWorthBackThen": "Giá trị khi đó",
   "stackDetailYearAgo": "{count} năm trước",
   "stackDetailWhenBtcReaches": "Khi BTC đạt",
-  "stackDetailWillBeWorth": "Stack này sẽ trị giá"
+  "stackDetailWillBeWorth": "Stack này sẽ trị giá",
+  "settingsEnableLockHint": "Các stack của bạn sẽ được ẩn và mã hóa bằng PIN hoặc sinh trắc học."
 }

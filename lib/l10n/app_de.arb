@@ -187,5 +187,6 @@
   "stackDetailWorthBackThen": "Damaliger Wert",
   "stackDetailYearAgo": "{count, plural, =1{Vor 1 Jahr} other{Vor {count} Jahren}}",
   "stackDetailWhenBtcReaches": "Wenn BTC erreicht",
-  "stackDetailWillBeWorth": "Dieser Stack wird wert sein"
+  "stackDetailWillBeWorth": "Dieser Stack wird wert sein",
+  "settingsEnableLockHint": "Deine Stacks werden ausgeblendet und mit einer PIN oder Biometrie verschlüsselt."
 }

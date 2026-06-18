@@ -187,5 +187,6 @@
   "stackDetailWorthBackThen": "Стоимость тогда",
   "stackDetailYearAgo": "{count, plural, =1{1 год назад} few{{count} года назад} other{{count} лет назад}}",
   "stackDetailWhenBtcReaches": "Когда BTC достигнет",
-  "stackDetailWillBeWorth": "Этот stack будет стоить"
+  "stackDetailWillBeWorth": "Этот stack будет стоить",
+  "settingsEnableLockHint": "Ваши стеки будут скрыты и зашифрованы с помощью PIN-кода или биометрии."
 }
