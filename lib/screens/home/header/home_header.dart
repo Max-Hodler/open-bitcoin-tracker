@@ -141,6 +141,13 @@ class HomeHeader extends StatefulWidget {
 }
 
 class _HomeHeaderState extends State<HomeHeader> {
+  // Latches to true the first time the user selects a non-All range while the
+  // swipe-chip hint hasn't been dismissed yet. Once set it never clears, so
+  // tapping back to All — or opening a full-screen page — does NOT hide the
+  // tip. Only a vertical swipe on the pill (which calls dismissSwipeChipHint)
+  // removes it.
+  bool _hintTriggered = false;
+
   @override
   Widget build(BuildContext context) {
     final logScale = context.select<AppStateNotifier, bool>((a) => a.logScale);
@@ -206,11 +213,12 @@ class _HomeHeaderState extends State<HomeHeader> {
   Widget _buildChipHint(BuildContext context) {
     final swipeHintDismissed = context.select<AppStateNotifier, bool>(
         (a) => a.swipeChipHintDismissed);
+    // Latch: once engaged, keep the hint visible regardless of current range.
+    if (widget.range != BtcRange.all && !swipeHintDismissed) {
+      _hintTriggered = true;
+    }
     final String? message;
-    // Hint stays hidden until the user moves off the default range —
-    // proof they engaged the range bar and might want to learn more.
-    final engagedRange = widget.range != BtcRange.all;
-    if (engagedRange && !swipeHintDismissed) {
+    if (_hintTriggered && !swipeHintDismissed) {
       message = AppLocalizations.of(context).homeSwipeChipHint;
     } else {
       message = null;

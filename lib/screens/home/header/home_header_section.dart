@@ -7,7 +7,7 @@ import '../../../services/app_haptics.dart';
 import '../../../state/state.dart';
 import '../../../theme/theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../settings/btc_price_settings_screen.dart';
+
 import '../../settings/currency_picker_screen.dart';
 import '../../settings/range_config_bar.dart';
 import '../../settings/settings_widgets.dart';
@@ -206,11 +206,104 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
       rangePct: rangePct,
       rangeAbsDiff: rangeAbsDiff,
       rollDirection: _rollDirection,
-      onPriceTap: () => Navigator.of(context).push<void>(
-        MaterialPageRoute<void>(
-          builder: (_) => const BtcPriceSettingsScreen(),
-        ),
-      ),
+      onPriceTap: () {
+        AppHaptics.light();
+        final theme = Theme.of(context);
+        final cs = theme.colorScheme;
+        showModalBottomSheet<void>(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: theme.brightness == Brightness.dark
+              ? cs.surfaceContainerHigh
+              : cs.surfaceContainerLow,
+          showDragHandle: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+          builder: (ctx) {
+            final l10n = AppLocalizations.of(ctx);
+            return Consumer<AppStateNotifier>(
+              builder: (ctx, app, _) => SafeArea(
+                top: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.md,
+                        0,
+                        AppSpacing.md,
+                        AppSpacing.md,
+                      ),
+                      child: Text(
+                        l10n.settingsPriceTitle,
+                        style: AppTypography.label.copyWith(
+                          fontSize: 18,
+                          color: cs.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.md,
+                        0,
+                        AppSpacing.md,
+                        AppSpacing.xl,
+                      ),
+                      child: SettingsGroup(
+                        children: [
+                          SettingsPickerTile(
+                            label: l10n.settingsCurrencies,
+                            value: app.selectedCurrencies
+                                .map((c) => c.code)
+                                .join(', '),
+                            onTap: () async {
+                              final picked = await Navigator.of(ctx)
+                                  .push<List<Currency>>(
+                                MaterialPageRoute(
+                                  builder: (_) => CurrencyPickerScreen(
+                                    initial: app.selectedCurrencies,
+                                  ),
+                                ),
+                              );
+                              if (picked != null) {
+                                app.setSelectedCurrencies(picked);
+                              }
+                            },
+                            trailingIcon: Icons.chevron_right,
+                          ),
+                          SettingsPickerTile(
+                            label: l10n.settingsLivePriceCadence,
+                            value: _livePriceCadenceLabel(
+                                l10n, app.livePriceCadence),
+                            onTap: () async {
+                              final picked =
+                                  await _showLivePriceCadencePicker(
+                                      ctx, app.livePriceCadence);
+                              if (picked != null) {
+                                app.setLivePriceCadence(picked);
+                              }
+                            },
+                            trailingIcon: Icons.unfold_more,
+                          ),
+                          SettingsToggleTile(
+                            label: l10n.settingsPriceDelta,
+                            value: app.showPriceDelta,
+                            enabled: true,
+                            onChanged: app.setShowPriceDelta,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
       onGraphSettingsTap: () {
         AppHaptics.light();
         final theme = Theme.of(context);
@@ -336,4 +429,48 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
       onOpenConverter: widget.onOpenConverter,
     );
   }
+}
+
+String _livePriceCadenceLabel(AppLocalizations l10n, LivePriceCadence c) {
+  switch (c) {
+    case LivePriceCadence.live:
+      return l10n.livePriceCadenceLive;
+    case LivePriceCadence.s5:
+      return l10n.livePriceCadence5s;
+    case LivePriceCadence.s15:
+      return l10n.livePriceCadence15s;
+  }
+}
+
+Future<LivePriceCadence?> _showLivePriceCadencePicker(
+  BuildContext context,
+  LivePriceCadence current,
+) {
+  return showDialog<LivePriceCadence>(
+    context: context,
+    barrierColor: appDialogBarrierColor(context),
+    builder: (ctx) {
+      final l10n = AppLocalizations.of(ctx);
+      return RadioGroup<LivePriceCadence>(
+        groupValue: current,
+        onChanged: (v) {
+          AppHaptics.selection();
+          Navigator.of(ctx).pop(v);
+        },
+        child: SimpleDialog(
+          elevation: 24,
+          shadowColor: Colors.black,
+          title: Text(l10n.livePriceCadencePickerTitle),
+          children: [
+            for (final c in LivePriceCadence.values)
+              RadioListTile<LivePriceCadence>(
+                key: ValueKey('livePriceCadence-${c.code}'),
+                title: Text(_livePriceCadenceLabel(l10n, c)),
+                value: c,
+              ),
+          ],
+        ),
+      );
+    },
+  );
 }

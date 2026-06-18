@@ -96,6 +96,12 @@ class _RangeBarState extends State<RangeBar>
   double get _hintBobOffset =>
       _hintBobAmplitude * math.sin(_hintBobController.value * 2 * math.pi);
 
+  // Latches to true the first time the user selects a non-All range while the
+  // hint hasn't yet been dismissed. Once set it never clears (within the
+  // session), so tapping back to All — or navigating to a full-screen page —
+  // does NOT hide the hint. Only a vertical swipe on the pill dismisses it.
+  bool _hintTriggered = false;
+
   // Starts or stops the hint bob depending on whether the tip is currently
   // visible. Called from build whenever the hint-dismissed flag changes.
   void _syncHintBob({required bool hintVisible}) {
@@ -313,7 +319,13 @@ class _RangeBarState extends State<RangeBar>
     final swipeHintDismissed = context.select<AppStateNotifier, bool>(
       (a) => a.swipeChipHintDismissed,
     );
-    final hintVisible = widget.range != BtcRange.all && !swipeHintDismissed;
+    // Latch: once the user has been on a non-All range the hint is "active".
+    // Selecting All again (or navigating away) must NOT clear it — only a
+    // vertical swipe on the pill dismisses the hint.
+    if (widget.range != BtcRange.all && !swipeHintDismissed) {
+      _hintTriggered = true;
+    }
+    final hintVisible = _hintTriggered && !swipeHintDismissed;
     _syncHintBob(hintVisible: hintVisible);
     final daysOverflowSlot = context.select<AppStateNotifier, BtcRange>(
       (a) => a.daysOverflowQuickRange,
@@ -618,7 +630,11 @@ class _RangeBarState extends State<RangeBar>
                                   child: AnimatedOpacity(
                                     duration: const Duration(milliseconds: 150),
                                     curve: Curves.easeOut,
-                                    opacity: selectedIndex < 4 ? 1 : 0,
+                                    // Chevrons stay visible until the user
+                                    // performs a vertical swipe on the pill.
+                                    // Tapping another range or navigating
+                                    // away must not hide them.
+                                    opacity: hintVisible && selectedIndex < 4 ? 1 : 0,
                                     child: Icon(
                                       Icons.keyboard_arrow_up_rounded,
                                       size: 16,
@@ -635,7 +651,8 @@ class _RangeBarState extends State<RangeBar>
                                   child: AnimatedOpacity(
                                     duration: const Duration(milliseconds: 150),
                                     curve: Curves.easeOut,
-                                    opacity: selectedIndex < 4 ? 1 : 0,
+                                    // Same logic as the up-chevron above.
+                                    opacity: hintVisible && selectedIndex < 4 ? 1 : 0,
                                     child: Icon(
                                       Icons.keyboard_arrow_down_rounded,
                                       size: 16,
