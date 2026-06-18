@@ -86,7 +86,7 @@ class _RangeBarState extends State<RangeBar>
   // the hint is dismissed, the pill is being dragged, or a real nudge fires.
   late final AnimationController _hintBobController = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 1400),
+    duration: const Duration(milliseconds: 800),
   )..addListener(() => setState(() {}));
 
   static const double _hintBobAmplitude = 5;
