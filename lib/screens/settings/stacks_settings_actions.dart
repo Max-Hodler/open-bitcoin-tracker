@@ -25,9 +25,7 @@ abstract final class StacksSettingsActions {
   }
 
   static void openLockSettings(BuildContext context) {
-    Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(builder: (_) => const StackLockSettingsScreen()),
-    );
+    showStackLockSettingsSheet(context);
   }
 
   static Future<void> openModePicker(

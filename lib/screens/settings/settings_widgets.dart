@@ -375,10 +375,19 @@ class _Segment extends StatelessWidget {
 /// Single-line tappable row used for destructive actions ("Reset all", "Turn
 /// off lock"). No trailing icon, no value, just the label as a button.
 class SettingsActionTile extends StatelessWidget {
-  const SettingsActionTile({super.key, required this.label, this.onTap});
+  const SettingsActionTile({
+    super.key,
+    required this.label,
+    this.onTap,
+    this.labelColor,
+  });
 
   final String label;
   final VoidCallback? onTap;
+
+  /// Overrides the label colour. Defaults to [ColorScheme.onSurface]; pass the
+  /// bitcoin orange to make the row read as a primary action.
+  final Color? labelColor;
 
   @override
   Widget build(BuildContext context) {
@@ -408,7 +417,7 @@ class SettingsActionTile extends StatelessWidget {
               style: AppTypography.body.copyWith(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
-                color: cs.onSurface,
+                color: labelColor ?? cs.onSurface,
               ),
             ),
           ),
