@@ -330,6 +330,10 @@
   "@settingsScaleLog": {
     "description": "Logarithmic chart scale segment label."
   },
+  "graphSettingsTitle": "Graph Settings",
+  "@graphSettingsTitle": {
+    "description": "Title of the bottom sheet opened from the settings button next to the graph range selector."
+  },
   "settingsChartHeight": "Height",
   "@settingsChartHeight": {
     "description": "Settings row label for the compact/medium/tall chart height segmented control."

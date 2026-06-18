@@ -232,7 +232,24 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
                 top: false,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.md,
+                        0,
+                        AppSpacing.md,
+                        AppSpacing.md,
+                      ),
+                      child: Text(
+                        l10n.graphSettingsTitle,
+                        style: AppTypography.label.copyWith(
+                          fontSize: 18,
+                          color: cs.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(
                         AppSpacing.md,
