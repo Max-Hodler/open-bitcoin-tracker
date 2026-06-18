@@ -6,6 +6,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../services/app_haptics.dart';
 import '../../../state/state.dart';
 import '../../../theme/theme.dart';
+import '../../../widgets/menu_icon_square.dart';
 import '../../about_screen.dart';
 import '../../settings/settings_screen.dart';
 import '../../settings/stacks_settings_actions.dart';
@@ -107,11 +108,10 @@ class StackLockIconButton extends StatelessWidget {
         iconSize: 22,
         constraints: const BoxConstraints(),
         style: IconButton.styleFrom(
-          backgroundColor: cs.surface,
+          backgroundColor: Colors.transparent,
           foregroundColor: enabled ? cs.onSurfaceVariant : cs.onSurfaceVariant.withValues(alpha: 0.38),
           disabledForegroundColor: cs.onSurfaceVariant.withValues(alpha: 0.38),
-          shadowColor: Colors.black.withValues(alpha: 0.12),
-          elevation: 1.5,
+          elevation: 0,
           fixedSize: const Size(36, 36),
           minimumSize: const Size(36, 36),
           maximumSize: const Size(36, 36),
@@ -144,10 +144,9 @@ class AddStackIconButton extends StatelessWidget {
         iconSize: 22,
         constraints: const BoxConstraints(),
         style: IconButton.styleFrom(
-          backgroundColor: cs.surface,
+          backgroundColor: Colors.transparent,
           foregroundColor: cs.onSurfaceVariant,
-          shadowColor: Colors.black.withValues(alpha: 0.12),
-          elevation: 1.5,
+          elevation: 0,
           fixedSize: const Size(36, 36),
           minimumSize: const Size(36, 36),
           maximumSize: const Size(36, 36),
@@ -195,7 +194,7 @@ class StacksOverflowButton extends StatelessWidget {
       return IgnorePointer(
         child: Row(
           children: [
-            Icon(icon, size: 22, color: fg),
+            MenuIconSquare(icon: Icon(icon, size: 22, color: fg)),
             const SizedBox(width: 12),
             Expanded(child: Text(label, style: enabled ? itemStyle : disabledItemStyle)),
             if (trailing != null) ...[const SizedBox(width: 12), trailing],
@@ -235,10 +234,12 @@ class StacksOverflowButton extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.calculate_outlined,
-                      size: 22,
-                      color: cs.onSurfaceVariant,
+                    MenuIconSquare(
+                      icon: Icon(
+                        Icons.calculate_outlined,
+                        size: 22,
+                        color: cs.onSurfaceVariant,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -303,10 +304,9 @@ class StacksOverflowButton extends StatelessWidget {
         icon: const Icon(Icons.more_vert),
         iconSize: 22,
         style: IconButton.styleFrom(
-          backgroundColor: cs.surface,
+          backgroundColor: Colors.transparent,
           foregroundColor: cs.onSurfaceVariant,
-          shadowColor: Colors.black.withValues(alpha: 0.12),
-          elevation: 1.5,
+          elevation: 0,
           fixedSize: const Size(36, 36),
           minimumSize: const Size(36, 36),
           maximumSize: const Size(36, 36),
@@ -449,10 +449,12 @@ class _OverflowButtonState extends State<OverflowButton> {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.currency_bitcoin,
-                      size: 22,
-                      color: cs.onSurfaceVariant,
+                    MenuIconSquare(
+                      icon: Icon(
+                        Icons.currency_bitcoin,
+                        size: 22,
+                        color: cs.onSurfaceVariant,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Text('Unit: ', style: itemStyle),
@@ -509,10 +511,9 @@ class _OverflowButtonState extends State<OverflowButton> {
         iconSize: 22,
         constraints: const BoxConstraints(),
         style: IconButton.styleFrom(
-          backgroundColor: cs.surface,
+          backgroundColor: Colors.transparent,
           foregroundColor: cs.onSurfaceVariant,
-          shadowColor: Colors.black.withValues(alpha: 0.12),
-          elevation: 1.5,
+          elevation: 0,
           fixedSize: const Size(36, 36),
           minimumSize: const Size(36, 36),
           maximumSize: const Size(36, 36),
@@ -527,12 +528,14 @@ class _OverflowButtonState extends State<OverflowButton> {
             child: IgnorePointer(
               child: Row(
                 children: [
-                  Transform.flip(
-                    flipX: true,
-                    child: Icon(
-                      Icons.swap_vert,
-                      size: 22,
-                      color: cs.onSurfaceVariant,
+                  MenuIconSquare(
+                    icon: Transform.flip(
+                      flipX: true,
+                      child: Icon(
+                        Icons.swap_vert,
+                        size: 22,
+                        color: cs.onSurfaceVariant,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -546,10 +549,12 @@ class _OverflowButtonState extends State<OverflowButton> {
           child: IgnorePointer(
             child: Row(
               children: [
-                Icon(
-                  Icons.palette_outlined,
-                  size: 22,
-                  color: cs.onSurfaceVariant,
+                MenuIconSquare(
+                  icon: Icon(
+                    Icons.palette_outlined,
+                    size: 22,
+                    color: cs.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Text(l10n.settingsThemeLabel, style: itemStyle),
@@ -562,10 +567,18 @@ class _OverflowButtonState extends State<OverflowButton> {
           child: IgnorePointer(
             child: Row(
               children: [
-                Icon(
-                  Icons.attach_money,
-                  size: 22,
-                  color: cs.onSurfaceVariant,
+                MenuIconSquare(
+                  // The attach_money glyph carries extra right bearing in the
+                  // font box, so geometric centering leaves it sitting left of
+                  // center. Nudge it right a hair to optically center it.
+                  icon: Transform.translate(
+                    offset: const Offset(1, 0),
+                    child: Icon(
+                      Icons.attach_money,
+                      size: 22,
+                      color: cs.onSurfaceVariant,
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Text(l10n.settingsCurrencies, style: itemStyle),
@@ -583,7 +596,9 @@ class _OverflowButtonState extends State<OverflowButton> {
           child: IgnorePointer(
             child: Row(
               children: [
-                Icon(Icons.language, size: 22, color: cs.onSurfaceVariant),
+                MenuIconSquare(
+                  icon: Icon(Icons.language, size: 22, color: cs.onSurfaceVariant),
+                ),
                 const SizedBox(width: 12),
                 Text(l10n.settingsLanguageLabel, style: itemStyle),
               ],
@@ -595,7 +610,9 @@ class _OverflowButtonState extends State<OverflowButton> {
           child: IgnorePointer(
             child: Row(
               children: [
-                Icon(Icons.info_outline, size: 22, color: cs.onSurfaceVariant),
+                MenuIconSquare(
+                  icon: Icon(Icons.info_outline, size: 22, color: cs.onSurfaceVariant),
+                ),
                 const SizedBox(width: 12),
                 Text(l10n.settingsAbout, style: itemStyle),
               ],

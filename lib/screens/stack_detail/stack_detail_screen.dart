@@ -12,6 +12,7 @@ import '../../screens/settings/stacks_settings_actions.dart';
 import '../../services/app_haptics.dart';
 import '../../state/state.dart';
 import '../../theme/theme.dart';
+import '../../widgets/menu_icon_square.dart';
 import '../../widgets/stack_actions.dart';
 import '../../widgets/stack_avatar.dart';
 import '../edit_stack_screens.dart';
@@ -176,7 +177,9 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
                 PopupMenuItem(
                   value: _StackAction.edit,
                   child: Row(children: [
-                    Icon(Icons.currency_bitcoin, size: 22, color: cs.onSurfaceVariant),
+                    MenuIconSquare(
+                      icon: Icon(Icons.currency_bitcoin, size: 22, color: cs.onSurfaceVariant),
+                    ),
                     const SizedBox(width: 12),
                     Text(l10n.stackMenuUpdateAmount, style: itemStyle),
                   ]),
@@ -184,7 +187,9 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
                 PopupMenuItem(
                   value: _StackAction.rename,
                   child: Row(children: [
-                    Icon(Icons.edit_outlined, size: 22, color: cs.onSurfaceVariant),
+                    MenuIconSquare(
+                      icon: Icon(Icons.edit_outlined, size: 22, color: cs.onSurfaceVariant),
+                    ),
                     const SizedBox(width: 12),
                     Text(l10n.stackMenuChangeName, style: itemStyle),
                   ]),
@@ -193,7 +198,9 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
                 PopupMenuItem(
                   value: _StackAction.delete,
                   child: Row(children: [
-                    Icon(Icons.delete_outline, size: 22, color: cs.error),
+                    MenuIconSquare(
+                      icon: Icon(Icons.delete_outline, size: 22, color: cs.error),
+                    ),
                     const SizedBox(width: 12),
                     Text(l10n.stackMenuDelete,
                         style: itemStyle.copyWith(color: cs.error)),
