@@ -70,7 +70,7 @@ class HomeButton extends StatelessWidget {
   }
 }
 
-/// Circular icon button that locks or unlocks the stacks. Sits to the left of
+/// Circular icon button that locks or unlocks the stacks. Sits to the right of
 /// [AddStackIconButton] in the "Stacks" title row and shares its 36×36 surface
 /// styling, so the lock and add affordances read as a matched pair.
 class StackLockIconButton extends StatelessWidget {

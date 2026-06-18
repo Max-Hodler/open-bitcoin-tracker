@@ -205,11 +205,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  // The lock/unlock control sits to the left of the add button
+                  IgnorePointer(
+                    ignoring: stacksLocked,
+                    child: Opacity(
+                      opacity: stacksLocked ? 0.35 : 1.0,
+                      child: AddStackIconButton(onTap: _onAddStackTap),
+                    ),
+                  ),
+                  // The lock/unlock control sits to the right of the add button
                   // and shares its styling. It appears only when stack-lock
                   // auth is enabled; when locked, it's the sole control (add and
                   // the overflow menu are hidden until the stacks are unlocked).
                   if (app.stacksAuthMode != StacksAuthMode.off) ...[
+                    const SizedBox(width: 20),
                     StackLockIconButton(
                       locked: stacksLocked,
                       // Greyed out only in the unlocked, zero-stacks case where
@@ -227,15 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 .read<StacksLockController>()
                                 .lockNow(),
                     ),
-                    const SizedBox(width: 20),
                   ],
-                  IgnorePointer(
-                    ignoring: stacksLocked,
-                    child: Opacity(
-                      opacity: stacksLocked ? 0.35 : 1.0,
-                      child: AddStackIconButton(onTap: _onAddStackTap),
-                    ),
-                  ),
                   // The overflow menu offers actions that need at least one
                   // stack (portfolio total, reorder) plus the lock settings
                   // entry, so it's hidden — along with its leading spacer —
