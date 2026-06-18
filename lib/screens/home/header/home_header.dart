@@ -218,7 +218,7 @@ class _HomeHeaderState extends State<HomeHeader> {
       _hintTriggered = true;
     }
     final String? message;
-    if (_hintTriggered && !swipeHintDismissed) {
+    if (_hintTriggered && !swipeHintDismissed && widget.range != BtcRange.all) {
       message = AppLocalizations.of(context).homeSwipeChipHint;
     } else {
       message = null;

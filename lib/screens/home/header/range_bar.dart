@@ -325,7 +325,7 @@ class _RangeBarState extends State<RangeBar>
     if (widget.range != BtcRange.all && !swipeHintDismissed) {
       _hintTriggered = true;
     }
-    final hintVisible = _hintTriggered && !swipeHintDismissed;
+    final hintVisible = _hintTriggered && !swipeHintDismissed && widget.range != BtcRange.all;
     _syncHintBob(hintVisible: hintVisible);
     final daysOverflowSlot = context.select<AppStateNotifier, BtcRange>(
       (a) => a.daysOverflowQuickRange,
