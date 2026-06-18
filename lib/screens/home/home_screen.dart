@@ -236,10 +236,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: AddStackIconButton(onTap: _onAddStackTap),
                     ),
                   ),
-                  // The overflow menu only offers actions that need at least one
-                  // stack (lock, portfolio total, reorder), so it's hidden — along
-                  // with its leading spacer — when there are no stack cards.
-                  if (stacks.isNotEmpty) ...[
+                  // The overflow menu offers actions that need at least one
+                  // stack (portfolio total, reorder) plus the lock settings
+                  // entry, so it's hidden — along with its leading spacer —
+                  // only in the unlocked, zero-stacks state. While locked it
+                  // stays visible: lock settings is the one action that still
+                  // applies, and it's the user's way to those settings without
+                  // first unlocking.
+                  if (stacks.isNotEmpty || stacksLocked) ...[
                     const SizedBox(width: 20),
                     const StacksOverflowButton(),
                   ],

@@ -173,22 +173,31 @@ class StacksOverflowButton extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
     final app = context.watch<AppStateNotifier>();
-    final canShowTotal = app.stacks.length >= 2;
-    final canReorder = app.stacks.length > 1;
+    // Every entry is always listed so the menu's shape stays stable; each
+    // per-stack action (portfolio total, reorder) is greyed out when it can't
+    // run — too few stacks, or locked (the decrypted list is empty under lock).
+    // Lock settings stays active in every case.
+    final locked = context.watch<StacksLockController>().isLocked;
+    final canShowTotal = !locked && app.stacks.length >= 2;
+    final canReorder = !locked && app.stacks.length > 1;
 
     final itemStyle = AppTypography.body.copyWith(
       fontSize: 16,
       fontWeight: FontWeight.w400,
       color: cs.onSurface,
     );
+    final disabledItemStyle = itemStyle.copyWith(
+      color: cs.onSurface.withValues(alpha: 0.38),
+    );
 
-    Widget row(IconData icon, String label, {Widget? trailing}) {
+    Widget row(IconData icon, String label, {Widget? trailing, bool enabled = true}) {
+      final fg = enabled ? cs.onSurfaceVariant : cs.onSurfaceVariant.withValues(alpha: 0.38);
       return IgnorePointer(
         child: Row(
           children: [
-            Icon(icon, size: 22, color: cs.onSurfaceVariant),
+            Icon(icon, size: 22, color: fg),
             const SizedBox(width: 12),
-            Expanded(child: Text(label, style: itemStyle)),
+            Expanded(child: Text(label, style: enabled ? itemStyle : disabledItemStyle)),
             if (trailing != null) ...[const SizedBox(width: 12), trailing],
           ],
         ),
@@ -314,6 +323,10 @@ class StacksOverflowButton extends StatelessWidget {
                   : l10n.overflowBlockStacks,
             ),
           ),
+          // Display total and Reorder are always listed so the menu's shape is
+          // stable. Each is live only when its action applies (enough stacks,
+          // unlocked); otherwise it's a static greyed row — the toggle's live
+          // switch becomes a dead one, and reorder loses its tap value.
           if (canShowTotal)
             PopupMenuItem(
               // Disabled so a tap doesn't route through onSelected and pop the
@@ -322,11 +335,40 @@ class StacksOverflowButton extends StatelessWidget {
               enabled: false,
               padding: EdgeInsets.zero,
               child: portfolioToggleRow(),
+            )
+          else
+            PopupMenuItem(
+              enabled: false,
+              child: row(
+                Icons.calculate_outlined,
+                l10n.settingsPortfolioTotal,
+                enabled: false,
+                trailing: SizedBox(
+                  height: 24,
+                  width: 36,
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Switch(
+                      value: app.showPortfolio,
+                      onChanged: null,
+                    ),
+                  ),
+                ),
+              ),
             ),
           if (canReorder)
             PopupMenuItem(
               value: _StacksMenuAction.reorder,
               child: row(Icons.reorder, l10n.settingsReorderStacks),
+            )
+          else
+            PopupMenuItem(
+              enabled: false,
+              child: row(
+                Icons.reorder,
+                l10n.settingsReorderStacks,
+                enabled: false,
+              ),
             ),
         ],
       ),
