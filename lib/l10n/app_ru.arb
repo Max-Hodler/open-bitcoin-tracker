@@ -82,6 +82,7 @@
   "settingsScale": "Шкала",
   "settingsScaleLinear": "Линейная",
   "settingsScaleLog": "Лог.",
+  "graphSettingsTitle": "Настройки графика",
   "settingsChartHeight": "Высота",
   "settingsChartHeightCompact": "S",
   "settingsChartHeightNormal": "M",

@@ -82,6 +82,7 @@
   "settingsScale": "Ölçek",
   "settingsScaleLinear": "Doğrusal",
   "settingsScaleLog": "Log",
+  "graphSettingsTitle": "Grafik ayarları",
   "settingsChartHeight": "Yükseklik",
   "settingsChartHeightCompact": "S",
   "settingsChartHeightNormal": "M",

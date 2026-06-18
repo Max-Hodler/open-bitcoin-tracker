@@ -82,6 +82,7 @@
   "settingsScale": "Thang đo",
   "settingsScaleLinear": "Tuyến tính",
   "settingsScaleLog": "Log",
+  "graphSettingsTitle": "Cài đặt biểu đồ",
   "settingsChartHeight": "Chiều cao",
   "settingsChartHeightCompact": "S",
   "settingsChartHeightNormal": "M",

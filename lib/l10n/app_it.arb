@@ -82,6 +82,7 @@
   "settingsScale": "Scala",
   "settingsScaleLinear": "Lineare",
   "settingsScaleLog": "Log",
+  "graphSettingsTitle": "Impostazioni del grafico",
   "settingsChartHeight": "Altezza",
   "settingsChartHeightCompact": "S",
   "settingsChartHeightNormal": "M",

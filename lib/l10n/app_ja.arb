@@ -82,6 +82,7 @@
   "settingsScale": "スケール",
   "settingsScaleLinear": "リニア",
   "settingsScaleLog": "Log",
+  "graphSettingsTitle": "グラフ設定",
   "settingsChartHeight": "高さ",
   "settingsChartHeightCompact": "S",
   "settingsChartHeightNormal": "M",
