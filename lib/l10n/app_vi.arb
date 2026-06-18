@@ -100,7 +100,6 @@
   "overflowBlockStacks": "Khóa Stacks",
   "settingsLockStacksTitle": "Cài đặt khóa",
   "settingsAuthType": "Loại xác thực",
-  "settingsLockEnabled": "Đã bật",
   "settingsRelockAfter": "Khóa lại sau",
   "settingsChangePin": "Đổi PIN",
   "settingsResetStacksLock": "Quên PIN? Đặt lại Stacks",

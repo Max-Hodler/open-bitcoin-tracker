@@ -100,7 +100,6 @@
   "overflowBlockStacks": "Заблокировать Stacks",
   "settingsLockStacksTitle": "Настройки блокировки",
   "settingsAuthType": "Тип аутентификации",
-  "settingsLockEnabled": "Включено",
   "settingsRelockAfter": "Блокировать через",
   "settingsChangePin": "Изменить PIN",
   "settingsResetStacksLock": "Забыли PIN? Сбросить Stacks",

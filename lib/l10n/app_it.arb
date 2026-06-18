@@ -100,7 +100,6 @@
   "overflowBlockStacks": "Blocca Stacks",
   "settingsLockStacksTitle": "Impostazioni di blocco",
   "settingsAuthType": "Tipo di autenticazione",
-  "settingsLockEnabled": "Attivato",
   "settingsRelockAfter": "Riblocca dopo",
   "settingsChangePin": "Modifica PIN",
   "settingsResetStacksLock": "PIN dimenticato? Reimposta Stacks",

@@ -100,7 +100,6 @@
   "overflowBlockStacks": "Stacks'i kilitle",
   "settingsLockStacksTitle": "Kilit ayarları",
   "settingsAuthType": "Kimlik doğrulama türü",
-  "settingsLockEnabled": "Etkin",
   "settingsRelockAfter": "Şu süre sonra kilitle",
   "settingsChangePin": "PIN'i değiştir",
   "settingsResetStacksLock": "PIN'i unuttunuz mu? Stacks'i sıfırla",

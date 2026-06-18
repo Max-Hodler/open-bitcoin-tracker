@@ -100,7 +100,6 @@
   "overflowBlockStacks": "Stacks sperren",
   "settingsLockStacksTitle": "Sperreinstellungen",
   "settingsAuthType": "Authentifizierungstyp",
-  "settingsLockEnabled": "Aktiviert",
   "settingsRelockAfter": "Erneut sperren nach",
   "settingsChangePin": "PIN ändern",
   "settingsResetStacksLock": "PIN vergessen? Stacks zurücksetzen",

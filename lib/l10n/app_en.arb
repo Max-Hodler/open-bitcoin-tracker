@@ -406,9 +406,13 @@
   "@settingsAuthType": {
     "description": "Lock stacks screen row label for the auth-mode picker (Off / Device / PIN), and the picker dialog title."
   },
-  "settingsLockEnabled": "Enabled",
-  "@settingsLockEnabled": {
-    "description": "Toggle label on the Lock stacks settings row. Controls whether stack locking is active."
+  "settingsEnableLock": "Enable lock",
+  "@settingsEnableLock": {
+    "description": "Button on the Lock settings screen, shown when locking is off. Tapping opens the auth-mode picker to turn locking on."
+  },
+  "settingsDisableLock": "Disable lock",
+  "@settingsDisableLock": {
+    "description": "Button on the Lock settings screen, shown when locking is on. Tapping turns stack locking off."
   },
   "settingsRelockAfter": "Re-lock after",
   "@settingsRelockAfter": {
