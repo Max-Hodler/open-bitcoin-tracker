@@ -312,8 +312,7 @@ class _HomeHeaderState extends State<HomeHeader> {
         logScale: logScale,
         rangeKey: widget.range,
         onHover: widget.onHover,
-      ),
-    );
+      );
     }
 
     return AnimatedSwitcher(

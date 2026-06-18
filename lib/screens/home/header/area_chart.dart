@@ -37,8 +37,12 @@ class AreaChart extends StatefulWidget {
 class _AreaChartState extends State<AreaChart>
     with TickerProviderStateMixin {
   List<PricePoint>? _spotsForData;
-  bool _spotsForLogScale = false;
   late List<FlSpot> _spots;
+  List<FlSpot>? _linearSpots;
+  List<FlSpot>? _logSpots;
+  late final AnimationController _scaleFadeController;
+  bool? _scaleDisplayLogScale = false;
+  bool get _activeLogScale => _scaleDisplayLogScale ?? widget.logScale;
 
   // The curve that was on screen when the current zoom tween started. On a
   // zoom-IN (3D → 2D) the incoming dataset is shorter than the outgoing
@@ -95,40 +99,73 @@ class _AreaChartState extends State<AreaChart>
   );
 
   @override
+  void initState() {
+    super.initState();
+    _scaleDisplayLogScale = widget.logScale;
+    _scaleFadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 150),
+      value: 1.0,
+    )..addStatusListener((status) {
+        if (status == AnimationStatus.dismissed) {
+          if (!mounted) return;
+          if (_activeLogScale != widget.logScale) {
+            setState(() {
+              _scaleDisplayLogScale = widget.logScale;
+              _animFromStartX = null;
+              _animFromEndX = null;
+              _animFromMinY = null;
+              _animFromMaxY = null;
+              _prevSpots = null;
+            });
+          }
+          Future.microtask(() {
+            if (mounted) {
+              _scaleFadeController.forward();
+            }
+          });
+        }
+      });
+  }
+
+  @override
   void dispose() {
     _zoom.dispose();
     _ripple.dispose();
+    _scaleFadeController.dispose();
     super.dispose();
   }
 
-  void _rebuildSpots() {
+  void _rebuildCache() {
     final data = widget.data;
-    final logScale = widget.logScale;
-    final spots = <FlSpot>[
+    _linearSpots = [
+      for (final p in data)
+        FlSpot(p.t.toDouble(), p.price),
+    ];
+    _logSpots = [
       for (final p in data)
         FlSpot(
           p.t.toDouble(),
-          logScale && p.price > 0 ? math.log(p.price) / math.ln10 : p.price,
+          p.price > 0 ? math.log(p.price) / math.ln10 : p.price,
         ),
     ];
-    _spots = spots;
     _spotsForData = data;
-    _spotsForLogScale = logScale;
+    _spots = _activeLogScale ? _logSpots! : _linearSpots!;
   }
 
   // Min/max y over spots whose x falls inside [startX, endX], with 5% padding.
   // Spots are sorted by x, so we can scan linearly; lists are small enough.
-  (double, double) _windowYFit(double startX, double endX) {
+  (double, double) _windowYFit(List<FlSpot> spots, double startX, double endX) {
     double? minY, maxY;
-    for (final s in _spots) {
+    for (final s in spots) {
       if (s.x < startX) continue;
       if (s.x > endX) break;
       if (minY == null || s.y < minY) minY = s.y;
       if (maxY == null || s.y > maxY) maxY = s.y;
     }
     if (minY == null || maxY == null) {
-      minY = _spots.first.y;
-      maxY = _spots.first.y;
+      minY = spots.isNotEmpty ? spots.first.y : 0.0;
+      maxY = spots.isNotEmpty ? spots.first.y : 1.0;
     }
     if (minY == maxY) maxY = minY + 1;
     final pad = (maxY - minY) * 0.05;
@@ -140,7 +177,7 @@ class _AreaChartState extends State<AreaChart>
   // across the full widget width (all titles/borders are hidden, so the plot
   // area is the whole box).
   void _handleTouch(Offset localPosition) {
-    if (_zoom.isAnimating) {
+    if (_zoom.isAnimating || _scaleFadeController.value < 1.0) {
       _clearTouch();
       return;
     }
@@ -181,17 +218,15 @@ class _AreaChartState extends State<AreaChart>
   void didUpdateWidget(covariant AreaChart old) {
     super.didUpdateWidget(old);
     // The zoom tween should fire only on user-initiated transitions: changing
-    // the range (1M → 3M animates the all-history camera) or toggling log
-    // scale. The raw window endpoints drift forward by a few ms on every
-    // rebuild because windowEndMs trails DateTime.now(), and the data list
-    // gets a new identity on every currency switch (priceUsd × usdToCurrency
-    // produces a fresh list). Triggering the tween on either of those would
-    // re-fit minY/maxY to the rescaled spots and visibly bump the chart on
-    // every tick or fiat switch — most noticeably on 1D where the Y-range is
-    // tight enough that the rescale-delta is a large fraction of the box.
-    final shouldZoom = old.rangeKey != widget.rangeKey ||
-        old.logScale != widget.logScale;
-    if (shouldZoom) {
+    // the range (1M → 3M animates the all-history camera). The raw window
+    // endpoints drift forward by a few ms on every rebuild because windowEndMs
+    // trails DateTime.now(), and the data list gets a new identity on every
+    // currency switch (priceUsd × usdToCurrency produces a fresh list).
+    // Triggering the tween on either of those would re-fit minY/maxY to the
+    // rescaled spots and visibly bump the chart on every tick or fiat switch.
+    if (old.logScale != widget.logScale) {
+      _scaleFadeController.reverse();
+    } else if (old.rangeKey != widget.rangeKey) {
       // Capture the currently-displayed values (mid-tween or settled) as
       // the "from" so rapid re-taps pick up where we are, then restart the
       // controller to animate toward the new window.
@@ -220,24 +255,25 @@ class _AreaChartState extends State<AreaChart>
       _prevSpots = _zoomingIn && !identical(_spotsForData, widget.data)
           ? _spots
           : null;
+
       _zoom.forward(from: 0);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!identical(_spotsForData, widget.data) ||
-        _spotsForLogScale != widget.logScale) {
-      _rebuildSpots();
+    if (!identical(_spotsForData, widget.data) || _linearSpots == null || _logSpots == null) {
+      _rebuildCache();
     }
     final cs = Theme.of(context).colorScheme;
-    final newSpots = _spots;
     final color = widget.color;
+
+    final targetSpots = _activeLogScale ? _logSpots! : _linearSpots!;
 
     final newTargetStart = widget.windowStartMs.toDouble();
     final newTargetEnd = widget.windowEndMs.toDouble();
     final (newTargetMinY, newTargetMaxY) =
-        _windowYFit(newTargetStart, newTargetEnd);
+        _windowYFit(targetSpots, newTargetStart, newTargetEnd);
     _targetStartX = newTargetStart;
     _targetEndX = newTargetEnd;
     _targetMinY = newTargetMinY;
@@ -292,143 +328,149 @@ class _AreaChartState extends State<AreaChart>
           ),
         },
         child: AnimatedBuilder(
-      animation: _zoom,
-      builder: (context, _) {
-        final t = Curves.easeInOutCubic.transform(_zoom.value);
-        final minX = fromStart + (newTargetStart - fromStart) * t;
-        final maxX = fromEnd + (newTargetEnd - fromEnd) * t;
-        final minY = fromMinY + (newTargetMinY - fromMinY) * t;
-        final maxY = fromMaxY + (newTargetMaxY - fromMaxY) * t;
-        // Hold the outgoing (wider) curve while a zoom-in window is still
-        // narrowing; once _prevSpots is cleared on completion we draw the new
-        // curve. See _prevSpots. The scrub indicator is suppressed mid-zoom
-        // (_handleTouch bails while animating), so indexing stays consistent.
-        final spots =
-            _prevSpots != null && _zoom.status != AnimationStatus.completed
-                ? _prevSpots!
-                : newSpots;
-        // Value-space coordinates of the dot fl_chart is painting for the
-        // touched point, used to position the ripple overlay. Null when not
-        // scrubbing or the index is out of range for the current curve.
-        final touched = switch (_touchedIndex) {
-          final i? when i < spots.length => spots[i],
-          _ => null,
-        };
-        final chart = LineChart(
-          duration: Duration.zero,
-          LineChartData(
-            minX: minX,
-            maxX: maxX,
-            minY: minY,
-            maxY: maxY,
-        gridData: const FlGridData(show: false),
-        borderData: FlBorderData(show: false),
-        titlesData: const FlTitlesData(
-          leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        ),
-        lineTouchData: LineTouchData(
-          // Touch handling is done by the Listener above; fl_chart only
-          // paints the indicator for the showingIndicators we set on the bar.
-          enabled: false,
-          handleBuiltInTouches: false,
-          getTouchLineStart: (_, _) => double.negativeInfinity,
-          getTouchLineEnd: (_, _) => double.infinity,
-          getTouchedSpotIndicator: (_, indicators) => [
-            for (final _ in indicators)
-              TouchedSpotIndicatorData(
-                FlLine(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      cs.onSurfaceVariant.withValues(alpha: 0),
-                      cs.onSurfaceVariant,
-                      cs.onSurfaceVariant,
-                      cs.onSurfaceVariant.withValues(alpha: 0),
-                    ],
-                    stops: const [0.0, 0.15, 0.85, 1.0],
-                  ),
-                  strokeWidth: 1,
-                  dashArray: const [4, 4],
+          animation: Listenable.merge([_zoom, _scaleFadeController]),
+          builder: (context, _) {
+            final t = Curves.easeInOutCubic.transform(_zoom.value);
+            final minX = fromStart + (newTargetStart - fromStart) * t;
+            final maxX = fromEnd + (newTargetEnd - fromEnd) * t;
+            final minY = fromMinY + (newTargetMinY - fromMinY) * t;
+            final maxY = fromMaxY + (newTargetMaxY - fromMaxY) * t;
+
+            _spots = _activeLogScale ? _logSpots! : _linearSpots!;
+
+            // Hold the outgoing (wider) curve while a zoom-in window is still
+            // narrowing; once _prevSpots is cleared on completion we draw the new
+            // curve. See _prevSpots. The scrub indicator is suppressed mid-zoom
+            // (_handleTouch bails while animating), so indexing stays consistent.
+            final spots =
+                _prevSpots != null && _zoom.status != AnimationStatus.completed
+                    ? _prevSpots!
+                    : _spots;
+            // Value-space coordinates of the dot fl_chart is painting for the
+            // touched point, used to position the ripple overlay. Null when not
+            // scrubbing or the index is out of range for the current curve.
+            final touched = switch (_touchedIndex) {
+              final i? when i < spots.length => spots[i],
+              _ => null,
+            };
+            final chart = LineChart(
+              duration: Duration.zero,
+              LineChartData(
+                minX: minX,
+                maxX: maxX,
+                minY: minY,
+                maxY: maxY,
+                gridData: const FlGridData(show: false),
+                borderData: FlBorderData(show: false),
+                titlesData: const FlTitlesData(
+                  leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
                 ),
-                FlDotData(
-                  show: true,
-                  getDotPainter: (_, _, _, _) => FlDotCirclePainter(
-                    radius: 5,
-                    color: cs.onSurface,
-                    strokeWidth: 0,
-                  ),
-                ),
-              ),
-          ],
-        ),
-        lineBarsData: [
-          LineChartBarData(
-            spots: spots,
-            showingIndicators: switch (_touchedIndex) {
-              final i? when i < spots.length => [i],
-              _ => const [],
-            },
-            isCurved: false,
-            color: color,
-            barWidth: 1.5,
-            dotData: const FlDotData(show: false),
-            belowBarData: BarAreaData(
-              show: true,
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  color.withValues(alpha: 0.18),
-                  color.withValues(alpha: 0.12),
-                  color.withValues(alpha: 0),
-                ],
-                stops: const [0.0, 0.6, 1.0],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-        // The ripple needs both the value→pixel mapping (this frame's
-        // min/max, the box size) and a clock independent of the zoom tween,
-        // so it rides on _ripple via its own AnimatedBuilder and paints on
-        // top of the chart. RepaintBoundary keeps the pulsing repaints from
-        // dirtying the chart layer.
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            chart,
-            if (touched != null)
-              Positioned.fill(
-                child: IgnorePointer(
-                  child: RepaintBoundary(
-                    child: AnimatedBuilder(
-                      animation: _ripple,
-                      builder: (context, _) => CustomPaint(
-                        painter: _RipplePainter(
-                          spotX: touched.x,
-                          spotY: touched.y,
-                          minX: minX,
-                          maxX: maxX,
-                          minY: minY,
-                          maxY: maxY,
-                          progress: _ripple.value,
-                          color: cs.primary,
+                lineTouchData: LineTouchData(
+                  // Touch handling is done by the Listener above; fl_chart only
+                  // paints the indicator for the showingIndicators we set on the bar.
+                  enabled: false,
+                  handleBuiltInTouches: false,
+                  getTouchLineStart: (_, _) => double.negativeInfinity,
+                  getTouchLineEnd: (_, _) => double.infinity,
+                  getTouchedSpotIndicator: (_, indicators) => [
+                    for (final _ in indicators)
+                      TouchedSpotIndicatorData(
+                        FlLine(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              cs.onSurfaceVariant.withValues(alpha: 0),
+                              cs.onSurfaceVariant,
+                              cs.onSurfaceVariant,
+                              cs.onSurfaceVariant.withValues(alpha: 0),
+                            ],
+                            stops: const [0.0, 0.15, 0.85, 1.0],
+                          ),
+                          strokeWidth: 1,
+                          dashArray: const [4, 4],
                         ),
+                        FlDotData(
+                          show: true,
+                          getDotPainter: (_, _, _, _) => FlDotCirclePainter(
+                            radius: 5,
+                            color: cs.onSurface,
+                            strokeWidth: 0,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: spots,
+                    showingIndicators: switch (_touchedIndex) {
+                      final i? when i < spots.length => [i],
+                      _ => const [],
+                    },
+                    isCurved: false,
+                    color: color,
+                    barWidth: 1.5,
+                    dotData: const FlDotData(show: false),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          color.withValues(alpha: 0.18),
+                          color.withValues(alpha: 0.12),
+                          color.withValues(alpha: 0),
+                        ],
+                        stops: const [0.0, 0.6, 1.0],
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
-          ],
-        );
-      },
-    ),
-    ),
+            );
+            // The ripple needs both the value→pixel mapping (this frame's
+            // min/max, the box size) and a clock independent of the zoom tween,
+            // so it rides on _ripple via its own AnimatedBuilder and paints on
+            // top of the chart. RepaintBoundary keeps the pulsing repaints from
+            // dirtying the chart layer.
+            return Opacity(
+              opacity: Curves.easeInOut.transform(_scaleFadeController.value),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  chart,
+                  if (touched != null)
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: RepaintBoundary(
+                          child: AnimatedBuilder(
+                            animation: _ripple,
+                            builder: (context, _) => CustomPaint(
+                              painter: _RipplePainter(
+                                spotX: touched.x,
+                                spotY: touched.y,
+                                minX: minX,
+                                maxX: maxX,
+                                minY: minY,
+                                maxY: maxY,
+                                progress: _ripple.value,
+                                color: cs.primary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 

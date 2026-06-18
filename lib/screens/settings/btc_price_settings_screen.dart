@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/app_enums.dart';
-import '../../data/fiat.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../services/app_haptics.dart';
 import '../../state/state.dart';
