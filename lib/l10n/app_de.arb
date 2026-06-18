@@ -77,7 +77,6 @@
   "settingsGraphTitle": "Grafik",
   "settingsRanges": "Zeiträume",
   "settingsReorderStacks": "Stacks sortieren",
-  "settingsChart": "Anzeigen",
   "settingsPriceDelta": "Preisänderung zeigen",
   "settingsScale": "Skala",
   "settingsScaleLinear": "Linear",
@@ -190,5 +189,6 @@
   "stackDetailWhenBtcReaches": "Wenn BTC erreicht",
   "stackDetailWillBeWorth": "Dieser Stack wird wert sein",
   "settingsEnableLock": "Sperre aktivieren",
-  "settingsEnableLockHint": "Deine Stacks werden ausgeblendet und mit einer PIN oder Biometrie verschlüsselt."
+  "settingsEnableLockHint": "Deine Stacks werden ausgeblendet und mit einer PIN oder Biometrie verschlüsselt.",
+  "settingsDisableLock": "Sperre deaktivieren"
 }

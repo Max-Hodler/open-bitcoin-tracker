@@ -77,7 +77,6 @@
   "settingsGraphTitle": "Gráfico",
   "settingsRanges": "Intervalos",
   "settingsReorderStacks": "Reordenar stacks",
-  "settingsChart": "Exibir",
   "settingsPriceDelta": "Mostrar variação de preço",
   "settingsScale": "Escala",
   "settingsScaleLinear": "Linear",
@@ -190,5 +189,6 @@
   "stackDetailWhenBtcReaches": "Quando BTC atingir",
   "stackDetailWillBeWorth": "Este stack valerá",
   "settingsEnableLock": "Ativar bloqueio",
-  "settingsEnableLockHint": "Os seus stacks ficarão ocultos e encriptados com um PIN ou biometria."
+  "settingsEnableLockHint": "Os seus stacks ficarão ocultos e encriptados com um PIN ou biometria.",
+  "settingsDisableLock": "Desativar bloqueio"
 }

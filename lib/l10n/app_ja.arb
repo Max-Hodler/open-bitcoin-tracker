@@ -77,7 +77,6 @@
   "settingsGraphTitle": "グラフ",
   "settingsRanges": "期間",
   "settingsReorderStacks": "スタックの並び替え",
-  "settingsChart": "表示",
   "settingsPriceDelta": "価格変動を表示",
   "settingsScale": "スケール",
   "settingsScaleLinear": "リニア",
@@ -190,5 +189,6 @@
   "stackDetailWhenBtcReaches": "BTCが達したとき",
   "stackDetailWillBeWorth": "このstackの価値",
   "settingsEnableLock": "ロックを有効にする",
-  "settingsEnableLockHint": "スタックは非表示になり、PINまたは生体認証で暗号化されます。"
+  "settingsEnableLockHint": "スタックは非表示になり、PINまたは生体認証で暗号化されます。",
+  "settingsDisableLock": "ロックを無効にする"
 }

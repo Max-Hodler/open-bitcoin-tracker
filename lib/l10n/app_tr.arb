@@ -77,7 +77,6 @@
   "settingsGraphTitle": "Grafik",
   "settingsRanges": "Aralıklar",
   "settingsReorderStacks": "Stack'leri yeniden sırala",
-  "settingsChart": "Göster",
   "settingsPriceDelta": "Fiyat değişimini göster",
   "settingsScale": "Ölçek",
   "settingsScaleLinear": "Doğrusal",
@@ -190,5 +189,6 @@
   "stackDetailWhenBtcReaches": "BTC ulaştığında",
   "stackDetailWillBeWorth": "Bu stack değeri olacak",
   "settingsEnableLock": "Kilidi etkinleştir",
-  "settingsEnableLockHint": "Yığınlarınız gizlenecek ve PIN veya biyometri ile şifrelenecek."
+  "settingsEnableLockHint": "Yığınlarınız gizlenecek ve PIN veya biyometri ile şifrelenecek.",
+  "settingsDisableLock": "Kilidi devre dışı bırak"
 }

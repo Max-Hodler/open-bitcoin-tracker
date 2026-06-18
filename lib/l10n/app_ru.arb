@@ -77,7 +77,6 @@
   "settingsGraphTitle": "График",
   "settingsRanges": "Диапазоны",
   "settingsReorderStacks": "Порядок стеков",
-  "settingsChart": "Показывать",
   "settingsPriceDelta": "Показывать изменение цены",
   "settingsScale": "Шкала",
   "settingsScaleLinear": "Линейная",
@@ -190,5 +189,6 @@
   "stackDetailWhenBtcReaches": "Когда BTC достигнет",
   "stackDetailWillBeWorth": "Этот stack будет стоить",
   "settingsEnableLock": "Включить блокировку",
-  "settingsEnableLockHint": "Ваши стеки будут скрыты и зашифрованы с помощью PIN-кода или биометрии."
+  "settingsEnableLockHint": "Ваши стеки будут скрыты и зашифрованы с помощью PIN-кода или биометрии.",
+  "settingsDisableLock": "Отключить блокировку"
 }

@@ -77,7 +77,6 @@
   "settingsGraphTitle": "Biểu đồ",
   "settingsRanges": "Phạm vi",
   "settingsReorderStacks": "Sắp xếp stack",
-  "settingsChart": "Hiển thị",
   "settingsPriceDelta": "Hiển thị thay đổi giá",
   "settingsScale": "Thang đo",
   "settingsScaleLinear": "Tuyến tính",
@@ -190,5 +189,6 @@
   "stackDetailWhenBtcReaches": "Khi BTC đạt",
   "stackDetailWillBeWorth": "Stack này sẽ trị giá",
   "settingsEnableLock": "Bật khóa",
-  "settingsEnableLockHint": "Các stack của bạn sẽ được ẩn và mã hóa bằng PIN hoặc sinh trắc học."
+  "settingsEnableLockHint": "Các stack của bạn sẽ được ẩn và mã hóa bằng PIN hoặc sinh trắc học.",
+  "settingsDisableLock": "Tắt khóa"
 }
