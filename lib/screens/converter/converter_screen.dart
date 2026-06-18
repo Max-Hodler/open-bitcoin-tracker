@@ -792,9 +792,9 @@ class _ArrowStack extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.arrow_downward, size: 18, color: scheme.onSurface),
+        Icon(Icons.arrow_downward, size: 22, color: scheme.onSurfaceVariant),
         const SizedBox(width: 2),
-        Icon(Icons.arrow_upward, size: 18, color: scheme.onSurface),
+        Icon(Icons.arrow_upward, size: 22, color: scheme.onSurfaceVariant),
       ],
     );
   }
