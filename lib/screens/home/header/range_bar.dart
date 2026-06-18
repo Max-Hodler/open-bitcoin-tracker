@@ -290,6 +290,14 @@ class _RangeBarState extends State<RangeBar>
     }
   }
 
+  void _onPillDragCancel() {
+    setState(() {
+      _dragLeft = null;
+      _dragStartIndex = -1;
+      _dragHoverIndex = -1;
+    });
+  }
+
   // Activates the range mounted in slot [index] (row order: days, weeks,
   // months, years overflow slots, then All). Reads each overflow slot's current
   // value from the notifier so a drag selects exactly what tapping that chip
@@ -630,11 +638,9 @@ class _RangeBarState extends State<RangeBar>
                                   child: AnimatedOpacity(
                                     duration: const Duration(milliseconds: 150),
                                     curve: Curves.easeOut,
-                                    // Chevrons stay visible until the user
-                                    // performs a vertical swipe on the pill.
-                                    // Tapping another range or navigating
-                                    // away must not hide them.
-                                    opacity: hintVisible ? 1 : 0,
+                                    // Chevrons stay visible on all slots that
+                                    // support swiping (slots 0-3).
+                                    opacity: (selectedIndex >= 0 && selectedIndex < 4) ? 1 : 0,
                                     child: Icon(
                                       Icons.keyboard_arrow_up_rounded,
                                       size: 16,
@@ -652,7 +658,7 @@ class _RangeBarState extends State<RangeBar>
                                     duration: const Duration(milliseconds: 150),
                                     curve: Curves.easeOut,
                                     // Same logic as the up-chevron above.
-                                    opacity: hintVisible ? 1 : 0,
+                                    opacity: (selectedIndex >= 0 && selectedIndex < 4) ? 1 : 0,
                                     child: Icon(
                                       Icons.keyboard_arrow_down_rounded,
                                       size: 16,
@@ -791,6 +797,7 @@ class _RangeBarState extends State<RangeBar>
                                 _onPillDragStart(selectedIndex, d),
                             onHorizontalDragUpdate: _onPillDragUpdate,
                             onHorizontalDragEnd: _onPillDragEnd,
+                            onHorizontalDragCancel: _onPillDragCancel,
                           ),
                         ),
                       ],
