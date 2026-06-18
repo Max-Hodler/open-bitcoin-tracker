@@ -236,8 +236,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: AddStackIconButton(onTap: _onAddStackTap),
                     ),
                   ),
-                  const SizedBox(width: 20),
-                  const StacksOverflowButton(),
+                  // The overflow menu only offers actions that need at least one
+                  // stack (lock, portfolio total, reorder), so it's hidden — along
+                  // with its leading spacer — when there are no stack cards.
+                  if (stacks.isNotEmpty) ...[
+                    const SizedBox(width: 20),
+                    const StacksOverflowButton(),
+                  ],
                 ],
               ),
             ),
