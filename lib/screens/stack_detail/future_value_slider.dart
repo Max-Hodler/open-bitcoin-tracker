@@ -204,7 +204,7 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
         const SizedBox(height: AppSpacing.xs),
         Center(
           child: Text(
-            formatFiat(value, widget.currency, decimalsUnder10: false).full,
+            formatFiat(value, widget.currency, decimalsUnder10: false).tight,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: AppTypography.title.copyWith(
