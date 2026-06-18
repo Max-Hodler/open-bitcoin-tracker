@@ -154,6 +154,7 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
                 l10n.stackDetailWhenBtcReaches,
                 style: AppTypography.body.copyWith(
                   fontSize: 16,
+                  fontWeight: FontWeight.w500,
                   color: cs.onSurfaceVariant,
                 ),
               ),
