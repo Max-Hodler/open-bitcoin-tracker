@@ -64,7 +64,7 @@ Future<void> showStackLockSettingsSheet(BuildContext context) {
                       ),
                     ),
                   ),
-                  if (!isOn)
+                  if (!isOn) ...[
                     SettingsGroup(
                       children: [
                         SettingsActionTile(
@@ -73,7 +73,21 @@ Future<void> showStackLockSettingsSheet(BuildContext context) {
                               StacksSettingsActions.openModePicker(ctx, app),
                         ),
                       ],
-                    )
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.xs,
+                      ),
+                      child: Text(
+                        l10n.settingsEnableLockHint,
+                        style: AppTypography.body.copyWith(
+                          fontSize: 13,
+                          color: cs.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ]
                   else ...[
                     SettingsGroup(
                       children: [

@@ -410,6 +410,10 @@
   "@settingsEnableLock": {
     "description": "Button on the Lock settings screen, shown when locking is off. Tapping opens the auth-mode picker to turn locking on."
   },
+  "settingsEnableLockHint": "Your stacks will be hidden and encrypted with a PIN or biometrics.",
+  "@settingsEnableLockHint": {
+    "description": "Explanatory text shown below the Enable lock button when no lock is configured."
+  },
   "settingsDisableLock": "Disable lock",
   "@settingsDisableLock": {
     "description": "Button on the Lock settings screen, shown when locking is on. Tapping turns stack locking off."
