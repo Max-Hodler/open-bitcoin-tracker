@@ -188,5 +188,6 @@
   "stackDetailYearAgo": "{count, plural, =1{1 anno fa} other{{count} anni fa}}",
   "stackDetailWhenBtcReaches": "Quando BTC raggiunge",
   "stackDetailWillBeWorth": "Questo stack varrà",
+  "settingsEnableLock": "Abilita blocco",
   "settingsEnableLockHint": "I tuoi stack saranno nascosti e crittografati con un PIN o la biometria."
 }
