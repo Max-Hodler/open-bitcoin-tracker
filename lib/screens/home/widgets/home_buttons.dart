@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -351,7 +350,6 @@ enum _OverflowAction {
   theme,
   bitcoinUnit,
   about,
-  screenshot,
 }
 
 
@@ -562,29 +560,6 @@ class _OverflowButtonState extends State<OverflowButton> {
             ),
           ),
         ),
-        // Debug-only screenshot mode. Gated to debug builds — the tree-shaker
-        // drops this branch from release/profile binaries, so it never ships.
-        // Freezes the live price (hiding the delta badge) and swaps in the demo
-        // portfolio for clean marketing screenshots.
-        if (kDebugMode)
-          PopupMenuItem(
-            value: _OverflowAction.screenshot,
-            child: IgnorePointer(
-              child: Row(
-                children: [
-                  Icon(
-                    context.read<LivePriceController>().screenshotMode
-                        ? Icons.check_box
-                        : Icons.check_box_outline_blank,
-                    size: 22,
-                    color: cs.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: 12),
-                  Text('Screenshot mode', style: itemStyle),
-                ],
-              ),
-            ),
-          ),
       ],
       ),
     );
@@ -628,14 +603,6 @@ class _OverflowButtonState extends State<OverflowButton> {
         }
       case _OverflowAction.bitcoinUnit:
         break;
-      case _OverflowAction.screenshot:
-        // Drive both controllers in lockstep: the live price freezes at the
-        // fixed figure and the stack list swaps to the demo set, so the whole
-        // home screen is camera-ready in one tap.
-        final live = context.read<LivePriceController>();
-        final next = !live.screenshotMode;
-        live.screenshotMode = next;
-        context.read<AppStateNotifier>().screenshotMode = next;
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -245,6 +246,29 @@ class _AboutScreenState extends State<AboutScreen> {
                 ),
               ],
             ),
+            // Debug-only screenshot mode. Gated to debug builds — the
+            // tree-shaker drops this branch from release/profile binaries, so
+            // it never ships. Freezes the live price (hiding the delta badge)
+            // and swaps in the demo portfolio for clean marketing screenshots.
+            if (kDebugMode) ...[
+              const SizedBox(height: AppSpacing.lg),
+              SettingsGroup(
+                children: [
+                  SettingsToggleTile(
+                    label: 'Screenshot mode',
+                    value: context.watch<LivePriceController>().screenshotMode,
+                    enabled: true,
+                    onChanged: (next) {
+                      // Drive both controllers in lockstep: the live price
+                      // freezes at the fixed figure and the stack list swaps to
+                      // the demo set, so the whole home screen is camera-ready.
+                      context.read<LivePriceController>().screenshotMode = next;
+                      context.read<AppStateNotifier>().screenshotMode = next;
+                    },
+                  ),
+                ],
+              ),
+            ],
             const SizedBox(height: AppSpacing.xl),
             _Footer(
               version: l10n.aboutVersion(_appVersion),
