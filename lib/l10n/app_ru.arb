@@ -191,5 +191,6 @@
   "stackDetailWillBeWorth": "Этот stack будет стоить",
   "settingsEnableLock": "Включить блокировку",
   "settingsEnableLockHint": "Ваши стеки будут скрыты и зашифрованы с помощью PIN-кода или биометрии.",
-  "settingsDisableLock": "Отключить блокировку"
+  "settingsDisableLock": "Отключить блокировку",
+  "converterCopiedValue": "{value} скопировано"
 }

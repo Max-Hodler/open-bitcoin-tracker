@@ -191,5 +191,6 @@
   "stackDetailWillBeWorth": "このstackの価値",
   "settingsEnableLock": "ロックを有効にする",
   "settingsEnableLockHint": "スタックは非表示になり、PINまたは生体認証で暗号化されます。",
-  "settingsDisableLock": "ロックを無効にする"
+  "settingsDisableLock": "ロックを無効にする",
+  "converterCopiedValue": "{value} をコピーしました"
 }

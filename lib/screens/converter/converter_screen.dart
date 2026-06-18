@@ -308,11 +308,12 @@ class ConverterScreen extends StatelessWidget {
     await Clipboard.setData(ClipboardData(text: raw));
     AppHaptics.medium();
     if (!context.mounted) return;
+    final l10n = AppLocalizations.of(context);
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text('Copied $raw'),
+          content: Text(l10n.converterCopiedValue(raw)),
           duration: const Duration(milliseconds: 1200),
           behavior: SnackBarBehavior.floating,
         ),

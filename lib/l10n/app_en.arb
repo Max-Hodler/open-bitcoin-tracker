@@ -833,5 +833,15 @@
   "stackDetailWillBeWorth": "This stack will be worth",
   "@stackDetailWillBeWorth": {
     "description": "Label above the projected fiat value on the future-value slider card on the stack detail screen."
+  },
+  "converterCopiedValue": "Copied {value}",
+  "@converterCopiedValue": {
+    "description": "Snackbar message shown when a value is copied on the converter screen. {value} is the formatted amount copied.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }
+

@@ -191,5 +191,6 @@
   "stackDetailWillBeWorth": "Bu stack değeri olacak",
   "settingsEnableLock": "Kilidi etkinleştir",
   "settingsEnableLockHint": "Yığınlarınız gizlenecek ve PIN veya biyometri ile şifrelenecek.",
-  "settingsDisableLock": "Kilidi devre dışı bırak"
+  "settingsDisableLock": "Kilidi devre dışı bırak",
+  "converterCopiedValue": "{value} kopyalandı"
 }
