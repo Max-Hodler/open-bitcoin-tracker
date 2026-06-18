@@ -640,6 +640,10 @@
   "@stackMenuChangeName": {
     "description": "Stack overflow menu action: rename the stack."
   },
+  "stackMenuChangeAvatar": "Change avatar",
+  "@stackMenuChangeAvatar": {
+    "description": "Stack overflow menu action: change the avatar/color/image of the stack."
+  },
   "rangePickerLongTitle": "Select range",
   "@rangePickerLongTitle": {
     "description": "Title of the dialog that lets the user pick which year range to mount on the overflow chip (1Y..15Y)."

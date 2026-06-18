@@ -147,6 +147,7 @@
   "homeUnlockStacks": "Разблокировать Stacks",
   "stackMenuUpdateAmount": "Изменить количество",
   "stackMenuChangeName": "Изменить название",
+  "stackMenuChangeAvatar": "Изменить аватар",
   "rangePickerLongTitle": "Выберите диапазон",
   "rangePickerYearsFull": "{count, plural, =1{1 год} few{{count} года} many{{count} лет} other{{count} лет}}",
   "rangePickerMonthsFull": "{count, plural, =1{1 месяц} few{{count} месяца} many{{count} месяцев} other{{count} месяцев}}",

@@ -147,6 +147,7 @@
   "homeUnlockStacks": "Stacks'i aç",
   "stackMenuUpdateAmount": "Miktarı güncelle",
   "stackMenuChangeName": "İsmi değiştir",
+  "stackMenuChangeAvatar": "Avatarı değiştir",
   "rangePickerLongTitle": "Aralık seçin",
   "rangePickerYearsFull": "{count, plural, other{{count} yıl}}",
   "rangePickerMonthsFull": "{count, plural, other{{count} ay}}",

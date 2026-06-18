@@ -147,6 +147,7 @@
   "homeUnlockStacks": "Stacks のロックを解除",
   "stackMenuUpdateAmount": "数量を更新",
   "stackMenuChangeName": "名前を変更",
+  "stackMenuChangeAvatar": "アバターを変更",
   "rangePickerLongTitle": "期間を選択",
   "rangePickerYearsFull": "{count, plural, other{{count}年}}",
   "rangePickerMonthsFull": "{count, plural, other{{count}か月}}",

@@ -15,6 +15,7 @@ import '../../theme/theme.dart';
 import '../../widgets/menu_icon_square.dart';
 import '../../widgets/stack_actions.dart';
 import '../../widgets/stack_avatar.dart';
+import '../../widgets/avatar_sheet.dart';
 import '../edit_stack_screens.dart';
 import 'future_value_slider.dart';
 import 'stack_detail_shared.dart';
@@ -32,7 +33,7 @@ class StackDetailScreen extends StatefulWidget {
   State<StackDetailScreen> createState() => _StackDetailScreenState();
 }
 
-enum _StackAction { edit, rename, delete }
+enum _StackAction { edit, rename, changeAvatar, delete }
 
 class _StackDetailScreenState extends State<StackDetailScreen> {
   final _menuKey = GlobalKey<PopupMenuButtonState<_StackAction>>();
@@ -56,6 +57,29 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
         await Navigator.of(context).push(MaterialPageRoute<void>(
           builder: (_) => EditStackNameScreen(stackId: stack.id),
         ));
+      case _StackAction.changeAvatar:
+        if (!mounted) return;
+        final app = context.read<AppStateNotifier>();
+        await showAvatarSheet(
+          context,
+          title: stack.name,
+          currentImageData: stack.imageData,
+          currentColorKey: stack.colorKey,
+          onColorSet: (key) => app.updateStack(
+            stack.id,
+            (s) => key == null
+                ? s.copyWith(clearColor: true)
+                : s.copyWith(colorKey: key),
+          ),
+          onImageSet: (base64) => app.updateStack(
+            stack.id,
+            (s) => s.copyWith(imageData: base64),
+          ),
+          onImageCleared: () => app.updateStack(
+            stack.id,
+            (s) => s.copyWith(clearImage: true),
+          ),
+        );
       case _StackAction.delete:
         if (!mounted) return;
         final confirm = await showDeleteStackDialog(context);
@@ -191,6 +215,16 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
                     ),
                     const SizedBox(width: 12),
                     Text(l10n.stackMenuChangeName, style: itemStyle),
+                  ]),
+                ),
+                PopupMenuItem(
+                  value: _StackAction.changeAvatar,
+                  child: Row(children: [
+                    MenuIconSquare(
+                      icon: Icon(Icons.face_outlined, size: 22, color: cs.onSurfaceVariant),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(l10n.stackMenuChangeAvatar, style: itemStyle),
                   ]),
                 ),
                 const PopupMenuDivider(),

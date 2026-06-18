@@ -147,6 +147,7 @@
   "homeUnlockStacks": "Desbloquear stacks",
   "stackMenuUpdateAmount": "Actualizar cantidad",
   "stackMenuChangeName": "Cambiar nombre",
+  "stackMenuChangeAvatar": "Cambiar avatar",
   "rangePickerLongTitle": "Selecciona el rango",
   "rangePickerYearsFull": "{count, plural, =1{1 año} other{{count} años}}",
   "rangePickerMonthsFull": "{count, plural, =1{1 mes} other{{count} meses}}",
