@@ -996,7 +996,9 @@ class _SettingsCircle extends StatelessWidget {
       },
       child: DecoratedBox(
         decoration: BoxDecoration(color: fill, shape: BoxShape.circle),
-        child: Icon(Icons.tune, size: 16, color: color),
+        child: Center(
+          child: Icon(Icons.tune, size: 16, color: color),
+        ),
       ),
     );
   }
