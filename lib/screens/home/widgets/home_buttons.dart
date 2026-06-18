@@ -418,7 +418,6 @@ class _OverflowButtonState extends State<OverflowButton> {
     );
 
     final app = context.watch<AppStateNotifier>();
-    final p = context.palette;
 
     Widget bitcoinUnitToggleRow() => StatefulBuilder(
       builder: (ctx, setLocal) {
@@ -434,7 +433,7 @@ class _OverflowButtonState extends State<OverflowButton> {
         }
 
         Color unitColor(BtcDisplayMode unit) =>
-            mode == unit ? p.bitcoinOrange : cs.onSurfaceVariant;
+            mode == unit ? cs.onSurface : cs.onSurfaceVariant;
 
         return IconTheme.merge(
           data: IconThemeData(color: cs.onSurfaceVariant, opacity: 1),
@@ -457,7 +456,6 @@ class _OverflowButtonState extends State<OverflowButton> {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Text(l10n.unitLabel, style: itemStyle),
                     Text(
                       l10n.bitcoinDisplayModeBtc,
                       style: itemStyle.copyWith(

@@ -362,10 +362,6 @@
   "@settingsBitcoinDisplayMode": {
     "description": "Settings row label for the segmented control that chooses how Bitcoin amounts are displayed across the app: as satoshi counts ('sats') or as BTC with up to 8 decimal places."
   },
-  "unitLabel": "Unit: ",
-  "@unitLabel": {
-    "description": "Label prefix in the home overflow menu showing the active display unit (BTC or sats)."
-  },
   "bitcoinDisplayModeSats": "Sats",
   "@bitcoinDisplayModeSats": {
     "description": "Segment label for the satoshi display mode. Short ('sats') because it sits in a compact segmented control."
