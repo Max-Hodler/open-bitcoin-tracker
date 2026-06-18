@@ -162,10 +162,9 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
                 iconSize: 22,
                 constraints: const BoxConstraints(),
                 style: IconButton.styleFrom(
-                  backgroundColor: cs.surface,
+                  backgroundColor: Colors.transparent,
                   foregroundColor: cs.onSurfaceVariant,
-                  shadowColor: Colors.black.withValues(alpha: 0.12),
-                  elevation: 1.5,
+                  elevation: 0,
                   fixedSize: const Size(36, 36),
                   minimumSize: const Size(36, 36),
                   maximumSize: const Size(36, 36),
