@@ -241,12 +241,6 @@ Future<StacksLockTimeout?> showTimeoutPicker(
               ),
               const SizedBox(height: 12),
               for (final entry in StacksLockTimeout.values.asMap().entries) ...[
-                if (entry.key > 0)
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Theme.of(ctx).colorScheme.outlineVariant,
-                  ),
                 LockTimeoutRow(
                   key: ValueKey('stacksLockTimeout-${entry.value.code}'),
                   timeout: entry.value,
