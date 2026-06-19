@@ -51,9 +51,9 @@ Future<void> showStackLockSettingsSheet(BuildContext context) {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(
+                    padding: EdgeInsets.only(
                       left: AppSpacing.xs,
-                      bottom: AppSpacing.md,
+                      bottom: isOn ? AppSpacing.md : AppSpacing.xs,
                     ),
                     child: Text(
                       l10n.settingsLockStacksTitle,
@@ -65,19 +65,12 @@ Future<void> showStackLockSettingsSheet(BuildContext context) {
                     ),
                   ),
                   if (!isOn) ...[
-                    SettingsGroup(
-                      children: [
-                        SettingsActionTile(
-                          label: l10n.settingsEnableLock,
-                          onTap: () =>
-                              StacksSettingsActions.openModePicker(ctx, app),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.xs,
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.xs,
+                        0,
+                        AppSpacing.xs,
+                        AppSpacing.md,
                       ),
                       child: Text(
                         l10n.settingsEnableLockHint,
@@ -86,6 +79,15 @@ Future<void> showStackLockSettingsSheet(BuildContext context) {
                           color: cs.onSurfaceVariant,
                         ),
                       ),
+                    ),
+                    SettingsGroup(
+                      children: [
+                        SettingsActionTile(
+                          label: l10n.settingsEnableLock,
+                          onTap: () =>
+                              StacksSettingsActions.openModePicker(ctx, app),
+                        ),
+                      ],
                     ),
                   ]
                   else ...[
