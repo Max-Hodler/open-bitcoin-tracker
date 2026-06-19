@@ -196,7 +196,7 @@ class StacksOverflowButton extends StatelessWidget {
           children: [
             MenuIconSquare(icon: Icon(icon, size: 22, color: fg)),
             const SizedBox(width: 12),
-            Expanded(child: Text(label, style: enabled ? itemStyle : disabledItemStyle)),
+            Text(label, style: enabled ? itemStyle : disabledItemStyle),
             if (trailing != null) ...[const SizedBox(width: 12), trailing],
           ],
         ),
@@ -242,35 +242,11 @@ class StacksOverflowButton extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        l10n.settingsPortfolioTotal,
-                        style: itemStyle,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    SizedBox(
-                      height: 24,
-                      width: 36,
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Switch(
-                          value: app.showPortfolio,
-                          onChanged: (_) => flip(),
-                          trackColor: WidgetStateProperty.resolveWith(
-                            (states) => states.contains(WidgetState.selected)
-                                ? p.bitcoinOrange.withValues(alpha: 0.5)
-                                : null,
-                          ),
-                          thumbColor: WidgetStateProperty.resolveWith(
-                            (states) => states.contains(WidgetState.selected)
-                                ? p.bitcoinOrange
-                                : null,
-                          ),
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                        ),
-                      ),
+                    Text(
+                      app.showPortfolio
+                          ? l10n.settingsPortfolioTotalHide
+                          : l10n.settingsPortfolioTotal,
+                      style: itemStyle,
                     ),
                   ],
                 ),
@@ -292,7 +268,7 @@ class StacksOverflowButton extends StatelessWidget {
         onOpened: AppHaptics.light,
         onSelected: (action) => _handleAction(context, action),
         padding: EdgeInsets.zero,
-        constraints: const BoxConstraints(minWidth: 220),
+        constraints: const BoxConstraints(minWidth: 48),
         popUpAnimationStyle: const AnimationStyle(
           duration: Duration(milliseconds: 120),
         ),
@@ -343,17 +319,6 @@ class StacksOverflowButton extends StatelessWidget {
                 Icons.calculate_outlined,
                 l10n.settingsPortfolioTotal,
                 enabled: false,
-                trailing: SizedBox(
-                  height: 24,
-                  width: 36,
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: Switch(
-                      value: app.showPortfolio,
-                      onChanged: null,
-                    ),
-                  ),
-                ),
               ),
             ),
           if (canReorder)

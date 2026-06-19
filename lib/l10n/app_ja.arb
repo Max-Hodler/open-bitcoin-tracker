@@ -88,6 +88,7 @@
   "settingsChartHeightTall": "L",
   "settingsChartHeightXl": "XL",
   "settingsPortfolioTotal": "合計を表示",
+  "settingsPortfolioTotalHide": "合計を非表示",
   "settingsBitcoinDisplayMode": "ビットコインの単位",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",

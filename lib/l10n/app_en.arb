@@ -356,7 +356,11 @@
   },
   "settingsPortfolioTotal": "Display total",
   "@settingsPortfolioTotal": {
-    "description": "Stacks settings toggle that shows or hides the portfolio total card on home (only visible with 2+ stacks)."
+    "description": "Menu item label shown when the portfolio total is hidden; tapping it reveals the total card (only visible with 2+ stacks)."
+  },
+  "settingsPortfolioTotalHide": "Hide total",
+  "@settingsPortfolioTotalHide": {
+    "description": "Menu item label shown when the portfolio total is visible; tapping it hides the total card."
   },
   "settingsBitcoinDisplayMode": "Bitcoin unit",
   "@settingsBitcoinDisplayMode": {

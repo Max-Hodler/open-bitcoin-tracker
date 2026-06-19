@@ -88,6 +88,7 @@
   "settingsChartHeightTall": "L",
   "settingsChartHeightXl": "XL",
   "settingsPortfolioTotal": "Toplamı göster",
+  "settingsPortfolioTotalHide": "Toplamı gizle",
   "settingsBitcoinDisplayMode": "Bitcoin birimi",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",

@@ -88,6 +88,7 @@
   "settingsChartHeightTall": "L",
   "settingsChartHeightXl": "XL",
   "settingsPortfolioTotal": "Показывать итог",
+  "settingsPortfolioTotalHide": "Скрыть итог",
   "settingsBitcoinDisplayMode": "Единица Bitcoin",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",

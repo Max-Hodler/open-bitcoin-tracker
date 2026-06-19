@@ -88,6 +88,7 @@
   "settingsChartHeightTall": "L",
   "settingsChartHeightXl": "XL",
   "settingsPortfolioTotal": "Hiển thị tổng",
+  "settingsPortfolioTotalHide": "Ẩn tổng",
   "settingsBitcoinDisplayMode": "Đơn vị Bitcoin",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
