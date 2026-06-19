@@ -842,6 +842,10 @@
         "type": "String"
       }
     }
+  },
+  "settingsFullScreenPrice": "Full screen price",
+  "@settingsFullScreenPrice": {
+    "description": "Row in the price bottom sheet that opens a landscape full-screen view showing only the live price. Tapping anywhere in that view returns home."
   }
 }
 

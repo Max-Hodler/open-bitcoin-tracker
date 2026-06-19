@@ -8,6 +8,7 @@ import '../../../state/state.dart';
 import '../../../theme/theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
 
+import '../../full_screen_price/full_screen_price_screen.dart';
 import '../../settings/currency_picker_screen.dart';
 import '../../settings/range_config_bar.dart';
 import '../../settings/settings_widgets.dart';
@@ -295,6 +296,21 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
                             value: app.showPriceDelta,
                             enabled: true,
                             onChanged: app.setShowPriceDelta,
+                          ),
+                          SettingsPickerTile(
+                            label: l10n.settingsFullScreenPrice,
+                            value: '',
+                            onTap: () {
+                              Navigator.of(ctx).pop();
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (_) => FullScreenPriceScreen(
+                                    currency: widget.currency,
+                                  ),
+                                ),
+                              );
+                            },
+                            trailingIcon: Icons.fullscreen,
                           ),
                         ],
                       ),

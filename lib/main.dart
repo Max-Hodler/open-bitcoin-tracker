@@ -35,6 +35,13 @@ const List<DeviceOrientation> kPortraitOrientations = [
   DeviceOrientation.portraitDown,
 ];
 
+/// Landscape-only orientations for screens that must stay horizontal
+/// (e.g. full-screen price mode).
+const List<DeviceOrientation> kLandscapeOrientations = [
+  DeviceOrientation.landscapeLeft,
+  DeviceOrientation.landscapeRight,
+];
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations(kDefaultOrientations);

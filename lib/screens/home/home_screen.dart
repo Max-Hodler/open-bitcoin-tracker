@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../data/app_enums.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../services/app_haptics.dart';
+import '../../services/route_observer.dart';
 import '../../services/stacks_unlock_orchestrator.dart';
 import '../../state/state.dart';
 import '../../theme/theme.dart';
@@ -38,7 +39,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, RouteAware {
   final ScrollController _scrollCtrl = ScrollController();
   // 0..1 hairline strength below the pinned header, derived from scroll
   // offset. Ramped over the first 24px of scroll so the line eases in
@@ -102,8 +103,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   bool _needsData(AppStateNotifier app) => app.showChart;
 
-  void _applySystemUI({required bool landscape}) {
-    if (_appliedLandscape == landscape) return;
+  void _applySystemUI({required bool landscape, bool force = false}) {
+    if (!force && _appliedLandscape == landscape) return;
     _appliedLandscape = landscape;
     if (landscape) {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
@@ -149,6 +150,10 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is ModalRoute<void>) {
+      appRouteObserver.subscribe(this, route);
+    }
     final isLandscape =
         MediaQuery.orientationOf(context) == Orientation.landscape;
     _applySystemUI(landscape: isLandscape);
@@ -162,8 +167,21 @@ class _HomeScreenState extends State<HomeScreen>
     _prevNeedsData = nowNeeds;
   }
 
+  /// A pushed route (e.g. full-screen price mode) just popped back to the home
+  /// screen. That route may have changed the system UI mode out from under us,
+  /// so re-assert the mode the current orientation calls for — forcing it past
+  /// the _appliedLandscape guard, since from our view nothing changed.
+  @override
+  void didPopNext() {
+    if (!mounted) return;
+    final isLandscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
+    _applySystemUI(landscape: isLandscape, force: true);
+  }
+
   @override
   void dispose() {
+    appRouteObserver.unsubscribe(this);
     _scrollCtrl.removeListener(_onScroll);
     _scrollCtrl.dispose();
     _headerHairline.dispose();
