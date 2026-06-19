@@ -5,6 +5,7 @@ import '../../data/app_enums.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../state/state.dart';
 import '../../theme/theme.dart';
+import '../../widgets/sheet_safe_area.dart';
 import 'settings_dialogs.dart';
 import 'settings_widgets.dart';
 import 'stacks_settings_actions.dart';
@@ -33,8 +34,7 @@ Future<void> showStackLockSettingsSheet(BuildContext context) {
     ),
     builder: (ctx) {
       final l10n = AppLocalizations.of(ctx);
-      return SafeArea(
-        top: false,
+      return SheetSafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.md,

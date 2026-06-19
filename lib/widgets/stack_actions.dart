@@ -4,6 +4,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../services/app_haptics.dart';
 import '../theme/theme.dart';
 import 'menu_action_tile.dart';
+import 'sheet_safe_area.dart';
 
 /// The edit/rename/delete actions available for a stack, shared between the
 /// home card flow and the stack detail screen so both present an identical
@@ -30,8 +31,7 @@ Future<StackAction?> showStackActionsSheet(
     ),
     builder: (ctx) {
       final l10n = AppLocalizations.of(ctx);
-      return SafeArea(
-        top: false,
+      return SheetSafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.md,

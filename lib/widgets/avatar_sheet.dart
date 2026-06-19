@@ -9,6 +9,7 @@ import '../services/app_haptics.dart';
 import '../services/stack_image_service.dart';
 import '../theme/theme.dart';
 import 'menu_action_tile.dart';
+import 'sheet_safe_area.dart';
 import 'stack_avatar.dart';
 
 /// Open the avatar bottom sheet — used both by per-stack cards and by the
@@ -48,8 +49,7 @@ Future<void> showAvatarSheet(
     builder: (ctx) {
       final l10n = AppLocalizations.of(ctx);
       return StatefulBuilder(
-        builder: (ctx, setState) => SafeArea(
-          top: false,
+        builder: (ctx, setState) => SheetSafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.md,

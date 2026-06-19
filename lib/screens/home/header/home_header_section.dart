@@ -11,6 +11,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../settings/currency_picker_screen.dart';
 import '../../settings/range_config_bar.dart';
 import '../../settings/settings_widgets.dart';
+import '../../../widgets/sheet_safe_area.dart';
 import '../chart_slice.dart';
 import 'home_header.dart';
 
@@ -225,8 +226,7 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
           builder: (ctx) {
             final l10n = AppLocalizations.of(ctx);
             return Consumer<AppStateNotifier>(
-              builder: (ctx, app, _) => SafeArea(
-                top: false,
+              builder: (ctx, app, _) => SheetSafeArea(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -323,8 +323,7 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
           builder: (ctx) {
             final l10n = AppLocalizations.of(ctx);
             return Consumer<AppStateNotifier>(
-              builder: (ctx, app, _) => SafeArea(
-                top: false,
+              builder: (ctx, app, _) => SheetSafeArea(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
