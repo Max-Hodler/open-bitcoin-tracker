@@ -210,12 +210,19 @@ class _HomeHeaderState extends State<HomeHeader> {
     );
 
     if (isLandscape) {
+      // 16px breathing room on all sides — but the graph stays edge to edge.
+      // The padding wraps the price row (top + sides) and the range bar
+      // (bottom + sides) while the chart Expanded fills the gap untouched.
+      const pad = 16.0;
       return LayoutBuilder(
         builder: (context, constraints) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              priceRow,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(pad, pad, pad, 0),
+                child: priceRow,
+              ),
               const SizedBox(height: 8),
               Expanded(
                 child: Stack(
@@ -233,7 +240,10 @@ class _HomeHeaderState extends State<HomeHeader> {
                   ],
                 ),
               ),
-              rangeBar,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(pad, 0, pad, pad),
+                child: rangeBar,
+              ),
             ],
           );
         },
