@@ -60,7 +60,7 @@ class TotalDetailScreen extends StatelessWidget {
             StackAvatar(
               name: l10n.totalCardName,
               imageData: app.state.totalImageData,
-              colorKey: app.state.totalColorKey,
+              colorKey: app.state.totalColorKey ?? 'grey',
               size: 36,
             ),
             const SizedBox(width: AppSpacing.sm),
