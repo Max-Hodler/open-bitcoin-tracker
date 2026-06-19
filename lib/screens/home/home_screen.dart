@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/app_enums.dart';
@@ -44,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen>
   // instead of popping; rebuilding only the line keeps the rest static.
   final ValueNotifier<double> _headerHairline = ValueNotifier(0);
   bool _prevNeedsData = true;
+  bool? _appliedLandscape;
 
   double? _headerHeight;
   double? _stacksTitleHeight;
@@ -98,10 +100,16 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
-  bool _needsData(AppStateNotifier app) {
-    final isLandscape =
-        MediaQuery.orientationOf(context) == Orientation.landscape;
-    return app.showChart || isLandscape;
+  bool _needsData(AppStateNotifier app) => app.showChart;
+
+  void _applySystemUI({required bool landscape}) {
+    if (_appliedLandscape == landscape) return;
+    _appliedLandscape = landscape;
+    if (landscape) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    } else {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    }
   }
 
   @override
@@ -141,8 +149,11 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    final isLandscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
+    _applySystemUI(landscape: isLandscape);
     final app = context.read<AppStateNotifier>();
-    final nowNeeds = _needsData(app);
+    final nowNeeds = _needsData(app) || isLandscape;
     if (nowNeeds && !_prevNeedsData) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) _maybeFetchIntraday(app.btcRange);
@@ -157,6 +168,7 @@ class _HomeScreenState extends State<HomeScreen>
     _scrollCtrl.dispose();
     _headerHairline.dispose();
     _chartHeightCtrl?.dispose();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.dispose();
   }
 
@@ -353,6 +365,13 @@ class _HomeScreenState extends State<HomeScreen>
       backgroundColor: cs.surfaceContainerLow,
       body: SafeArea(
         bottom: false,
+        // In landscape full-screen the chart and its controls flow behind the
+        // display cutout (front camera) — don't reserve the left/right safe
+        // insets that would otherwise push content off the cutout edge. The
+        // top inset is also gone since immersive mode hides the status bar.
+        top: !isLandscape,
+        left: !isLandscape,
+        right: !isLandscape,
         // Resync the hairline when the scrollable's extents change without a
         // scroll — toggling a home widget off in settings can shrink the
         // content below the fold without firing the controller's listener,
