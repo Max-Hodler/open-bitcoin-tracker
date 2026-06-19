@@ -38,6 +38,19 @@ abstract final class StacksSettingsActions {
     await _applyModeChange(context, app, app.stacksAuthMode, picked);
   }
 
+  /// Apply a directly-chosen auth mode, skipping the picker dialog. Used by the
+  /// lock settings sheet when the lock is off, where the two on-state options
+  /// are offered inline so first-time setup is a single tap. Routes through the
+  /// same [_applyModeChange] transition as [openModePicker].
+  static Future<void> selectMode(
+    BuildContext context,
+    AppStateNotifier app,
+    StacksAuthMode mode,
+  ) async {
+    if (mode == app.stacksAuthMode) return;
+    await _applyModeChange(context, app, app.stacksAuthMode, mode);
+  }
+
   static Future<void> openTimeoutPicker(
     BuildContext context,
     AppStateNotifier app,

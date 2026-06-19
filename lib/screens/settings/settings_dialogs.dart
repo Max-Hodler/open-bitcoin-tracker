@@ -4,6 +4,7 @@ import '../../data/app_enums.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../services/app_haptics.dart';
 import '../../theme/theme.dart';
+import '../../widgets/menu_icon_square.dart';
 import '../../widgets/orange_primary_button.dart';
 
 String authModeLabel(AppLocalizations l10n, StacksAuthMode m) {
@@ -14,6 +15,77 @@ String authModeLabel(AppLocalizations l10n, StacksAuthMode m) {
       return l10n.authModeDevice;
     case StacksAuthMode.pin:
       return l10n.authModePin;
+  }
+}
+
+IconData _authModeIcon(StacksAuthMode m) {
+  switch (m) {
+    case StacksAuthMode.off:
+      return Icons.lock_open;
+    case StacksAuthMode.device:
+      return Icons.fingerprint;
+    case StacksAuthMode.pin:
+      return Icons.pin;
+  }
+}
+
+/// Selectable list row for an auth mode: orange leading icon, label, and a
+/// trailing chevron. Tapping commits the choice. Used both by the change-mode
+/// dialog ([showAuthModePicker]) and inline in the lock settings sheet when the
+/// lock is still off, so first-time setup can pick a mode without the extra
+/// dialog hop.
+class AuthModeRow extends StatelessWidget {
+  const AuthModeRow({
+    super.key,
+    required this.mode,
+    required this.onTap,
+  });
+
+  final StacksAuthMode mode;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cs = Theme.of(context).colorScheme;
+    final radius = BorderRadius.circular(AppSpacing.radius);
+    return Material(
+      color: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: radius),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () {
+          AppHaptics.selection();
+          onTap();
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          child: Row(
+            children: [
+              MenuIconSquare(
+                icon: Icon(_authModeIcon(mode), size: 22, color: cs.onSurfaceVariant),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  authModeLabel(l10n, mode),
+                  style: AppTypography.title.copyWith(
+                    fontWeight: FontWeight.w400,
+                    color: cs.onSurface,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(
+                Icons.chevron_right,
+                size: 22,
+                color: cs.onSurfaceVariant,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -57,21 +129,24 @@ Future<StacksAuthMode?> showAuthModePicker(
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
-              const SizedBox(height: 20),
-              for (final m in StacksAuthMode.values)
-                if (m != StacksAuthMode.off) ...[
-                  OrangePrimaryButton(
-                    key: ValueKey('stacksAuthMode-${m.code}'),
-                    isValid: true,
-                    label: authModeLabel(l10n, m),
-                    height: 52,
-                    onTap: () {
-                      AppHaptics.selection();
-                      Navigator.of(ctx).pop(m);
-                    },
+              const SizedBox(height: 12),
+              for (final m in StacksAuthMode.values
+                  .where((m) => m != StacksAuthMode.off)
+                  .toList()
+                  .asMap()
+                  .entries) ...[
+                if (m.key > 0)
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: Theme.of(ctx).colorScheme.outlineVariant,
                   ),
-                  const SizedBox(height: 10),
-                ],
+                AuthModeRow(
+                  key: ValueKey('stacksAuthMode-${m.value.code}'),
+                  mode: m.value,
+                  onTap: () => Navigator.of(ctx).pop(m.value),
+                ),
+              ],
             ],
           ),
         ),

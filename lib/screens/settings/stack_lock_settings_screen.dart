@@ -56,7 +56,7 @@ Future<void> showStackLockSettingsSheet(BuildContext context) {
                       bottom: isOn ? AppSpacing.md : AppSpacing.xs,
                     ),
                     child: Text(
-                      l10n.settingsLockStacksTitle,
+                      isOn ? l10n.settingsLockStacksTitle : l10n.settingsLockStacksSetupTitle,
                       style: AppTypography.label.copyWith(
                         fontSize: 18,
                         color: cs.onSurface,
@@ -82,11 +82,14 @@ Future<void> showStackLockSettingsSheet(BuildContext context) {
                     ),
                     SettingsGroup(
                       children: [
-                        SettingsActionTile(
-                          label: l10n.settingsEnableLock,
-                          onTap: () =>
-                              StacksSettingsActions.openModePicker(ctx, app),
-                        ),
+                        for (final m in StacksAuthMode.values
+                            .where((m) => m != StacksAuthMode.off))
+                          AuthModeRow(
+                            key: ValueKey('stacksAuthMode-${m.code}'),
+                            mode: m,
+                            onTap: () => StacksSettingsActions.selectMode(
+                                ctx, app, m),
+                          ),
                       ],
                     ),
                   ]

@@ -189,7 +189,6 @@
   "stackDetailYearAgo": "{count} năm trước",
   "stackDetailWhenBtcReaches": "Khi BTC đạt",
   "stackDetailWillBeWorth": "Stack này sẽ trị giá",
-  "settingsEnableLock": "Bật khóa",
   "settingsEnableLockHint": "Các stack của bạn sẽ được ẩn và mã hóa bằng PIN hoặc sinh trắc học.",
   "settingsDisableLock": "Tắt khóa",
   "converterCopiedValue": "Đã sao chép {value}"

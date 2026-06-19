@@ -402,15 +402,15 @@
   "@settingsLockStacksTitle": {
     "description": "Title of the dedicated stack-lock settings screen, and the overflow menu entry shown when locking is already configured."
   },
+  "settingsLockStacksSetupTitle": "Lock stacks",
+  "@settingsLockStacksSetupTitle": {
+    "description": "Title of the lock settings sheet when no lock is configured yet — prompts the user to choose an auth method."
+  },
   "settingsAuthType": "Authentication type",
   "@settingsAuthType": {
     "description": "Lock stacks screen row label for the auth-mode picker (Off / Device / PIN), and the picker dialog title."
   },
-  "settingsEnableLock": "Enable lock",
-  "@settingsEnableLock": {
-    "description": "Button on the Lock settings screen, shown when locking is off. Tapping opens the auth-mode picker to turn locking on."
-  },
-  "settingsEnableLockHint": "Your stacks will be hidden and encrypted with a PIN or biometrics.",
+  "settingsEnableLockHint": "Your stacks will be hidden and encrypted.",
   "@settingsEnableLockHint": {
     "description": "Explanatory text shown below the Enable lock button when no lock is configured."
   },
@@ -438,7 +438,7 @@
   "@authModeOff": {
     "description": "Auth mode option: stacks are not locked at all."
   },
-  "authModeDevice": "Device",
+  "authModeDevice": "Device authentication",
   "@authModeDevice": {
     "description": "Auth mode option: stacks are encrypted and unlocked via the device biometric."
   },
