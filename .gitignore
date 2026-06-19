@@ -1,6 +1,7 @@
 # Miscellaneous
 *.class
 *.log
+nohup.out
 *.pyc
 *.swp
 .DS_Store
