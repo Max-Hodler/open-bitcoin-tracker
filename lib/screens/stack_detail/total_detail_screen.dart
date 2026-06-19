@@ -136,16 +136,9 @@ class _TotalHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(height: AppSpacing.sm),
-        Text(
-          formatBtcAmount(totalSats, mode: btcDisplayMode, tight: true),
-          textAlign: TextAlign.center,
-          style: AppTypography.display.copyWith(
-            fontSize: 44,
-            fontWeight: FontWeight.w600,
-            letterSpacing: -1,
-            color: context.palette.bitcoinOrange,
-            fontFeatures: const [ui.FontFeature.tabularFigures()],
-          ),
+        BtcAmountDisplay(
+          sats: totalSats,
+          mode: btcDisplayMode,
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(

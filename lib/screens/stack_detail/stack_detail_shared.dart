@@ -366,3 +366,75 @@ class DetailRowDivider extends StatelessWidget {
     );
   }
 }
+
+/// Renders a bitcoin amount with the symbol colored in orange and the numbers in white (on dark theme) or dark text color (on light theme).
+class BtcAmountDisplay extends StatelessWidget {
+  const BtcAmountDisplay({
+    super.key,
+    required this.sats,
+    this.hidden = false,
+    required this.mode,
+  });
+
+  final int sats;
+  final bool hidden;
+  final BtcDisplayMode mode;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final numberColor = isDark ? Colors.white : cs.onSurface;
+    final orangeColor = context.palette.bitcoinOrange;
+
+    final formatted = formatBtcAmount(
+      sats,
+      hidden: hidden,
+      mode: mode,
+      tight: true,
+    );
+
+    final symbolIdx = formatted.indexOf('₿');
+
+    final baseStyle = AppTypography.display.copyWith(
+      fontSize: 44,
+      fontWeight: FontWeight.w600,
+      letterSpacing: -1,
+      fontFeatures: const [ui.FontFeature.tabularFigures()],
+    );
+
+    if (symbolIdx == -1) {
+      return Text(
+        formatted,
+        textAlign: TextAlign.center,
+        style: baseStyle.copyWith(color: numberColor),
+      );
+    }
+
+    final prefix = formatted.substring(0, symbolIdx);
+    final suffix = formatted.substring(symbolIdx + 1);
+
+    return Text.rich(
+      TextSpan(
+        children: [
+          if (prefix.isNotEmpty)
+            TextSpan(
+              text: prefix,
+              style: baseStyle.copyWith(color: numberColor),
+            ),
+          TextSpan(
+            text: '₿',
+            style: baseStyle.copyWith(color: orangeColor),
+          ),
+          if (suffix.isNotEmpty)
+            TextSpan(
+              text: suffix,
+              style: baseStyle.copyWith(color: numberColor),
+            ),
+        ],
+      ),
+      textAlign: TextAlign.center,
+    );
+  }
+}
+

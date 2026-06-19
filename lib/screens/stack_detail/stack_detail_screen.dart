@@ -302,17 +302,10 @@ class _Header extends StatelessWidget {
           onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(
             builder: (_) => EditStackAmountScreen(stackId: stackId),
           )),
-          child: Text(
-            formatBtcAmount(stack.sats,
-                hidden: stack.isHidden, mode: btcDisplayMode, tight: true),
-            textAlign: TextAlign.center,
-            style: AppTypography.display.copyWith(
-              fontSize: 44,
-              fontWeight: FontWeight.w600,
-              letterSpacing: -1,
-              color: context.palette.bitcoinOrange,
-              fontFeatures: const [ui.FontFeature.tabularFigures()],
-            ),
+          child: BtcAmountDisplay(
+            sats: stack.sats,
+            hidden: stack.isHidden,
+            mode: btcDisplayMode,
           ),
         ),
         const SizedBox(height: AppSpacing.xs),
