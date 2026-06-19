@@ -139,7 +139,7 @@
   "pinCooldownSeconds": "Слишком много попыток. Повторите через {seconds} с.",
   "pinCooldownMinutes": "Слишком много попыток. Повторите через {minutes} мин {remainingSeconds} с.",
   "totalCardName": "Итог",
-  "newStackTitle": "Добавить Stack",
+  "newStackTitle": "Новый Stack",
   "homeAddStack": "Добавить Stack",
   "homeSwipeChipHint": "Проведите вверх или вниз по диапазону, чтобы его изменить.",
   "homeConverter": "Конвертер",

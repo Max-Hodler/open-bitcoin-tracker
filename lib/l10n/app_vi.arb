@@ -139,7 +139,7 @@
   "pinCooldownSeconds": "Quá nhiều lần thử. Hãy thử lại sau {seconds}s.",
   "pinCooldownMinutes": "Quá nhiều lần thử. Hãy thử lại sau {minutes}m {remainingSeconds}s.",
   "totalCardName": "Tổng",
-  "newStackTitle": "Thêm một Stack",
+  "newStackTitle": "Stack mới",
   "homeAddStack": "Thêm Stack",
   "homeSwipeChipHint": "Vuốt lên hoặc xuống trên một phạm vi để thay đổi nó.",
   "homeConverter": "Bộ chuyển đổi",

@@ -139,7 +139,7 @@
   "pinCooldownSeconds": "試行回数が多すぎます。{seconds}秒後にもう一度お試しください。",
   "pinCooldownMinutes": "試行回数が多すぎます。{minutes}分{remainingSeconds}秒後にもう一度お試しください。",
   "totalCardName": "合計",
-  "newStackTitle": "Stack を追加",
+  "newStackTitle": "新しい Stack",
   "homeAddStack": "Stack を追加",
   "homeSwipeChipHint": "期間を上下にスワイプして変更してください。",
   "homeConverter": "コンバーター",

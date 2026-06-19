@@ -139,7 +139,7 @@
   "pinCooldownSeconds": "Muitas tentativas. Tente novamente em {seconds}s.",
   "pinCooldownMinutes": "Muitas tentativas. Tente novamente em {minutes}m {remainingSeconds}s.",
   "totalCardName": "Total",
-  "newStackTitle": "Adicionar um stack",
+  "newStackTitle": "Novo stack",
   "homeAddStack": "Adicionar stack",
   "homeSwipeChipHint": "Deslize para cima ou para baixo num intervalo para o alterar.",
   "homeConverter": "Conversor",

@@ -139,7 +139,7 @@
   "pinCooldownSeconds": "Çok fazla deneme. {seconds} sn sonra tekrar deneyin.",
   "pinCooldownMinutes": "Çok fazla deneme. {minutes} dk {remainingSeconds} sn sonra tekrar deneyin.",
   "totalCardName": "Toplam",
-  "newStackTitle": "Bir stack ekle",
+  "newStackTitle": "Yeni stack",
   "homeAddStack": "Stack ekle",
   "homeSwipeChipHint": "Aralığı değiştirmek için yukarı veya aşağı kaydır.",
   "homeConverter": "Dönüştürücü",
