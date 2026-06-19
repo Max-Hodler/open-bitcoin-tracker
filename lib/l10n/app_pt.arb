@@ -191,5 +191,6 @@
   "stackDetailWillBeWorth": "Este stack valerá",
   "settingsEnableLockHint": "Os seus stacks ficarão ocultos e encriptados com um PIN ou biometria.",
   "settingsDisableLock": "Desativar bloqueio",
-  "converterCopiedValue": "{value} copiado"
+  "converterCopiedValue": "{value} copiado",
+  "settingsFullScreenPrice": "Preço em ecrã inteiro"
 }

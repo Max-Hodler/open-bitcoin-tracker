@@ -191,5 +191,6 @@
   "stackDetailWillBeWorth": "Ce stack vaudra",
   "settingsEnableLockHint": "Vos stacks seront masqués et chiffrés par un code PIN ou la biométrie.",
   "settingsDisableLock": "Désactiver le verrou",
-  "converterCopiedValue": "{value} copié"
+  "converterCopiedValue": "{value} copié",
+  "settingsFullScreenPrice": "Prix en plein écran"
 }

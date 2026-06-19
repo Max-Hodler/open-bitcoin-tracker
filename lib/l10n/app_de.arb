@@ -191,5 +191,6 @@
   "stackDetailWillBeWorth": "Dieser Stack wird wert sein",
   "settingsEnableLockHint": "Deine Stacks werden ausgeblendet und mit einer PIN oder Biometrie verschlüsselt.",
   "settingsDisableLock": "Sperre deaktivieren",
-  "converterCopiedValue": "{value} kopiert"
+  "converterCopiedValue": "{value} kopiert",
+  "settingsFullScreenPrice": "Vollbild-Preis"
 }

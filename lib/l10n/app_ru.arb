@@ -191,5 +191,6 @@
   "stackDetailWillBeWorth": "Этот stack будет стоить",
   "settingsEnableLockHint": "Ваши стеки будут скрыты и зашифрованы с помощью PIN-кода или биометрии.",
   "settingsDisableLock": "Отключить блокировку",
-  "converterCopiedValue": "{value} скопировано"
+  "converterCopiedValue": "{value} скопировано",
+  "settingsFullScreenPrice": "Цена на весь экран"
 }

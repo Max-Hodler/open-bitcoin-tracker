@@ -191,5 +191,6 @@
   "stackDetailWillBeWorth": "Stack này sẽ trị giá",
   "settingsEnableLockHint": "Các stack của bạn sẽ được ẩn và mã hóa bằng PIN hoặc sinh trắc học.",
   "settingsDisableLock": "Tắt khóa",
-  "converterCopiedValue": "Đã sao chép {value}"
+  "converterCopiedValue": "Đã sao chép {value}",
+  "settingsFullScreenPrice": "Giá toàn màn hình"
 }

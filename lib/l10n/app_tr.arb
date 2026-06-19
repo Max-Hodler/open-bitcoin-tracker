@@ -191,5 +191,6 @@
   "stackDetailWillBeWorth": "Bu stack değeri olacak",
   "settingsEnableLockHint": "Yığınlarınız gizlenecek ve PIN veya biyometri ile şifrelenecek.",
   "settingsDisableLock": "Kilidi devre dışı bırak",
-  "converterCopiedValue": "{value} kopyalandı"
+  "converterCopiedValue": "{value} kopyalandı",
+  "settingsFullScreenPrice": "Tam ekran fiyat"
 }
