@@ -65,7 +65,7 @@ class _SkeletonRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final shimmer = cs.onSurface.withValues(alpha: 0.08);
+    final shimmer = context.palette.recessedSurface ?? cs.surfaceContainer;
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
