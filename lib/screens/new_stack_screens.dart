@@ -208,7 +208,7 @@ class _NewStackNameScreenState extends State<NewStackNameScreen>
     return buildNameScaffold(
       context: context,
       cs: cs,
-      title: l10n.newStackTitle,
+      title: l10n.stackNameHint,
       confirmLabel: l10n.homeAddStack,
       onSubmit: _submit,
     );
