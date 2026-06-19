@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -51,6 +52,15 @@ class _FullScreenPriceScreenState extends State<FullScreenPriceScreen> {
       (c) => c.rates.forCurrency(widget.currency),
     );
 
+    // SafeArea insets only the side with the camera cutout, which would shove
+    // the centered price off true center. Mirror the larger inset onto both
+    // sides (and top/bottom) so the safe box stays symmetric and the price
+    // sits dead-center on the physical screen.
+    final viewPadding = MediaQuery.viewPaddingOf(context);
+    final hInset =
+        math.max(viewPadding.left, viewPadding.right) + AppSpacing.lg;
+    final vInset = math.max(viewPadding.top, viewPadding.bottom);
+
     return Scaffold(
       backgroundColor: cs.surface,
       body: GestureDetector(
@@ -59,22 +69,26 @@ class _FullScreenPriceScreenState extends State<FullScreenPriceScreen> {
           AppHaptics.selection();
           Navigator.of(context).maybePop();
         },
-        child: SafeArea(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  currentPrice != null
-                      ? formatFiat(currentPrice, widget.currency).tight
-                      : '',
-                  maxLines: 1,
-                  style: AppTypography.display.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: cs.onSurface,
-                    fontFeatures: const [ui.FontFeature.tabularFigures()],
-                  ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: hInset, vertical: vInset),
+          // SizedBox.expand gives FittedBox a bounded box that fills the whole
+          // (safe, symmetrically padded) screen. BoxFit.contain then scales the
+          // price *up* to fill it — and re-fits on every tick, so the size
+          // shrinks/grows automatically as digits come and go. Without the
+          // expanding box, Center would hand FittedBox unbounded constraints
+          // and the text would just render at its intrinsic size.
+          child: SizedBox.expand(
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: Text(
+                currentPrice != null
+                    ? formatFiat(currentPrice, widget.currency).tight
+                    : '',
+                maxLines: 1,
+                style: AppTypography.display.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: cs.onSurface,
+                  fontFeatures: const [ui.FontFeature.tabularFigures()],
                 ),
               ),
             ),
