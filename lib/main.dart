@@ -19,14 +19,25 @@ import 'services/stacks_unlock_orchestrator.dart';
 import 'state/state.dart';
 import 'theme/theme.dart';
 
+/// Orientations the app allows by default. The home screen opts into
+/// landscape; screens that are portrait-only (e.g. the converter) narrow
+/// this to the portrait set while they're on screen and restore it on exit.
+const List<DeviceOrientation> kDefaultOrientations = [
+  DeviceOrientation.portraitUp,
+  DeviceOrientation.portraitDown,
+  DeviceOrientation.landscapeLeft,
+  DeviceOrientation.landscapeRight,
+];
+
+/// Portrait-only orientations for screens that must stay vertical.
+const List<DeviceOrientation> kPortraitOrientations = [
+  DeviceOrientation.portraitUp,
+  DeviceOrientation.portraitDown,
+];
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-    DeviceOrientation.landscapeLeft,
-    DeviceOrientation.landscapeRight,
-  ]);
+  await SystemChrome.setPreferredOrientations(kDefaultOrientations);
   // Load symbols for every locale we ship so DateFormat doesn't throw on the
   // first language switch. Cheap (kilobytes), simpler than re-loading on swap.
   await initializeDateFormatting('en_GB');

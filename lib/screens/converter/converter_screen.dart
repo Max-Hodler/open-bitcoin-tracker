@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../data/app_enums.dart';
 import '../../data/fiat.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../main.dart' show kDefaultOrientations, kPortraitOrientations;
 import '../../services/app_haptics.dart';
 import '../../state/state.dart';
 import '../../theme/theme.dart';
@@ -28,8 +29,27 @@ import '../../widgets/number_pad.dart';
 // own [BtcDisplayMode] in fiat mode, and always BTC in sats mode.
 // ─────────────────────────────────────────────────────────────────────────────
 
-class ConverterScreen extends StatelessWidget {
+class ConverterScreen extends StatefulWidget {
   const ConverterScreen({super.key});
+
+  @override
+  State<ConverterScreen> createState() => _ConverterScreenState();
+}
+
+class _ConverterScreenState extends State<ConverterScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // The converter is portrait-only; the rest of the app (home screen) opts
+    // into landscape. Lock to portrait on entry, restore on exit.
+    SystemChrome.setPreferredOrientations(kPortraitOrientations);
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations(kDefaultOrientations);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
