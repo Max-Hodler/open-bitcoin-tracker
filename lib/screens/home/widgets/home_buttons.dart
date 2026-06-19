@@ -691,6 +691,66 @@ String _languageOptionLabel(BuildContext context, LanguagePref pref) {
   }
 }
 
+class _LanguagePrefRow extends StatelessWidget {
+  const _LanguagePrefRow({
+    super.key,
+    required this.language,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final LanguagePref language;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final p = context.palette;
+    final radius = BorderRadius.circular(AppSpacing.radius);
+    return Material(
+      color: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: radius),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () {
+          AppHaptics.selection();
+          onTap();
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          child: Row(
+            children: [
+              Container(
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: selected ? p.bitcoinOrange : cs.outline,
+                    width: 2,
+                  ),
+                  color: selected ? p.bitcoinOrange : Colors.transparent,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  _languageOptionLabel(context, language),
+                  style: AppTypography.title.copyWith(
+                    fontWeight: FontWeight.w400,
+                    color: cs.onSurface,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 List<LanguagePref> _sortedLanguageOptions(BuildContext context) {
   final rest =
       LanguagePref.values.where((l) => l != LanguagePref.system).toList()..sort(
@@ -709,25 +769,54 @@ Future<LanguagePref?> _showLanguagePicker(
   return showDialog<LanguagePref>(
     context: context,
     barrierColor: appDialogBarrierColor(context),
-    builder: (ctx) => RadioGroup<LanguagePref>(
-      groupValue: current,
-      onChanged: (v) {
-        AppHaptics.selection();
-        Navigator.of(ctx).pop(v);
-      },
-      child: SimpleDialog(
+    builder: (ctx) {
+      final l10n = AppLocalizations.of(ctx);
+      final options = _sortedLanguageOptions(ctx);
+      return Dialog(
         elevation: 24,
         shadowColor: Colors.black,
-        title: Text(AppLocalizations.of(ctx).languagePickerTitle),
-        children: [
-          for (final l in _sortedLanguageOptions(ctx))
-            RadioListTile<LanguagePref>(
-              key: ValueKey('language-${l.code}'),
-              title: Text(_languageOptionLabel(ctx, l)),
-              value: l,
-            ),
-        ],
-      ),
-    ),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                l10n.languagePickerTitle,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 12),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(ctx).size.height * 0.5,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (final entry in options.asMap().entries) ...[
+                        if (entry.key > 0)
+                          Divider(
+                            height: 1,
+                            thickness: 1,
+                            color: Theme.of(ctx).colorScheme.outlineVariant,
+                          ),
+                        _LanguagePrefRow(
+                          key: ValueKey('language-${entry.value.code}'),
+                          language: entry.value,
+                          selected: entry.value == current,
+                          onTap: () => Navigator.of(ctx).pop(entry.value),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
   );
 }
