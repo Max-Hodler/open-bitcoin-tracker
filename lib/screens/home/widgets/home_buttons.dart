@@ -105,7 +105,7 @@ class StackLockIconButton extends StatelessWidget {
             : null,
         tooltip: tooltip,
         icon: Icon(locked ? Icons.lock_open_outlined : Icons.lock_outline),
-        iconSize: 22,
+        iconSize: 18,
         constraints: const BoxConstraints(),
         style: IconButton.styleFrom(
           backgroundColor: Colors.transparent,
