@@ -105,6 +105,13 @@ class _FullScreenPriceScreenState extends State<FullScreenPriceScreen> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final darkVariant = context.select<AppStateNotifier, DarkVariant>(
+      (app) => app.darkVariant,
+    );
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = (isDark && darkVariant == DarkVariant.black)
+        ? Colors.black
+        : cs.surface;
 
     final currentPrice = context.select<LivePriceController, double?>(
       (c) => c.rates.forCurrency(_currency),
@@ -120,7 +127,7 @@ class _FullScreenPriceScreenState extends State<FullScreenPriceScreen> {
     final vInset = math.max(viewPadding.top, viewPadding.bottom);
 
     return Scaffold(
-      backgroundColor: cs.surface,
+      backgroundColor: backgroundColor,
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
