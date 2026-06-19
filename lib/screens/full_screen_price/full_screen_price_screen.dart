@@ -15,6 +15,8 @@ import '../../widgets/rolling_number.dart';
 
 /// Full-screen, landscape live-price mode. Shows nothing but the live price
 /// filling the screen; tapping anywhere pops back to the home screen.
+/// Swiping left/right cycles the fiat currency with the same animation as the
+/// home screen header.
 ///
 /// The rest of the app may be portrait or landscape; this screen forces
 /// landscape while it's on screen and restores the default set on exit — the
@@ -37,9 +39,17 @@ class _FullScreenPriceScreenState extends State<FullScreenPriceScreen> {
   double? _prevUsd;
   int _rollDirection = 1;
 
+  // Active display currency (may change via swipe).
+  late Currency _currency;
+
+  // Direction the AnimatedSwitcher slides the incoming tile: +1 = enters from
+  // the right (user swiped left / "next"), -1 = enters from the left.
+  int _slideDir = 1;
+
   @override
   void initState() {
     super.initState();
+    _currency = widget.currency;
     SystemChrome.setPreferredOrientations(kLandscapeOrientations);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
@@ -68,6 +78,20 @@ class _FullScreenPriceScreenState extends State<FullScreenPriceScreen> {
     }
   }
 
+  void _onSwipe(int dir) {
+    final notifier = context.read<AppStateNotifier>();
+    final selected = notifier.selectedCurrencies;
+    // Record the swipe direction only when the cycle will actually advance.
+    final pendingDir = selected.length >= 2 ? dir : null;
+    if (notifier.cycleCurrency(dir)) {
+      AppHaptics.selection();
+      setState(() {
+        _slideDir = pendingDir ?? dir;
+        _currency = notifier.currency;
+      });
+    }
+  }
+
   @override
   void dispose() {
     _priceController?.removeListener(_onPriceTick);
@@ -81,8 +105,9 @@ class _FullScreenPriceScreenState extends State<FullScreenPriceScreen> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+
     final currentPrice = context.select<LivePriceController, double?>(
-      (c) => c.rates.forCurrency(widget.currency),
+      (c) => c.rates.forCurrency(_currency),
     );
 
     // SafeArea insets only the side with the camera cutout, which would shove
@@ -102,6 +127,11 @@ class _FullScreenPriceScreenState extends State<FullScreenPriceScreen> {
           AppHaptics.selection();
           Navigator.of(context).maybePop();
         },
+        onHorizontalDragEnd: (details) {
+          final vx = details.primaryVelocity ?? 0;
+          if (vx.abs() < 200) return;
+          _onSwipe(vx < 0 ? 1 : -1);
+        },
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: hInset, vertical: vInset),
           // SizedBox.expand gives FittedBox a bounded box that fills the whole
@@ -113,15 +143,42 @@ class _FullScreenPriceScreenState extends State<FullScreenPriceScreen> {
           child: SizedBox.expand(
             child: FittedBox(
               fit: BoxFit.contain,
-              child: RollingNumber(
-                text: currentPrice != null
-                    ? formatFiat(currentPrice, widget.currency).tight
-                    : '',
-                direction: _rollDirection,
-                style: AppTypography.display.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: cs.onSurface,
-                  fontFeatures: const [ui.FontFeature.tabularFigures()],
+              child: AnimatedSwitcher(
+                duration: AppSpacing.motionDuration,
+                switchInCurve: Curves.easeOutCubic,
+                switchOutCurve: Curves.easeInCubic,
+                layoutBuilder: (current, previous) => Stack(
+                  alignment: Alignment.center,
+                  children: [...previous, ?current],
+                ),
+                transitionBuilder: (child, anim) {
+                  final isIncoming = child.key == ValueKey(_currency.code);
+                  final begin = Offset(
+                    (isIncoming ? 1.0 : -1.0) * _slideDir * 0.25,
+                    0,
+                  );
+                  return FadeTransition(
+                    opacity: anim,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: begin,
+                        end: Offset.zero,
+                      ).animate(anim),
+                      child: child,
+                    ),
+                  );
+                },
+                child: RollingNumber(
+                  key: ValueKey(_currency.code),
+                  text: currentPrice != null
+                      ? formatFiat(currentPrice, _currency).tight
+                      : '',
+                  direction: _rollDirection,
+                  style: AppTypography.display.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: cs.onSurface,
+                    fontFeatures: const [ui.FontFeature.tabularFigures()],
+                  ),
                 ),
               ),
             ),
