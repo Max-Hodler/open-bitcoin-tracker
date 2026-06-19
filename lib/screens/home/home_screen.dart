@@ -74,12 +74,20 @@ class _HomeScreenState extends State<HomeScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final chartPx = context.read<AppStateNotifier>().chartHeight.px;
+      // While the chart-height animation is running, the AnimatedContainer
+      // reports intermediate sizes on every frame, which would corrupt
+      // _headerChrome (= header - chartPx) with a mid-animation height.
+      // Skip the chrome update until the animation settles; the tween already
+      // keeps the sliver box correctly sized during the transition.
+      final animating = _chartHeightCtrl?.isAnimating ?? false;
       setState(() {
         _headerHeight = size.height;
-        // Capture the non-chart chrome so the build can reserve the box at
-        // chrome + target chart height without waiting for the chart's
-        // animation to finish.
-        _headerChrome = size.height - chartPx;
+        if (!animating) {
+          // Capture the non-chart chrome so the build can reserve the box at
+          // chrome + target chart height without waiting for the chart's
+          // animation to finish.
+          _headerChrome = size.height - chartPx;
+        }
       });
       // A header-height change (e.g. toggling the chart in settings) can
       // shrink the scrollable's max extent and clamp the scroll offset
@@ -105,7 +113,14 @@ class _HomeScreenState extends State<HomeScreen>
       CurvedAnimation(parent: _chartHeightCtrl!, curve: Curves.easeInOutCubic),
     );
     _chartHeightCtrl!.addListener(() {
-      if (mounted) setState(() {});
+      if (!mounted) return;
+      setState(() {
+        // When the animation completes, sync _headerChrome from the last
+        // measured header height so it reflects the final settled size.
+        if (_chartHeightCtrl!.isCompleted && _headerHeight != null) {
+          _headerChrome = _headerHeight! - _animatedChartPx!;
+        }
+      });
     });
     _scrollCtrl.addListener(_onScroll);
     final app = context.read<AppStateNotifier>();
