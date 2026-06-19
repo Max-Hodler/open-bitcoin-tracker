@@ -36,7 +36,8 @@ class HomeScreen extends StatefulWidget {
 
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   final ScrollController _scrollCtrl = ScrollController();
   // 0..1 hairline strength below the pinned header, derived from scroll
   // offset. Ramped over the first 24px of scroll so the line eases in
@@ -53,6 +54,13 @@ class _HomeScreenState extends State<HomeScreen> {
   // frame behind. Without this the box lagged the growing chart by a frame,
   // which clipped the range bar (and shuffled the price) mid-animation.
   double? _headerChrome;
+
+  // Animates the SliverPersistentHeader box height in sync with the
+  // AnimatedContainer inside HomeHeader so the ClipRect never clips
+  // the RangeBar during a height transition.
+  double? _animatedChartPx;
+  AnimationController? _chartHeightCtrl;
+  Animation<double>? _chartHeightAnim;
 
   void _onStacksTitleMeasured(Size size) {
     if (size.height == _stacksTitleHeight) return;
@@ -87,6 +95,18 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    final initialPx = context.read<AppStateNotifier>().chartHeight.px;
+    _animatedChartPx = initialPx;
+    _chartHeightCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 280),
+    )..value = 1.0;
+    _chartHeightAnim = Tween<double>(begin: initialPx, end: initialPx).animate(
+      CurvedAnimation(parent: _chartHeightCtrl!, curve: Curves.easeInOutCubic),
+    );
+    _chartHeightCtrl!.addListener(() {
+      if (mounted) setState(() {});
+    });
     _scrollCtrl.addListener(_onScroll);
     final app = context.read<AppStateNotifier>();
     _prevNeedsData = _needsData(app);
@@ -117,6 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _scrollCtrl.removeListener(_onScroll);
     _scrollCtrl.dispose();
     _headerHairline.dispose();
+    _chartHeightCtrl?.dispose();
     super.dispose();
   }
 
@@ -147,6 +168,22 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final app = context.watch<AppStateNotifier>();
+
+    final newChartPx = app.chartHeight.px;
+    if (_animatedChartPx != null &&
+        newChartPx != _animatedChartPx &&
+        _chartHeightCtrl != null &&
+        _chartHeightAnim != null) {
+      final fromPx = _chartHeightAnim!.value;
+      _chartHeightAnim = Tween<double>(begin: fromPx, end: newChartPx).animate(
+        CurvedAnimation(parent: _chartHeightCtrl!, curve: Curves.easeInOutCubic),
+      );
+      _animatedChartPx = newChartPx;
+      _chartHeightCtrl!
+        ..value = 0.0
+        ..forward();
+    }
+
     final lock = context.watch<StacksLockController>();
     final stacksLocked = lock.isLocked;
     final cs = Theme.of(context).colorScheme;
@@ -314,8 +351,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     // it's already full-size when the chart starts animating —
                     // the chart grows/shrinks within a fixed box, keeping the
                     // price pinned at the top and the range bar unclipped.
-                    height: _headerChrome != null
-                        ? _headerChrome! + app.chartHeight.px
+                    height: _headerChrome != null && _chartHeightAnim != null
+                        ? _headerChrome! + _chartHeightAnim!.value
                         : _headerHeight!,
                     child: measuredHeader,
                   ),
