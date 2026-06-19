@@ -5,7 +5,6 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../services/app_haptics.dart';
 import '../../theme/theme.dart';
 import '../../widgets/menu_icon_square.dart';
-import '../../widgets/orange_primary_button.dart';
 
 String authModeLabel(AppLocalizations l10n, StacksAuthMode m) {
   switch (m) {
@@ -102,6 +101,68 @@ String lockTimeoutLabel(AppLocalizations l10n, StacksLockTimeout t) {
   }
 }
 
+class LockTimeoutRow extends StatelessWidget {
+  const LockTimeoutRow({
+    super.key,
+    required this.timeout,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final StacksLockTimeout timeout;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cs = Theme.of(context).colorScheme;
+    final p = context.palette;
+    final radius = BorderRadius.circular(AppSpacing.radius);
+    return Material(
+      color: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: radius),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () {
+          AppHaptics.selection();
+          onTap();
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          child: Row(
+            children: [
+              Container(
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: selected ? p.bitcoinOrange : cs.outline,
+                    width: 2,
+                  ),
+                  color: selected ? p.bitcoinOrange : Colors.transparent,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  lockTimeoutLabel(l10n, timeout),
+                  style: AppTypography.title.copyWith(
+                    fontWeight: FontWeight.w400,
+                    color: cs.onSurface,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
 /// Picker dialog that lists the on-states (pin, device) so the user can pick
 /// or swap which auth mode locks their stacks. Off is excluded — turning the
 /// lock off goes through the dedicated [SettingsActionTile] so we can confirm
@@ -178,19 +239,20 @@ Future<StacksLockTimeout?> showTimeoutPicker(
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
-              const SizedBox(height: 20),
-              for (final t in StacksLockTimeout.values) ...[
-                OrangePrimaryButton(
-                  key: ValueKey('stacksLockTimeout-${t.code}'),
-                  isValid: true,
-                  label: lockTimeoutLabel(l10n, t),
-                  height: 52,
-                  onTap: () {
-                    AppHaptics.selection();
-                    Navigator.of(ctx).pop(t);
-                  },
+              const SizedBox(height: 12),
+              for (final entry in StacksLockTimeout.values.asMap().entries) ...[
+                if (entry.key > 0)
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: Theme.of(ctx).colorScheme.outlineVariant,
+                  ),
+                LockTimeoutRow(
+                  key: ValueKey('stacksLockTimeout-${entry.value.code}'),
+                  timeout: entry.value,
+                  selected: entry.value == current,
+                  onTap: () => Navigator.of(ctx).pop(entry.value),
                 ),
-                const SizedBox(height: 10),
               ],
             ],
           ),
