@@ -98,7 +98,11 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
-  bool _needsData(AppStateNotifier app) => app.showChart;
+  bool _needsData(AppStateNotifier app) {
+    final isLandscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
+    return app.showChart || isLandscape;
+  }
 
   @override
   void initState() {
@@ -204,6 +208,12 @@ class _HomeScreenState extends State<HomeScreen>
     final cs = Theme.of(context).colorScheme;
     final stacks = app.stacks;
 
+    final isLandscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
+    // In landscape the chart is always shown (stacks are hidden, chart fills
+    // the screen) regardless of the user's showChart setting.
+    final effectiveShowChart = app.showChart || isLandscape;
+
     // All live-price subscriptions live inside HomeHeaderSection (and the
     // per-card fiat amounts down in the stack list), so a price tick rebuilds
     // the header slab and those leaves — not this build or the scroll body.
@@ -211,10 +221,10 @@ class _HomeScreenState extends State<HomeScreen>
       range: app.btcRange,
       currency: app.currency,
       selectedCurrencies: app.selectedCurrencies,
-      showChart: app.showChart,
+      showChart: effectiveShowChart,
       onRange: (r) {
         app.setBtcRange(r);
-        if (_needsData(app)) _maybeFetchIntraday(r);
+        if (effectiveShowChart) _maybeFetchIntraday(r);
       },
       onRetry: () {
         AppHaptics.light();
@@ -362,75 +372,83 @@ class _HomeScreenState extends State<HomeScreen>
                 SliverPersistentHeader(
                   pinned: true,
                   delegate: PinnedHeaderDelegate(
-                    // Reserve the box at chrome + the *target* chart height so
-                    // it's already full-size when the chart starts animating —
-                    // the chart grows/shrinks within a fixed box, keeping the
-                    // price pinned at the top and the range bar unclipped.
-                    height: _headerChrome != null && _chartHeightAnim != null
-                        ? _headerChrome! + _chartHeightAnim!.value
-                        : _headerHeight!,
+                    // In landscape the header fills the full viewport height.
+                    // constrained:true skips the OverflowBox so the Column
+                    // inside HomeHeader gets tight constraints and Expanded
+                    // can distribute the remaining space to the chart.
+                    // In portrait, use chrome + animated chart height so the
+                    // box is full-size before the chart starts animating.
+                    height: isLandscape
+                        ? MediaQuery.sizeOf(context).height -
+                            MediaQuery.paddingOf(context).top
+                        : _headerChrome != null && _chartHeightAnim != null
+                            ? _headerChrome! + _chartHeightAnim!.value
+                            : _headerHeight!,
+                    constrained: isLandscape,
                     child: measuredHeader,
                   ),
                 )
               else
                 SliverToBoxAdapter(child: measuredHeader),
-              if (stacks.isNotEmpty || (stacksLocked && app.lockedStackCount > 0)) ...[
-                if (_stacksTitleHeight != null)
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: PinnedHeaderDelegate(
-                      height: _stacksTitleHeight!,
-                      child: stacksTitle,
+              if (!isLandscape) ...[
+                if (stacks.isNotEmpty || (stacksLocked && app.lockedStackCount > 0)) ...[
+                  if (_stacksTitleHeight != null)
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: PinnedHeaderDelegate(
+                        height: _stacksTitleHeight!,
+                        child: stacksTitle,
+                      ),
+                    )
+                  else
+                    SliverToBoxAdapter(child: stacksTitle),
+                ],
+                if (stacksLocked && app.lockedStackCount > 0)
+                  SliverPadding(
+                    padding: stacksAreaPadding,
+                    sliver: SliverToBoxAdapter(
+                      child: LockedStacksSkeleton(
+                        stackCount: app.lockedStackCount,
+                        showTotal: app.showPortfolio && app.lockedStackCount >= 2,
+                        onTap: () => _attemptUnlock(context),
+                      ),
+                    ),
+                  )
+                else if (stacks.isEmpty)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Align(
+                      alignment: const Alignment(0, -0.2),
+                      child: FilledButton(
+                        onPressed: _onAddStackTap,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: cs.surfaceContainer,
+                          foregroundColor: cs.onSurfaceVariant,
+                          minimumSize: const Size(0, 64),
+                          textStyle: AppTypography.body.copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(AppSpacing.radius),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.xl,
+                            vertical: AppSpacing.md,
+                          ),
+                        ),
+                        child: Text(AppLocalizations.of(context).homeAddStack),
+                      ),
                     ),
                   )
                 else
-                  SliverToBoxAdapter(child: stacksTitle),
+                  SliverPadding(
+                    padding: stacksAreaPadding,
+                    sliver: SliverToBoxAdapter(
+                      child: content,
+                    ),
+                  ),
               ],
-              if (stacksLocked && app.lockedStackCount > 0)
-                SliverPadding(
-                  padding: stacksAreaPadding,
-                  sliver: SliverToBoxAdapter(
-                    child: LockedStacksSkeleton(
-                      stackCount: app.lockedStackCount,
-                      showTotal: app.showPortfolio && app.lockedStackCount >= 2,
-                      onTap: () => _attemptUnlock(context),
-                    ),
-                  ),
-                )
-              else if (stacks.isEmpty)
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Align(
-                    alignment: const Alignment(0, -0.2),
-                    child: FilledButton(
-                      onPressed: _onAddStackTap,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: cs.surfaceContainer,
-                        foregroundColor: cs.onSurfaceVariant,
-                        minimumSize: const Size(0, 64),
-                        textStyle: AppTypography.body.copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppSpacing.radius),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.xl,
-                          vertical: AppSpacing.md,
-                        ),
-                      ),
-                      child: Text(AppLocalizations.of(context).homeAddStack),
-                    ),
-                  ),
-                )
-              else
-                SliverPadding(
-                  padding: stacksAreaPadding,
-                  sliver: SliverToBoxAdapter(
-                    child: content,
-                  ),
-                ),
             ],
           ),
         ),

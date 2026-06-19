@@ -24,6 +24,8 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
   ]);
   // Load symbols for every locale we ship so DateFormat doesn't throw on the
   // first language switch. Cheap (kilobytes), simpler than re-loading on swap.

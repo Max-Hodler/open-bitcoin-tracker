@@ -52,10 +52,17 @@ class _MeasureSizeRenderObject extends RenderProxyBox {
 }
 
 class PinnedHeaderDelegate extends SliverPersistentHeaderDelegate {
-  const PinnedHeaderDelegate({required this.height, required this.child});
+  const PinnedHeaderDelegate({
+    required this.height,
+    required this.child,
+    this.constrained = false,
+  });
 
   final double height;
   final Widget child;
+  // When true, skips the OverflowBox so children receive tight height
+  // constraints (needed for Expanded children in landscape mode).
+  final bool constrained;
 
   @override
   double get minExtent => height;
@@ -64,6 +71,11 @@ class PinnedHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    if (constrained) {
+      // No OverflowBox — give the child a tight height equal to the sliver
+      // box so that Expanded children can distribute the space correctly.
+      return SizedBox(height: height, child: child);
+    }
     return ClipRect(
       child: OverflowBox(
         minHeight: 0,
@@ -76,7 +88,7 @@ class PinnedHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(PinnedHeaderDelegate old) =>
-      old.height != height || old.child != child;
+      old.height != height || old.child != child || old.constrained != constrained;
 }
 
 class HomeHeader extends StatefulWidget {
@@ -153,59 +165,104 @@ class _HomeHeaderState extends State<HomeHeader> {
     final logScale = context.select<AppStateNotifier, bool>((a) => a.logScale);
     final chartHeight = context.select<AppStateNotifier, ChartHeight>((a) => a.chartHeight);
     final buttonsRow = OverflowButton(onOpenConverter: widget.onOpenConverter);
+    final isLandscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
+
+    final priceRow = Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.xs,
+        AppSpacing.md,
+        0,
+      ),
+      child: CurrentPrice(
+        price: widget.currentPrice,
+        hover: widget.hover,
+        lastFetchedAt: widget.lastFetchedAt,
+        range: widget.range,
+        currency: widget.currency,
+        selectedCurrencies: widget.selectedCurrencies,
+        rangePct: widget.rangePct,
+        rangeAbsDiff: widget.rangeAbsDiff,
+        rollDirection: widget.rollDirection,
+        onPriceTap: widget.onPriceTap,
+        onCurrencySwipe: widget.onCurrencySwipe,
+        chartColor: widget.chartColor,
+        showChart: widget.showChart,
+        trailing: buttonsRow,
+      ),
+    );
+
+    // In landscape always show the chart+range bar regardless of the setting —
+    // the stacks are hidden, so the chart fills the screen.
+    if (!widget.showChart && !isLandscape) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [priceRow],
+      );
+    }
+
+    final rangeBar = RangeBar(
+      range: widget.range,
+      chartColor: widget.chartColor,
+      onRange: widget.onRange,
+      onSettings: widget.onGraphSettingsTap,
+    );
+
+    if (isLandscape) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              priceRow,
+              const SizedBox(height: 8),
+              Expanded(
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Positioned.fill(
+                      child: _buildChartArea(context, logScale: logScale),
+                    ),
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: _buildChipHint(context),
+                    ),
+                  ],
+                ),
+              ),
+              rangeBar,
+            ],
+          );
+        },
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.md,
-            AppSpacing.xs,
-            AppSpacing.md,
-            0,
-          ),
-          child: CurrentPrice(
-            price: widget.currentPrice,
-            hover: widget.hover,
-            lastFetchedAt: widget.lastFetchedAt,
-            range: widget.range,
-            currency: widget.currency,
-            selectedCurrencies: widget.selectedCurrencies,
-            rangePct: widget.rangePct,
-            rangeAbsDiff: widget.rangeAbsDiff,
-            rollDirection: widget.rollDirection,
-            onPriceTap: widget.onPriceTap,
-            onCurrencySwipe: widget.onCurrencySwipe,
-            chartColor: widget.chartColor,
-            showChart: widget.showChart,
-            trailing: buttonsRow,
-          ),
+        priceRow,
+        const SizedBox(height: 8),
+        Stack(
+          clipBehavior: Clip.none,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 280),
+              curve: Curves.easeInOutCubic,
+              height: chartHeight.px,
+              child: _buildChartArea(context, logScale: logScale),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: _buildChipHint(context),
+            ),
+          ],
         ),
-        if (widget.showChart) ...[
-          const SizedBox(height: 8),
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 280),
-                curve: Curves.easeInOutCubic,
-                height: chartHeight.px,
-                child: _buildChartArea(context, logScale: logScale),
-              ),
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: _buildChipHint(context),
-              ),
-            ],
-          ),
-          RangeBar(
-            range: widget.range,
-            chartColor: widget.chartColor,
-            onRange: widget.onRange,
-            onSettings: widget.onGraphSettingsTap,
-          ),
-        ],
+        rangeBar,
       ],
     );
   }
