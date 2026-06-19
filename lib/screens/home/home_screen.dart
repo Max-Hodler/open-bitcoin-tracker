@@ -322,16 +322,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               else
                 SliverToBoxAdapter(child: measuredHeader),
-              if (_stacksTitleHeight != null)
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: PinnedHeaderDelegate(
-                    height: _stacksTitleHeight!,
-                    child: stacksTitle,
-                  ),
-                )
-              else
-                SliverToBoxAdapter(child: stacksTitle),
+              if (stacks.isNotEmpty || (stacksLocked && app.lockedStackCount > 0)) ...[
+                if (_stacksTitleHeight != null)
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: PinnedHeaderDelegate(
+                      height: _stacksTitleHeight!,
+                      child: stacksTitle,
+                    ),
+                  )
+                else
+                  SliverToBoxAdapter(child: stacksTitle),
+              ],
               if (stacksLocked && app.lockedStackCount > 0)
                 SliverPadding(
                   padding: stacksAreaPadding,
@@ -340,6 +342,33 @@ class _HomeScreenState extends State<HomeScreen> {
                       stackCount: app.lockedStackCount,
                       showTotal: app.showPortfolio && app.lockedStackCount >= 2,
                       onTap: () => _attemptUnlock(context),
+                    ),
+                  ),
+                )
+              else if (stacks.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Align(
+                    alignment: const Alignment(0, -0.2),
+                    child: FilledButton(
+                      onPressed: _onAddStackTap,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: cs.surfaceContainer,
+                        foregroundColor: cs.onSurfaceVariant,
+                        minimumSize: const Size(0, 64),
+                        textStyle: AppTypography.body.copyWith(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppSpacing.radius),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.xl,
+                          vertical: AppSpacing.md,
+                        ),
+                      ),
+                      child: Text(AppLocalizations.of(context).homeAddStack),
                     ),
                   ),
                 )
