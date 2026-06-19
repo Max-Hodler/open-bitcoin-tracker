@@ -190,7 +190,7 @@
   "stackDetailYearAgo": "{count, plural, =1{1 год назад} few{{count} года назад} other{{count} лет назад}}",
   "stackDetailWhenBtcReaches": "Когда BTC достигнет",
   "stackDetailWillBeWorth": "Этот stack будет стоить",
-  "settingsEnableLockHint": "Ваши стеки будут скрыты и зашифрованы с помощью PIN-кода или биометрии.",
+  "settingsEnableLockHint": "Ваши стеки будут скрыты и зашифрованы.",
   "settingsDisableLock": "Отключить блокировку",
   "converterCopiedValue": "{value} скопировано",
   "settingsFullScreenPrice": "Цена на весь экран"

@@ -190,7 +190,7 @@
   "stackDetailYearAgo": "{count, plural, =1{Il y a 1 an} other{Il y a {count} ans}}",
   "stackDetailWhenBtcReaches": "Quand BTC atteint",
   "stackDetailWillBeWorth": "Ce stack vaudra",
-  "settingsEnableLockHint": "Vos stacks seront masqués et chiffrés par un code PIN ou la biométrie.",
+  "settingsEnableLockHint": "Vos stacks seront masqués et chiffrés.",
   "settingsDisableLock": "Désactiver le verrou",
   "converterCopiedValue": "{value} copié",
   "settingsFullScreenPrice": "Prix en plein écran"

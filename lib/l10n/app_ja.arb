@@ -190,7 +190,7 @@
   "stackDetailYearAgo": "{count}年前",
   "stackDetailWhenBtcReaches": "BTCが達したとき",
   "stackDetailWillBeWorth": "このstackの価値",
-  "settingsEnableLockHint": "スタックは非表示になり、PINまたは生体認証で暗号化されます。",
+  "settingsEnableLockHint": "スタックは非表示になり、暗号化されます。",
   "settingsDisableLock": "ロックを無効にする",
   "converterCopiedValue": "{value} をコピーしました",
   "settingsFullScreenPrice": "全画面表示の価格"
