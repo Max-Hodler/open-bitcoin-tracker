@@ -165,48 +165,66 @@ class SettingsToggleTile extends StatelessWidget {
     final p = context.palette;
     final grouped = _SettingsGroupScope.of(context);
     final radius = BorderRadius.circular(AppSpacing.radius);
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: grouped ? Colors.transparent : cs.surface,
+    final switchControl = Switch(
+      value: value,
+      onChanged: enabled
+          ? (v) {
+              AppHaptics.light();
+              onChanged(v);
+            }
+          : null,
+      trackColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.disabled) && states.contains(WidgetState.selected)) {
+          return cs.onSurface.withValues(alpha: 0.38);
+        }
+        return null;
+      }),
+      thumbIcon: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return Icon(
+            Icons.check_rounded,
+            size: 18,
+            color: enabled ? p.bitcoinOrange : cs.onSurface.withValues(alpha: 0.38),
+          );
+        }
+        return null;
+      }),
+    );
+    return Material(
+      color: grouped ? Colors.transparent : cs.surface,
+      borderRadius: grouped ? null : radius,
+      child: InkWell(
+        onTap: enabled
+            ? () {
+                AppHaptics.light();
+                onChanged(!value);
+              }
+            : null,
         borderRadius: grouped ? null : radius,
-      ),
-      child: ClipRRect(
-        borderRadius: grouped ? BorderRadius.zero : radius,
-        child: SwitchListTile(
-          tileColor: Colors.transparent,
-          title: Text(
-            label,
-            style: AppTypography.body.copyWith(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: enabled ? cs.onSurface : cs.onSurfaceVariant,
-            ),
+        // Mirror SettingsPickerTile's layout exactly (Padding + Row with the
+        // label in an Expanded) so the label's left edge lines up with the
+        // picker rows above it. SwitchListTile's own ListTile layout insets the
+        // title slightly differently, which left this row looking misaligned.
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: 6,
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          horizontalTitleGap: AppSpacing.xs,
-          value: value,
-          onChanged: enabled
-              ? (v) {
-                  AppHaptics.light();
-                  onChanged(v);
-                }
-              : null,
-          trackColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.disabled) && states.contains(WidgetState.selected)) {
-              return cs.onSurface.withValues(alpha: 0.38);
-            }
-            return null;
-          }),
-          thumbIcon: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return Icon(
-                Icons.check_rounded,
-                size: 18,
-                color: enabled ? p.bitcoinOrange : cs.onSurface.withValues(alpha: 0.38),
-              );
-            }
-            return null;
-          }),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  label,
+                  style: AppTypography.body.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: enabled ? cs.onSurface : cs.onSurfaceVariant,
+                  ),
+                ),
+              ),
+              switchControl,
+            ],
+          ),
         ),
       ),
     );
