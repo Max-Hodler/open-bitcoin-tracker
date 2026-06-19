@@ -99,6 +99,7 @@
   "settingsLockStacks": "Verrouillage",
   "overflowBlockStacks": "Verrouiller les Stacks",
   "settingsLockStacksTitle": "Paramètres de verrouillage",
+  "settingsLockStacksSetupTitle": "Verrouiller les Stacks",
   "settingsAuthType": "Type d'authentification",
   "settingsRelockAfter": "Reverrouiller après",
   "settingsChangePin": "Modifier le PIN",

@@ -99,6 +99,7 @@
   "settingsLockStacks": "Sperre",
   "overflowBlockStacks": "Stacks sperren",
   "settingsLockStacksTitle": "Sperreinstellungen",
+  "settingsLockStacksSetupTitle": "Stacks sperren",
   "settingsAuthType": "Authentifizierungstyp",
   "settingsRelockAfter": "Erneut sperren nach",
   "settingsChangePin": "PIN ändern",

@@ -99,6 +99,7 @@
   "settingsLockStacks": "ロック",
   "overflowBlockStacks": "Stacks をロック",
   "settingsLockStacksTitle": "ロック設定",
+  "settingsLockStacksSetupTitle": "Stacks をロック",
   "settingsAuthType": "認証タイプ",
   "settingsRelockAfter": "再ロックまでの時間",
   "settingsChangePin": "PIN を変更",

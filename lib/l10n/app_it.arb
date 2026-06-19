@@ -99,6 +99,7 @@
   "settingsLockStacks": "Blocco",
   "overflowBlockStacks": "Blocca Stacks",
   "settingsLockStacksTitle": "Impostazioni di blocco",
+  "settingsLockStacksSetupTitle": "Blocca Stacks",
   "settingsAuthType": "Tipo di autenticazione",
   "settingsRelockAfter": "Riblocca dopo",
   "settingsChangePin": "Modifica PIN",

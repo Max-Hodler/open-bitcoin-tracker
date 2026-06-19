@@ -99,6 +99,7 @@
   "settingsLockStacks": "Khóa",
   "overflowBlockStacks": "Khóa Stacks",
   "settingsLockStacksTitle": "Cài đặt khóa",
+  "settingsLockStacksSetupTitle": "Khóa Stacks",
   "settingsAuthType": "Loại xác thực",
   "settingsRelockAfter": "Khóa lại sau",
   "settingsChangePin": "Đổi PIN",
