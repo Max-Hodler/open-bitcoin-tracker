@@ -397,8 +397,9 @@ class _AreaChartState extends State<AreaChart>
                           show: true,
                           getDotPainter: (_, _, _, _) => FlDotCirclePainter(
                             radius: 5,
-                            color: cs.onSurface,
-                            strokeWidth: 0,
+                            color: color,
+                            strokeWidth: 1.5,
+                            strokeColor: cs.onSurface,
                           ),
                         ),
                       ),
