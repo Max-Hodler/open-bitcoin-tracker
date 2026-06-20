@@ -211,7 +211,7 @@ class _FutureValueSliderState extends State<FutureValueSlider> {
               fontSize: 22,
               fontWeight: FontWeight.w600,
               letterSpacing: -0.5,
-              color: cs.onSurface,
+              color: cs.onSurfaceVariant,
               fontFeatures: const [ui.FontFeature.tabularFigures()],
             ),
           ),
