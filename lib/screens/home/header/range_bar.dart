@@ -348,17 +348,14 @@ class _RangeBarState extends State<RangeBar>
       (a) => a.monthsOverflowQuickRange,
     );
     final textScaler = MediaQuery.textScalerOf(context);
-    // 1.4 line-height factor (AppTypography.body actual) + 16 padding + 4px
-    // slack so the inner Column never overflows by sub-pixel amounts at very
-    // large text scales. The chevron icon (24px on the overflow chip) drives
-    // the row height when system text is small, so we floor on it — without
-    // that, the icon overflows the column by ~0.4px at textScale=1.0.
+    // 1.4 matches the Inter body line-height (AppTypography.body height: 1.4).
+    // Floor at 24 so the icon on overflow chips doesn't overflow at textScale=1.
     final labelRow = math.max<double>(textScaler.scale(14) * 1.4, 24);
-    // Inner padding of the recessed track around the chip row (see build of the
-    // track below). Added into the bar height so the track doesn't squeeze the
-    // chips into an overflow.
+    // Inner horizontal padding of the recessed track around the chip row.
     const trackPadding = 2.0;
-    final chipHeight = labelRow + 16 + trackPadding * 2;
+    // Expected chip content height (text + vertical padding) — used to center
+    // the grey track within the chip row via trackInset.
+    final chipHeight = labelRow + 16;
     const greyBarHeight = 28.0;
     // Width floor for each chip's label. Two reasons we need this:
     //   1. Selecting a chip flips its weight to w600, which is wider than the
@@ -525,9 +522,7 @@ class _RangeBarState extends State<RangeBar>
     // — the top only has to clear the upward nudge.
     const shadowBleedTop = 7.0;
     const shadowBleedBottom = 11.0;
-    return SizedBox(
-      height: chipHeight + shadowBleedTop + shadowBleedBottom,
-      child: LayoutBuilder(
+    return LayoutBuilder(
         builder: (context, constraints) {
           // When a settings circle is shown it sits to the right of the track,
           // separated by a small gap. Reserve that space so the track doesn't
@@ -824,8 +819,7 @@ class _RangeBarState extends State<RangeBar>
             ],
           );
         },
-      ),
-    );
+      );
   }
 
   Future<void> _showDaysOverflowSlotPicker(BuildContext context) =>
@@ -1192,7 +1186,9 @@ class _ChipState extends State<_Chip> {
               widget.onLongPress!();
             },
       child: Container(
-        constraints: const BoxConstraints(minWidth: 36),
+        constraints: BoxConstraints(
+          minWidth: math.max(36, (widget.minLabelWidth ?? 0) + 1),
+        ),
         padding: EdgeInsets.symmetric(
           horizontal: widget.compact ? 10 : AppSpacing.md,
           vertical: 8,
@@ -1207,78 +1203,51 @@ class _ChipState extends State<_Chip> {
               clipBehavior: Clip.none,
               alignment: Alignment.center,
               children: [
-                Builder(
-                  builder: (_) {
-                    final row = Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Fade the selected styling in/out instead of snapping it:
-                        // the color lerps over _selectFade; font weight can't be
-                        // interpolated by Flutter so it flips at the tween's
-                        // midpoint, under cover of the color fade.
-                        AnimatedDefaultTextStyle(
-                          duration: _selectFade,
-                          curve: Curves.easeOut,
-                          style: AppTypography.body.copyWith(
-                            fontSize: 14,
-                            fontWeight:
-                                widget.selected ? FontWeight.w600 : null,
-                            color: activeColor,
-                          ),
-                          // Roll the label vertically when a swipe cycles it to a
-                          // new range — the old value slides out and the new one
-                          // slides in from the swipe direction, mirroring the
-                          // live-price RollingNumber but on the vertical axis.
-                          child: AnimatedSwitcher(
-                            duration: AppSpacing.motionDuration,
-                            switchInCurve: Curves.easeOutCubic,
-                            switchOutCurve: Curves.easeInCubic,
-                            layoutBuilder: (current, previous) => Stack(
-                              alignment: Alignment.center,
-                              children: [...previous, ?current],
-                            ),
-                            transitionBuilder: (child, anim) {
-                              final isIncoming =
-                                  child.key == ValueKey(widget.label);
-                              final begin = Offset(
-                                0,
-                                (isIncoming ? 1.0 : -1.0) *
-                                    widget.rollDirection *
-                                    0.6,
-                              );
-                              return FadeTransition(
-                                opacity: anim,
-                                child: SlideTransition(
-                                  position: Tween<Offset>(
-                                    begin: begin,
-                                    end: Offset.zero,
-                                  ).animate(anim),
-                                  child: child,
-                                ),
-                              );
-                            },
-                            child: Text(
-                              widget.label,
-                              key: ValueKey(widget.label),
-                              textAlign: TextAlign.center,
-                              softWrap: false,
-                              overflow: TextOverflow.visible,
-                            ),
-                          ),
+                AnimatedDefaultTextStyle(
+                  duration: _selectFade,
+                  curve: Curves.easeOut,
+                  style: AppTypography.body.copyWith(
+                    fontSize: 14,
+                    fontWeight:
+                        widget.selected ? FontWeight.w600 : null,
+                    color: activeColor,
+                  ),
+                  child: AnimatedSwitcher(
+                    duration: AppSpacing.motionDuration,
+                    switchInCurve: Curves.easeOutCubic,
+                    switchOutCurve: Curves.easeInCubic,
+                    layoutBuilder: (current, previous) => Stack(
+                      alignment: Alignment.center,
+                      children: [...previous, ?current],
+                    ),
+                    transitionBuilder: (child, anim) {
+                      final isIncoming =
+                          child.key == ValueKey(widget.label);
+                      final begin = Offset(
+                        0,
+                        (isIncoming ? 1.0 : -1.0) *
+                            widget.rollDirection *
+                            0.6,
+                      );
+                      return FadeTransition(
+                        opacity: anim,
+                        child: SlideTransition(
+                          position: Tween<Offset>(
+                            begin: begin,
+                            end: Offset.zero,
+                          ).animate(anim),
+                          child: child,
                         ),
-                      ],
-                    );
-                    final minW = widget.minLabelWidth;
-                    if (minW == null) return row;
-                    // Stable-width slot so cycling labels (1Y..15Y, 1M..12M) and
-                    // bold↔regular weight changes don't reflow the row. The row
-                    // inside centers itself. SizedBox (not ConstrainedBox)
-                    // because IntrinsicWidth ignores min constraints; +1px slack
-                    // absorbs sub-pixel measurement differences.
-                    final slotWidth = minW + 1;
-                    return SizedBox(width: slotWidth, child: row);
-                  },
+                      );
+                    },
+                    child: Text(
+                      widget.label,
+                      key: ValueKey(widget.label),
+                      textAlign: TextAlign.center,
+                      softWrap: false,
+                      overflow: TextOverflow.visible,
+                    ),
+                  ),
                 ),
               ],
             ),
