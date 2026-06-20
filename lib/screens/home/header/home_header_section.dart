@@ -294,7 +294,8 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
                                 .map((c) => c.code)
                                 .join(', '),
                             onTap: () async {
-                              final picked = await Navigator.of(ctx)
+                              Navigator.of(ctx).pop();
+                              final picked = await Navigator.of(context)
                                   .push<List<Currency>>(
                                 MaterialPageRoute(
                                   builder: (_) => CurrencyPickerScreen(
