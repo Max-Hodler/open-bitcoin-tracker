@@ -105,6 +105,9 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
     final l10n = AppLocalizations.of(context);
     final app = context.watch<AppStateNotifier>();
     final stack = _stackOf(app);
+    final isLandscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
+    final hPad = isLandscape ? 64.0 : AppSpacing.md;
 
     // The stack was deleted out from under us (e.g. via the overflow menu) —
     // bail back to the previous screen on the next frame.
@@ -129,12 +132,16 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
         backgroundColor: cs.surfaceContainerLow,
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: BackButton(
-          color: cs.onSurfaceVariant,
-          onPressed: () {
-            AppHaptics.light();
-            Navigator.of(context).maybePop();
-          },
+        leadingWidth: 56 + (hPad - AppSpacing.md),
+        leading: Padding(
+          padding: EdgeInsets.only(left: hPad - AppSpacing.md),
+          child: BackButton(
+            color: cs.onSurfaceVariant,
+            onPressed: () {
+              AppHaptics.light();
+              Navigator.of(context).maybePop();
+            },
+          ),
         ),
         centerTitle: false,
         titleSpacing: AppSpacing.xs,
@@ -166,7 +173,7 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: AppSpacing.sm),
+            padding: EdgeInsets.only(right: hPad - AppSpacing.md + AppSpacing.sm),
             child: PopupMenuButton<_StackAction>(
               key: _menuKey,
               onOpened: AppHaptics.light,
@@ -245,10 +252,10 @@ class _StackDetailScreenState extends State<StackDetailScreen> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.md,
+        padding: EdgeInsets.fromLTRB(
+          hPad,
           AppSpacing.sm,
-          AppSpacing.md,
+          hPad,
           AppSpacing.xl * 2,
         ),
         children: [

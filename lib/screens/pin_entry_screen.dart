@@ -362,14 +362,17 @@ class _PinEntryScreenState extends State<PinEntryScreen>
     const dotCount = _kPinLength;
     final screenTitle = widget.title ?? _titleForCurrentStep();
     final cs = Theme.of(context).colorScheme;
+    final isLandscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
+    final hPad = isLandscape ? 64.0 : AppSpacing.md;
     return Scaffold(
       backgroundColor: cs.surfaceContainerLow,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.md,
+          padding: EdgeInsets.fromLTRB(
+            hPad,
             0,
-            AppSpacing.md,
+            hPad,
             AppSpacing.md,
           ),
           child: Column(

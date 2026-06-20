@@ -41,6 +41,10 @@ class _CurrencyPickerScreenState extends State<CurrencyPickerScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     const all = Currency.values;
+    final cs = Theme.of(context).colorScheme;
+    final isLandscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
+    final hPad = isLandscape ? 64.0 : AppSpacing.md;
 
     Widget tile(Currency c) {
       final checked = _picked.contains(c);
@@ -50,14 +54,13 @@ class _CurrencyPickerScreenState extends State<CurrencyPickerScreen> {
         value: checked,
         onChanged: blocked ? (_) {} : (_) => _toggle(c),
         controlAffinity: ListTileControlAffinity.leading,
+        contentPadding: EdgeInsets.symmetric(horizontal: hPad),
         title: Text.rich(TextSpan(children: [
           TextSpan(text: c.code, style: const TextStyle(fontWeight: FontWeight.bold)),
           TextSpan(text: ' - ${currencyLabel(l10n, c)}'),
         ])),
       );
     }
-
-    final cs = Theme.of(context).colorScheme;
     return PopScope<List<Currency>>(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -70,11 +73,16 @@ class _CurrencyPickerScreenState extends State<CurrencyPickerScreen> {
           backgroundColor: cs.surfaceContainerLow,
           elevation: 0,
           scrolledUnderElevation: 0,
-          leading: BackButton(
-            color: cs.onSurfaceVariant,
-            onPressed: () => Navigator.of(context).pop(_picked),
+          leadingWidth: 56 + (hPad - AppSpacing.md),
+          leading: Padding(
+            padding: EdgeInsets.only(left: hPad - AppSpacing.md),
+            child: BackButton(
+              color: cs.onSurfaceVariant,
+              onPressed: () => Navigator.of(context).pop(_picked),
+            ),
           ),
           centerTitle: true,
+          titleSpacing: hPad,
           title: Text(
             AppLocalizations.of(context).settingsCurrencies,
             style: AppTypography.title.copyWith(
@@ -88,10 +96,10 @@ class _CurrencyPickerScreenState extends State<CurrencyPickerScreen> {
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.md,
+                padding: EdgeInsets.fromLTRB(
+                  hPad,
                   0,
-                  AppSpacing.md,
+                  hPad,
                   AppSpacing.md,
                 ),
                 child: Text(
@@ -103,8 +111,8 @@ class _CurrencyPickerScreenState extends State<CurrencyPickerScreen> {
               Divider(
                 height: 1,
                 thickness: 1,
-                indent: 16,
-                endIndent: 16,
+                indent: hPad,
+                endIndent: hPad,
                 color: cs.outlineVariant,
               ),
               for (final c in all.skip(_kCurrencyMajorsCount)) tile(c),

@@ -26,6 +26,9 @@ class TotalDetailScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final app = context.watch<AppStateNotifier>();
     final currency = app.currency;
+    final isLandscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
+    final hPad = isLandscape ? 64.0 : AppSpacing.md;
     final totalSats = app.stacks.fold<int>(0, (sum, s) => sum + s.sats);
     final btcAmount = totalSats / Sats.perBtc;
     final btcDisplayMode = app.btcDisplayMode;
@@ -46,12 +49,16 @@ class TotalDetailScreen extends StatelessWidget {
         backgroundColor: cs.surfaceContainerLow,
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: BackButton(
-          color: cs.onSurfaceVariant,
-          onPressed: () {
-            AppHaptics.light();
-            Navigator.of(context).maybePop();
-          },
+        leadingWidth: 56 + (hPad - AppSpacing.md),
+        leading: Padding(
+          padding: EdgeInsets.only(left: hPad - AppSpacing.md),
+          child: BackButton(
+            color: cs.onSurfaceVariant,
+            onPressed: () {
+              AppHaptics.light();
+              Navigator.of(context).maybePop();
+            },
+          ),
         ),
         centerTitle: false,
         titleSpacing: AppSpacing.xs,
@@ -79,10 +86,10 @@ class TotalDetailScreen extends StatelessWidget {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.md,
+        padding: EdgeInsets.fromLTRB(
+          hPad,
           AppSpacing.sm,
-          AppSpacing.md,
+          hPad,
           AppSpacing.xl * 2,
         ),
         children: [

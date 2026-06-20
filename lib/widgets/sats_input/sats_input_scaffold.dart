@@ -79,20 +79,28 @@ class SatsInputScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
+    final isLandscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
+    final hPad = isLandscape ? 64.0 : AppSpacing.md;
     return Scaffold(
       backgroundColor: cs.surfaceContainerLow,
       appBar: AppBar(
         backgroundColor: cs.surfaceContainerLow,
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: BackButton(
-          color: cs.onSurfaceVariant,
-          onPressed: () {
-            AppHaptics.light();
-            Navigator.of(context).maybePop();
-          },
+        leadingWidth: 56 + (hPad - AppSpacing.md),
+        leading: Padding(
+          padding: EdgeInsets.only(left: hPad - AppSpacing.md),
+          child: BackButton(
+            color: cs.onSurfaceVariant,
+            onPressed: () {
+              AppHaptics.light();
+              Navigator.of(context).maybePop();
+            },
+          ),
         ),
         centerTitle: true,
+        titleSpacing: hPad,
         title: Text(
           title ?? l10n.satsInputLabel,
           style: AppTypography.title.copyWith(
@@ -105,9 +113,9 @@ class SatsInputScaffold extends StatelessWidget {
         top: false,
         child: Padding(
           padding: EdgeInsets.fromLTRB(
-            AppSpacing.md,
+            hPad,
             header != null ? AppSpacing.sm : AppSpacing.md,
-            AppSpacing.md,
+            hPad,
             AppSpacing.md,
           ),
           child: Column(

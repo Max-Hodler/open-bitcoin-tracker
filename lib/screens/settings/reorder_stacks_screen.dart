@@ -18,14 +18,22 @@ class ReorderStacksScreen extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final stacks = app.stacks;
 
+    final isLandscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
+    final hPad = isLandscape ? 64.0 : AppSpacing.md;
     return Scaffold(
       backgroundColor: cs.surfaceContainerLow,
       appBar: AppBar(
         backgroundColor: cs.surfaceContainerLow,
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: BackButton(color: cs.onSurfaceVariant),
+        leadingWidth: 56 + (hPad - AppSpacing.md),
+        leading: Padding(
+          padding: EdgeInsets.only(left: hPad - AppSpacing.md),
+          child: BackButton(color: cs.onSurfaceVariant),
+        ),
         centerTitle: true,
+        titleSpacing: hPad,
         title: Text(
           l10n.settingsReorderStacks,
           style: AppTypography.title.copyWith(
@@ -39,10 +47,10 @@ class ReorderStacksScreen extends StatelessWidget {
           Expanded(
             child: ScrollHairline(
               child: ReorderableListView.builder(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.md,
+                padding: EdgeInsets.fromLTRB(
+                  hPad,
                   AppSpacing.lg,
-                  AppSpacing.md,
+                  hPad,
                   AppSpacing.xl * 2,
                 ),
                 buildDefaultDragHandles: false,

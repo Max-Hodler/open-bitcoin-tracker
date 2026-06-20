@@ -18,14 +18,22 @@ class GraphSettingsScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
 
+    final isLandscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
+    final hPad = isLandscape ? 64.0 : AppSpacing.md;
     return Scaffold(
       backgroundColor: cs.surfaceContainerLow,
       appBar: AppBar(
         backgroundColor: cs.surfaceContainerLow,
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: BackButton(color: cs.onSurfaceVariant),
+        leadingWidth: 56 + (hPad - AppSpacing.md),
+        leading: Padding(
+          padding: EdgeInsets.only(left: hPad - AppSpacing.md),
+          child: BackButton(color: cs.onSurfaceVariant),
+        ),
         centerTitle: true,
+        titleSpacing: hPad,
         title: Text(
           l10n.settingsGraphTitle,
           style: AppTypography.title.copyWith(
@@ -36,10 +44,10 @@ class GraphSettingsScreen extends StatelessWidget {
       ),
       body: ScrollHairline(
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(
+          padding: EdgeInsets.fromLTRB(
+            hPad,
             AppSpacing.md,
-            AppSpacing.md,
-            AppSpacing.md,
+            hPad,
             AppSpacing.xl * 2,
           ),
           children: [
