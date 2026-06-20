@@ -228,7 +228,7 @@ class _HomeHeaderState extends State<HomeHeader> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(pad, pad, pad, 0),
+                padding: const EdgeInsets.fromLTRB(pad * 2, pad, pad * 2, 0),
                 child: priceRow,
               ),
               const SizedBox(height: 8),
