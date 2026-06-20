@@ -624,6 +624,10 @@
   "@homeSwipeChipHint": {
     "description": "One-time hint shown below the chart range chips after the long-press hint is dismissed, teaching the swipe-to-cycle shortcut. Disappears permanently after the user swipes any chip for the first time."
   },
+  "homePriceSwipeHint": "Swipe to change the currency",
+  "@homePriceSwipeHint": {
+    "description": "One-time hint shown in the subtitle line below the live price, teaching the horizontal swipe gesture. Trumps all other subtitle content while visible. Disappears once the user swipes and the currency changes."
+  },
   "homeConverter": "Converter",
   "@homeConverter": {
     "description": "Label of the Converter shortcut button on the home screen."

@@ -77,6 +77,7 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
   List<Currency> get selectedCurrencies => _state.selectedCurrencies;
   bool get showPortfolio => _state.showPortfolio;
   bool get swipeChipHintDismissed => _state.swipeChipHintDismissed;
+  bool get priceSwipeHintDismissed => _state.priceSwipeHintDismissed;
   bool get showChart => _state.showChart;
   bool get showPriceDelta => _state.showPriceDelta;
   ChartHeight get chartHeight => _state.chartHeight;
@@ -180,6 +181,8 @@ class AppStateNotifier extends ChangeNotifier with WidgetsBindingObserver {
   void setShowPortfolio(bool value) => _update((s) => s.copyWith(showPortfolio: value));
   void dismissSwipeChipHint() =>
       _update((s) => s.copyWith(swipeChipHintDismissed: true));
+  void dismissPriceSwipeHint() =>
+      _update((s) => s.copyWith(priceSwipeHintDismissed: true));
   void setShowChart(bool value) => _update((s) => s.copyWith(showChart: value));
   void setShowPriceDelta(bool value) => _update((s) => s.copyWith(showPriceDelta: value));
   void setChartHeight(ChartHeight value) => _update((s) => s.copyWith(chartHeight: value));

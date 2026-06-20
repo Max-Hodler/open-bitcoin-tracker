@@ -144,6 +144,7 @@
   "newStackTitle": "新しい Stack",
   "homeAddStack": "Stack を追加",
   "homeSwipeChipHint": "期間を上下にスワイプして変更してください。",
+  "homePriceSwipeHint": "スワイプして通貨を変更",
   "homeConverter": "コンバーター",
   "homeUnlockStacks": "Stacks のロックを解除",
   "stackMenuUpdateAmount": "数量を更新",

@@ -144,6 +144,7 @@
   "newStackTitle": "Новый Stack",
   "homeAddStack": "Добавить Stack",
   "homeSwipeChipHint": "Проведите вверх или вниз по диапазону, чтобы его изменить.",
+  "homePriceSwipeHint": "Проведите, чтобы изменить валюту",
   "homeConverter": "Конвертер",
   "homeUnlockStacks": "Разблокировать Stacks",
   "stackMenuUpdateAmount": "Изменить количество",

@@ -47,6 +47,13 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
   final ValueNotifier<PricePoint?> _hover = ValueNotifier(null);
   int _lastHoverHapticMs = 0;
 
+  // Set to true the first time the user swipes the price (or the picker
+  // reduces to 1 currency) this session. Combined with the persisted
+  // priceSwipeHintDismissed flag to derive showSwipeHint in build — keeping
+  // them separate means a "reset all options" that clears the persisted flag
+  // is reflected immediately on the next build.
+  bool _swipedThisSession = false;
+
   // Cached range-window slice around the binary search in [ChartSlicer].
   final ChartSlicer _slicer = ChartSlicer();
 
@@ -197,6 +204,10 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
       chartWindowEndMs = nowMs;
     }
 
+    final showSwipeHint = !_swipedThisSession &&
+        !context.select<AppStateNotifier, bool>((a) => a.priceSwipeHintDismissed) &&
+        widget.selectedCurrencies.length >= 2;
+
     return HomeHeader(
       failed: intradayFailed,
       showChart: widget.showChart,
@@ -210,6 +221,13 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
       rangePct: rangePct,
       rangeAbsDiff: rangeAbsDiff,
       rollDirection: _rollDirection,
+      showSwipeHint: showSwipeHint,
+      onDismissSwipeHint: () {
+        if (_swipedThisSession == false) {
+          setState(() => _swipedThisSession = true);
+          context.read<AppStateNotifier>().dismissPriceSwipeHint();
+        }
+      },
       onPriceTap: () {
         AppHaptics.light();
         final theme = Theme.of(context);
@@ -273,6 +291,10 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
                               );
                               if (picked != null) {
                                 app.setSelectedCurrencies(picked);
+                                if (picked.length == 1 && _swipedThisSession == false) {
+                                  setState(() => _swipedThisSession = true);
+                                  app.dismissPriceSwipeHint();
+                                }
                               }
                             },
                             trailingIcon: Icons.chevron_right,
@@ -407,6 +429,10 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
         final notifier = context.read<AppStateNotifier>();
         if (notifier.cycleCurrency(direction)) {
           AppHaptics.selection();
+          if (_swipedThisSession == false) {
+            setState(() => _swipedThisSession = true);
+            notifier.dismissPriceSwipeHint();
+          }
           return;
         }
         // 0/1 currencies in the ring: nothing to cycle to. Open the picker so
@@ -419,6 +445,10 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
         );
         if (picked != null && context.mounted) {
           notifier.setSelectedCurrencies(picked);
+          if (picked.length == 1 && _swipedThisSession == false) {
+            setState(() => _swipedThisSession = true);
+            notifier.dismissPriceSwipeHint();
+          }
         }
       },
       chartData: chartRenderData,

@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../../api/api.dart';
 import '../../../data/app_enums.dart';
 import '../../../data/fiat.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../services/app_haptics.dart';
 import '../../../state/state.dart';
 import '../../../theme/theme.dart';
@@ -24,8 +25,10 @@ class CurrentPrice extends StatefulWidget {
     required this.currency,
     required this.selectedCurrencies,
     required this.rollDirection,
+    required this.showSwipeHint,
     required this.onPriceTap,
     required this.onCurrencySwipe,
+    required this.onDismissSwipeHint,
     required this.chartColor,
     required this.showChart,
     this.rangePct,
@@ -43,8 +46,10 @@ class CurrentPrice extends StatefulWidget {
   // only then is it correct to record a pending slide direction.
   final List<Currency> selectedCurrencies;
   final int rollDirection;
+  final bool showSwipeHint;
   final VoidCallback onPriceTap;
   final ValueChanged<int> onCurrencySwipe;
+  final VoidCallback onDismissSwipeHint;
   final Color chartColor;
   final bool showChart;
   final double? rangePct;
@@ -102,8 +107,19 @@ class _CurrentPriceState extends State<CurrentPrice>
   Timer? _deltaHoldTimer;
   late final AnimationController _deltaFade;
 
+  // Drives the left-right nudge animation that teaches the swipe gesture.
+  // Runs as a looping animation while showSwipeHint is true and ≥2 currencies
+  // are in the ring. Stopped permanently once the user swipes.
+  late final AnimationController _nudge;
+  late final Animation<double> _nudgeOffset;
+
   static const Duration _kDeltaHold = Duration(milliseconds: 2000);
   static const Duration _kDeltaFadeDuration = Duration(milliseconds: 300);
+  // One full left→right→left cycle. The animation repeats with reverse:true,
+  // so each forward+reverse pair takes 2× this value.
+  static const Duration _kNudgeCycleDuration = Duration(milliseconds: 600);
+  // Peak horizontal translation in logical pixels.
+  static const double _kNudgeAmplitude = 10.0;
 
   @override
   void initState() {
@@ -113,11 +129,40 @@ class _CurrentPriceState extends State<CurrentPrice>
       vsync: this,
       duration: _kDeltaFadeDuration,
     );
+    _nudge = AnimationController(
+      vsync: this,
+      duration: _kNudgeCycleDuration,
+    );
+    // Maps 0→1 to -1→+1 so that with repeat(reverse:true) the motion is:
+    // right → center → left → center → right → ...
+    _nudgeOffset = Tween<double>(begin: 1, end: -1).animate(
+      CurvedAnimation(parent: _nudge, curve: Curves.easeInOut),
+    );
+    if (widget.showSwipeHint && widget.selectedCurrencies.length >= 2) {
+      _startNudge();
+    }
+  }
+
+  void _startNudge() {
+    _nudge.repeat(reverse: true);
+  }
+
+  void _stopNudge() {
+    _nudge.stop();
+    _nudge.value = 0.5; // tween begin=1,end=-1 → value 0.5 = dx 0 (center)
   }
 
   @override
   void didUpdateWidget(covariant CurrentPrice old) {
     super.didUpdateWidget(old);
+    // Start/stop the nudge animation when the hint flag or ring size changes.
+    final shouldNudge = widget.showSwipeHint && widget.selectedCurrencies.length >= 2;
+    final wasNudging = old.showSwipeHint && old.selectedCurrencies.length >= 2;
+    if (shouldNudge && !wasNudging) {
+      _startNudge();
+    } else if (!shouldNudge && wasNudging) {
+      _stopNudge();
+    }
     if (old.currency != widget.currency) {
       final pending = _pendingSwipeDir;
       _pendingSwipeDir = null;
@@ -183,6 +228,7 @@ class _CurrentPriceState extends State<CurrentPrice>
   void dispose() {
     _deltaHoldTimer?.cancel();
     _deltaFade.dispose();
+    _nudge.dispose();
     super.dispose();
   }
 
@@ -231,6 +277,11 @@ class _CurrentPriceState extends State<CurrentPrice>
             if (widget.selectedCurrencies.length >= 2) {
               _pendingSwipeDir = dir;
             }
+            // Any swipe gesture — successful or not — dismisses the hint.
+            if (widget.showSwipeHint) {
+              _stopNudge();
+              widget.onDismissSwipeHint();
+            }
             widget.onCurrencySwipe(dir);
           },
           child: Column(
@@ -257,7 +308,13 @@ class _CurrentPriceState extends State<CurrentPrice>
                                     .debugSimulateTick();
                               }
                             : null,
-                        child: SizedBox(
+                        child: AnimatedBuilder(
+                          animation: _nudgeOffset,
+                          builder: (context, child) => Transform.translate(
+                            offset: Offset(_nudgeOffset.value * _kNudgeAmplitude, 0),
+                            child: child,
+                          ),
+                          child: SizedBox(
                           height: priceRowHeight,
                           child: AnimatedSwitcher(
                             duration: AppSpacing.motionDuration,
@@ -301,6 +358,7 @@ class _CurrentPriceState extends State<CurrentPrice>
                             ),
                           ),
                         ),
+                        ),
                       ),
                     ),
                   ),
@@ -318,6 +376,7 @@ class _CurrentPriceState extends State<CurrentPrice>
                   fade: _deltaFade,
                   rangePct: (h == null && widget.showChart && widget.range != BtcRange.all && widget.price != null) ? widget.rangePct : null,
                   rangeAbsDiff: (h == null && widget.showChart && widget.range != BtcRange.all && widget.price != null) ? widget.rangeAbsDiff : null,
+                  showSwipeHint: widget.showSwipeHint,
                 ),
               ),
             ],
@@ -339,6 +398,7 @@ class _PriceSubtitle extends StatelessWidget {
     required this.fade,
     required this.rangePct,
     required this.rangeAbsDiff,
+    required this.showSwipeHint,
   });
 
   final String? hoverLabel;
@@ -347,6 +407,7 @@ class _PriceSubtitle extends StatelessWidget {
   final Animation<double> fade;
   final double? rangePct;
   final double? rangeAbsDiff;
+  final bool showSwipeHint;
 
   @override
   Widget build(BuildContext context) {
@@ -355,6 +416,9 @@ class _PriceSubtitle extends StatelessWidget {
       color: cs.onSurfaceVariant,
       fontSize: 15,
     );
+    if (showSwipeHint) {
+      return Text(AppLocalizations.of(context).homePriceSwipeHint, style: baseStyle);
+    }
     if (hoverLabel != null) {
       return Text(hoverLabel!, style: baseStyle);
     }

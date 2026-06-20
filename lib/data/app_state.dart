@@ -38,6 +38,7 @@ class AppState {
     this.totalProjectedPrice,
     this.totalProjectedPriceCurrency,
     this.swipeChipHintDismissed = false,
+    this.priceSwipeHintDismissed = false,
     this.showPriceDelta = false,
   });
 
@@ -116,6 +117,10 @@ class AppState {
   // True once the user swipes up or down on any range chip for the first time.
   // The hint teaches the swipe-to-cycle shortcut.
   final bool swipeChipHintDismissed;
+  // True once the user has swiped the live price to cycle currency for the
+  // first time. Suppresses the nudge animation and subtitle hint on subsequent
+  // launches.
+  final bool priceSwipeHintDismissed;
   // When true, show the signed tick-to-tick price delta as a subtitle below
   // the live price for ~2 s each time the price updates. Off by default.
   final bool showPriceDelta;
@@ -156,6 +161,7 @@ class AppState {
     bool clearTotalProjectedPrice = false,
     String? totalProjectedPriceCurrency,
     bool? swipeChipHintDismissed,
+    bool? priceSwipeHintDismissed,
     bool? showPriceDelta,
   }) {
     return AppState(
@@ -205,6 +211,8 @@ class AppState {
           clearTotalProjectedPrice ? null : (totalProjectedPriceCurrency ?? this.totalProjectedPriceCurrency),
       swipeChipHintDismissed:
           swipeChipHintDismissed ?? this.swipeChipHintDismissed,
+      priceSwipeHintDismissed:
+          priceSwipeHintDismissed ?? this.priceSwipeHintDismissed,
       showPriceDelta: showPriceDelta ?? this.showPriceDelta,
     );
   }
@@ -247,6 +255,7 @@ class AppState {
         if (totalProjectedPrice != null) 'totalProjectedPrice': totalProjectedPrice,
         if (totalProjectedPriceCurrency != null) 'totalProjectedPriceCurrency': totalProjectedPriceCurrency,
         'swipeChipHintDismissed': swipeChipHintDismissed,
+        'priceSwipeHintDismissed': priceSwipeHintDismissed,
         'showPriceDelta': showPriceDelta,
       };
 
@@ -346,6 +355,8 @@ class AppState {
       totalProjectedPriceCurrency: json['totalProjectedPriceCurrency'] as String?,
       swipeChipHintDismissed:
           json['swipeChipHintDismissed'] as bool? ?? false,
+      priceSwipeHintDismissed:
+          json['priceSwipeHintDismissed'] as bool? ?? false,
       showPriceDelta: json['showPriceDelta'] as bool? ?? false,
     );
   }

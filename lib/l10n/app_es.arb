@@ -144,6 +144,7 @@
   "newStackTitle": "Nuevo stack",
   "homeAddStack": "Añadir stack",
   "homeSwipeChipHint": "Desliza hacia arriba o abajo en un rango para cambiarlo.",
+  "homePriceSwipeHint": "Desliza para cambiar la divisa",
   "homeConverter": "Conversor",
   "homeUnlockStacks": "Desbloquear stacks",
   "stackMenuUpdateAmount": "Actualizar cantidad",
