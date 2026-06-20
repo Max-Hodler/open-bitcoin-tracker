@@ -5,7 +5,7 @@ class AppState {
   const AppState({
     this.stacks = const [],
     this.currency = Currency.usd,
-    this.selectedCurrencies = const [Currency.usd, Currency.eur, Currency.gbp],
+    this.selectedCurrencies = const [Currency.usd],
     this.showPortfolio = false,
     this.showChart = true,
     this.chartHeight = ChartHeight.xl,
