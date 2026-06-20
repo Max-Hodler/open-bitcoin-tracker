@@ -107,6 +107,7 @@ class HomeHeader extends StatefulWidget {
     required this.rangeAbsDiff,
     required this.rollDirection,
     required this.showSwipeHint,
+    required this.currencyEverSwiped,
     required this.onPriceTap,
     required this.onGraphSettingsTap,
     required this.onCurrencySwipe,
@@ -136,6 +137,7 @@ class HomeHeader extends StatefulWidget {
   final double? rangeAbsDiff;
   final int rollDirection;
   final bool showSwipeHint;
+  final bool currencyEverSwiped;
   final VoidCallback onPriceTap;
   // Tapped when the trailing settings (sliders) button on the range bar is
   // pressed. Opens the graph settings page (the range bar sits under the chart).
@@ -286,8 +288,9 @@ class _HomeHeaderState extends State<HomeHeader> {
   Widget _buildChipHint(BuildContext context) {
     final swipeHintDismissed = context.select<AppStateNotifier, bool>(
         (a) => a.swipeChipHintDismissed);
-    // Latch: once engaged, keep the hint visible regardless of current range.
-    if (widget.range != BtcRange.all && !swipeHintDismissed) {
+    // Latch: only engage once the user has swiped the currency AND taps a
+    // non-All range. Once latched it stays true for the session.
+    if (widget.currencyEverSwiped && widget.range != BtcRange.all && !swipeHintDismissed) {
       _hintTriggered = true;
     }
     final String? message;

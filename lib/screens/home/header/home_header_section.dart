@@ -53,6 +53,9 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
   // them separate means a "reset all options" that clears the persisted flag
   // is reflected immediately on the next build.
   bool _swipedThisSession = false;
+  // Mirrors the last-seen value of priceSwipeHintDismissed so build() can
+  // detect when a "reset all options" flips it false and clear _swipedThisSession.
+  bool _prevPriceSwipeHintDismissed = false;
 
   // Cached range-window slice around the binary search in [ChartSlicer].
   final ChartSlicer _slicer = ChartSlicer();
@@ -204,9 +207,18 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
       chartWindowEndMs = nowMs;
     }
 
+    final priceSwipeHintDismissed = context.select<AppStateNotifier, bool>(
+        (a) => a.priceSwipeHintDismissed);
+    // "Reset all options" flips priceSwipeHintDismissed back to false — when
+    // that happens, also clear the session latch so the hint re-appears.
+    if (_prevPriceSwipeHintDismissed && !priceSwipeHintDismissed) {
+      _swipedThisSession = false;
+    }
+    _prevPriceSwipeHintDismissed = priceSwipeHintDismissed;
     final showSwipeHint = !_swipedThisSession &&
-        !context.select<AppStateNotifier, bool>((a) => a.priceSwipeHintDismissed) &&
+        !priceSwipeHintDismissed &&
         widget.selectedCurrencies.length >= 2;
+    final currencyEverSwiped = _swipedThisSession || priceSwipeHintDismissed;
 
     return HomeHeader(
       failed: intradayFailed,
@@ -222,6 +234,7 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
       rangeAbsDiff: rangeAbsDiff,
       rollDirection: _rollDirection,
       showSwipeHint: showSwipeHint,
+      currencyEverSwiped: currencyEverSwiped,
       onDismissSwipeHint: () {
         if (_swipedThisSession == false) {
           setState(() => _swipedThisSession = true);
