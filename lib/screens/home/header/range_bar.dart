@@ -419,7 +419,9 @@ class _RangeBarState extends State<RangeBar>
     // are user-customizable (long-press to change) and All sits at the end. The row distributes chips across the available width with
     // spaceBetween, but when natural chip widths exceed the screen (large
     // system text), it scrolls horizontally so every chip stays reachable.
-    const horizontalPadding = AppSpacing.md;
+    final isLandscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
+    final horizontalPadding = isLandscape ? 32.0 : AppSpacing.md;
     // The whole row sits inside a recessed, pill-shaped track (segmented-control
     // look). The track's inner padding (trackPadding, above) keeps the selected
     // pill and the first/last labels off its rounded edge.

@@ -249,7 +249,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(pad, 0, pad, pad),
+                padding: const EdgeInsets.fromLTRB(pad, 0, pad, 4),
                 child: rangeBar,
               ),
             ],
