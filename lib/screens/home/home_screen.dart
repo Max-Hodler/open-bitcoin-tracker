@@ -459,8 +459,8 @@ class _HomeScreenState extends State<HomeScreen>
                       child: FilledButton(
                         onPressed: _onAddStackTap,
                         style: FilledButton.styleFrom(
-                          backgroundColor: cs.surfaceContainer,
-                          foregroundColor: cs.onSurfaceVariant,
+                          backgroundColor: AppColors.bitcoinOrange,
+                          foregroundColor: Colors.white,
                           minimumSize: const Size(0, 64),
                           textStyle: AppTypography.body.copyWith(
                             fontWeight: FontWeight.w600,
