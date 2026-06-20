@@ -748,7 +748,6 @@ Future<LanguagePref?> _showLanguagePicker(
             children: [
               Text(
                 l10n.languagePickerTitle,
-                textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 12),
