@@ -620,7 +620,7 @@
   "@homeAddStack": {
     "description": "Terse 'Add stack' action label used in the per-stack overflow menu and the new-stack flow's confirm button."
   },
-  "homeSwipeChipHint": "Swipe up or down on a range to change it.",
+  "homeSwipeChipHint": "Swipe to change the range.",
   "@homeSwipeChipHint": {
     "description": "One-time hint shown below the chart range chips after the long-press hint is dismissed, teaching the swipe-to-cycle shortcut. Disappears permanently after the user swipes any chip for the first time."
   },

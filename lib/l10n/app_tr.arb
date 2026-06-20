@@ -143,7 +143,7 @@
   "totalCardName": "Toplam",
   "newStackTitle": "Yeni stack",
   "homeAddStack": "Stack ekle",
-  "homeSwipeChipHint": "Aralığı değiştirmek için yukarı veya aşağı kaydır.",
+  "homeSwipeChipHint": "Aralığı değiştirmek için kaydır.",
   "homePriceSwipeHint": "Para birimini değiştirmek için kaydır",
   "homeConverter": "Dönüştürücü",
   "homeUnlockStacks": "Stacks'i aç",

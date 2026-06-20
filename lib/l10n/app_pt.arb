@@ -143,7 +143,7 @@
   "totalCardName": "Total",
   "newStackTitle": "Novo stack",
   "homeAddStack": "Adicionar stack",
-  "homeSwipeChipHint": "Deslize para cima ou para baixo num intervalo para o alterar.",
+  "homeSwipeChipHint": "Deslize para mudar o intervalo.",
   "homePriceSwipeHint": "Deslize para mudar a moeda",
   "homeConverter": "Conversor",
   "homeUnlockStacks": "Desbloquear stacks",

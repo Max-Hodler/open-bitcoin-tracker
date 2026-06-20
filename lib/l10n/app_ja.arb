@@ -143,7 +143,7 @@
   "totalCardName": "合計",
   "newStackTitle": "新しい Stack",
   "homeAddStack": "Stack を追加",
-  "homeSwipeChipHint": "期間を上下にスワイプして変更してください。",
+  "homeSwipeChipHint": "スワイプして期間を変更。",
   "homePriceSwipeHint": "スワイプして通貨を変更",
   "homeConverter": "コンバーター",
   "homeUnlockStacks": "Stacks のロックを解除",
