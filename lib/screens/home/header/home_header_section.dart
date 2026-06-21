@@ -289,6 +289,21 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
                       child: SettingsGroup(
                         children: [
                           SettingsPickerTile(
+                            label: l10n.settingsFullScreenPrice,
+                            value: '',
+                            onTap: () {
+                              Navigator.of(ctx).pop();
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (_) => FullScreenPriceScreen(
+                                    currency: widget.currency,
+                                  ),
+                                ),
+                              );
+                            },
+                            trailingIcon: Icons.fullscreen,
+                          ),
+                          SettingsPickerTile(
                             label: l10n.settingsCurrencies,
                             value: app.selectedCurrencies
                                 .map((c) => c.code)
@@ -332,21 +347,6 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
                             value: app.showPriceDelta,
                             enabled: true,
                             onChanged: app.setShowPriceDelta,
-                          ),
-                          SettingsPickerTile(
-                            label: l10n.settingsFullScreenPrice,
-                            value: '',
-                            onTap: () {
-                              Navigator.of(ctx).pop();
-                              Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                  builder: (_) => FullScreenPriceScreen(
-                                    currency: widget.currency,
-                                  ),
-                                ),
-                              );
-                            },
-                            trailingIcon: Icons.fullscreen,
                           ),
                         ],
                       ),
