@@ -240,7 +240,7 @@ class _CurrentPriceState extends State<CurrentPrice>
     // the slot width — lines up with the natural text baseline instead of
     // wiggling as proportional digits roll past.
     final priceStyle = AppTypography.display.copyWith(
-      fontSize: 40,
+      fontSize: 48,
       fontWeight: FontWeight.w700,
       color: cs.onSurface.withValues(alpha: 0.92),
       fontFeatures: const [ui.FontFeature.tabularFigures()],
@@ -291,11 +291,13 @@ class _CurrentPriceState extends State<CurrentPrice>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 400),
-                      curve: Curves.easeOut,
-                      opacity: displayPrice != null ? 1.0 : 0.0,
-                      child: GestureDetector(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 16),
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeOut,
+                        opacity: displayPrice != null ? 1.0 : 0.0,
+                        child: GestureDetector(
                         onTap: () {
                           AppHaptics.selection();
                           widget.onPriceTap();
@@ -318,45 +320,49 @@ class _CurrentPriceState extends State<CurrentPrice>
                             offset: const Offset(-9, 0),
                             child: SizedBox(
                               height: priceRowHeight,
-                              child: AnimatedSwitcher(
-                                duration: AppSpacing.motionDuration,
-                                switchInCurve: Curves.easeOutCubic,
-                                switchOutCurve: Curves.easeInCubic,
-                                layoutBuilder: (current, previous) => Stack(
-                                  alignment: Alignment.centerLeft,
-                                  children: [...previous, ?current],
-                                ),
-                                transitionBuilder: (child, anim) {
-                                  final isIncoming =
-                                      child.key == ValueKey(widget.currency.code);
-                                  final begin = Offset(
-                                    (isIncoming ? 1.0 : -1.0) * _slideDir * 0.25, 0,
-                                  );
-                                  return FadeTransition(
-                                    opacity: anim,
-                                    child: SlideTransition(
-                                      position: Tween<Offset>(
-                                        begin: begin,
-                                        end: Offset.zero,
-                                      ).animate(anim),
-                                      child: child,
-                                    ),
-                                  );
-                                },
-                                child: RollingNumber(
-                                  key: ValueKey(widget.currency.code),
-                                  text: displayPrice != null
-                                      ? formatFiat(displayPrice, widget.currency).tight
-                                      : '',
-                                  direction: widget.rollDirection,
-                                  // Snap (don't roll) while the user is scrubbing the
-                                  // chart; hover supplies displayPrice and rolling each
-                                  // scrubbed value would be distracting. RollingNumber's
-                                  // didUpdate also handles the lift-off
-                                  // (animate=false → true) by snapping straight to the
-                                  // live value.
-                                  animate: h == null,
-                                  style: priceStyle,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
+                                child: AnimatedSwitcher(
+                                  duration: AppSpacing.motionDuration,
+                                  switchInCurve: Curves.easeOutCubic,
+                                  switchOutCurve: Curves.easeInCubic,
+                                  layoutBuilder: (current, previous) => Stack(
+                                    alignment: Alignment.centerLeft,
+                                    children: [...previous, ?current],
+                                  ),
+                                  transitionBuilder: (child, anim) {
+                                    final isIncoming =
+                                        child.key == ValueKey(widget.currency.code);
+                                    final begin = Offset(
+                                      (isIncoming ? 1.0 : -1.0) * _slideDir * 0.25, 0,
+                                    );
+                                    return FadeTransition(
+                                      opacity: anim,
+                                      child: SlideTransition(
+                                        position: Tween<Offset>(
+                                          begin: begin,
+                                          end: Offset.zero,
+                                        ).animate(anim),
+                                        child: child,
+                                      ),
+                                    );
+                                  },
+                                  child: RollingNumber(
+                                    key: ValueKey(widget.currency.code),
+                                    text: displayPrice != null
+                                        ? formatFiat(displayPrice, widget.currency).tight
+                                        : '',
+                                    direction: widget.rollDirection,
+                                    // Snap (don't roll) while the user is scrubbing the
+                                    // chart; hover supplies displayPrice and rolling each
+                                    // scrubbed value would be distracting. RollingNumber's
+                                    // didUpdate also handles the lift-off
+                                    // (animate=false → true) by snapping straight to the
+                                    // live value.
+                                    animate: h == null,
+                                    style: priceStyle,
+                                  ),
                                 ),
                               ),
                             ),
@@ -364,6 +370,7 @@ class _CurrentPriceState extends State<CurrentPrice>
                         ),
                       ),
                     ),
+                  ),
                   ),
                   if (widget.trailing != null) widget.trailing!,
                 ],
