@@ -3,6 +3,5 @@
 // this file now only re-exports the public sub-screen classes so external
 // callers (main.dart, home_screen.dart, settings_screen_test.dart) can keep
 // importing this single path without caring how the package is laid out.
-export 'btc_price_settings_screen.dart' show BtcPriceSettingsScreen;
 export 'currency_picker_screen.dart' show CurrencyPickerScreen;
 export 'theme_settings_screen.dart' show ThemeSettingsScreen;
