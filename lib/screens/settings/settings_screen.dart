@@ -4,6 +4,5 @@
 // callers (main.dart, home_screen.dart, settings_screen_test.dart) can keep
 // importing this single path without caring how the package is laid out.
 export 'btc_price_settings_screen.dart' show BtcPriceSettingsScreen;
-export 'graph_settings_screen.dart' show GraphSettingsScreen;
 export 'currency_picker_screen.dart' show CurrencyPickerScreen;
 export 'theme_settings_screen.dart' show ThemeSettingsScreen;

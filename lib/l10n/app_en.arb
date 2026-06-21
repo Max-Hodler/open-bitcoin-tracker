@@ -302,10 +302,6 @@
   "@settingsPriceTitle": {
     "description": "AppBar title of the price settings sub-screen (currency picker, cadence picker, price-change toggle)."
   },
-  "settingsGraphTitle": "Graph",
-  "@settingsGraphTitle": {
-    "description": "AppBar title of the graph settings sub-screen (chart display toggle, height, scale)."
-  },
   "settingsRanges": "Ranges",
   "@settingsRanges": {
     "description": "Section title above the range configuration bar in the graph settings sub-screen. Each slot on the bar opens a picker to choose which range that position shows on the home screen."
@@ -353,6 +349,10 @@
   "settingsChartHeightXl": "XL",
   "@settingsChartHeightXl": {
     "description": "Extra-large chart height segment label."
+  },
+  "settingsChartHeightXxl": "XXL",
+  "@settingsChartHeightXxl": {
+    "description": "Extra-extra-large chart height segment label."
   },
   "settingsPortfolioTotal": "Display total",
   "@settingsPortfolioTotal": {
@@ -856,4 +856,3 @@
     "description": "Row in the price bottom sheet that opens a landscape full-screen view showing only the live price. Tapping anywhere in that view returns home."
   }
 }
-

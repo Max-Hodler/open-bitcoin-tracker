@@ -412,6 +412,7 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
                               l10n.settingsChartHeightNormal,
                               l10n.settingsChartHeightTall,
                               l10n.settingsChartHeightXl,
+                              l10n.settingsChartHeightXxl,
                             ],
                             selectedIndex: app.chartHeight.index,
                             enabled: true,
