@@ -1,6 +1,5 @@
 {
   "@@locale": "ru",
-  "settingsTitle": "Настройки",
   "settingsLanguageLabel": "Язык",
   "languagePickerTitle": "Язык",
   "languageOptionSystem": "Системный",
@@ -72,7 +71,6 @@
   "aboutLicenses": "Лицензии open source",
   "aboutSourceCode": "Исходный код",
   "settingsCurrencies": "Валюты",
-  "settingsPriceLabel": "Цена",
   "settingsPriceTitle": "Цена",
   "settingsRanges": "Диапазоны",
   "settingsReorderStacks": "Порядок стеков",
@@ -89,7 +87,6 @@
   "settingsChartHeightXxxl": "XL",
   "settingsPortfolioTotal": "Показывать итог",
   "settingsPortfolioTotalHide": "Скрыть итог",
-  "settingsBitcoinDisplayMode": "Единица Bitcoin",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
   "settingsLivePriceCadence": "Частота обновления",
@@ -195,5 +192,6 @@
   "settingsEnableLockHint": "Ваши стеки будут скрыты и зашифрованы.",
   "settingsDisableLock": "Отключить блокировку",
   "converterCopiedValue": "{value} скопировано",
-  "settingsFullScreenPrice": "Цена на весь экран"
+  "settingsFullScreenPrice": "Цена на весь экран",
+  "saveButton": "Сохранить"
 }

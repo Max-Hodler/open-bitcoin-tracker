@@ -1,9 +1,5 @@
 {
   "@@locale": "en",
-  "settingsTitle": "Settings",
-  "@settingsTitle": {
-    "description": "AppBar title for the Settings screen."
-  },
   "settingsLanguageLabel": "Language",
   "@settingsLanguageLabel": {
     "description": "Settings row label that opens the language picker."
@@ -294,10 +290,6 @@
   "@settingsCurrencies": {
     "description": "Settings row label and currency-picker app-bar title."
   },
-  "settingsPriceLabel": "Price",
-  "@settingsPriceLabel": {
-    "description": "Settings row label that opens the price sub-screen (currencies + update cadence + price change)."
-  },
   "settingsPriceTitle": "Price",
   "@settingsPriceTitle": {
     "description": "AppBar title of the price settings sub-screen (currency picker, cadence picker, price-change toggle)."
@@ -361,10 +353,6 @@
   "settingsPortfolioTotalHide": "Hide total",
   "@settingsPortfolioTotalHide": {
     "description": "Menu item label shown when the portfolio total is visible; tapping it hides the total card."
-  },
-  "settingsBitcoinDisplayMode": "Bitcoin unit",
-  "@settingsBitcoinDisplayMode": {
-    "description": "Settings row label for the segmented control that chooses how Bitcoin amounts are displayed across the app: as satoshi counts ('sats') or as BTC with up to 8 decimal places."
   },
   "bitcoinDisplayModeSats": "Sats",
   "@bitcoinDisplayModeSats": {
@@ -854,5 +842,9 @@
   "settingsFullScreenPrice": "Full screen price",
   "@settingsFullScreenPrice": {
     "description": "Row in the price bottom sheet that opens a landscape full-screen view showing only the live price. Tapping anywhere in that view returns home."
+  },
+  "saveButton": "Save",
+  "@saveButton": {
+    "description": "Generic confirm/save button label used on edit screens."
   }
 }

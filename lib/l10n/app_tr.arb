@@ -1,6 +1,5 @@
 {
   "@@locale": "tr",
-  "settingsTitle": "Ayarlar",
   "settingsLanguageLabel": "Dil",
   "languagePickerTitle": "Dil",
   "languageOptionSystem": "Sistem varsayılanı",
@@ -72,7 +71,6 @@
   "aboutLicenses": "Açık kaynak lisansları",
   "aboutSourceCode": "Kaynak kodu",
   "settingsCurrencies": "Para birimleri",
-  "settingsPriceLabel": "Fiyat",
   "settingsPriceTitle": "Fiyat",
   "settingsRanges": "Aralıklar",
   "settingsReorderStacks": "Stack'leri yeniden sırala",
@@ -89,7 +87,6 @@
   "settingsChartHeightXxxl": "XL",
   "settingsPortfolioTotal": "Toplamı göster",
   "settingsPortfolioTotalHide": "Toplamı gizle",
-  "settingsBitcoinDisplayMode": "Bitcoin birimi",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
   "settingsLivePriceCadence": "Güncelleme sıklığı",
@@ -195,5 +192,6 @@
   "settingsEnableLockHint": "Yığınlarınız gizlenecek ve şifrelenecek.",
   "settingsDisableLock": "Kilidi devre dışı bırak",
   "converterCopiedValue": "{value} kopyalandı",
-  "settingsFullScreenPrice": "Tam ekran fiyat"
+  "settingsFullScreenPrice": "Tam ekran fiyat",
+  "saveButton": "Kaydet"
 }

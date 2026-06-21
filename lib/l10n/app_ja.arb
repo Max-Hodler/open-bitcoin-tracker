@@ -1,6 +1,5 @@
 {
   "@@locale": "ja",
-  "settingsTitle": "設定",
   "settingsLanguageLabel": "言語",
   "languagePickerTitle": "言語",
   "languageOptionSystem": "システム設定に従う",
@@ -72,7 +71,6 @@
   "aboutLicenses": "オープンソースライセンス",
   "aboutSourceCode": "ソースコード",
   "settingsCurrencies": "通貨",
-  "settingsPriceLabel": "価格",
   "settingsPriceTitle": "価格",
   "settingsRanges": "期間",
   "settingsReorderStacks": "スタックの並び替え",
@@ -89,7 +87,6 @@
   "settingsChartHeightXxxl": "XL",
   "settingsPortfolioTotal": "合計を表示",
   "settingsPortfolioTotalHide": "合計を非表示",
-  "settingsBitcoinDisplayMode": "ビットコインの単位",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
   "settingsLivePriceCadence": "更新頻度",
@@ -195,5 +192,6 @@
   "settingsEnableLockHint": "スタックは非表示になり、暗号化されます。",
   "settingsDisableLock": "ロックを無効にする",
   "converterCopiedValue": "{value} をコピーしました",
-  "settingsFullScreenPrice": "全画面表示の価格"
+  "settingsFullScreenPrice": "全画面表示の価格",
+  "saveButton": "保存"
 }

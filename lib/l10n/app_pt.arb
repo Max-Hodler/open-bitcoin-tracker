@@ -1,6 +1,5 @@
 {
   "@@locale": "pt",
-  "settingsTitle": "Configurações",
   "settingsLanguageLabel": "Idioma",
   "languagePickerTitle": "Idioma",
   "languageOptionSystem": "Padrão do sistema",
@@ -72,7 +71,6 @@
   "aboutLicenses": "Licenças de código aberto",
   "aboutSourceCode": "Código-fonte",
   "settingsCurrencies": "Moedas",
-  "settingsPriceLabel": "Preço",
   "settingsPriceTitle": "Preço",
   "settingsRanges": "Intervalos",
   "settingsReorderStacks": "Reordenar stacks",
@@ -89,7 +87,6 @@
   "settingsChartHeightXxxl": "XL",
   "settingsPortfolioTotal": "Exibir total",
   "settingsPortfolioTotalHide": "Ocultar total",
-  "settingsBitcoinDisplayMode": "Unidade de Bitcoin",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
   "settingsLivePriceCadence": "Frequência de atualização",
@@ -195,5 +192,6 @@
   "settingsEnableLockHint": "Os seus stacks ficarão ocultos e encriptados.",
   "settingsDisableLock": "Desativar bloqueio",
   "converterCopiedValue": "{value} copiado",
-  "settingsFullScreenPrice": "Preço em ecrã inteiro"
+  "settingsFullScreenPrice": "Preço em ecrã inteiro",
+  "saveButton": "Salvar"
 }

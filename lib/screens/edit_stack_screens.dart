@@ -190,7 +190,7 @@ class _EditStackAmountScreenState extends State<EditStackAmountScreen> {
       zeroDisabled: mode == BtcDisplayMode.sats && _input.isEmpty,
       onZeroBlocked: _onZeroBlocked,
       showLeadingZeroWarning: _showLeadingZeroWarning,
-      confirmLabel: l10n.stackMenuUpdateAmount,
+      confirmLabel: l10n.saveButton,
       onInputLongPressAt: (pos) => _onLongPressAt(pos, mode),
       onCaretAt: _onCaretAt,
     );
@@ -257,7 +257,7 @@ class _EditStackNameScreenState extends State<EditStackNameScreen>
       context: context,
       cs: cs,
       title: l10n.stackNameLabel,
-      confirmLabel: l10n.stackMenuChangeName,
+      confirmLabel: l10n.saveButton,
       onSubmit: _submit,
     );
   }

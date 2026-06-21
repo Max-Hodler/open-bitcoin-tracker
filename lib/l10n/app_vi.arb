@@ -1,6 +1,5 @@
 {
   "@@locale": "vi",
-  "settingsTitle": "Cài đặt",
   "settingsLanguageLabel": "Ngôn ngữ",
   "languagePickerTitle": "Ngôn ngữ",
   "languageOptionSystem": "Mặc định hệ thống",
@@ -72,7 +71,6 @@
   "aboutLicenses": "Giấy phép mã nguồn mở",
   "aboutSourceCode": "Mã nguồn",
   "settingsCurrencies": "Tiền tệ",
-  "settingsPriceLabel": "Giá",
   "settingsPriceTitle": "Giá",
   "settingsRanges": "Phạm vi",
   "settingsReorderStacks": "Sắp xếp stack",
@@ -89,7 +87,6 @@
   "settingsChartHeightXxxl": "XL",
   "settingsPortfolioTotal": "Hiển thị tổng",
   "settingsPortfolioTotalHide": "Ẩn tổng",
-  "settingsBitcoinDisplayMode": "Đơn vị Bitcoin",
   "bitcoinDisplayModeSats": "Sats",
   "bitcoinDisplayModeBtc": "BTC",
   "settingsLivePriceCadence": "Tần suất cập nhật",
@@ -195,5 +192,6 @@
   "settingsEnableLockHint": "Các stack của bạn sẽ được ẩn và mã hóa.",
   "settingsDisableLock": "Tắt khóa",
   "converterCopiedValue": "Đã sao chép {value}",
-  "settingsFullScreenPrice": "Giá toàn màn hình"
+  "settingsFullScreenPrice": "Giá toàn màn hình",
+  "saveButton": "Lưu"
 }
