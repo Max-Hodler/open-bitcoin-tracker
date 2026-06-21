@@ -408,11 +408,11 @@ class _HomeHeaderSectionState extends State<HomeHeaderSection> {
                           SettingsSegmentedTile(
                             label: l10n.settingsChartHeight,
                             options: [
-                              l10n.settingsChartHeightCompact,
                               l10n.settingsChartHeightNormal,
                               l10n.settingsChartHeightTall,
                               l10n.settingsChartHeightXl,
                               l10n.settingsChartHeightXxl,
+                              l10n.settingsChartHeightXxxl,
                             ],
                             selectedIndex: app.chartHeight.index,
                             enabled: true,
