@@ -157,7 +157,7 @@ class _TotalHeader extends StatelessWidget {
             fontSize: 22,
             fontWeight: FontWeight.w600,
             letterSpacing: -0.3,
-            color: cs.onSurfaceVariant,
+            color: Colors.black,
             fontFeatures: const [ui.FontFeature.tabularFigures()],
           ),
         ),

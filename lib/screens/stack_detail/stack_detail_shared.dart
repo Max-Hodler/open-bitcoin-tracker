@@ -382,9 +382,6 @@ class BtcAmountDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final numberColor = isDark ? Colors.white : cs.onSurface;
     final orangeColor = context.palette.bitcoinOrange;
 
     final formatted = formatBtcAmount(
@@ -394,46 +391,18 @@ class BtcAmountDisplay extends StatelessWidget {
       tight: true,
     );
 
-    final symbolIdx = formatted.indexOf('₿');
-
     final baseStyle = AppTypography.display.copyWith(
       fontSize: 44,
       fontWeight: FontWeight.w600,
       letterSpacing: -1,
+      color: orangeColor,
       fontFeatures: const [ui.FontFeature.tabularFigures()],
     );
 
-    if (symbolIdx == -1) {
-      return Text(
-        formatted,
-        textAlign: TextAlign.center,
-        style: baseStyle.copyWith(color: numberColor),
-      );
-    }
-
-    final prefix = formatted.substring(0, symbolIdx);
-    final suffix = formatted.substring(symbolIdx + 1);
-
-    return Text.rich(
-      TextSpan(
-        children: [
-          if (prefix.isNotEmpty)
-            TextSpan(
-              text: prefix,
-              style: baseStyle.copyWith(color: numberColor),
-            ),
-          TextSpan(
-            text: '₿',
-            style: baseStyle.copyWith(color: orangeColor),
-          ),
-          if (suffix.isNotEmpty)
-            TextSpan(
-              text: suffix,
-              style: baseStyle.copyWith(color: numberColor),
-            ),
-        ],
-      ),
+    return Text(
+      formatted,
       textAlign: TextAlign.center,
+      style: baseStyle,
     );
   }
 }
