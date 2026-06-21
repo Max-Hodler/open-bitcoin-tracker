@@ -8,7 +8,7 @@ class AppState {
     this.selectedCurrencies = const [Currency.usd],
     this.showPortfolio = false,
     this.showChart = true,
-    this.chartHeight = ChartHeight.xl,
+    this.chartHeight = ChartHeight.xxxl,
     this.theme = AppTheme.system,
     this.darkVariant = DarkVariant.blue,
     this.lightVariant = LightVariant.cream,
