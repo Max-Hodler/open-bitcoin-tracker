@@ -152,7 +152,7 @@
   "rangePickerMonthsFull": "{count, plural, =1{1 месяц} few{{count} месяца} many{{count} месяцев} other{{count} месяцев}}",
   "rangePickerDaysFull": "{count, plural, =1{1 день} few{{count} дня} many{{count} дней} other{{count} дней}}",
   "rangePickerWeeksFull": "{count, plural, =1{1 неделя} few{{count} недели} many{{count} недель} other{{count} недель}}",
-  "stackMenuDelete": "Удалить Stack",
+  "stackMenuDelete": "Удалить stack",
   "stackImageSheetSubtitle": "Выберите цвет или изображение",
   "stackImageSectionLabel": "Изображение",
   "stackImageChooseFromGallery": "Открыть галерею",

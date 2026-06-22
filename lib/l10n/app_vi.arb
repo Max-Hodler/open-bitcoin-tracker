@@ -152,7 +152,7 @@
   "rangePickerMonthsFull": "{count, plural, other{{count} tháng}}",
   "rangePickerDaysFull": "{count, plural, other{{count} ngày}}",
   "rangePickerWeeksFull": "{count, plural, other{{count} tuần}}",
-  "stackMenuDelete": "Xóa Stack",
+  "stackMenuDelete": "Xóa stack",
   "stackImageSheetSubtitle": "Chọn màu hoặc ảnh",
   "stackImageSectionLabel": "Ảnh",
   "stackImageChooseFromGallery": "Mở thư viện",

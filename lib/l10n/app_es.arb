@@ -152,7 +152,7 @@
   "rangePickerMonthsFull": "{count, plural, =1{1 mes} other{{count} meses}}",
   "rangePickerDaysFull": "{count, plural, =1{1 día} other{{count} días}}",
   "rangePickerWeeksFull": "{count, plural, =1{1 semana} other{{count} semanas}}",
-  "stackMenuDelete": "Eliminar Stack",
+  "stackMenuDelete": "Eliminar stack",
   "stackImageSheetSubtitle": "Elige un color o una imagen",
   "stackImageSectionLabel": "Imagen",
   "stackImageChooseFromGallery": "Abrir galería",
