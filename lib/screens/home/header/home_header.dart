@@ -290,7 +290,7 @@ class _HomeHeaderState extends State<HomeHeader> {
         (a) => a.swipeChipHintDismissed);
     // Latch: only engage once the user has swiped the currency AND taps a
     // non-All range. Once latched it stays true for the session.
-    if (widget.currencyEverSwiped && widget.range != BtcRange.all && !swipeHintDismissed) {
+    if (widget.range != BtcRange.all && !swipeHintDismissed) {
       _hintTriggered = true;
     }
     final String? message;
