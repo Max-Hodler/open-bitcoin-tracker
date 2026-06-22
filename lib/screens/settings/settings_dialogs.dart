@@ -58,13 +58,13 @@ class AuthModeRow extends StatelessWidget {
           onTap();
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          padding: AppSpacing.menuRowPadding,
           child: Row(
             children: [
               MenuIconSquare(
                 icon: Icon(_authModeIcon(mode), size: 22, color: cs.onSurfaceVariant),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Text(
                   authModeLabel(l10n, mode),
@@ -129,7 +129,7 @@ class LockTimeoutRow extends StatelessWidget {
           onTap();
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          padding: AppSpacing.menuRowPadding,
           child: Row(
             children: [
               Container(
@@ -144,7 +144,7 @@ class LockTimeoutRow extends StatelessWidget {
                   color: selected ? p.bitcoinOrange : Colors.transparent,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Text(
                   lockTimeoutLabel(l10n, timeout),

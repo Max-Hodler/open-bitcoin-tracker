@@ -6,7 +6,9 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../services/app_haptics.dart';
 import '../../../state/state.dart';
 import '../../../theme/theme.dart';
+import '../../../widgets/circular_icon_button.dart';
 import '../../../widgets/menu_icon_square.dart';
+import '../../../widgets/menu_item_row.dart';
 import '../../about_screen.dart';
 import '../../settings/settings_screen.dart';
 import '../../settings/stacks_settings_actions.dart';
@@ -92,33 +94,12 @@ class StackLockIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return SizedBox(
-      width: 36,
-      height: 36,
-      child: IconButton(
-        onPressed: enabled
-            ? () {
-                AppHaptics.light();
-                onTap();
-              }
-            : null,
-        tooltip: tooltip,
-        icon: Icon(locked ? Icons.lock_open_outlined : Icons.lock_outline),
-        iconSize: 18,
-        constraints: const BoxConstraints(),
-        style: IconButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          foregroundColor: enabled ? cs.onSurfaceVariant : cs.onSurfaceVariant.withValues(alpha: 0.38),
-          disabledForegroundColor: cs.onSurfaceVariant.withValues(alpha: 0.38),
-          elevation: 0,
-          fixedSize: const Size(36, 36),
-          minimumSize: const Size(36, 36),
-          maximumSize: const Size(36, 36),
-          shape: const CircleBorder(),
-          padding: EdgeInsets.zero,
-        ),
-      ),
+    return CircularIconButton(
+      icon: Icon(locked ? Icons.lock_open_outlined : Icons.lock_outline),
+      iconSize: 18,
+      tooltip: tooltip,
+      enabled: enabled,
+      onTap: onTap,
     );
   }
 }
@@ -130,30 +111,9 @@ class AddStackIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
-    return SizedBox(
-      width: 36,
-      height: 36,
-      child: IconButton(
-        onPressed: () {
-          AppHaptics.light();
-          onTap();
-        },
-        icon: const Icon(Icons.add),
-        iconSize: 22,
-        constraints: const BoxConstraints(),
-        style: IconButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          foregroundColor: cs.onSurfaceVariant,
-          elevation: 0,
-          fixedSize: const Size(36, 36),
-          minimumSize: const Size(36, 36),
-          maximumSize: const Size(36, 36),
-          shape: const CircleBorder(),
-          padding: EdgeInsets.zero,
-        ),
-      ),
+    return CircularIconButton(
+      icon: const Icon(Icons.add),
+      onTap: onTap,
     );
   }
 }
@@ -191,19 +151,16 @@ class StacksOverflowButton extends StatelessWidget {
 
     Widget row(IconData icon, String label, {Widget? trailing, bool enabled = true}) {
       final fg = enabled ? cs.onSurfaceVariant : cs.onSurfaceVariant.withValues(alpha: 0.38);
-      return IgnorePointer(
-        child: Row(
-          children: [
-            MenuIconSquare(icon: Icon(icon, size: 22, color: fg)),
-            const SizedBox(width: 12),
-            Text(label, style: enabled ? itemStyle : disabledItemStyle),
-            if (trailing != null) ...[const SizedBox(width: 12), trailing],
-          ],
-        ),
+      return MenuItemRow(
+        icon: Icon(icon, size: 22, color: fg),
+        label: label,
+        style: itemStyle,
+        disabledStyle: disabledItemStyle,
+        trailing: trailing,
+        enabled: enabled,
       );
     }
 
-    final p = context.palette;
     // The "Display total" row carries a live switch. Its PopupMenuItem is
     // disabled so a tap never routes through onSelected (which would pop the
     // menu); instead a StatefulBuilder owns the switch state so toggling
@@ -479,65 +436,35 @@ class _OverflowButtonState extends State<OverflowButton> {
         if (widget.onOpenConverter != null)
           PopupMenuItem(
             value: _OverflowAction.converter,
-            child: IgnorePointer(
-              child: Row(
-                children: [
-                  MenuIconSquare(
-                    icon: Transform.flip(
-                      flipX: true,
-                      child: Icon(
-                        Icons.swap_vert,
-                        size: 22,
-                        color: cs.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(l10n.homeConverter, style: itemStyle),
-                ],
+            child: MenuItemRow(
+              icon: Transform.flip(
+                flipX: true,
+                child: Icon(Icons.swap_vert, size: 22, color: cs.onSurfaceVariant),
               ),
+              label: l10n.homeConverter,
+              style: itemStyle,
             ),
           ),
         PopupMenuItem(
           value: _OverflowAction.theme,
-          child: IgnorePointer(
-            child: Row(
-              children: [
-                MenuIconSquare(
-                  icon: Icon(
-                    Icons.palette_outlined,
-                    size: 22,
-                    color: cs.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(l10n.settingsThemeLabel, style: itemStyle),
-              ],
-            ),
+          child: MenuItemRow(
+            icon: Icon(Icons.palette_outlined, size: 22, color: cs.onSurfaceVariant),
+            label: l10n.settingsThemeLabel,
+            style: itemStyle,
           ),
         ),
         PopupMenuItem(
           value: _OverflowAction.currency,
-          child: IgnorePointer(
-            child: Row(
-              children: [
-                MenuIconSquare(
-                  // The attach_money glyph carries extra right bearing in the
-                  // font box, so geometric centering leaves it sitting left of
-                  // center. Nudge it right a hair to optically center it.
-                  icon: Transform.translate(
-                    offset: const Offset(1, 0),
-                    child: Icon(
-                      Icons.attach_money,
-                      size: 22,
-                      color: cs.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(l10n.settingsCurrencies, style: itemStyle),
-              ],
+          child: MenuItemRow(
+            // The attach_money glyph carries extra right bearing in the font
+            // box, so geometric centering leaves it sitting left of center.
+            // Nudge it right a hair to optically center it.
+            icon: Transform.translate(
+              offset: const Offset(1, 0),
+              child: Icon(Icons.attach_money, size: 22, color: cs.onSurfaceVariant),
             ),
+            label: l10n.settingsCurrencies,
+            style: itemStyle,
           ),
         ),
         PopupMenuItem(
@@ -547,30 +474,18 @@ class _OverflowButtonState extends State<OverflowButton> {
         ),
         PopupMenuItem(
           value: _OverflowAction.language,
-          child: IgnorePointer(
-            child: Row(
-              children: [
-                MenuIconSquare(
-                  icon: Icon(Icons.language, size: 22, color: cs.onSurfaceVariant),
-                ),
-                const SizedBox(width: 12),
-                Text(l10n.settingsLanguageLabel, style: itemStyle),
-              ],
-            ),
+          child: MenuItemRow(
+            icon: Icon(Icons.language, size: 22, color: cs.onSurfaceVariant),
+            label: l10n.settingsLanguageLabel,
+            style: itemStyle,
           ),
         ),
         PopupMenuItem(
           value: _OverflowAction.about,
-          child: IgnorePointer(
-            child: Row(
-              children: [
-                MenuIconSquare(
-                  icon: Icon(Icons.info_outline, size: 22, color: cs.onSurfaceVariant),
-                ),
-                const SizedBox(width: 12),
-                Text(l10n.settingsAbout, style: itemStyle),
-              ],
-            ),
+          child: MenuItemRow(
+            icon: Icon(Icons.info_outline, size: 22, color: cs.onSurfaceVariant),
+            label: l10n.settingsAbout,
+            style: itemStyle,
           ),
         ),
       ],
@@ -674,7 +589,7 @@ class _LanguagePrefRow extends StatelessWidget {
           onTap();
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          padding: AppSpacing.menuRowPadding,
           child: Row(
             children: [
               Container(
@@ -689,7 +604,7 @@ class _LanguagePrefRow extends StatelessWidget {
                   color: selected ? p.bitcoinOrange : Colors.transparent,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Text(
                   _languageOptionLabel(context, language),

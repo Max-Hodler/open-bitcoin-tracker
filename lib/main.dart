@@ -102,20 +102,17 @@ class OpenBitcoinTrackerApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (ctx) {
             final app = ctx.read<AppStateNotifier>();
-            final controller = LivePriceController(
+            // The controller subscribes to `app` for cadence changes and
+            // releases the listener in its own dispose(), so settings changes
+            // update the throttle policy without recreating the provider.
+            return LivePriceController(
               stream: KrakenStreamService(),
               ohlc: KrakenOhlcClient(),
               cache: ratesCache,
               historyCache: historyCache,
               cadence: app.livePriceCadence,
+              app: app,
             )..start();
-            // Push cadence changes from settings into the controller without
-            // recreating the provider. The controller outlives any individual
-            // settings change, and only its throttle policy needs to update.
-            app.addListener(() {
-              controller.cadence = app.livePriceCadence;
-            });
-            return controller;
           },
         ),
       ],

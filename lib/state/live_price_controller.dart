@@ -13,6 +13,7 @@ import '../data/btc_history.dart';
 import '../data/btc_history_cache.dart';
 import '../data/btc_rates_cache.dart';
 import '../data/fx_history.dart';
+import 'app_state_notifier.dart';
 
 class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
   LivePriceController({
@@ -21,20 +22,31 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
     required BtcRatesCache cache,
     required BtcHistoryCache historyCache,
     LivePriceCadence cadence = LivePriceCadence.s5,
+    AppStateNotifier? app,
   })  : _stream = stream,
         _ohlc = ohlc,
         _cache = cache,
         _historyCache = historyCache,
+        _app = app,
         _cadence = cadence,
         _rates = cache.load() {
     _throttler = TickThrottler(onFire: notifyListeners)
       ..interval = cadence.minInterval;
+    // Mirror the cadence setting into the throttle policy without recreating
+    // the controller: it outlives any individual settings change. Subscribed
+    // here and released in dispose() so the listener never outlives us.
+    _app?.addListener(_syncCadenceFromApp);
   }
 
   final KrakenStreamService _stream;
   final KrakenOhlcClient _ohlc;
   final BtcRatesCache _cache;
   final BtcHistoryCache _historyCache;
+  final AppStateNotifier? _app;
+
+  void _syncCadenceFromApp() {
+    cadence = _app!.livePriceCadence;
+  }
 
   static const int _trailingRefetchDays = 3;
 
@@ -591,6 +603,7 @@ class LivePriceController extends ChangeNotifier with WidgetsBindingObserver {
   void dispose() {
     _flushRatesCache();
     _disposed = true;
+    _app?.removeListener(_syncCadenceFromApp);
     _throttler.dispose();
     _intradayAutoRefreshTimer?.cancel();
     _intradayAutoRefreshTimer = null;
