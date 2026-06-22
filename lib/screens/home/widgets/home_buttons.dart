@@ -370,8 +370,6 @@ class OverflowButton extends StatefulWidget {
 }
 
 class _OverflowButtonState extends State<OverflowButton> {
-  final _menuKey = GlobalKey<PopupMenuButtonState<_OverflowAction>>();
-
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -453,7 +451,6 @@ class _OverflowButtonState extends State<OverflowButton> {
       width: 36,
       height: 36,
       child: PopupMenuButton<_OverflowAction>(
-      key: _menuKey,
       onOpened: AppHaptics.light,
       onSelected: (action) => _handleAction(context, action),
       padding: EdgeInsets.zero,
@@ -466,23 +463,17 @@ class _OverflowButtonState extends State<OverflowButton> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
       ),
-      child: IconButton(
-        onPressed: () {
-          _menuKey.currentState?.showButtonMenu();
-        },
-        icon: const Icon(Icons.more_vert),
-        iconSize: 22,
-        constraints: const BoxConstraints(),
-        style: IconButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          foregroundColor: cs.onSurfaceVariant,
-          elevation: 0,
-          fixedSize: const Size(36, 36),
-          minimumSize: const Size(36, 36),
-          maximumSize: const Size(36, 36),
-          shape: const CircleBorder(),
-          padding: EdgeInsets.zero,
-        ),
+      icon: const Icon(Icons.more_vert),
+      iconSize: 22,
+      style: IconButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        foregroundColor: cs.onSurfaceVariant,
+        elevation: 0,
+        fixedSize: const Size(36, 36),
+        minimumSize: const Size(36, 36),
+        maximumSize: const Size(36, 36),
+        shape: const CircleBorder(),
+        padding: EdgeInsets.zero,
       ),
       itemBuilder: (ctx) => [
         if (widget.onOpenConverter != null)

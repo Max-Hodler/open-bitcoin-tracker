@@ -529,7 +529,7 @@ class _RangeBarState extends State<RangeBar>
           // extend underneath it.
           const settingsGap = 8.0;
           final settingsReserve = onSettings != null
-              ? greyBarHeight + settingsGap
+              ? greyBarHeight + settingsGap + (36 - greyBarHeight) / 2
               : 0.0;
           final rightPadding = horizontalPadding + settingsReserve;
           final innerWidth = constraints.maxWidth -
@@ -767,7 +767,7 @@ class _RangeBarState extends State<RangeBar>
               ),
               if (onSettings != null)
                 Positioned(
-                  right: horizontalPadding,
+                  right: horizontalPadding + (36 - greyBarHeight) / 2,
                   top: circleTop,
                   width: greyBarHeight,
                   height: greyBarHeight,
