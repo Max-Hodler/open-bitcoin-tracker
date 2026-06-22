@@ -511,8 +511,8 @@ class _RangeBarState extends State<RangeBar>
     // it moves first and the label flips bold/orange only on arrival).
     final highlightIndex = _dragging ? _dragHoverIndex : _visualSelectedIndex;
     bool slotSelected(int index) => index == highlightIndex;
-    // Combined vertical offset for the selected chip's content (label +
-    // chevrons). Real nudge wins; idle hint bob fills in when actively running.
+    // Combined vertical offset for the selected chip's content (label).
+    // Real nudge wins; idle hint bob fills in when actively running.
     final chipContentOffsetY = _nudgeController.isAnimating
         ? _nudgeOffset
         : (_hintBobController.isAnimating ? _hintBobOffset : 0.0);
@@ -624,45 +624,6 @@ class _RangeBarState extends State<RangeBar>
                                   ],
                                 ),
                                 child: const SizedBox.expand(),
-                              ),
-                              // Chevrons are anchored to the pill so they always
-                              // travel with it, regardless of which slot is active.
-                              Positioned(
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                child: IgnorePointer(
-                                  child: AnimatedOpacity(
-                                    duration: const Duration(milliseconds: 150),
-                                    curve: Curves.easeOut,
-                                    // Chevrons stay visible on all slots that
-                                    // support swiping (slots 0-3).
-                                    opacity: (selectedIndex >= 0 && selectedIndex < 4) ? 1 : 0,
-                                    child: Icon(
-                                      Icons.keyboard_arrow_up_rounded,
-                                      size: 16,
-                                      color: cs.onSurfaceVariant.withValues(alpha: 0.5),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                child: IgnorePointer(
-                                  child: AnimatedOpacity(
-                                    duration: const Duration(milliseconds: 150),
-                                    curve: Curves.easeOut,
-                                    // Same logic as the up-chevron above.
-                                    opacity: (selectedIndex >= 0 && selectedIndex < 4) ? 1 : 0,
-                                    child: Icon(
-                                      Icons.keyboard_arrow_down_rounded,
-                                      size: 16,
-                                      color: cs.onSurfaceVariant.withValues(alpha: 0.5),
-                                    ),
-                                  ),
-                                ),
                               ),
                             ],
                           ),
