@@ -149,7 +149,11 @@ class _CurrentPriceState extends State<CurrentPrice>
 
   void _stopNudge() {
     _nudge.stop();
-    _nudge.value = 0.5; // tween begin=1,end=-1 → value 0.5 = dx 0 (center)
+    // Rest at value 0 (tween begin=1 → dx +10), matching the price's resting x
+    // before the nudge ever ran. Resting at 0.5 (dx 0) instead would shift the
+    // price 10px left of where it started, reading as a reduced left padding
+    // after the user swipes.
+    _nudge.value = 0;
   }
 
   @override
