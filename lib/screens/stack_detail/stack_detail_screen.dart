@@ -325,7 +325,7 @@ class _Header extends StatelessWidget {
             fontSize: 22,
             fontWeight: FontWeight.w600,
             letterSpacing: -0.3,
-            color: Colors.black,
+            color: cs.onSurface,
             fontFeatures: const [ui.FontFeature.tabularFigures()],
           ),
         ),
