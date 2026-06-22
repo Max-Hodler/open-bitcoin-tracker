@@ -6,8 +6,11 @@ import '../../../data/stack.dart' as model;
 import '../../../services/app_haptics.dart';
 import '../../../state/state.dart';
 import '../../../widgets/avatar_sheet.dart';
+import '../../../widgets/stack_actions.dart';
 import '../../../widgets/stack_card.dart' show StackCard, StackCardPosition;
+import '../../edit_stack_screens.dart';
 import '../../settings/reorder_stacks_screen.dart';
+import '../../settings/stacks_settings_actions.dart';
 import '../../stack_detail/stack_detail_screen.dart';
 
 class HomeStackList extends StatelessWidget {
@@ -106,6 +109,49 @@ class _StackCardRowState extends State<_StackCardRow> {
     );
   }
 
+  Future<void> _showActionsSheet() async {
+    final action = await showStackActionsSheet(
+      context,
+      widget.stack.name,
+      canReorder: widget.canReorder,
+    );
+    if (!mounted || action == null) return;
+    switch (action) {
+      case StackAction.edit:
+        await Navigator.of(context).push<void>(
+          MaterialPageRoute<void>(
+            builder: (_) => EditStackAmountScreen(stackId: widget.stack.id),
+          ),
+        );
+      case StackAction.rename:
+        await Navigator.of(context).push<void>(
+          MaterialPageRoute<void>(
+            builder: (_) => EditStackNameScreen(stackId: widget.stack.id),
+          ),
+        );
+      case StackAction.changeAvatar:
+        if (!mounted) return;
+        await _showAvatarSheet(context);
+      case StackAction.reorder:
+        if (!mounted) return;
+        await Navigator.of(context).push<void>(
+          MaterialPageRoute<void>(builder: (_) => const ReorderStacksScreen()),
+        );
+      case StackAction.delete:
+        if (!mounted) return;
+        final confirm = await showDeleteStackDialog(context);
+        if (!mounted) return;
+        if (confirm == true) {
+          final app = context.read<AppStateNotifier>();
+          final wasLast = app.stacks.length == 1;
+          app.removeStack(widget.stack.id);
+          if (wasLast && mounted) {
+            await StacksSettingsActions.disableLockForEmptyStacks(context, app);
+          }
+        }
+    }
+  }
+
   StackCardPosition get _position {
     if (widget.isFirst && widget.isLast) return StackCardPosition.only;
     if (widget.isFirst) return StackCardPosition.first;
@@ -138,16 +184,10 @@ class _StackCardRowState extends State<_StackCardRow> {
             ),
           );
         },
-        onLongPress: widget.canReorder
-            ? () {
-                AppHaptics.medium();
-                Navigator.of(context).push<void>(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const ReorderStacksScreen(),
-                  ),
-                );
-              }
-            : null,
+        onLongPress: () {
+          AppHaptics.medium();
+          _showActionsSheet();
+        },
         onAvatarTap: () {
           AppHaptics.light();
           _showAvatarSheet(cardContext);

@@ -9,15 +9,20 @@ import 'sheet_safe_area.dart';
 /// The edit/rename/delete actions available for a stack, shared between the
 /// home card flow and the stack detail screen so both present an identical
 /// menu and confirmation dialog.
-enum StackAction { edit, rename, delete }
+enum StackAction { edit, rename, changeAvatar, reorder, delete }
 
-/// Shows the stack actions bottom sheet (Update amount / Change name / Delete)
-/// for the stack named [stackName]. Returns the chosen action, or null if
-/// dismissed. The caller performs the navigation/deletion.
+/// Shows the stack actions bottom sheet (Update amount / Change name / Change
+/// avatar / Reorder stacks / Delete) for the stack named [stackName]. Returns
+/// the chosen action, or null if dismissed. The caller performs the
+/// navigation/deletion.
+///
+/// Set [canReorder] to false to hide the "Reorder stacks" option (e.g. when
+/// there is only one stack).
 Future<StackAction?> showStackActionsSheet(
   BuildContext context,
-  String stackName,
-) {
+  String stackName, {
+  bool canReorder = true,
+}) {
   final theme = Theme.of(context);
   final cs = theme.colorScheme;
   return showModalBottomSheet<StackAction>(
@@ -62,6 +67,11 @@ Future<StackAction?> showStackActionsSheet(
                     onTap: () => Navigator.of(ctx).pop(StackAction.rename),
                   ),
                   MenuActionTile(
+                    leading: const Icon(Icons.face_outlined),
+                    label: l10n.stackMenuChangeAvatar,
+                    onTap: () => Navigator.of(ctx).pop(StackAction.changeAvatar),
+                  ),
+                  MenuActionTile(
                     leading: const Icon(Icons.delete_outline),
                     label: l10n.stackMenuDelete,
                     destructive: true,
@@ -69,6 +79,18 @@ Future<StackAction?> showStackActionsSheet(
                   ),
                 ],
               ),
+              if (canReorder) ...[
+                const SizedBox(height: AppSpacing.sm),
+                MenuActionGroup(
+                  children: [
+                    MenuActionTile(
+                      leading: const Icon(Icons.swap_vert),
+                      label: l10n.settingsReorderStacks,
+                      onTap: () => Navigator.of(ctx).pop(StackAction.reorder),
+                    ),
+                  ],
+                ),
+              ],
             ],
           ),
         ),
