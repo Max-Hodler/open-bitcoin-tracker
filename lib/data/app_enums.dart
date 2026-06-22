@@ -310,11 +310,11 @@ enum StacksLockTimeout {
 }
 
 enum ChartHeight {
-  m('xs', 204),
-  l('s', 272),
-  xl('m', 340),
-  xxl('l', 408),
-  xxxl('xl', 476);
+  m('xs', 180),
+  l('s', 248),
+  xl('m', 316),
+  xxl('l', 384),
+  xxxl('xl', 452);
 
   const ChartHeight(this.code, this.px);
   final String code;
