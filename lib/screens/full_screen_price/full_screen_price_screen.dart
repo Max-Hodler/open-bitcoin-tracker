@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../data/app_enums.dart';
 import '../../data/fiat.dart';
@@ -21,7 +22,8 @@ import '../../widgets/rolling_number.dart';
 /// The rest of the app may be portrait or landscape; this screen forces
 /// landscape while it's on screen and restores the default set on exit — the
 /// mirror image of the portrait-only [ConverterScreen]. It also hides the
-/// system bars so the price truly owns the whole display.
+/// system bars so the price truly owns the whole display, and keeps the
+/// screen from sleeping while it's open (like a fullscreen video player).
 class FullScreenPriceScreen extends StatefulWidget {
   const FullScreenPriceScreen({super.key, required this.currency});
 
@@ -52,6 +54,7 @@ class _FullScreenPriceScreenState extends State<FullScreenPriceScreen> {
     _currency = widget.currency;
     SystemChrome.setPreferredOrientations(kLandscapeOrientations);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    WakelockPlus.enable();
   }
 
   @override
@@ -99,6 +102,7 @@ class _FullScreenPriceScreenState extends State<FullScreenPriceScreen> {
     // mode for its orientation in didPopNext. Setting edgeToEdge here would
     // flash the system bars back on when returning to a landscape home screen.
     SystemChrome.setPreferredOrientations(kDefaultOrientations);
+    WakelockPlus.disable();
     super.dispose();
   }
 
