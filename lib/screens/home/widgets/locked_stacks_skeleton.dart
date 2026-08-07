@@ -65,7 +65,9 @@ class _SkeletonRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final shimmer = context.palette.recessedSurface ?? cs.surfaceContainer;
+    // Higher-contrast than the page background so the placeholder bars read
+    // clearly, without giving the row itself a background of its own.
+    final shimmer = cs.onSurface.withValues(alpha: 0.16);
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
